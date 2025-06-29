@@ -8,6 +8,7 @@ import appeng.menu.me.common.GridInventoryEntry;
 import appeng.util.CraftingRecipeUtil;
 import com.blakebr0.extendedcrafting.api.crafting.ITableRecipe;
 import com.blakebr0.extendedcrafting.crafting.recipe.ShapedTableRecipe;
+import com.blakebr0.extendedcrafting.crafting.recipe.ShapelessTableRecipe;
 import com.myogoo.extendedterminal.menu.extendedcrafting.ExtendedTerminalBaseMenu;
 import com.myogoo.extendedterminal.network.serverbound.ETFillCraftingGridFromRecipePacket;
 import com.myogoo.extendedterminal.util.ETCraftingRecipeHelper;
@@ -36,7 +37,6 @@ public class ItemListTermCraftingHelper {
 
         // We send the items in the recipe in any case to serve as a fallback in case the recipe is transient
         var templateItems = findGoodTemplateItems(recipe, menu);
-
         // Don't transmit a recipe id to the server in case the recipe is not actually resolvable
         // this is the case for recipes synthetically generated for JEI
         if (recipeId != null && menu.getPlayer().level().getRecipeManager().byKey(recipeId).isEmpty()) {
@@ -45,6 +45,15 @@ public class ItemListTermCraftingHelper {
         }
 
         ServerboundPacket message = new ETFillCraftingGridFromRecipePacket(recipeId, templateItems, craftMissing);
+        PacketDistributor.sendToServer(message);
+    }
+
+    public static void performTransfer(ExtendedTerminalBaseMenu menu, Recipe<?> recipe, boolean craftMissing,
+                                       int recipeWidth, int recipeHeight) {
+        var templateItems = findGoodTemplateItems(recipe, menu);
+
+        ServerboundPacket message =new ETFillCraftingGridFromRecipePacket(templateItems,craftMissing,
+                recipeWidth,recipeHeight);
         PacketDistributor.sendToServer(message);
     }
 
@@ -101,6 +110,7 @@ public class ItemListTermCraftingHelper {
             expandedIngredients = ExtendedCraftingHelper.makeNxNIngredients(tableRecipe);
 
             if(tableRecipe instanceof ShapedTableRecipe shapedTableRecipe) {
+                var tier = shapedTableRecipe.getTier();
                 var width = shapedTableRecipe.getWidth();
                 var height = shapedTableRecipe.getHeight();
                 int matrixWidth = ExtendedCraftingHelper.getCraftingMatrixWidth(tableRecipe);
@@ -113,7 +123,7 @@ public class ItemListTermCraftingHelper {
                         expandedIngredients.set(target, ing);
                     }
                 }
-            } else {
+            } else if (tableRecipe instanceof ShapelessTableRecipe) {
                 for(int i = 0; i < ingredients.size(); i++) {
                     expandedIngredients.set(i, ingredients.get(i));
                 }

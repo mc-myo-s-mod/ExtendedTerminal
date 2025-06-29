@@ -1,9 +1,14 @@
 package com.myogoo.extendedterminal.integration.jei.handler;
 
 import appeng.core.localization.ItemModText;
+import com.blakebr0.extendedcrafting.api.TableCraftingInput;
 import com.blakebr0.extendedcrafting.api.crafting.ITableRecipe;
+import com.blakebr0.extendedcrafting.compat.crafttweaker.TableCrafting;
+import com.blakebr0.extendedcrafting.crafting.recipe.ShapedTableRecipe;
+import com.blakebr0.extendedcrafting.init.ModRecipeTypes;
 import com.myogoo.extendedterminal.integration.ItemListTermCraftingHelper;
 import com.myogoo.extendedterminal.menu.extendedcrafting.ExtendedTerminalBaseMenu;
+import com.myogoo.extendedterminal.util.extendedcrafting.ExtendedCraftingHelper;
 import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.recipe.RecipeType;
@@ -15,6 +20,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -41,7 +47,7 @@ public class JeiTableRecipeTransferHandler<T extends ExtendedTerminalBaseMenu> e
         }
 
         if(!recipe.canCraftInDimensions(menu.getCraftingMatrixWidth(),menu.getCraftingMatrixHeight())) {
-            return  Result.createRecipeToLargeError(helper);
+            return Result.createRecipeToLargeError(helper);
         }
 
         boolean craftMissing = AbstractContainerScreen.hasControlDown();
@@ -65,7 +71,13 @@ public class JeiTableRecipeTransferHandler<T extends ExtendedTerminalBaseMenu> e
                 return new Result.PartiallyCraftable(missingSlots, color, craftMissing);
             }
         } else {
-            ItemListTermCraftingHelper.performTransfer(menu, null, recipe, craftMissing);
+
+            if(recipe instanceof ShapedTableRecipe shapedRecipe) {
+                ItemListTermCraftingHelper.performTransfer(menu, recipe,craftMissing,
+                        shapedRecipe.getWidth(), shapedRecipe.getHeight());
+            } else {
+                ItemListTermCraftingHelper.performTransfer(menu,null, recipe, craftMissing);
+            }
         }
 
         return Result.createSuccessful();

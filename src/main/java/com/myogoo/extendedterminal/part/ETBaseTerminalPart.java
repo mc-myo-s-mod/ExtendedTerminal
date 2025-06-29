@@ -19,12 +19,12 @@ import java.util.List;
 
 public class ETBaseTerminalPart extends AbstractTerminalPart {
 
-    @PartModels
     private static final ResourceLocation MODEL_ON = ExtendedTerminal.makeId("part/extended_terminal_on");
-    @PartModels
     private static final ResourceLocation MODEL_OFF = ExtendedTerminal.makeId("part/extended_terminal_off");
 
+    @PartModels
     public static final IPartModel MODELS_ON = new PartModel(MODEL_BASE, MODEL_ON, MODEL_STATUS_ON);
+    @PartModels
     public static final IPartModel MODELS_OFF = new PartModel(MODEL_BASE, MODEL_OFF, MODEL_STATUS_ON);
 
     private final AppEngInternalInventory craftingGrid;

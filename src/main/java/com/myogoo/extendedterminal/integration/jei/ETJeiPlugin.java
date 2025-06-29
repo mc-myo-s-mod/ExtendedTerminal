@@ -6,6 +6,7 @@ import com.blakebr0.extendedcrafting.compat.jei.category.table.BasicTableCategor
 import com.blakebr0.extendedcrafting.compat.jei.category.table.EliteTableCategory;
 import com.blakebr0.extendedcrafting.compat.jei.category.table.UltimateTableCategory;
 import com.blakebr0.extendedcrafting.init.ModRecipeTypes;
+import com.mojang.logging.LogUtils;
 import com.myogoo.extendedterminal.ExtendedTerminal;
 import com.myogoo.extendedterminal.init.ETItems;
 import com.myogoo.extendedterminal.integration.jei.handler.JeiTableRecipeTransferHandler;
@@ -25,6 +26,7 @@ import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
+import org.slf4j.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,6 +37,7 @@ import java.util.stream.Stream;
 @JeiPlugin
 public class ETJeiPlugin implements IModPlugin {
     private static final ResourceLocation UID = ExtendedTerminal.makeId("jei_plugin");
+    private static final Logger LOGGER = LogUtils.getLogger();
 
     private Level level;
 
@@ -57,10 +60,13 @@ public class ETJeiPlugin implements IModPlugin {
                                 recipe.value().hasRequiredTier() ? tier == recipe.value().getTier() : tier >= recipe.value().getTier())
                         .map(RecipeHolder::value)
                         .toList()));
+
+
+
         registration.addRecipes(BasicTableCategory.RECIPE_TYPE, recipes.getOrDefault(1, new ArrayList<>()));
-        registration.addRecipes(BasicTableCategory.RECIPE_TYPE, recipes.getOrDefault(2, new ArrayList<>()));
-        registration.addRecipes(BasicTableCategory.RECIPE_TYPE, recipes.getOrDefault(3, new ArrayList<>()));
-        registration.addRecipes(BasicTableCategory.RECIPE_TYPE, recipes.getOrDefault(4, new ArrayList<>()));
+        registration.addRecipes(AdvancedTableCategory.RECIPE_TYPE, recipes.getOrDefault(2, new ArrayList<>()));
+        registration.addRecipes(EliteTableCategory.RECIPE_TYPE, recipes.getOrDefault(3, new ArrayList<>()));
+        registration.addRecipes(UltimateTableCategory.RECIPE_TYPE, recipes.getOrDefault(4, new ArrayList<>()));
     }
 
     @Override
