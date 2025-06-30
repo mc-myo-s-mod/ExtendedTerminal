@@ -1,23 +1,29 @@
 package com.myogoo.extendedterminal.client;
 
+import appeng.api.util.AEColor;
+import appeng.client.render.StaticItemColor;
 import appeng.init.client.InitScreens;
 import com.myogoo.extendedterminal.ExtendedTerminal;
 import com.myogoo.extendedterminal.client.screen.extendedcrafting.AdvancedTerminalScreen;
 import com.myogoo.extendedterminal.client.screen.extendedcrafting.BasicTerminalScreen;
 import com.myogoo.extendedterminal.client.screen.extendedcrafting.EliteTerminalScreen;
 import com.myogoo.extendedterminal.client.screen.extendedcrafting.UltimateTerminalScreen;
+import com.myogoo.extendedterminal.init.ETParts;
 import com.myogoo.extendedterminal.menu.extendedcrafting.AdvancedTerminalMenu;
 import com.myogoo.extendedterminal.menu.extendedcrafting.BasicTerminalMenu;
 import com.myogoo.extendedterminal.menu.extendedcrafting.EliteTerminalMenu;
 import com.myogoo.extendedterminal.menu.extendedcrafting.UltimateTerminalMenu;
+import net.minecraft.world.level.ItemLike;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.common.Mod;
+import net.neoforged.neoforge.client.event.RegisterColorHandlersEvent;
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 
 @Mod(value = ExtendedTerminal.MODID, dist = Dist.CLIENT)
 public class ETClient {
     public ETClient(IEventBus eventBus) {
+        eventBus.addListener(RegisterColorHandlersEvent.Item.class, ETClient::initColorParts);
         eventBus.addListener(ETClient::initScreens);
     }
 
@@ -26,6 +32,12 @@ public class ETClient {
         InitScreens.register(event, AdvancedTerminalMenu.TYPE, AdvancedTerminalScreen::new, "/screens/extended_terminal/advanced_terminal.json");
         InitScreens.register(event, EliteTerminalMenu.TYPE, EliteTerminalScreen::new, "/screens/extended_terminal/elite_terminal.json");
         InitScreens.register(event, UltimateTerminalMenu.TYPE, UltimateTerminalScreen::new, "/screens/extended_terminal/ultimate_terminal.json");
+    }
+
+    public static void initColorParts(RegisterColorHandlersEvent.Item event) {
+        event.register((stack, tintIndex)
+                        -> (new StaticItemColor(AEColor.TRANSPARENT).getColor(stack, tintIndex) | 0xFF000000),
+                            ETParts.TERMINAL_PARTS.stream().map(x -> (ItemLike)x).toArray(ItemLike[]::new));
     }
 }
 

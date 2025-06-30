@@ -1,10 +1,7 @@
 package com.myogoo.extendedterminal;
 
 import com.mojang.logging.LogUtils;
-import com.myogoo.extendedterminal.init.ETCreativeTab;
-import com.myogoo.extendedterminal.init.ETItems;
-import com.myogoo.extendedterminal.init.ETMenus;
-import com.myogoo.extendedterminal.init.ETNetwork;
+import com.myogoo.extendedterminal.init.*;
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.api.distmarker.Dist;
@@ -34,6 +31,7 @@ public class ExtendedTerminal {
 
         ETCreativeTab.REGISTER.register(modEventBus);
         ETItems.REGISTER.register(modEventBus);
+        ETParts.REGISTER.register(modEventBus);
         ETMenus.REGISTER.register(modEventBus);
         NeoForge.EVENT_BUS.register(this);
 
