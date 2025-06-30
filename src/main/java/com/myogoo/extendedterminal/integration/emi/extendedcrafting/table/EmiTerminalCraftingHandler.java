@@ -5,8 +5,6 @@ import com.blakebr0.extendedcrafting.crafting.recipe.ShapedTableRecipe;
 import com.myogoo.extendedterminal.integration.ItemListTermCraftingHelper;
 import com.myogoo.extendedterminal.menu.ETMenuType;
 import com.myogoo.extendedterminal.menu.extendedcrafting.*;
-import com.myogoo.extendedterminal.util.ETCraftingRecipeHelper;
-import com.blakebr0.extendedcrafting.api.crafting.ITableRecipe;
 import dev.emi.emi.api.recipe.EmiRecipe;
 import dev.emi.emi.api.stack.EmiStack;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
@@ -55,7 +53,7 @@ public class EmiTerminalCraftingHandler<T extends ExtendedTerminalBaseMenu> exte
         }
 
         // Find missing ingredient
-        var slotToIngredientMap = getGuiSlotToIngredientMap(recipe, menuType.getSize());
+        var slotToIngredientMap = getGuiSlotToIngredientMap(recipe, menuType.getGridSideLength());
         var missingSlots = menu.findMissingIngredients(slotToIngredientMap);
 
         if (missingSlots.missingSlots().size() == slotToIngredientMap.size()) {

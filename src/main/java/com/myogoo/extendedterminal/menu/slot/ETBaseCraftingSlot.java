@@ -183,8 +183,7 @@ public class ETBaseCraftingSlot extends AppEngCraftingSlot {
             for (var x = 0; x < menuType.getGridSize(); x++) {
                 ic.set(x, this.getPattern().getStackInSlot(x));
             }
-            var recipeInput = TableCraftingInput.of(menuType.getSize()
-                    , menuType.getSize(), ic, menuType.getTier());
+            var recipeInput = TableCraftingInput.of(menuType.getGridSideLength(), menuType.getGridSideLength(), ic, menuType.getTier());
 
             final var r = this.findRecipe(recipeInput, level);
             setRecipeUsed(r);
@@ -295,15 +294,15 @@ public class ETBaseCraftingSlot extends AppEngCraftingSlot {
             items.set(i, this.craftInv.getStackInSlot(i));
         }
         TableCraftingInput positioned = TableCraftingInput.of(
-                this.menuType.getSize(), this.menuType.getSize(), items, this.menuType.getTier());
+                this.menuType.getGridSideLength(), this.menuType.getGridSideLength(), items, this.menuType.getTier());
 
         CommonHooks.setCraftingPlayer(player);
         var remainingItems = this.getRemainingItems(positioned,player.level());
         CommonHooks.setCraftingPlayer(null);
 
-        for(int y = 0; y < menuType.getSize(); y++) {
-            for(int x = 0; x < menuType.getSize(); x++) {
-                var slotIdx = y * menuType.getSize() + x;
+        for(int y = 0; y < menuType.getGridSideLength(); y++) {
+            for(int x = 0; x < menuType.getGridSideLength(); x++) {
+                var slotIdx = y * menuType.getGridSideLength() + x;
                 var remainderIdx = (y - positioned.top()) * 3 + (x - positioned.left());
 
                 // Consumes the item from the grid

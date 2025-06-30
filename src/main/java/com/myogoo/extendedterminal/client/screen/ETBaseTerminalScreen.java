@@ -9,8 +9,8 @@ import appeng.core.network.serverbound.InventoryActionPacket;
 import appeng.helpers.InventoryAction;
 import appeng.menu.SlotSemantic;
 import com.mojang.blaze3d.platform.InputConstants;
+import com.myogoo.extendedterminal.menu.ETMenuType;
 import com.myogoo.extendedterminal.menu.extendedcrafting.ExtendedTerminalBaseMenu;
-import com.myogoo.extendedterminal.menu.slot.ETArmorSlot;
 import com.myogoo.extendedterminal.menu.slot.ETBaseCraftingSlot;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -61,35 +61,28 @@ public class ETBaseTerminalScreen<T extends ExtendedTerminalBaseMenu> extends ME
 
             final InventoryActionPacket p = new InventoryActionPacket(action, slotIdx, 0);
             PacketDistributor.sendToServer(p);
-
             return;
         }
-        if(slot instanceof ETArmorSlot armorSlot) {
-            var selectedArmor = armorSlot.getItem().copy();
-            armorSlot.clearStack();
-        }
-
-
         super.slotClicked(slot, slotIdx, mouseButton, clickType);
     }
 
     @Override
     public void init() {
         super.init();
-        var etMenuType = this.getMenu().getETMenuType();
-        drawCraftingSlot(etMenuType.getSlotSemanticGrid(),etMenuType.getSize());
+        ETMenuType menuType = this.getMenu().getETMenuType();
+        drawCraftingSlot(menuType.getSlotSemanticGrid(),menuType.getGridSideLength());
     }
 
-    protected void drawCraftingSlot(SlotSemantic slotSemantics, int line) {
+    protected void drawCraftingSlot(SlotSemantic slotSemantics, int sideLength) {
         List<Slot> craftingSlots = this.getMenu().getSlots(slotSemantics);
         Slot firstSlot = craftingSlots.getFirst();
 
         int craftGridStartX = firstSlot.x;
         int craftGridStartY = firstSlot.y;
 
-        for(int row = 0; row < line; row++) {
-            for(int col = 0; col < line; col++) {
-                int index = row * line + col;
+        for(int row = 0; row < sideLength; row++) {
+            for(int col = 0; col < sideLength; col++) {
+                int index = row * sideLength + col;
                 Slot slot = craftingSlots.get(index);
                 int x = craftGridStartX + col * 18;
                 int y = craftGridStartY + row * 18;

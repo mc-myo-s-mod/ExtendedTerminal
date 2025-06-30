@@ -1,32 +1,20 @@
 package com.myogoo.extendedterminal.integration.jei.handler;
 
 import appeng.core.localization.ItemModText;
-import com.blakebr0.extendedcrafting.api.TableCraftingInput;
 import com.blakebr0.extendedcrafting.api.crafting.ITableRecipe;
-import com.blakebr0.extendedcrafting.compat.crafttweaker.TableCrafting;
 import com.blakebr0.extendedcrafting.crafting.recipe.ShapedTableRecipe;
-import com.blakebr0.extendedcrafting.init.ModRecipeTypes;
 import com.myogoo.extendedterminal.integration.ItemListTermCraftingHelper;
 import com.myogoo.extendedterminal.menu.extendedcrafting.ExtendedTerminalBaseMenu;
-import com.myogoo.extendedterminal.util.extendedcrafting.ExtendedCraftingHelper;
 import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.recipe.transfer.IRecipeTransferError;
 import mezz.jei.api.recipe.transfer.IRecipeTransferHandlerHelper;
-import mezz.jei.api.recipe.transfer.IRecipeTransferInfo;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.MenuType;
-import net.minecraft.world.inventory.Slot;
-import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.item.crafting.RecipeHolder;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.lang.reflect.Array;
-import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 
 import static appeng.integration.modules.itemlists.TransferHelper.*;
@@ -46,14 +34,14 @@ public class JeiTableRecipeTransferHandler<T extends ExtendedTerminalBaseMenu> e
             return Result.createInCompatibleError(helper);
         }
 
-        if(!recipe.canCraftInDimensions(menu.getCraftingMatrixWidth(),menu.getCraftingMatrixHeight())) {
+        if(!recipe.canCraftInDimensions(menu.getCraftingGridWidth(),menu.getCraftingGridHeight())) {
             return Result.createRecipeToLargeError(helper);
         }
 
         boolean craftMissing = AbstractContainerScreen.hasControlDown();
         var inputSlots = recipeSlots.getSlotViews(RecipeIngredientRole.INPUT);
 
-        var slotToIngredientMap = getGuiSlotToIngredientMap(recipe, menu.getETMenuType().getSize());
+        var slotToIngredientMap = getGuiSlotToIngredientMap(recipe, menu.getETMenuType().getGridSideLength());
         var missingSlots = menu.findMissingIngredients(slotToIngredientMap);
 
         if (missingSlots.missingSlots().size() == slotToIngredientMap.size()) {

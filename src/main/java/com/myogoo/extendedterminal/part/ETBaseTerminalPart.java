@@ -2,13 +2,8 @@ package com.myogoo.extendedterminal.part;
 
 import appeng.api.inventories.InternalInventory;
 import appeng.api.parts.IPartItem;
-import appeng.api.parts.IPartModel;
-import appeng.core.AppEng;
-import appeng.items.parts.PartModels;
-import appeng.parts.PartModel;
 import appeng.parts.reporting.AbstractTerminalPart;
 import appeng.util.inv.AppEngInternalInventory;
-import com.myogoo.extendedterminal.ExtendedTerminal;
 import com.myogoo.extendedterminal.menu.ETMenuType;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
@@ -19,12 +14,12 @@ import java.util.List;
 
 public abstract class ETBaseTerminalPart extends AbstractTerminalPart {
     private final AppEngInternalInventory craftingGrid;
-    private final ETMenuType etMenuType;
+    private final ETMenuType menuType;
 
-    public ETBaseTerminalPart(IPartItem<?> partItem, ETMenuType etMenuType) {
+    public ETBaseTerminalPart(IPartItem<?> partItem, ETMenuType menuType) {
         super(partItem);
-        this.etMenuType = etMenuType;
-        this.craftingGrid = new AppEngInternalInventory(this, etMenuType.getGridSize());
+        this.menuType = menuType;
+        this.craftingGrid = new AppEngInternalInventory(this, menuType.getGridSize());
     }
 
     @Override
@@ -36,7 +31,7 @@ public abstract class ETBaseTerminalPart extends AbstractTerminalPart {
 
     @Override
     public InternalInventory getSubInventory(ResourceLocation id) {
-        if(id.equals(etMenuType.getCraftingInventory())){
+        if(id.equals(menuType.getCraftingInventory())){
             return craftingGrid;
         }
         return super.getSubInventory(id);

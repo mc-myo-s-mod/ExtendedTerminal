@@ -1,13 +1,8 @@
 package com.myogoo.extendedterminal.menu;
 
 import appeng.menu.SlotSemantic;
-import appeng.menu.SlotSemantics;
 import com.myogoo.extendedterminal.ExtendedTerminal;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.crafting.CraftingInput;
-import net.minecraft.world.item.crafting.RecipeType;
-
-import java.util.Objects;
 
 public enum ETMenuType {
     BASIC_TERMINAL(3,1, ETSlotSemantics.BASIC_CRAFTING_GRID, ETSlotSemantics.BASIC_CRAFTING_RESULT),
@@ -22,21 +17,21 @@ public enum ETMenuType {
 
     private final SlotSemantic slotSemantic_GRID;
     private final SlotSemantic slotSemantic_RESULT;
-    private final int size;
+    private final int sideLength;
     private final int tier;
-    ETMenuType(int size, int tier, SlotSemantic slotSemantic_GRID, SlotSemantic slotSemantic_RESULT) {
+    ETMenuType(int sideLength, int tier, SlotSemantic slotSemantic_GRID, SlotSemantic slotSemantic_RESULT) {
         this.slotSemantic_GRID = slotSemantic_GRID;
         this.slotSemantic_RESULT =  slotSemantic_RESULT;
-        this.size = size;
+        this.sideLength = sideLength;
         this.tier = tier;
     }
 
     public int getGridSize() {
-        return size * size;
+        return sideLength * sideLength;
     }
 
-    public int getSize() {
-        return size;
+    public int getGridSideLength() {
+        return sideLength;
     }
 
     public ResourceLocation getCraftingInventory() {

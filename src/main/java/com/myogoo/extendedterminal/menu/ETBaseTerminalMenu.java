@@ -1,68 +1,33 @@
 package com.myogoo.extendedterminal.menu;
 
-import appeng.api.inventories.ISegmentedInventory;
-import appeng.api.inventories.InternalInventory;
 import appeng.api.networking.energy.IEnergySource;
 import appeng.api.stacks.AEItemKey;
 import appeng.api.storage.ITerminalHost;
-import appeng.core.network.serverbound.InventoryActionPacket;
 import appeng.helpers.ICraftingGridMenu;
-import appeng.helpers.InventoryAction;
-import appeng.me.storage.LinkStatusRespectingInventory;
 import appeng.menu.SlotSemantic;
-import appeng.menu.SlotSemantics;
 import appeng.menu.me.common.MEStorageMenu;
 import appeng.menu.me.crafting.CraftConfirmMenu;
 import appeng.menu.me.items.CraftingTermMenu;
-import appeng.menu.slot.AppEngSlot;
-import appeng.menu.slot.CraftingMatrixSlot;
-import appeng.util.inv.AppEngInternalInventory;
 import appeng.util.inv.PlayerInternalInventory;
-import com.blakebr0.extendedcrafting.api.TableCraftingInput;
-import com.blakebr0.extendedcrafting.api.crafting.ITableRecipe;
-import com.blakebr0.extendedcrafting.init.ModRecipeTypes;
-import com.google.common.base.Preconditions;
-import com.myogoo.extendedterminal.menu.slot.ETArmorSlot;
-import com.myogoo.extendedterminal.menu.slot.ETBaseCraftingSlot;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Container;
-import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.MenuType;
-import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.*;
-import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
 
-import javax.annotation.Nullable;
 import java.util.*;
 
 public abstract class ETBaseTerminalMenu<R extends Recipe<?>> extends MEStorageMenu implements ICraftingGridMenu {
     protected RecipeHolder<R> currentRecipe;
-    protected final ETArmorSlot[] armorSlots = new ETArmorSlot[4];
     private static final String ACTION_CLEAR_TO_PLAYER = "clearToPlayer";
 
     public ETBaseTerminalMenu(MenuType<?> menuType, int id, Inventory ip, ITerminalHost host) {
         super(menuType, id, ip, host);
 
         registerClientAction(ACTION_CLEAR_TO_PLAYER, this::clearToPlayerInventory);
-        var armorInventory = new AppEngInternalInventory(4);
-
-        for(int i = 0; i < Inventory.ALL_ARMOR_SLOTS.length; i++) {
-            this.addSlot(this.armorSlots[i] = new ETArmorSlot(armorInventory,Inventory.ALL_ARMOR_SLOTS[i]), ETSlotSemantics.PLAYER_ARMOR);
-            this.armorSlots[i].set(this.getPlayerInventory().getArmor(i));
-        }
-    }
-
-    @Override
-    public void onSlotChange(Slot slot) {
-        if(slot instanceof ETArmorSlot armorSlot) {
-            this.getPlayerInventory().armor.set(armorSlot.getSlotIndex(), armorSlot.getItem().copy());
-        }
-        super.onSlotChange(slot);
     }
 
     public RecipeHolder<R> getCurrentRecipe() {
@@ -76,15 +41,14 @@ public abstract class ETBaseTerminalMenu<R extends Recipe<?>> extends MEStorageM
 
     public abstract SlotSemantic getOutputSlotSemantic();
 
-    public abstract int getCraftingMatrixSize();
+    public abstract int getCraftingGridSize();
 
-    public abstract int getCraftingMatrixWidth();
+    public abstract int getCraftingGridWidth();
+
+    public abstract int getCraftingGridHeight();
 
     protected abstract void updateCurrentRecipeAndOutput(boolean forceUpdate);
 
-    public int getCraftingMatrixHeight() {
-        return this.getCraftingMatrixWidth();
-    }
 
     //Override Methods
 
@@ -128,7 +92,6 @@ public abstract class ETBaseTerminalMenu<R extends Recipe<?>> extends MEStorageM
                 }
             }
         }
-
         return false;
     }
 

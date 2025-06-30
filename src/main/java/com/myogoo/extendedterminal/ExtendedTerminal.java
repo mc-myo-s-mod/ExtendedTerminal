@@ -1,6 +1,7 @@
 package com.myogoo.extendedterminal;
 
 import com.mojang.logging.LogUtils;
+import com.myogoo.extendedterminal.config.ETConfig;
 import com.myogoo.extendedterminal.init.*;
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
@@ -37,7 +38,7 @@ public class ExtendedTerminal {
 
         modEventBus.addListener(ETNetwork::init);
         // Register our mod's ModConfigSpec so that FML can create and load the config file for us
-        modContainer.registerConfig(ModConfig.Type.COMMON, Config.SPEC);
+        modContainer.registerConfig(ModConfig.Type.COMMON, ETConfig.SPEC);
     }
 
     private void commonSetup(final FMLCommonSetupEvent event) {
@@ -45,17 +46,6 @@ public class ExtendedTerminal {
     }
     @SubscribeEvent
     public void onServerStarting(ServerStartingEvent event) {
-    }
-
-    // You can use EventBusSubscriber to automatically register all static methods in the class annotated with @SubscribeEvent
-    @EventBusSubscriber(modid = MODID, bus = EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
-    public static class ClientModEvents {
-        @SubscribeEvent
-        public static void onClientSetup(FMLClientSetupEvent event) {
-            // Some client setup code
-            LOGGER.info("HELLO FROM CLIENT SETUP");
-            LOGGER.info("MINECRAFT NAME >> {}", Minecraft.getInstance().getUser().getName());
-        }
     }
 
     public static ResourceLocation makeId(String path) {

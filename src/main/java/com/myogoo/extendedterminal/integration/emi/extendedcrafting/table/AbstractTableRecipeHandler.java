@@ -52,7 +52,6 @@ abstract class AbstractTableRecipeHandler<T extends ExtendedTerminalBaseMenu> im
         var slots = new ArrayList<Slot>();
         slots.addAll(menu.getSlots(SlotSemantics.PLAYER_HOTBAR));
         slots.addAll(menu.getSlots(SlotSemantics.PLAYER_INVENTORY));
-        slots.addAll(menu.getSlots(ETSlotSemantics.PLAYER_ARMOR));
         slots.addAll(menu.getSlots(menu.getCraftingGridSlotSemantic()));
         return slots;
     }

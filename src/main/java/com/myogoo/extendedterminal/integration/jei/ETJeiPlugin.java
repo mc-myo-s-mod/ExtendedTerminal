@@ -8,6 +8,7 @@ import com.blakebr0.extendedcrafting.compat.jei.category.table.UltimateTableCate
 import com.blakebr0.extendedcrafting.init.ModRecipeTypes;
 import com.mojang.logging.LogUtils;
 import com.myogoo.extendedterminal.ExtendedTerminal;
+import com.myogoo.extendedterminal.init.ETMenus;
 import com.myogoo.extendedterminal.init.ETParts;
 import com.myogoo.extendedterminal.integration.jei.handler.JeiTableRecipeTransferHandler;
 import com.myogoo.extendedterminal.menu.extendedcrafting.AdvancedTerminalMenu;
@@ -48,25 +49,6 @@ public class ETJeiPlugin implements IModPlugin {
     @Override
     public @NotNull ResourceLocation getPluginUid() {
         return UID;
-    }
-
-    @Override
-    public void registerRecipes(IRecipeRegistration registration) {
-        RecipeManager recipeManager = level.getRecipeManager();
-        Map<Integer, @NotNull List<ITableRecipe>> recipes = Stream.of(1, 2, 3, 4)
-                .collect(Collectors.toMap((tier) -> tier, (tier) -> level.getRecipeManager().getAllRecipesFor(ModRecipeTypes.TABLE.get())
-                        .stream()
-                        .filter((recipe) ->
-                                recipe.value().hasRequiredTier() ? tier == recipe.value().getTier() : tier >= recipe.value().getTier())
-                        .map(RecipeHolder::value)
-                        .toList()));
-
-
-
-        registration.addRecipes(BasicTableCategory.RECIPE_TYPE, recipes.getOrDefault(1, new ArrayList<>()));
-        registration.addRecipes(AdvancedTableCategory.RECIPE_TYPE, recipes.getOrDefault(2, new ArrayList<>()));
-        registration.addRecipes(EliteTableCategory.RECIPE_TYPE, recipes.getOrDefault(3, new ArrayList<>()));
-        registration.addRecipes(UltimateTableCategory.RECIPE_TYPE, recipes.getOrDefault(4, new ArrayList<>()));
     }
 
     @Override

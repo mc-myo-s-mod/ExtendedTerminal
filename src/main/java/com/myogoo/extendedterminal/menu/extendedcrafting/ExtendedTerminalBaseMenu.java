@@ -2,38 +2,23 @@ package com.myogoo.extendedterminal.menu.extendedcrafting;
 
 import appeng.api.inventories.ISegmentedInventory;
 import appeng.api.inventories.InternalInventory;
-import appeng.api.networking.energy.IEnergySource;
-import appeng.api.stacks.AEItemKey;
 import appeng.api.storage.ITerminalHost;
 import appeng.core.network.serverbound.InventoryActionPacket;
-import appeng.helpers.ICraftingGridMenu;
 import appeng.helpers.InventoryAction;
 import appeng.me.storage.LinkStatusRespectingInventory;
 import appeng.menu.SlotSemantic;
-import appeng.menu.me.crafting.CraftConfirmMenu;
-import appeng.menu.me.items.CraftingTermMenu;
 import appeng.menu.slot.CraftingMatrixSlot;
-import appeng.util.inv.AppEngInternalInventory;
-import appeng.util.inv.PlayerInternalInventory;
-import com.blakebr0.cucumber.inventory.BaseItemStackHandler;
 import com.blakebr0.extendedcrafting.api.TableCraftingInput;
 import com.blakebr0.extendedcrafting.api.crafting.ITableRecipe;
-import com.blakebr0.extendedcrafting.container.inventory.ExtendedCraftingInventory;
 import com.blakebr0.extendedcrafting.init.ModRecipeTypes;
 import com.google.common.base.Preconditions;
 import com.myogoo.extendedterminal.menu.ETBaseTerminalMenu;
 import com.myogoo.extendedterminal.menu.ETMenuType;
-import com.myogoo.extendedterminal.menu.ETSlotSemantics;
-import com.myogoo.extendedterminal.menu.slot.ETArmorSlot;
 import com.myogoo.extendedterminal.menu.slot.ETBaseCraftingSlot;
-import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.MenuType;
-import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.neoforged.neoforge.network.PacketDistributor;
 
@@ -45,38 +30,28 @@ public class ExtendedTerminalBaseMenu extends ETBaseTerminalMenu<ITableRecipe> {
     private final ETBaseCraftingSlot outputSlot;
     private final ISegmentedInventory craftingInventoryHost;
     private final CraftingMatrixSlot[] craftingSlots;
-    private final ETArmorSlot[] armorSlots = new ETArmorSlot[4];
-    private final ETMenuType etMenuType;
+    private final ETMenuType menuType;
     @Nullable
     private TableCraftingInput lastTestedInput;
 
 
     public ExtendedTerminalBaseMenu(MenuType<?> menuType, int id, Inventory ip, ITerminalHost host, ETMenuType etMenuType) {
         super(menuType, id, ip, host);
-        this.etMenuType = etMenuType;
-
+        this.menuType = etMenuType;
         this.craftingInventoryHost = (ISegmentedInventory) host;
-        this.craftingSlots = new CraftingMatrixSlot[etMenuType.getGridSize()];
+        this.craftingSlots = new CraftingMatrixSlot[this.menuType.getGridSize()];
         var craftingGridInv = this.craftingInventoryHost
-                .getSubInventory(etMenuType.getCraftingInventory());
-        for(int i = 0; i < etMenuType.getGridSize(); i++) {
-            this.addSlot(this.craftingSlots[i] = new CraftingMatrixSlot(this,craftingGridInv,i), etMenuType.getSlotSemanticGrid());
+                .getSubInventory(this.menuType.getCraftingInventory());
+        for(int i = 0; i < this.menuType.getGridSize(); i++) {
+            this.addSlot(this.craftingSlots[i] = new CraftingMatrixSlot(this,craftingGridInv,i), this.menuType.getSlotSemanticGrid());
         }
 
         var linkStatusInventory = new LinkStatusRespectingInventory(host.getInventory(), this::getLinkStatus);
         this.addSlot(this.outputSlot = new ETBaseCraftingSlot(this.getPlayerInventory().player, this.getActionSource(),
-                        this.energySource, linkStatusInventory, craftingGridInv, craftingGridInv, this,etMenuType),
-                etMenuType.getSlotSemanticResult());
+                        this.energySource, linkStatusInventory, craftingGridInv, craftingGridInv, this,this.menuType),
+                this.menuType.getSlotSemanticResult());
 
         updateCurrentRecipeAndOutput(true);
-    }
-
-    @Override
-    public void onSlotChange(Slot slot) {
-        if(slot instanceof ETArmorSlot armorSlot) {
-            this.getPlayerInventory().armor.set(armorSlot.getSlotIndex(), armorSlot.getItem().copy());
-        }
-        super.onSlotChange(slot);
     }
 
     @Override
@@ -93,7 +68,7 @@ public class ExtendedTerminalBaseMenu extends ETBaseTerminalMenu<ITableRecipe> {
         for(var craftingSlot : craftingSlots) {
             testItems.add(craftingSlot.getItem().copy());
         }
-        var testInput = TableCraftingInput.of(etMenuType.getSize(),etMenuType.getSize(),testItems,this.etMenuType.getTier());
+        var testInput = TableCraftingInput.of(menuType.getGridSideLength(), menuType.getGridSideLength(),testItems,this.menuType.getTier());
 
         if (!forceUpdate && Objects.equals(this.lastTestedInput,testInput)) {
             return;
@@ -115,32 +90,37 @@ public class ExtendedTerminalBaseMenu extends ETBaseTerminalMenu<ITableRecipe> {
     }
 
     public ETMenuType getETMenuType() {
-        return etMenuType;
+        return menuType;
     }
 
     @Override
     public SlotSemantic getCraftingGridSlotSemantic() {
-        return this.etMenuType.getSlotSemanticGrid();
+        return this.menuType.getSlotSemanticGrid();
     }
 
     @Override
     public SlotSemantic getOutputSlotSemantic() {
-        return this.etMenuType.getSlotSemanticResult();
+        return this.menuType.getSlotSemanticResult();
     }
 
     @Override
-    public int getCraftingMatrixSize() {
-        return this.etMenuType.getGridSize();
+    public int getCraftingGridSize() {
+        return this.menuType.getGridSize();
     }
 
     @Override
-    public int getCraftingMatrixWidth() {
-        return this.etMenuType.getSize();
+    public int getCraftingGridWidth() {
+        return this.menuType.getGridSideLength();
+    }
+
+    @Override
+    public int getCraftingGridHeight() {
+        return this.menuType.getGridSideLength();
     }
 
     @Override
     public InternalInventory getCraftingMatrix() {
-        return this.craftingInventoryHost.getSubInventory(etMenuType.getCraftingInventory());
+        return this.craftingInventoryHost.getSubInventory(menuType.getCraftingInventory());
     }
 
     @Override
