@@ -1,0 +1,72 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "items": "extendedcrafting:singularity",
+      "components": {
+        "extendedcrafting:singularity_id": "extendedcrafting:emerald"
+      },
+      "type": "neoforge:components"
+    },
+    {
+      "items": "extendedcrafting:singularity",
+      "components": {
+        "extendedcrafting:singularity_id": "extendedcrafting:glowstone"
+      },
+      "type": "neoforge:components"
+    },
+    {
+      "items": "extendedcrafting:singularity",
+      "components": {
+        "extendedcrafting:singularity_id": "extendedcrafting:lapis_lazuli"
+      },
+      "type": "neoforge:components"
+    },
+    {
+      "items": "extendedcrafting:singularity",
+      "components": {
+        "extendedcrafting:singularity_id": "extendedcrafting:redstone"
+      },
+      "type": "neoforge:components"
+    },
+    {
+      "items": "extendedcrafting:singularity",
+      "components": {
+        "extendedcrafting:singularity_id": "extendedcrafting:diamond"
+      },
+      "type": "neoforge:components"
+    },
+    {
+      "items": "extendedcrafting:singularity",
+      "components": {
+        "extendedcrafting:singularity_id": "extendedcrafting:coal"
+      },
+      "type": "neoforge:components"
+    },
+    {
+      "items": "extendedcrafting:singularity",
+      "components": {
+        "extendedcrafting:singularity_id": "extendedcrafting:iron"
+      },
+      "type": "neoforge:components"
+    },
+    {
+      "items": "extendedcrafting:singularity",
+      "components": {
+        "extendedcrafting:singularity_id": "extendedcrafting:gold"
+      },
+      "type": "neoforge:components"
+    },
+    {
+      "items": "extendedcrafting:singularity",
+      "components": {
+        "extendedcrafting:singularity_id": "extendedcrafting:copper"
+      },
+      "type": "neoforge:components"
+    }
+  ],
+  "result": {
+    "id": "extendedcrafting:ultimate_singularity",
+    "count": 1
+  }
+}

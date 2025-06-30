@@ -1,0 +1,8 @@
+{
+  "parent": "ae2:part/display_off",
+  "textures": {
+    "lightsBright": "extendedterminal:part/extendedcrafting/basic_terminal_bright",
+    "lightsMedium": "extendedterminal:part/extendedcrafting/basic_terminal_medium",
+    "lightsDark": "extendedterminal:part/extendedcrafting/basic_terminal_dark"
+  }
+}

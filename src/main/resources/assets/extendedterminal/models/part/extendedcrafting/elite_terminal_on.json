@@ -1,8 +1,8 @@
 {
   "textures": {
-    "lightsBright": "ae2:part/crafting_terminal_bright",
-    "lightsMedium": "ae2:part/crafting_terminal_medium",
-    "lightsDark": "ae2:part/crafting_terminal_dark"
+    "lightsBright": "extendedterminal:part/extendedcrafting/elite_terminal_bright",
+    "lightsMedium": "extendedterminal:part/extendedcrafting/elite_terminal_medium",
+    "lightsDark": "extendedterminal:part/extendedcrafting/elite_terminal_dark"
   },
   "elements": [
     {
