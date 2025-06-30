@@ -17,16 +17,7 @@ import net.minecraft.world.item.ItemStack;
 
 import java.util.List;
 
-public class ETBaseTerminalPart extends AbstractTerminalPart {
-
-    private static final ResourceLocation MODEL_ON = ExtendedTerminal.makeId("part/extended_terminal_on");
-    private static final ResourceLocation MODEL_OFF = ExtendedTerminal.makeId("part/extended_terminal_off");
-
-    @PartModels
-    public static final IPartModel MODELS_ON = new PartModel(MODEL_BASE, MODEL_ON, MODEL_STATUS_ON);
-    @PartModels
-    public static final IPartModel MODELS_OFF = new PartModel(MODEL_BASE, MODEL_OFF, MODEL_STATUS_ON);
-
+public abstract class ETBaseTerminalPart extends AbstractTerminalPart {
     private final AppEngInternalInventory craftingGrid;
     private final ETMenuType etMenuType;
 
@@ -42,10 +33,6 @@ public class ETBaseTerminalPart extends AbstractTerminalPart {
         craftingGrid.clear();
     }
 
-    @Override
-    public IPartModel getStaticModels() {
-        return this.selectModel(MODELS_OFF,MODELS_ON,MODELS_ON);
-    }
 
     @Override
     public InternalInventory getSubInventory(ResourceLocation id) {
