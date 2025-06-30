@@ -8,7 +8,7 @@ import com.blakebr0.extendedcrafting.compat.jei.category.table.UltimateTableCate
 import com.blakebr0.extendedcrafting.init.ModRecipeTypes;
 import com.mojang.logging.LogUtils;
 import com.myogoo.extendedterminal.ExtendedTerminal;
-import com.myogoo.extendedterminal.init.ETItems;
+import com.myogoo.extendedterminal.init.ETParts;
 import com.myogoo.extendedterminal.integration.jei.handler.JeiTableRecipeTransferHandler;
 import com.myogoo.extendedterminal.menu.extendedcrafting.AdvancedTerminalMenu;
 import com.myogoo.extendedterminal.menu.extendedcrafting.BasicTerminalMenu;
@@ -71,10 +71,10 @@ public class ETJeiPlugin implements IModPlugin {
 
     @Override
     public void registerRecipeCatalysts(IRecipeCatalystRegistration registration) {
-        registration.addRecipeCatalyst(ETItems.BASIC_TERMINAL_PART, BasicTableCategory.RECIPE_TYPE);
-        registration.addRecipeCatalyst(ETItems.ADVANCED_TERMINAL_PART, AdvancedTableCategory.RECIPE_TYPE);
-        registration.addRecipeCatalyst(ETItems.ELITE_TERMINAL_PART, EliteTableCategory.RECIPE_TYPE);
-        registration.addRecipeCatalyst(ETItems.ULTIMATE_TERMINAL_PART, UltimateTableCategory.RECIPE_TYPE);
+        registration.addRecipeCatalyst(ETParts.BASIC_TERMINAL_PART, BasicTableCategory.RECIPE_TYPE);
+        registration.addRecipeCatalyst(ETParts.ADVANCED_TERMINAL_PART, AdvancedTableCategory.RECIPE_TYPE);
+        registration.addRecipeCatalyst(ETParts.ELITE_TERMINAL_PART, EliteTableCategory.RECIPE_TYPE);
+        registration.addRecipeCatalyst(ETParts.ULTIMATE_TERMINAL_PART, UltimateTableCategory.RECIPE_TYPE);
     }
 
     @Override

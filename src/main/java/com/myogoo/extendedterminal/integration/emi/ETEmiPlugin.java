@@ -3,7 +3,7 @@ package com.myogoo.extendedterminal.integration.emi;
 import com.blakebr0.extendedcrafting.init.ModBlocks;
 import com.blakebr0.extendedcrafting.init.ModMenuTypes;
 import com.blakebr0.extendedcrafting.init.ModRecipeTypes;
-import com.myogoo.extendedterminal.init.ETItems;
+import com.myogoo.extendedterminal.init.ETParts;
 import com.myogoo.extendedterminal.integration.emi.extendedcrafting.table.EmiTableCraftingHandler;
 import com.myogoo.extendedterminal.integration.emi.extendedcrafting.table.EmiTerminalCraftingHandler;
 import com.myogoo.extendedterminal.integration.emi.extendedcrafting.table.ExtendedCraftingTableRecipe;
@@ -11,8 +11,6 @@ import com.myogoo.extendedterminal.menu.extendedcrafting.AdvancedTerminalMenu;
 import com.myogoo.extendedterminal.menu.extendedcrafting.BasicTerminalMenu;
 import com.myogoo.extendedterminal.menu.extendedcrafting.EliteTerminalMenu;
 import com.myogoo.extendedterminal.menu.extendedcrafting.UltimateTerminalMenu;
-import dev.emi.emi.api.EmiEntrypoint;
-import dev.emi.emi.api.EmiPlugin;
 import dev.emi.emi.api.EmiRegistry;
 import dev.emi.emi.api.stack.EmiStack;
 import net.minecraft.world.item.ItemStack;
@@ -22,25 +20,25 @@ import java.util.Arrays;
 public class ETEmiPlugin {
 
     private static final ItemStack[] BasicTables = {
-            ETItems.BASIC_TERMINAL_PART.stack(),
+            ETParts.BASIC_TERMINAL_PART.stack(),
             ModBlocks.BASIC_TABLE.get().asItem().getDefaultInstance(),
             ModBlocks.BASIC_AUTO_TABLE.get().asItem().getDefaultInstance()
     };
 
     private static final ItemStack[] AdvancedTables = {
-            ETItems.ADVANCED_TERMINAL_PART.stack(),
+            ETParts.ADVANCED_TERMINAL_PART.stack(),
             ModBlocks.ADVANCED_TABLE.get().asItem().getDefaultInstance(),
             ModBlocks.ADVANCED_AUTO_TABLE.get().asItem().getDefaultInstance()
     };
 
     private static final ItemStack[] EliteTables = {
-            ETItems.ELITE_TERMINAL_PART.stack(),
+            ETParts.ELITE_TERMINAL_PART.stack(),
             ModBlocks.ELITE_TABLE.get().asItem().getDefaultInstance(),
             ModBlocks.ELITE_AUTO_TABLE.get().asItem().getDefaultInstance()
     };
 
     private static final ItemStack[] UltimateTables = {
-            ETItems.ULTIMATE_TERMINAL_PART.stack(),
+            ETParts.ULTIMATE_TERMINAL_PART.stack(),
             ModBlocks.ULTIMATE_TABLE.get().asItem().getDefaultInstance(),
             ModBlocks.ULTIMATE_AUTO_TABLE.get().asItem().getDefaultInstance()
     };

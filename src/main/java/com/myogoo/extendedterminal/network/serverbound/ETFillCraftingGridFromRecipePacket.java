@@ -164,7 +164,6 @@ public class ETFillCraftingGridFromRecipePacket implements ServerboundPacket {
 
         var craftMatrix = cct.getCraftingMatrix();
         // We'll try to use the best possible ingredients based on what's available in the network
-
         var filter = ViewCellItem.createItemFilter(cct.getViewCells());
         var ingredients = getDesiredIngredients(player);
 
@@ -172,7 +171,6 @@ public class ETFillCraftingGridFromRecipePacket implements ServerboundPacket {
         var toAutoCraft = new LinkedHashMap<AEItemKey, IntList>();
         boolean touchedGridStorage = false;
 
-        var coordinator = ExtendedCraftingHelper.indexToCoordinate(craftMatrix.size(), recipeWidth, recipeHeight);
         // Handle each slot
         for (var x = 0; x < craftMatrix.size(); x++) {
             var currentItem = craftMatrix.getStackInSlot(x);

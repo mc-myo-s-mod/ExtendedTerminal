@@ -64,6 +64,6 @@ public enum ETMenuType {
     }
 
     public String getEnglishName() {
-        return this.name().toLowerCase().replace("_", "");
+        return this.name().toLowerCase().replace("_", " ");
     }
 }
