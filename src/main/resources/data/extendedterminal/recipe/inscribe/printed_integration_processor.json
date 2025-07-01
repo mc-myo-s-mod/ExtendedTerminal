@@ -2,7 +2,7 @@
     "type": "ae2:inscriber",
     "mode": "press",
     "result": {
-      "item": "moreterminal:printed_integration_process"
+      "item": "extendedterminal:printed_integrated_circuit"
     },
     "ingredients": {
       "middle": {

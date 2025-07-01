@@ -1,0 +1,21 @@
+{
+  "type": "extendedcrafting:shaped_table",
+  "pattern": [
+    "AB",
+    "C "
+  ],
+  "key": {
+    "A": {
+      "item": "ae2:crafting_terminal"
+    },
+    "B": {
+      "item": "extendedcrafting:advanced_table"
+    },
+    "C": {
+      "item": "extendedterminal:integrated_processor"
+    }
+  },
+  "result": {
+    "id": "extendedterminal:advanced_terminal"
+  }
+}
