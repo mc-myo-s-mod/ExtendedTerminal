@@ -1,14 +1,11 @@
 package com.myogoo.extendedterminal.integration.jei;
 
-import com.blakebr0.extendedcrafting.api.crafting.ITableRecipe;
 import com.blakebr0.extendedcrafting.compat.jei.category.table.AdvancedTableCategory;
 import com.blakebr0.extendedcrafting.compat.jei.category.table.BasicTableCategory;
 import com.blakebr0.extendedcrafting.compat.jei.category.table.EliteTableCategory;
 import com.blakebr0.extendedcrafting.compat.jei.category.table.UltimateTableCategory;
-import com.blakebr0.extendedcrafting.init.ModRecipeTypes;
 import com.mojang.logging.LogUtils;
 import com.myogoo.extendedterminal.ExtendedTerminal;
-import com.myogoo.extendedterminal.init.ETMenus;
 import com.myogoo.extendedterminal.init.ETParts;
 import com.myogoo.extendedterminal.integration.jei.handler.JeiTableRecipeTransferHandler;
 import com.myogoo.extendedterminal.menu.extendedcrafting.AdvancedTerminalMenu;
@@ -17,23 +14,13 @@ import com.myogoo.extendedterminal.menu.extendedcrafting.EliteTerminalMenu;
 import com.myogoo.extendedterminal.menu.extendedcrafting.UltimateTerminalMenu;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
-import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.registration.IRecipeCatalystRegistration;
-import mezz.jei.api.registration.IRecipeRegistration;
 import mezz.jei.api.registration.IRecipeTransferRegistration;
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.crafting.RecipeHolder;
-import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @JeiPlugin
 public class ETJeiPlugin implements IModPlugin {

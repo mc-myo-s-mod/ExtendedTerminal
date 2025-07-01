@@ -11,10 +11,5 @@ import java.util.List;
 
 public class ETBlocks {
     public static final DeferredRegister<Block> REGISTER = DeferredRegister.create(Registries.BLOCK, ExtendedTerminal.MODID);
-
-
-
     public static final List<BlockDefinition<?>> BLOCKS = new ArrayList<>();
-
-
 }

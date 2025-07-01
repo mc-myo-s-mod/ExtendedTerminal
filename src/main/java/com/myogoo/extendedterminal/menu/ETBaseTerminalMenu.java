@@ -174,15 +174,13 @@ public abstract class ETBaseTerminalMenu<R extends Recipe<?>> extends MEStorageM
                 final int HOTBAR_SIZE = 9;
                 for (int j = HOTBAR_SIZE; j-- > 0; ) {
                     if (playerInv.getStackInSlot(j).isEmpty() == allowEmpty) {
-                        craftingGridInv.setItemDirect(i,
-                                playerInv.getSlotInv(j).addItems(craftingGridInv.getStackInSlot(i)));
+                        craftingGridInv.setItemDirect(i, playerInv.getSlotInv(j).addItems(craftingGridInv.getStackInSlot(i)));
                     }
                 }
                 // Rest of inventory
                 for (int j = HOTBAR_SIZE; j < Inventory.INVENTORY_SIZE; ++j) {
                     if (playerInv.getStackInSlot(j).isEmpty() == allowEmpty) {
-                        craftingGridInv.setItemDirect(i,
-                                playerInv.getSlotInv(j).addItems(craftingGridInv.getStackInSlot(i)));
+                        craftingGridInv.setItemDirect(i, playerInv.getSlotInv(j).addItems(craftingGridInv.getStackInSlot(i)));
                     }
                 }
             }

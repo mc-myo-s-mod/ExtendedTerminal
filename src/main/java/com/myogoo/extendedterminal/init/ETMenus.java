@@ -1,7 +1,6 @@
 package com.myogoo.extendedterminal.init;
 
 import com.myogoo.extendedterminal.ExtendedTerminal;
-import com.myogoo.extendedterminal.client.screen.extendedcrafting.AdvancedTerminalScreen;
 import com.myogoo.extendedterminal.menu.ETMenuType;
 import com.myogoo.extendedterminal.menu.extendedcrafting.AdvancedTerminalMenu;
 import com.myogoo.extendedterminal.menu.extendedcrafting.BasicTerminalMenu;

@@ -22,24 +22,24 @@ public final class ExtendedCraftingHelper {
         return NonNullList.withSize(getCraftingGridSize(recipe), Ingredient.EMPTY);
     }
 
-    public static int getCraftingGridSize(int gridSize) {
+    public static int getCraftingGridSideLength(int gridSize) {
         int width = (int) Math.sqrt(gridSize);
         if (width * width < gridSize) {
-            // not invalid
+            // may not invalid?
             width++;
         }
         return width;
     }
 
     public static GridCoordinate indexToCoordinate(int gridSize,int width, int height) {
-        return new GridCoordinate(getCraftingGridSize(gridSize), width, height);
+        return new GridCoordinate(getCraftingGridSideLength(gridSize), width, height);
     }
 
     public static class GridCoordinate {
-        private final int maxSize;
+        private final int gridSize;
         private final int[][] matrix;
         public GridCoordinate(int gridSize, int width, int height) {
-            this.maxSize = gridSize;
+            this.gridSize = gridSize;
 
             matrix = new int[gridSize][gridSize];
             int offsetX = Math.floorDiv(gridSize - width,2);
@@ -52,8 +52,8 @@ public final class ExtendedCraftingHelper {
         }
 
         public boolean test(int index) {
-            if(index < 0 || index > maxSize * maxSize) { return false; }
-            return matrix[index % maxSize][index / maxSize] == 1;
+            if(index < 0 || index > gridSize * gridSize) { return false; }
+            return matrix[index % gridSize][index / gridSize] == 1;
         }
     }
 }
