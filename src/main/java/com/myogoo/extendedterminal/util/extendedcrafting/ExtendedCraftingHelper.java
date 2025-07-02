@@ -36,14 +36,14 @@ public final class ExtendedCraftingHelper {
     }
 
     public static class GridCoordinate {
-        private final int gridSize;
+        private final int sideLength;
         private final int[][] matrix;
-        public GridCoordinate(int gridSize, int width, int height) {
-            this.gridSize = gridSize;
+        public GridCoordinate(int sideLength, int width, int height) {
+            this.sideLength = sideLength;
 
-            matrix = new int[gridSize][gridSize];
-            int offsetX = Math.floorDiv(gridSize - width,2);
-            int offsetY = Math.floorDiv(gridSize - height,2);
+            matrix = new int[sideLength][sideLength];
+            int offsetX = Math.floorDiv(sideLength - width,2);
+            int offsetY = Math.floorDiv(sideLength - height,2);
             for(int y = offsetY; y < offsetY + height; y++) {
                 for(int x = offsetX; x < offsetX + width; x++) {
                     matrix[x][y] = 1;
@@ -52,8 +52,8 @@ public final class ExtendedCraftingHelper {
         }
 
         public boolean test(int index) {
-            if(index < 0 || index > gridSize * gridSize) { return false; }
-            return matrix[index % gridSize][index / gridSize] == 1;
+            if(index < 0 || index > sideLength * sideLength) { return false; }
+            return matrix[index % sideLength][index / sideLength] == 1;
         }
     }
 }

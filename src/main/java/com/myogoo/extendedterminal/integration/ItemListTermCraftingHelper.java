@@ -9,6 +9,7 @@ import appeng.util.CraftingRecipeUtil;
 import com.blakebr0.extendedcrafting.api.crafting.ITableRecipe;
 import com.blakebr0.extendedcrafting.crafting.recipe.ShapedTableRecipe;
 import com.blakebr0.extendedcrafting.crafting.recipe.ShapelessTableRecipe;
+import com.myogoo.extendedterminal.ExtendedTerminal;
 import com.myogoo.extendedterminal.menu.extendedcrafting.ExtendedTerminalBaseMenu;
 import com.myogoo.extendedterminal.network.serverbound.ETFillCraftingGridFromRecipePacket;
 import com.myogoo.extendedterminal.util.extendedcrafting.ExtendedCraftingHelper;
@@ -19,14 +20,15 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
 import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.Nullable;
+import org.slf4j.Logger;
 
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public class ItemListTermCraftingHelper {
     private static final Comparator<GridInventoryEntry> ENTRY_COMPARATOR = Comparator
             .comparing(GridInventoryEntry::getStoredAmount);
+
+    private static final Logger LOGGER = ExtendedTerminal.LOGGER;
 
     private ItemListTermCraftingHelper() {
     }
@@ -78,21 +80,35 @@ public class ItemListTermCraftingHelper {
         return templateItems;
     }
 
-    public static Map<Integer, Ingredient> getGuiSlotToIngredientMap(Recipe<?> recipe, int gridWidth) {
-        // Ensure ingredients fit in NxN grid
+    public static Map<Integer, Ingredient> getGuiSlotToIngredientMap(Recipe<?> recipe, int gridSideLength) {
         var raw = recipe.getIngredients();
-        java.util.List<Ingredient> ingredients;
+        List<Ingredient> ingredients;
+
+        int offsetX = 0;
+        int offsetY = 0;
+        int width = -1;
+        int height = -1;
+
         if (recipe instanceof ITableRecipe tableRecipe) {
             ingredients = ensureNxNCraftingMatrix(tableRecipe);
+            if(recipe instanceof ShapedTableRecipe shapedTableRecipe) {
+                width = ExtendedCraftingHelper.getCraftingGridWidth(tableRecipe);
+                height = ExtendedCraftingHelper.getCraftingGridWidth(tableRecipe);
+                offsetX = Math.floorDiv(gridSideLength - width, 2);
+                offsetY = Math.floorDiv(gridSideLength - height, 2);
+            }
         } else {
             ingredients = raw;
         }
-        // Clip to grid capacity
-        int max = gridWidth * gridWidth;
+        int max = (width != -1 || height != -1) ? width * height : gridSideLength * gridSideLength;
         int count = Math.min(ingredients.size(), max);
         var result = new HashMap<Integer, Ingredient>(count);
         for (int i = 0; i < count; i++) {
-            var guiSlot = (i / gridWidth) * gridWidth + (i % gridWidth);
+            int x = i % width;
+            int y = i / height;
+
+            var guiSlot = (x + offsetX) + ((y + offsetY) * gridSideLength);
+            LOGGER.debug("x, y: {}, {}, guiSlot: {}", x, y, guiSlot);
             var ing = ingredients.get(i);
             if (!ing.isEmpty()) {
                 result.put(guiSlot, ing);
@@ -106,13 +122,14 @@ public class ItemListTermCraftingHelper {
         NonNullList<Ingredient> expandedIngredients;
         if(recipe instanceof ITableRecipe tableRecipe) {
             int size = ExtendedCraftingHelper.getCraftingGridSize(tableRecipe);
+            int sideLength = ExtendedCraftingHelper.getCraftingGridSideLength(size);
             expandedIngredients = ExtendedCraftingHelper.makeNxNIngredients(tableRecipe);
 
             if(tableRecipe instanceof ShapedTableRecipe shapedTableRecipe) {
                 var tier = shapedTableRecipe.getTier();
                 var width = shapedTableRecipe.getWidth();
                 var height = shapedTableRecipe.getHeight();
-                int matrixWidth = ExtendedCraftingHelper.getCraftingGridWidth(tableRecipe);
+                int matrixWidth = ExtendedCraftingHelper.getCraftingGridWidth(shapedTableRecipe);
                 // Map shaped recipe into center of NxN matrix
                 for(int h = 0; h < height; h++) {
                     for(int w = 0; w < width; w++) {
