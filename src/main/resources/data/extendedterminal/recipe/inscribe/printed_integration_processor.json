@@ -1,18 +1,19 @@
 {
-    "type": "ae2:inscriber",
-    "mode": "press",
-    "result": {
-      "item": "extendedterminal:printed_integrated_circuit"
+  "type": "ae2:inscriber",
+  "ingredients": {
+    "bottom": {
+      "item": "ae2:printed_calculation_processor"
     },
-    "ingredients": {
-      "middle": {
-        "item": "ae2:fluix_dust"
-      },
-      "top": {
-        "item": "ae2:printed_logic_processor"
-      },
-      "bottom": {
-        "item": "ae2:printed_calculation_processor"
-      }
+    "middle": {
+      "item": "ae2:printed_engineering_processor"
+    },
+    "top": {
+      "item": "ae2:printed_logic_processor"
     }
+  },
+  "mode": "press",
+  "result": {
+    "count": 1,
+    "id": "extendedterminal:printed_integration_processor"
   }
+}

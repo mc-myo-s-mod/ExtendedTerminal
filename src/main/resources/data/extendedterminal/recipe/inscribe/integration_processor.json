@@ -1,18 +1,19 @@
 {
-    "type": "ae2:inscriber",
-    "mode": "press",
-    "result": {
-      "item": "extendedterminal:integrated_processor"
+  "type": "ae2:inscriber",
+  "ingredients": {
+    "bottom": {
+      "item": "ae2:printed_silicon"
     },
-    "ingredients": {
-      "middle": {
-        "item": "minecraft:redstone"
-      },
-      "top": {
-        "item": "extendedterminal:printed_integrated_circuit"
-      },
-      "bottom": {
-        "item": "ae2:printed_silicon"
-      }
+    "middle": {
+      "item": "extendedcrafting:redstone_ingot"
+    },
+    "top": {
+      "item": "extendedterminal:printed_integration_processor"
     }
+  },
+  "mode": "press",
+  "result": {
+    "count": 1,
+    "id": "extendedterminal:integration_processor"
   }
+}

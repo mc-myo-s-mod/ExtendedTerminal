@@ -12,7 +12,7 @@
       "item": "extendedcrafting:basic_table"
     },
     "C": {
-      "item": "extendedterminal:integrated_processor"
+      "item": "extendedterminal:integration_processor"
     }
   },
   "result": {
