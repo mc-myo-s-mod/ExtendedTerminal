@@ -1,8 +1,0 @@
-{
-  "parent": "ae2:part/display_off",
-  "textures": {
-    "lightsBright": "extendedterminal:part/extendedcrafting/elite_terminal_bright",
-    "lightsMedium": "extendedterminal:part/extendedcrafting/elite_terminal_medium",
-    "lightsDark": "extendedterminal:part/extendedcrafting/elite_terminal_dark"
-  }
-}

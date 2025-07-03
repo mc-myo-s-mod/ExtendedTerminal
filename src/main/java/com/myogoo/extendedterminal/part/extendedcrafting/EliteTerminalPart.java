@@ -14,13 +14,11 @@ import net.minecraft.world.inventory.MenuType;
 
 public class EliteTerminalPart extends ETBaseTerminalPart {
     @PartModels
-    public static final ResourceLocation MODEL_OFF = ExtendedTerminal.makeId("part/extendedcrafting/elite_terminal_off");
-    @PartModels
-    public static final ResourceLocation MODEL_ON = ExtendedTerminal.makeId("part/extendedcrafting/elite_terminal_on");
+    public static final ResourceLocation ELITE_MODEL_BASE = ExtendedTerminal.makeId("part/extendedcrafting/elite_terminal_base");
     
-    public static final IPartModel MODELS_OFF = new PartModel(MODEL_BASE, MODEL_OFF, MODEL_STATUS_OFF);
-    public static final IPartModel MODELS_ON = new PartModel(MODEL_BASE, MODEL_ON, MODEL_STATUS_ON);
-    public static final IPartModel MODELS_HAS_CHANNEL = new PartModel(MODEL_BASE, MODEL_ON, MODEL_STATUS_HAS_CHANNEL);
+    public static final IPartModel MODELS_OFF = new PartModel(ELITE_MODEL_BASE, MODEL_OFF, MODEL_STATUS_OFF);
+    public static final IPartModel MODELS_ON = new PartModel(ELITE_MODEL_BASE, MODEL_ON, MODEL_STATUS_ON);
+    public static final IPartModel MODELS_HAS_CHANNEL = new PartModel(ELITE_MODEL_BASE, MODEL_ON, MODEL_STATUS_HAS_CHANNEL);
 
     public EliteTerminalPart(IPartItem<?> partItem) {
         super(partItem, ETMenuType.ELITE_TERMINAL);

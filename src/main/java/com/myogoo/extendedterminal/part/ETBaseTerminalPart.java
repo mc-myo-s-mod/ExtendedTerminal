@@ -2,7 +2,10 @@ package com.myogoo.extendedterminal.part;
 
 import appeng.api.inventories.InternalInventory;
 import appeng.api.parts.IPartItem;
+import appeng.core.AppEng;
+import appeng.items.parts.PartModels;
 import appeng.parts.reporting.AbstractTerminalPart;
+import appeng.parts.reporting.CraftingTerminalPart;
 import appeng.util.inv.AppEngInternalInventory;
 import com.myogoo.extendedterminal.menu.ETMenuType;
 import net.minecraft.core.HolderLookup;
@@ -13,6 +16,13 @@ import net.minecraft.world.item.ItemStack;
 import java.util.List;
 
 public abstract class ETBaseTerminalPart extends AbstractTerminalPart {
+    @PartModels
+    public static final ResourceLocation MODEL_OFF = CraftingTerminalPart.MODEL_OFF;
+    public static final ResourceLocation MODEL_ON = CraftingTerminalPart.MODEL_ON;
+
+    @PartModels
+
+
     private final AppEngInternalInventory craftingGrid;
     private final ETMenuType menuType;
 

@@ -1,9 +1,0 @@
-{
-  "parent": "ae2:part/display_off",
-  "textures": {
-    "front": "ae2:part/monitor_front",
-    "lightsBright": "extendedterminal:part/extendedcrafting/advanced_terminal_bright",
-    "lightsMedium": "extendedterminal:part/extendedcrafting/advanced_terminal_medium",
-    "lightsDark": "extendedterminal:part/extendedcrafting/advanced_terminal_dark"
-  }
-}
