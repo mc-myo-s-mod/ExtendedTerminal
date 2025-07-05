@@ -14,7 +14,7 @@ public class ETCreativeTab {
     static {
         REGISTER.register("itemgroup.extendedcrafting",() -> CreativeModeTab.builder()
                 .title(Component.translatable("itemgroup.extendedcrafting.title"))
-                .icon(AEParts.CRAFTING_TERMINAL::stack)
+                .icon(ETParts.ULTIMATE_TERMINAL_PART::stack)
                 .displayItems((params, output) -> {
                     for (ItemDefinition<?> item : ETItems.ITEMS) {
                         output.accept(item);

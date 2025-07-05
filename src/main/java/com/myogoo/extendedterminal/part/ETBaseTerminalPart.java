@@ -16,12 +16,8 @@ import net.minecraft.world.item.ItemStack;
 import java.util.List;
 
 public abstract class ETBaseTerminalPart extends AbstractTerminalPart {
-    @PartModels
     public static final ResourceLocation MODEL_OFF = CraftingTerminalPart.MODEL_OFF;
     public static final ResourceLocation MODEL_ON = CraftingTerminalPart.MODEL_ON;
-
-    @PartModels
-
 
     private final AppEngInternalInventory craftingGrid;
     private final ETMenuType menuType;
