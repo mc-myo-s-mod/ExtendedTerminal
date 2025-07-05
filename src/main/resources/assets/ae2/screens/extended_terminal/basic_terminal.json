@@ -29,7 +29,7 @@
     },
     "crafting_grid_title": {
       "text": {
-        "translate": "gui.ae2.CraftingTerminal"
+        "translate": "gui.extendedterminal.basicTerminal"
       },
       "position": {
         "left": 8,
