@@ -7,8 +7,8 @@
   "item.extendedterminal.elite_terminal": "Elite Extended Crafting Terminal",
   "item.extendedterminal.ultimate_terminal": "Ultimate Extended Crafting Terminal",
 
-  "item.extendedterminal.integration_processor": "Integrated Processor",
-  "item.extendedterminal.printed_integration_processor": "Printed Integration Circuit",
+  "item.extendedterminal.compat_processor": "Compat Processor",
+  "item.extendedterminal.printed_compat_processor": "Printed Compat Circuit",
 
   "gui.extendedterminal.basicTerminal": "Basic Extended Terminal",
   "gui.extendedterminal.advancedTerminal": "Advanced Extended Terminal",

@@ -15,12 +15,12 @@ public class ETItems {
 
     public static final List<ItemDefinition<?>> ITEMS = new ArrayList<>();
 
-    public static final ItemDefinition<Item> INTEGRATION_PROCESSOR = createItem("integrated processor",
-            ExtendedTerminal.makeId("integration_processor"),
+    public static final ItemDefinition<Item> COMPAT_PROCESSOR = createItem("compat processor",
+            ExtendedTerminal.makeId("compat_processor"),
             Item::new);
 
-    public static final ItemDefinition<?> PRINTED_INTEGRATION_PROCESSOR = createItem("printed integrated circuit",
-            ExtendedTerminal.makeId("printed_integration_processor"),
+    public static final ItemDefinition<?> PRINTED_COMPAT_PROCESSOR = createItem("printed compat circuit",
+            ExtendedTerminal.makeId("printed_compat_processor"),
             Item::new);
 
     public static <T extends Item> ItemDefinition<T> createItem(String name, ResourceLocation id, Function<Item.Properties, T> itemFactory) {
