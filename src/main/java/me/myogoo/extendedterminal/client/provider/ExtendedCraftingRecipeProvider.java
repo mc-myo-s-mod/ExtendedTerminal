@@ -31,7 +31,7 @@ public class ExtendedCraftingRecipeProvider extends RecipeProvider {
         ShapedTableRecipeBuilder.shaped(ETParts.ADVANCED_TERMINAL_PART, 1)
                 .pattern("AB")
                 .pattern("C ")
-                .define('A', ETParts.BASIC_TERMINAL_PART)
+                .define('A', AEParts.CRAFTING_TERMINAL)
                 .define('B', ModBlocks.ADVANCED_TABLE.get())
                 .define('C', ETItems.COMPAT_PROCESSOR)
                 .save(recipeOutput, ExtendedTerminal.makeId("extended_crafting/advanced_terminal"));
@@ -39,7 +39,7 @@ public class ExtendedCraftingRecipeProvider extends RecipeProvider {
         ShapedTableRecipeBuilder.shaped(ETParts.ELITE_TERMINAL_PART,1)
                 .pattern("AB")
                 .pattern("C ")
-                .define('A', ETParts.ADVANCED_TERMINAL_PART)
+                .define('A', AEParts.CRAFTING_TERMINAL)
                 .define('B', ModBlocks.ELITE_TABLE.get())
                 .define('C', ETItems.COMPAT_PROCESSOR)
                 .save(recipeOutput, ExtendedTerminal.makeId("extended_crafting/elite_terminal"));
@@ -47,7 +47,7 @@ public class ExtendedCraftingRecipeProvider extends RecipeProvider {
         ShapedTableRecipeBuilder.shaped(ETParts.ULTIMATE_TERMINAL_PART, 1)
                 .pattern("AB")
                 .pattern("C ")
-                .define('A', ETParts.ADVANCED_TERMINAL_PART)
+                .define('A', AEParts.CRAFTING_TERMINAL)
                 .define('B', ModBlocks.ULTIMATE_TABLE.get())
                 .define('C', ETItems.COMPAT_PROCESSOR)
                 .save(recipeOutput, ExtendedTerminal.makeId("extended_crafting/ultimate_terminal"));
