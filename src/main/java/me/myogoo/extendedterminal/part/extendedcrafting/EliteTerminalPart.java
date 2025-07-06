@@ -1,0 +1,33 @@
+package me.myogoo.extendedterminal.part.extendedcrafting;
+
+import appeng.api.parts.IPartItem;
+import appeng.api.parts.IPartModel;
+import appeng.items.parts.PartModels;
+import appeng.parts.PartModel;
+import me.myogoo.extendedterminal.ExtendedTerminal;
+import me.myogoo.extendedterminal.menu.ETMenuType;
+import me.myogoo.extendedterminal.menu.extendedcrafting.EliteTerminalMenu;
+import me.myogoo.extendedterminal.part.ETBaseTerminalPart;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.MenuType;
+
+public class EliteTerminalPart extends ETBaseTerminalPart {
+    @PartModels
+    public static final ResourceLocation ELITE_MODEL_BASE = ExtendedTerminal.makeId("part/extendedcrafting/elite_terminal_base");
+    
+    public static final IPartModel MODELS_OFF = new PartModel(ELITE_MODEL_BASE, MODEL_OFF, MODEL_STATUS_OFF);
+    public static final IPartModel MODELS_ON = new PartModel(ELITE_MODEL_BASE, MODEL_ON, MODEL_STATUS_ON);
+    public static final IPartModel MODELS_HAS_CHANNEL = new PartModel(ELITE_MODEL_BASE, MODEL_ON, MODEL_STATUS_HAS_CHANNEL);
+
+    public EliteTerminalPart(IPartItem<?> partItem) {
+        super(partItem, ETMenuType.ELITE_TERMINAL);
+    }
+
+    @Override
+    public MenuType<?> getMenuType(Player p) { return EliteTerminalMenu.TYPE; }
+
+    public IPartModel getStaticModels() {
+        return this.selectModel(MODELS_OFF,MODELS_ON,MODELS_HAS_CHANNEL);
+    }
+}
