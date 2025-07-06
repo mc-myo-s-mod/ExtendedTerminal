@@ -80,41 +80,72 @@ public class ItemListTermCraftingHelper {
         return templateItems;
     }
 
-    public static Map<Integer, Ingredient> getGuiSlotToIngredientMap(Recipe<?> recipe, int gridSideLength) {
+    public static Map<Integer, Ingredient> getGuiSlotToIngredientMap(ITableRecipe recipe, int gridSideLength) {
         var raw = recipe.getIngredients();
         List<Ingredient> ingredients;
 
         int offsetX = 0;
         int offsetY = 0;
-        int width = -1;
-        int height = -1;
-
-        if (recipe instanceof ITableRecipe tableRecipe) {
-            ingredients = ensureNxNCraftingMatrix(tableRecipe);
-            if(recipe instanceof ShapedTableRecipe shapedTableRecipe) {
-                width = ExtendedCraftingHelper.getCraftingGridWidth(tableRecipe);
-                height = ExtendedCraftingHelper.getCraftingGridWidth(tableRecipe);
-                offsetX = Math.floorDiv(gridSideLength - width, 2);
-                offsetY = Math.floorDiv(gridSideLength - height, 2);
-            }
+        int width = gridSideLength;
+        int height = gridSideLength;
+        if (recipe instanceof ShapedTableRecipe tableRecipe) {
+            ingredients = fittedCraftingMatrix(tableRecipe);
+            width = tableRecipe.getWidth();
+            height = tableRecipe.getHeight();
+            offsetX = Math.floorDiv(gridSideLength - tableRecipe.getWidth(),2);
+            offsetY = Math.floorDiv(gridSideLength - tableRecipe.getHeight(),2);
         } else {
             ingredients = raw;
         }
-        int max = (width != -1 || height != -1) ? width * height : gridSideLength * gridSideLength;
+
+        int max = gridSideLength * gridSideLength;
         int count = Math.min(ingredients.size(), max);
         var result = new HashMap<Integer, Ingredient>(count);
         for (int i = 0; i < count; i++) {
             int x = i % width;
-            int y = i / height;
+            int y = i / width;
 
-            var guiSlot = (x + offsetX) + ((y + offsetY) * gridSideLength);
-            LOGGER.debug("x, y: {}, {}, guiSlot: {}", x, y, guiSlot);
+            var guiSlot = (y + offsetY) * gridSideLength + (x + offsetX);
             var ing = ingredients.get(i);
             if (!ing.isEmpty()) {
                 result.put(guiSlot, ing);
             }
         }
-        return result;
+         return result;
+    }
+
+    public static NonNullList<Ingredient> fittedCraftingMatrix(Recipe<?> recipe) {
+        var ingredients = recipe.getIngredients();
+        NonNullList<Ingredient> expandedIngredients;
+        if(recipe instanceof ShapedTableRecipe shapedTableRecipe) {
+            int width = shapedTableRecipe.getWidth();
+            int height = shapedTableRecipe.getHeight();
+            int matrixSize = width * height;
+
+            expandedIngredients = NonNullList.withSize(matrixSize, Ingredient.EMPTY);
+
+            for(int h = 0; h < height; h++) {
+                for(int w = 0; w < width; w++) {
+                    int index = w + h * width;
+                    if(index < ingredients.size()) {
+                        expandedIngredients.set(index, ingredients.get(index));
+                    } else {
+                        expandedIngredients.set(index, Ingredient.EMPTY);
+                    }
+                }
+            }
+            return  expandedIngredients;
+        } else if (recipe instanceof ShapelessTableRecipe shapelessTableRecipe) {
+            expandedIngredients = ExtendedCraftingHelper.makeNxNIngredients(shapelessTableRecipe);
+            for(int i = 0; i < ingredients.size(); i++) {
+                expandedIngredients.set(i, ingredients.get(i));
+            }
+        }
+        else {
+            return CraftingRecipeUtil.ensure3by3CraftingMatrix(recipe);
+        }
+
+        return expandedIngredients = NonNullList.withSize(9, Ingredient.EMPTY);
     }
 
     public static NonNullList<Ingredient> ensureNxNCraftingMatrix(Recipe<?> recipe) {
@@ -122,7 +153,6 @@ public class ItemListTermCraftingHelper {
         NonNullList<Ingredient> expandedIngredients;
         if(recipe instanceof ITableRecipe tableRecipe) {
             int size = ExtendedCraftingHelper.getCraftingGridSize(tableRecipe);
-            int sideLength = ExtendedCraftingHelper.getCraftingGridSideLength(size);
             expandedIngredients = ExtendedCraftingHelper.makeNxNIngredients(tableRecipe);
 
             if(tableRecipe instanceof ShapedTableRecipe shapedTableRecipe) {
@@ -151,4 +181,3 @@ public class ItemListTermCraftingHelper {
     }
 
 }
-

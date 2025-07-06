@@ -59,7 +59,6 @@ public class JeiTableRecipeTransferHandler<T extends ExtendedTerminalBaseMenu> e
                 return new Result.PartiallyCraftable(missingSlots, color, craftMissing);
             }
         } else {
-
             if(recipe instanceof ShapedTableRecipe shapedRecipe) {
                 ItemListTermCraftingHelper.performTransfer(menu, recipe,craftMissing,
                         shapedRecipe.getWidth(), shapedRecipe.getHeight());
