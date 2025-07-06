@@ -2,7 +2,6 @@ package me.myogoo.extendedterminal;
 
 import com.mojang.logging.LogUtils;
 import me.myogoo.extendedterminal.client.ETConfig;
-import com.myogoo.extendedterminal.init.*;
 import me.myogoo.extendedterminal.init.*;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.bus.api.IEventBus;
