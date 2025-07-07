@@ -24,13 +24,14 @@ public class ExtendedTerminal {
         ETItems.REGISTER.register(modEventBus);
         ETParts.REGISTER.register(modEventBus);
         ETMenus.REGISTER.register(modEventBus);
+
         NeoForge.EVENT_BUS.register(this);
 
         modEventBus.addListener(ETNetwork::init);
         modContainer.registerConfig(ModConfig.Type.COMMON, ETConfig.SPEC);
     }
     @SubscribeEvent
-        public void onServerStarting(ServerStartingEvent event) {
+    public void onServerStarting(ServerStartingEvent event) {
     }
 
     public static ResourceLocation makeId(String path) {

@@ -20,8 +20,14 @@ config = "${mod_id}.mixins.json"
 
 [[dependencies]]
 modId = "ae2"
+type = "REQUIRED"
+ordering="AFTER"
+side="BOTH"
 versionRange = "[19,)"
 
 [[dependencies]]
 modId = "extendedcrafting"
+type = "REQUIRED"
+ordering="AFTER"
+side="BOTH"
 versionRange = "[7,)"
