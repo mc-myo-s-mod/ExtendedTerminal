@@ -5,8 +5,7 @@
   "compatibilityLevel": "JAVA_8",
   "refmap": "extendedterminal.refmap.json",
   "mixins": [
-  ],
-  "client": [
+    "NetworkHandlerMixin"
   ],
   "injectors": {
     "defaultRequire": 1
