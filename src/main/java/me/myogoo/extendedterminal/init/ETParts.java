@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.function.Function;
 
 public class ETParts {
+
     //useless but call ETPart class to register
     public static final DeferredRegister<Item> REGISTER = DeferredRegister.create(Registries.ITEM,ExtendedTerminal.MODID);
 

@@ -1,5 +1,6 @@
 package me.myogoo.extendedterminal.init;
 
+import appeng.core.AppEng;
 import me.myogoo.extendedterminal.ExtendedTerminal;
 import me.myogoo.extendedterminal.menu.ETMenuType;
 import me.myogoo.extendedterminal.menu.extendedcrafting.AdvancedTerminalMenu;
@@ -13,7 +14,7 @@ import net.minecraftforge.registries.DeferredRegister;
 import java.util.function.Supplier;
 
 public final class ETMenus {
-    public static final DeferredRegister<MenuType<?>> REGISTER = DeferredRegister.create(Registries.MENU, ExtendedTerminal.MODID);
+    public static final DeferredRegister<MenuType<?>> REGISTER = DeferredRegister.create(Registries.MENU, AppEng.MOD_ID);
 
     public static final Supplier<MenuType<BasicTerminalMenu>> BASIC_TERMINAL = REGISTER.register(ETMenuType.BASIC_TERMINAL.getIdAsString(), () -> BasicTerminalMenu.TYPE);
     public static final Supplier<MenuType<AdvancedTerminalMenu>> ADVANCED_TERMINAL = REGISTER.register(ETMenuType.ADVANCED_TERMINAL.getIdAsString(), () -> AdvancedTerminalMenu.TYPE);

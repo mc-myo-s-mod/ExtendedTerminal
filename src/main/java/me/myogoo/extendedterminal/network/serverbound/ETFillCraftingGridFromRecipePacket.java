@@ -18,6 +18,7 @@ import io.netty.buffer.Unpooled;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntList;
 import me.myogoo.extendedterminal.ExtendedTerminal;
+import me.myogoo.extendedterminal.network.NetworkPacketType;
 import me.myogoo.extendedterminal.util.extendedcrafting.ExtendedCraftingHelper;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.FriendlyByteBuf;
@@ -66,6 +67,8 @@ public class ETFillCraftingGridFromRecipePacket extends BasePacket {
             int recipeHeight
     ) {
         var stream = new FriendlyByteBuf(Unpooled.buffer());
+
+        stream.writeInt(NetworkPacketType.PacketIDs.EXTENDED_FILL_CRAFTING_GRID.getValue());
         stream.writeBoolean(recipeId != null);
         if (recipeId != null) {
             stream.writeResourceLocation(recipeId);

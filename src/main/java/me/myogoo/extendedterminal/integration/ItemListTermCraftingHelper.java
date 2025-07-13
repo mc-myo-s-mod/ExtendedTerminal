@@ -54,7 +54,7 @@ public class ItemListTermCraftingHelper {
                                        int recipeWidth, int recipeHeight) {
         var templateItems = findGoodTemplateItems(recipe, menu);
 
-        var message =new ETFillCraftingGridFromRecipePacket(recipe.getId(),templateItems,craftMissing,
+        var message = new ETFillCraftingGridFromRecipePacket(null,templateItems,craftMissing,
                 recipeWidth,recipeHeight);
         NetworkHandler.instance().sendToServer(message);
     }

@@ -59,9 +59,17 @@ public class ExtendedTerminalBaseMenu extends ETBaseTerminalMenu<ITableRecipe> {
 
     @Override
     protected void updateCurrentRecipeAndOutput(boolean forceUpdate) {
-        var testItems = new ArrayList<ItemStack>(this.craftingSlots.length);
-        for(var craftingSlot : craftingSlots) {
-            testItems.add(craftingSlot.getItem().copy());
+        boolean hasChanged = forceUpdate;
+        for (int x = 0; x < this.craftingSlots.length; x++) {
+            var stack = this.craftingSlots[x].getItem();
+            if (!ItemStack.isSameItemSameTags(stack, recipeTestContainer.getItem(x))) {
+                hasChanged = true;
+                recipeTestContainer.setItem(x, stack.copy());
+            }
+        }
+
+        if (!hasChanged) {
+            return;
         }
 
         var level = getPlayer().level();

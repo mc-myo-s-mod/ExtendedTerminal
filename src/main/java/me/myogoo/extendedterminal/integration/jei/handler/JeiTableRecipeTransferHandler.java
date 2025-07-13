@@ -64,7 +64,7 @@ public class JeiTableRecipeTransferHandler<T extends ExtendedTerminalBaseMenu> e
                 ItemListTermCraftingHelper.performTransfer(menu, recipe,craftMissing,
                         shapedRecipe.getWidth(), shapedRecipe.getHeight());
             } else {
-                ItemListTermCraftingHelper.performTransfer(menu,null, recipe, craftMissing);
+                ItemListTermCraftingHelper.performTransfer(menu,recipe.getId(), recipe, craftMissing);
             }
         }
 
