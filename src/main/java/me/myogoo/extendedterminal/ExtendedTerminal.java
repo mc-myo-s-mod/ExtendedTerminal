@@ -28,8 +28,6 @@ public class ExtendedTerminal {
         ETCreativeTab.REGISTER.register(modEventBus);
 
         MinecraftForge.EVENT_BUS.register(this);
-        ETClient.init(modEventBus);
-
         //ModLoadingContext.get().registerConfig(ETConfig.Type.COMMON, Config.SPEC);
     }
 
