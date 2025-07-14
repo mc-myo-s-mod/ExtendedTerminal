@@ -18,6 +18,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.RegisterColorHandlersEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.slf4j.Logger;
@@ -27,18 +28,12 @@ import static me.myogoo.extendedterminal.ExtendedTerminal.MODID;
 
 @Mod.EventBusSubscriber(modid = MODID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
 public class ETClient {
-    private static Logger LOGGER = LoggerFactory.getLogger(MODID);
-    public ETClient(IEventBus modEventBus) {
-        modEventBus.addListener(ETClient::initColorParts);
+
+    @SubscribeEvent
+    public static void init(RegisterColorHandlersEvent.Item event) {
+        initColorParts(event);
         initScreens();
-        LOGGER.debug("Extended Terminal Client Initialized");
     }
-
-    public static void init(IEventBus modEventBus) {
-        new ETClient(modEventBus);
-
-    }
-
 
     public static void initScreens() {
         InitScreens.register(BasicTerminalMenu.TYPE, BasicTerminalScreen::new, "/screens/extended_terminal/basic_terminal.json");
