@@ -1,15 +1,11 @@
 package me.myogoo.extendedterminal;
 
 import com.mojang.logging.LogUtils;
-import me.myogoo.extendedterminal.client.ETClient;
-import me.myogoo.extendedterminal.client.ETConfig;
 import me.myogoo.extendedterminal.init.*;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.slf4j.Logger;
 
@@ -32,6 +28,6 @@ public class ExtendedTerminal {
     }
 
     public static ResourceLocation makeId(String path) {
-        return ResourceLocation.fromNamespaceAndPath(MODID, path);
+        return new ResourceLocation(MODID, path);
     }
 }
