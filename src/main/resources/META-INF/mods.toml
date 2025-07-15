@@ -73,3 +73,9 @@ modId = "extendedcrafting"
 mandatory = true
 side = "BOTH"
 versionRange = "[6,)"
+
+[[dependencies."${mod_id}"]]
+modId = "jei"
+mandatory = false
+side = "BOTH"
+versionRange = "[15.20.0.100,)"
