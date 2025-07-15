@@ -2,6 +2,7 @@
   "parent" : "extendedterminal:item/extendedcrafting_terminal_base",
   "textures": {
     "front": "extendedterminal:part/extendedcrafting/ultimate_terminal_front",
+    "back": "extendedterminal:part/extendedcrafting/ultimate_terminal_back",
     "sides": "extendedterminal:part/extendedcrafting/ultimate_terminal_side"
   }
 }
