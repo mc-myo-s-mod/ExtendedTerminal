@@ -134,6 +134,9 @@ public class ShapedTableRecipeBuilder extends CraftingRecipeBuilder implements R
         public JsonObject serializeRecipe() {
             JsonObject json = new JsonObject();
             json.addProperty("type","extendedcrafting:shaped_table");
+            if(tier != 0) {
+                json.addProperty("tier", tier);
+            }
             JsonArray jsonArray = new JsonArray();
             for(String s : rows) {
                 jsonArray.add(s);
