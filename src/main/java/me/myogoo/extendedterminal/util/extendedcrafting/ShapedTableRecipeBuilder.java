@@ -11,7 +11,6 @@ import net.minecraft.advancements.CriterionTriggerInstance;
 import net.minecraft.data.recipes.*;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.ItemLike;
@@ -25,16 +24,13 @@ import java.util.function.Consumer;
 import static net.minecraft.core.registries.BuiltInRegistries.*;
 
 public class ShapedTableRecipeBuilder extends CraftingRecipeBuilder implements RecipeBuilder {
-    private final RecipeCategory category;
     private final Item result;
     private final int count;
     private final List<String> rows = Lists.newArrayList();
     private final Map<Character, Ingredient> key = Maps.newLinkedHashMap();
     private final Advancement.Builder advancement = Advancement.Builder.recipeAdvancement();
-    private String group;
     private int tier = 0;
     public ShapedTableRecipeBuilder(ItemLike result, int count) {
-        this.category = RecipeCategory.MISC;
         this.result = result.asItem();
         this.count = count;
     }
@@ -107,7 +103,6 @@ public class ShapedTableRecipeBuilder extends CraftingRecipeBuilder implements R
 
     @Override
     public RecipeBuilder group(@Nullable String group) {
-        this.group = group;
         return this;
     }
 
@@ -168,7 +163,7 @@ public class ShapedTableRecipeBuilder extends CraftingRecipeBuilder implements R
 
         @Override
         public RecipeSerializer<?> getType() {
-            return new ShapedTableRecipe.Serializer();
+            return new ShapedTableRecipe.Serializer(); // not work :(
         }
 
         @Override

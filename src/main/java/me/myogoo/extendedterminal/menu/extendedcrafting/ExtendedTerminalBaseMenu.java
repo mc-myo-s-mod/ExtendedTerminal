@@ -4,6 +4,7 @@ import appeng.api.inventories.ISegmentedInventory;
 import appeng.api.inventories.InternalInventory;
 import appeng.api.storage.ITerminalHost;
 import appeng.core.sync.network.NetworkHandler;
+import appeng.core.sync.packets.InventoryActionPacket;
 import appeng.helpers.InventoryAction;
 import appeng.menu.SlotSemantic;
 import appeng.menu.slot.CraftingMatrixSlot;
@@ -19,9 +20,6 @@ import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.TransientCraftingContainer;
 import net.minecraft.world.item.ItemStack;
-
-import java.util.ArrayList;
-
 
 public class ExtendedTerminalBaseMenu extends ETBaseTerminalMenu<ITableRecipe> {
     private final ETBaseCraftingSlot outputSlot;
@@ -53,7 +51,7 @@ public class ExtendedTerminalBaseMenu extends ETBaseTerminalMenu<ITableRecipe> {
     public void clearCraftingGrid() {
         Preconditions.checkState(isClientSide());
         CraftingMatrixSlot slot = craftingSlots[0];
-        var p = new appeng.core.sync.packets.InventoryActionPacket(InventoryAction.MOVE_REGION, slot.index, 0);
+        var p = new InventoryActionPacket(InventoryAction.MOVE_REGION, slot.index, 0);
         NetworkHandler.instance().sendToServer(p);
     }
 
@@ -136,8 +134,8 @@ public class ExtendedTerminalBaseMenu extends ETBaseTerminalMenu<ITableRecipe> {
                 case CRAFT_STACK:
                     craftingSlot.doClick(action, player);
             }
-            return;
+        } else {
+            super.doAction(player, action, slot, id);
         }
-        super.doAction(player, action, slot, id);
     }
 }

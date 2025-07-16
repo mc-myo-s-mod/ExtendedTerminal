@@ -5,6 +5,7 @@
   "compatibilityLevel": "JAVA_8",
   "refmap": "extendedterminal.refmap.json",
   "mixins": [
+    "AEBaseMenuMixin",
     "NetworkHandlerMixin"
   ],
   "injectors": {
