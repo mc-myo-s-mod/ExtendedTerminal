@@ -46,7 +46,7 @@ repositories {
 }
 
 base {
-    archivesName = mod_id
+    archivesName = "ExtendedTerminal-${minecraft_version}"
 }
 
 java.toolchain.languageVersion = JavaLanguageVersion.of(21)
