@@ -4,12 +4,12 @@
   ],
   "slots": {
     "BASIC_CRAFTING_GRID": {
-      "left": 26,
-      "bottom": 158
+      "left": 37,
+      "bottom": 154
     },
     "BASIC_CRAFTING_RESULT": {
-      "left": 134,
-      "bottom": 140
+      "left": 131,
+      "bottom": 136
     },
     "PLAYER_ARMOR": {
       "left": -16,
@@ -33,7 +33,7 @@
       },
       "position": {
         "left": 8,
-        "bottom": 177
+        "bottom": 167
       }
     }
   },
@@ -80,18 +80,18 @@
         0,
         71,
         195,
-        180
+        170
       ]
     }
   },
   "widgets": {
     "clearCraftingGrid": {
-      "left": 81,
-      "bottom": 159
+      "left": 93,
+      "bottom": 156
     },
     "clearToPlayerInv": {
-      "left": 91,
-      "bottom": 159
+      "left": 103,
+      "bottom": 156
     }
   }
 }
