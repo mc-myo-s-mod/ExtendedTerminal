@@ -66,13 +66,13 @@ side = "BOTH"
 modId="ae2"
 mandatory = true
 side="BOTH"
-versionRange = "[15,)"
+versionRange = "[15.4.0,)"
 
 [[dependencies."${mod_id}"]]
 modId = "extendedcrafting"
 mandatory = true
 side = "BOTH"
-versionRange = "[6,)"
+versionRange = "[6.0.0,)"
 
 [[dependencies."${mod_id}"]]
 modId = "jei"
