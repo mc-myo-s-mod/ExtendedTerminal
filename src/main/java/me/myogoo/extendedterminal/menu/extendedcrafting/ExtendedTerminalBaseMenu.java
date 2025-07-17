@@ -35,7 +35,7 @@ public class ExtendedTerminalBaseMenu extends ETBaseTerminalMenu<ITableRecipe> {
         this.menuType = etMenuType;
         this.craftingInventoryHost = (ISegmentedInventory) host;
         this.craftingSlots = new CraftingMatrixSlot[this.menuType.getGridSize()];
-        this.recipeTestContainer = new ExtendedCraftingInventory(this, BaseItemStackHandler.create(this.menuType.getGridSize()), this.menuType.getGridSideLength());
+        this.recipeTestContainer = new TransientCraftingContainer(this,this.menuType.getGridSideLength() , this.menuType.getGridSideLength());
         var craftingGridInv = this.craftingInventoryHost
                 .getSubInventory(this.menuType.getCraftingInventory());
         for(int i = 0; i < this.menuType.getGridSize(); i++) {
