@@ -46,8 +46,8 @@ public class ItemListTermCraftingHelper {
         }
 
         //disabled shapeless crafting for now, because it doesn't work with the new crafting grid
-        //var message = new ETFillCraftingGridFromRecipePacket(recipeId, templateItems, craftMissing);
-        //NetworkHandler.instance().sendToServer(message);
+        var message = new ETFillCraftingGridFromRecipePacket(recipeId, templateItems, craftMissing,-1,-1);
+        NetworkHandler.instance().sendToServer(message);
     }
 
     public static void performTransfer(ExtendedTerminalBaseMenu menu, Recipe<?> recipe, boolean craftMissing,

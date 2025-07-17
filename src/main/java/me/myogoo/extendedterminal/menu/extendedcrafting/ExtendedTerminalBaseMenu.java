@@ -8,7 +8,9 @@ import appeng.core.sync.packets.InventoryActionPacket;
 import appeng.helpers.InventoryAction;
 import appeng.menu.SlotSemantic;
 import appeng.menu.slot.CraftingMatrixSlot;
+import com.blakebr0.cucumber.inventory.BaseItemStackHandler;
 import com.blakebr0.extendedcrafting.api.crafting.ITableRecipe;
+import com.blakebr0.extendedcrafting.container.inventory.ExtendedCraftingInventory;
 import com.blakebr0.extendedcrafting.init.ModRecipeTypes;
 import com.google.common.base.Preconditions;
 import me.myogoo.extendedterminal.menu.ETBaseTerminalMenu;
@@ -33,7 +35,7 @@ public class ExtendedTerminalBaseMenu extends ETBaseTerminalMenu<ITableRecipe> {
         this.menuType = etMenuType;
         this.craftingInventoryHost = (ISegmentedInventory) host;
         this.craftingSlots = new CraftingMatrixSlot[this.menuType.getGridSize()];
-        this.recipeTestContainer = new TransientCraftingContainer(this,this.menuType.getGridSideLength(), this.menuType.getGridSideLength());
+        this.recipeTestContainer = new ExtendedCraftingInventory(this, BaseItemStackHandler.create(this.menuType.getGridSize()), this.menuType.getGridSideLength());
         var craftingGridInv = this.craftingInventoryHost
                 .getSubInventory(this.menuType.getCraftingInventory());
         for(int i = 0; i < this.menuType.getGridSize(); i++) {
@@ -70,7 +72,7 @@ public class ExtendedTerminalBaseMenu extends ETBaseTerminalMenu<ITableRecipe> {
             return;
         }
 
-        var level = getPlayer().level();
+        var level = this.getPlayerInventory().player.level();
         this.currentRecipe = level.getRecipeManager().getRecipeFor(ModRecipeTypes.TABLE.get(), recipeTestContainer, level)
                 .orElse(null);
 
