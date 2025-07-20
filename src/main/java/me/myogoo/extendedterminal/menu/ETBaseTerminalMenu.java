@@ -26,7 +26,6 @@ public abstract class ETBaseTerminalMenu<R extends Recipe<?>> extends MEStorageM
 
     public ETBaseTerminalMenu(MenuType<?> menuType, int id, Inventory ip, ITerminalHost host) {
         super(menuType, id, ip, host);
-
         registerClientAction(ACTION_CLEAR_TO_PLAYER, this::clearToPlayerInventory);
     }
 

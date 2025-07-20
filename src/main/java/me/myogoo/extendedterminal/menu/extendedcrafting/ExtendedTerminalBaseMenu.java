@@ -82,7 +82,7 @@ public class ExtendedTerminalBaseMenu extends ETBaseTerminalMenu<ITableRecipe> {
         if(this.currentRecipe == null) {
             this.outputSlot.set(ItemStack.EMPTY);
         } else {
-            this.outputSlot.set(this.currentRecipe.value().assemble(testInput,level.registryAccess()));
+            this.outputSlot.set(this.currentRecipe.value().assemble(testInput,registryAccess()));
         }
     }
     public RecipeHolder<ITableRecipe> getCurrentRecipe() {

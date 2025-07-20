@@ -5,6 +5,7 @@ import appeng.api.parts.IPartModel;
 import appeng.items.parts.PartModels;
 import appeng.parts.PartModel;
 import me.myogoo.extendedterminal.ExtendedTerminal;
+import me.myogoo.extendedterminal.config.ETConfig;
 import me.myogoo.extendedterminal.menu.ETMenuType;
 import me.myogoo.extendedterminal.menu.extendedcrafting.BasicTerminalMenu;
 import me.myogoo.extendedterminal.part.ETBaseTerminalPart;
@@ -22,6 +23,7 @@ public class BasicExtendedTerminalPart extends ETBaseTerminalPart {
 
     public BasicExtendedTerminalPart(IPartItem<?> partItem) {
         super(partItem, ETMenuType.BASIC_TERMINAL);
+        this.getMainNode().setIdlePowerUsage(ETConfig.BASIC_TERMINAL_CONFIG.passiveDrainAE());
     }
 
     @Override

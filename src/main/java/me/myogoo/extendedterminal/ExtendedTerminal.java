@@ -1,7 +1,7 @@
 package me.myogoo.extendedterminal;
 
 import com.mojang.logging.LogUtils;
-import me.myogoo.extendedterminal.client.ETConfig;
+import me.myogoo.extendedterminal.config.ETConfig;
 import me.myogoo.extendedterminal.init.*;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.bus.api.IEventBus;
@@ -20,6 +20,8 @@ public class ExtendedTerminal {
     public static final Logger LOGGER = LogUtils.getLogger();
 
     public ExtendedTerminal(IEventBus modEventBus, ModContainer modContainer) {
+        modContainer.registerConfig(ModConfig.Type.COMMON, ETConfig.COMMON);
+
         ETCreativeTab.REGISTER.register(modEventBus);
         ETItems.REGISTER.register(modEventBus);
         ETParts.REGISTER.register(modEventBus);
@@ -28,7 +30,6 @@ public class ExtendedTerminal {
         NeoForge.EVENT_BUS.register(this);
 
         modEventBus.addListener(ETNetwork::init);
-        modContainer.registerConfig(ModConfig.Type.COMMON, ETConfig.SPEC);
     }
     @SubscribeEvent
     public void onServerStarting(ServerStartingEvent event) {
