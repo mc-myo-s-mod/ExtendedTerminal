@@ -3,6 +3,7 @@ package me.myogoo.extendedterminal.client.provider;
 import appeng.core.definitions.AEParts;
 import com.blakebr0.extendedcrafting.init.ModBlocks;
 import me.myogoo.extendedterminal.ExtendedTerminal;
+import me.myogoo.extendedterminal.config.ETConfig;
 import me.myogoo.extendedterminal.init.ETItems;
 import me.myogoo.extendedterminal.init.ETParts;
 import me.myogoo.extendedterminal.util.extendedcrafting.ShapedTableRecipeBuilder;

@@ -12,6 +12,7 @@ import com.blakebr0.extendedcrafting.api.TableCraftingInput;
 import com.blakebr0.extendedcrafting.api.crafting.ITableRecipe;
 import com.blakebr0.extendedcrafting.init.ModRecipeTypes;
 import com.google.common.base.Preconditions;
+import me.myogoo.extendedterminal.config.ETConfig;
 import me.myogoo.extendedterminal.menu.ETBaseTerminalMenu;
 import me.myogoo.extendedterminal.menu.ETMenuType;
 import me.myogoo.extendedterminal.menu.slot.ETBaseCraftingSlot;
@@ -33,11 +34,12 @@ public class ExtendedTerminalBaseMenu extends ETBaseTerminalMenu<ITableRecipe> {
     private final ETMenuType menuType;
     @Nullable
     private TableCraftingInput lastTestedInput;
+    private ETConfig.ExtendedCraftingConfig config;
 
-
-    public ExtendedTerminalBaseMenu(MenuType<?> menuType, int id, Inventory ip, ITerminalHost host, ETMenuType etMenuType) {
+    public ExtendedTerminalBaseMenu(MenuType<?> menuType, int id, Inventory ip, ITerminalHost host, ETMenuType etMenuType, ETConfig.ExtendedCraftingConfig config) {
         super(menuType, id, ip, host);
         this.menuType = etMenuType;
+        this.config = config;
         this.craftingInventoryHost = (ISegmentedInventory) host;
         this.craftingSlots = new CraftingMatrixSlot[this.menuType.getGridSize()];
         var craftingGridInv = this.craftingInventoryHost
@@ -64,6 +66,10 @@ public class ExtendedTerminalBaseMenu extends ETBaseTerminalMenu<ITableRecipe> {
 
     @Override
     protected void updateCurrentRecipeAndOutput(boolean forceUpdate) {
+        if(config.enableCraftOnlyPowered() && (this.getGridNode() == null || (this.getGridNode() != null && !this.getGridNode().isActive()))) {
+            return;
+        }
+
         var testItems = new ArrayList<ItemStack>(this.craftingSlots.length);
         for(var craftingSlot : craftingSlots) {
             testItems.add(craftingSlot.getItem().copy());
