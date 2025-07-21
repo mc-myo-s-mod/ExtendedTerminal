@@ -2,6 +2,7 @@ package me.myogoo.extendedterminal.init;
 
 import appeng.core.definitions.ItemDefinition;
 import me.myogoo.extendedterminal.ExtendedTerminal;
+import me.myogoo.extendedterminal.config.ETConfig;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.CreativeModeTab;
@@ -16,7 +17,9 @@ public class ETCreativeTab {
                 .icon(ETParts.ULTIMATE_TERMINAL_PART::stack)
                 .displayItems((params, output) -> {
                     for (ItemDefinition<?> item : ETItems.ITEMS) {
-                        output.accept(item);
+                        if(!ETConfig.DISABLED_TERMINALS.getOrDefault(item,false)) {
+                            output.accept(item);
+                        }
                     }
                 })
                 .build());
