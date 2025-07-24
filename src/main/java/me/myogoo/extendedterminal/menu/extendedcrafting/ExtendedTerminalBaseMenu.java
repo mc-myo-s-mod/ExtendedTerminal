@@ -8,11 +8,10 @@ import appeng.core.sync.packets.InventoryActionPacket;
 import appeng.helpers.InventoryAction;
 import appeng.menu.SlotSemantic;
 import appeng.menu.slot.CraftingMatrixSlot;
-import com.blakebr0.cucumber.inventory.BaseItemStackHandler;
 import com.blakebr0.extendedcrafting.api.crafting.ITableRecipe;
-import com.blakebr0.extendedcrafting.container.inventory.ExtendedCraftingInventory;
 import com.blakebr0.extendedcrafting.init.ModRecipeTypes;
 import com.google.common.base.Preconditions;
+import me.myogoo.extendedterminal.config.ETConfig;
 import me.myogoo.extendedterminal.menu.ETBaseTerminalMenu;
 import me.myogoo.extendedterminal.menu.ETMenuType;
 import me.myogoo.extendedterminal.menu.slot.ETBaseCraftingSlot;
@@ -29,9 +28,11 @@ public class ExtendedTerminalBaseMenu extends ETBaseTerminalMenu<ITableRecipe> {
     private final CraftingMatrixSlot[] craftingSlots;
     private final ETMenuType menuType;
     private final CraftingContainer recipeTestContainer;
+    private final ETConfig.ExtendedCraftingConfig config;
 
-    public ExtendedTerminalBaseMenu(MenuType<?> menuType, int id, Inventory ip, ITerminalHost host, ETMenuType etMenuType) {
+    public ExtendedTerminalBaseMenu(MenuType<?> menuType, int id, Inventory ip, ITerminalHost host, ETMenuType etMenuType, ETConfig.ExtendedCraftingConfig config) {
         super(menuType, id, ip, host);
+        this.config = config;
         this.menuType = etMenuType;
         this.craftingInventoryHost = (ISegmentedInventory) host;
         this.craftingSlots = new CraftingMatrixSlot[this.menuType.getGridSize()];
@@ -59,6 +60,10 @@ public class ExtendedTerminalBaseMenu extends ETBaseTerminalMenu<ITableRecipe> {
 
     @Override
     protected void updateCurrentRecipeAndOutput(boolean forceUpdate) {
+        if(config.enableCraftOnlyPowered() && (this.getNetworkNode() == null || (this.getNetworkNode() != null && !this.getNetworkNode().isActive()))) {
+            return;
+        }
+
         boolean hasChanged = forceUpdate;
         for (int x = 0; x < this.craftingSlots.length; x++) {
             var stack = this.craftingSlots[x].getItem();

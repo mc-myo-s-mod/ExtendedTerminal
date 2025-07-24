@@ -5,6 +5,7 @@ import appeng.api.parts.IPartModel;
 import appeng.items.parts.PartModels;
 import appeng.parts.PartModel;
 import me.myogoo.extendedterminal.ExtendedTerminal;
+import me.myogoo.extendedterminal.config.ETConfig;
 import me.myogoo.extendedterminal.menu.ETMenuType;
 import me.myogoo.extendedterminal.menu.extendedcrafting.AdvancedTerminalMenu;
 import me.myogoo.extendedterminal.part.ETBaseTerminalPart;
@@ -21,7 +22,7 @@ public class AdvancedTerminalPart extends ETBaseTerminalPart {
     public static final IPartModel MODELS_HAS_CHANNEL = new PartModel(ADVANCED_MODEL_BASE, MODEL_ON, MODEL_STATUS_HAS_CHANNEL);
 
     public AdvancedTerminalPart(IPartItem<?> partItem) {
-        super(partItem, ETMenuType.ADVANCED_TERMINAL);
+        super(partItem, ETMenuType.ADVANCED_TERMINAL, ETConfig.ADVANCED_TERMINAL_CONFIG);
     }
 
     @Override
