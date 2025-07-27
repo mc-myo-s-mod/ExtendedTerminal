@@ -3,13 +3,15 @@ package me.myogoo.extendedterminal;
 import com.mojang.logging.LogUtils;
 import me.myogoo.extendedterminal.config.ETConfig;
 import me.myogoo.extendedterminal.init.*;
+import me.myogoo.extendedterminal.util.mod.ModLoadHelper;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.config.ModConfig;
-import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.neoforged.fml.event.lifecycle.FMLLoadCompleteEvent;
 import net.neoforged.neoforge.event.server.ServerStartingEvent;
 import org.slf4j.Logger;
 
@@ -27,12 +29,10 @@ public class ExtendedTerminal {
         ETParts.REGISTER.register(modEventBus);
         ETMenus.REGISTER.register(modEventBus);
 
-        NeoForge.EVENT_BUS.register(this);
+        //NeoForge.EVENT_BUS.register(this);
 
         modEventBus.addListener(ETNetwork::init);
-    }
-    @SubscribeEvent
-    public void onServerStarting(ServerStartingEvent event) {
+        ModLoadHelper.init();
     }
 
     public static ResourceLocation makeId(String path) {

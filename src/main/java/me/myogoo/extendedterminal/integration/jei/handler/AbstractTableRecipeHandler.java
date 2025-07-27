@@ -14,17 +14,19 @@ import mezz.jei.api.recipe.transfer.IRecipeTransferHandler;
 import mezz.jei.api.recipe.transfer.IRecipeTransferHandlerHelper;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.item.crafting.Recipe;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;
 
 import static appeng.integration.modules.itemlists.TransferHelper.*;
 
-abstract class AbstractTableRecipeHandler<T extends ExtendedTerminalBaseMenu> implements IRecipeTransferHandler<T, ITableRecipe> {
+public abstract class AbstractTableRecipeHandler<T extends ExtendedTerminalBaseMenu, R extends Recipe<?>> implements IRecipeTransferHandler<T, R> {
     private final Class<T> containerClass;
     private final MenuType<T> menuType;
-    private final RecipeType<ITableRecipe> recipeType;
-    AbstractTableRecipeHandler(Class<T> containerClass, MenuType<T> menuType, RecipeType<ITableRecipe> recipeType) {
+    private final RecipeType<R> recipeType;
+
+    public AbstractTableRecipeHandler(Class<T> containerClass, MenuType<T> menuType, RecipeType<R> recipeType) {
         this.containerClass = containerClass;
         this.menuType = menuType;
         this.recipeType = recipeType;
@@ -41,7 +43,7 @@ abstract class AbstractTableRecipeHandler<T extends ExtendedTerminalBaseMenu> im
     }
 
     @Override
-    public RecipeType<ITableRecipe> getRecipeType() {
+    public RecipeType<R> getRecipeType() {
         return recipeType;
     }
 
@@ -68,11 +70,11 @@ abstract class AbstractTableRecipeHandler<T extends ExtendedTerminalBaseMenu> im
             return helper.createUserErrorWithTooltip(ItemModText.RECIPE_TOO_LARGE.text());
         }
 
-        static final class PartiallyCraftable extends Result {
+        public static final class PartiallyCraftable extends Result {
             private final CraftingTermMenu.MissingIngredientSlots missingSlots;
             private final boolean craftMissing;
             private final int color;
-            PartiallyCraftable(CraftingTermMenu.MissingIngredientSlots missingSlots, int color, boolean craftMissing) {
+            public PartiallyCraftable(CraftingTermMenu.MissingIngredientSlots missingSlots, int color, boolean craftMissing) {
                 this.missingSlots = missingSlots;
                 this.craftMissing = craftMissing;
                 this.color = color;

@@ -1,9 +1,10 @@
-package me.myogoo.extendedterminal.integration.jei.handler;
+package me.myogoo.extendedterminal.integration.jei.extendedcrafting.handler;
 
 import appeng.core.localization.ItemModText;
 import com.blakebr0.extendedcrafting.api.crafting.ITableRecipe;
 import com.blakebr0.extendedcrafting.crafting.recipe.ShapedTableRecipe;
 import me.myogoo.extendedterminal.integration.ItemListTermCraftingHelper;
+import me.myogoo.extendedterminal.integration.jei.handler.AbstractTableRecipeHandler;
 import me.myogoo.extendedterminal.menu.extendedcrafting.ExtendedTerminalBaseMenu;
 import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.recipe.RecipeIngredientRole;
@@ -17,13 +18,15 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Objects;
 
-import static appeng.integration.modules.itemlists.TransferHelper.*;
+import static appeng.integration.modules.itemlists.TransferHelper.BLUE_PLUS_BUTTON_COLOR;
+import static appeng.integration.modules.itemlists.TransferHelper.ORANGE_PLUS_BUTTON_COLOR;
 import static me.myogoo.extendedterminal.integration.ItemListTermCraftingHelper.getGuiSlotToIngredientMap;
 
-public class JeiTableRecipeTransferHandler<T extends ExtendedTerminalBaseMenu> extends AbstractTableRecipeHandler<T> {
+public class ECJeiRecipeTransferHandler<T extends ExtendedTerminalBaseMenu> extends AbstractTableRecipeHandler<T, ITableRecipe> {
+
     private final IRecipeTransferHandlerHelper helper;
 
-    public JeiTableRecipeTransferHandler(Class<T> containerClass, MenuType<T> container, RecipeType<ITableRecipe> recipeType, IRecipeTransferHandlerHelper helper) {
+    public ECJeiRecipeTransferHandler(Class<T> containerClass, MenuType<T> container, RecipeType<ITableRecipe> recipeType, IRecipeTransferHandlerHelper helper) {
         super(containerClass, container, recipeType);
         this.helper = helper;
     }
