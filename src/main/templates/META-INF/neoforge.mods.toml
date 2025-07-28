@@ -27,7 +27,7 @@ versionRange = "[19,)"
 
 [[dependencies]]
 modId = "extendedcrafting"
-type = "REQUIRED"
+type = "OPTIONAL"
 ordering="AFTER"
 side="BOTH"
 versionRange = "[7,)"

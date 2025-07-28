@@ -14,6 +14,7 @@ import net.minecraft.data.recipes.RecipeProvider;
 
 import java.util.concurrent.CompletableFuture;
 
+@Deprecated
 public class ExtendedCraftingRecipeProvider extends RecipeProvider {
     public ExtendedCraftingRecipeProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> registries) {
         super(output, registries);

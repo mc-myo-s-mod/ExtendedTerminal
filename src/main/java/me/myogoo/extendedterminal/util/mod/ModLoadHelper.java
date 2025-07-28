@@ -34,9 +34,6 @@ public class ModLoadHelper {
     }
 
     public static boolean get(Class<?> clazz) {
-        if(clazz.getDeclaredAnnotations().length == 0) {
-            return true;
-        }
         return loadedAnnotations.getOrDefault(clazz, false);
     }
 

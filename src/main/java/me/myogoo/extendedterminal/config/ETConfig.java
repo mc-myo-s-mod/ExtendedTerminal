@@ -8,6 +8,7 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.event.config.ModConfigEvent;
 import net.neoforged.neoforge.common.ModConfigSpec;
 
+import java.util.HashMap;
 import java.util.Map;
 
 // An example config class. This is not required, but it's a good idea to have one to keep your config organized.
@@ -63,13 +64,6 @@ public class ETConfig {
         COMMON = BUILDER.build();
     }
     public static void init() {
-        DISABLED_TERMINALS = Map.of(
-                ETParts.BASIC_TERMINAL_PART, !ENABLE_BASIC_CRAFTING_TERMINAL.get(),
-                ETParts.ADVANCED_TERMINAL_PART, !ENABLE_ADVANCED_CRAFTING_TERMINAL.get(),
-                ETParts.ELITE_TERMINAL_PART, !ENABLE_ELITE_CRAFTING_TERMINAL.get(),
-                ETParts.ULTIMATE_TERMINAL_PART, !ENABLE_ULTIMATE_CRAFTING_TERMINAL.get()
-        );
-
         BASIC_TERMINAL_CONFIG = new ExtendedCraftingConfig(
                 ENABLE_BASIC_CRAFTING_TERMINAL.get(),
                 ENABLE_BASIC_CRAFT_ONLY_POWERED.get(),
@@ -99,7 +93,6 @@ public class ETConfig {
     public static ExtendedCraftingConfig ADVANCED_TERMINAL_CONFIG;
     public static ExtendedCraftingConfig ELITE_TERMINAL_CONFIG;
     public static ExtendedCraftingConfig ULTIMATE_TERMINAL_CONFIG;
-    public static Map<ItemDefinition<?>, Boolean> DISABLED_TERMINALS;
     @SubscribeEvent
     static void onLoad(final ModConfigEvent event) {
         if(event.getConfig().getSpec() == COMMON) {

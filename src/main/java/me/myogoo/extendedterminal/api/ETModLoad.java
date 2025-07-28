@@ -13,7 +13,7 @@ public class ETModLoad {
 
 
 
-    @Target({ElementType.TYPE, ElementType.METHOD})
+    @Target({ElementType.TYPE, ElementType.METHOD, ElementType.FIELD})
     @Retention(RetentionPolicy.RUNTIME)
     public @interface Avaritia {}
 }

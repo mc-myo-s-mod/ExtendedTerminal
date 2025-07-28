@@ -1,10 +1,12 @@
 package me.myogoo.extendedterminal.util.extendedcrafting;
 
+import com.blakebr0.extendedcrafting.api.crafting.ITableRecipe;
 import com.blakebr0.extendedcrafting.crafting.recipe.ShapedTableRecipe;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.data.recipes.ShapedRecipeBuilder;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.ShapedRecipePattern;
 import net.minecraft.world.level.ItemLike;
 
@@ -18,11 +20,22 @@ public class ShapedTableRecipeBuilder extends ShapedRecipeBuilder {
         return new ShapedTableRecipeBuilder(result, count);
     }
 
-    public void setTier(int tier) {
+    public ShapedTableRecipeBuilder setTier(int tier) {
         if (tier < 0 || tier > 4) {
             throw new IllegalArgumentException("Tier must be between 0 and 4");
         }
         this.tier = tier;
+        return this;
+    }
+
+    public ShapedTableRecipeBuilder pattern(String pattern) {
+        super.pattern(pattern);
+        return this;
+    }
+
+    public ShapedTableRecipeBuilder define(char key, ItemLike item) {
+        super.define(key, item);
+        return this;
     }
 
     @Override
@@ -30,6 +43,10 @@ public class ShapedTableRecipeBuilder extends ShapedRecipeBuilder {
         ShapedRecipePattern shapedrecipepattern = ShapedRecipePattern.of(this.key, this.rows);
         ShapedTableRecipe shapedTableRecipe = new ShapedTableRecipe(shapedrecipepattern,getResult().getDefaultInstance(),tier);
         recipeOutput.accept(id, shapedTableRecipe, null);
+    }
 
+    public RecipeHolder<ITableRecipe> build(ResourceLocation id) {
+        ShapedRecipePattern shapedrecipepattern = ShapedRecipePattern.of(this.key, this.rows);
+        return new RecipeHolder<>(id, new ShapedTableRecipe(shapedrecipepattern,getResult().getDefaultInstance(),tier));
     }
 }

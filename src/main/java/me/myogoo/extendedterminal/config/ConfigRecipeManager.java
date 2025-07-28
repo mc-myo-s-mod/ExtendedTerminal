@@ -1,41 +1,76 @@
 package me.myogoo.extendedterminal.config;
 
 import appeng.core.definitions.AEParts;
-import com.blakebr0.cucumber.event.RecipeManagerLoadingEvent;
 import com.blakebr0.extendedcrafting.init.ModBlocks;
+import dev.architectury.platform.Mod;
 import me.myogoo.extendedterminal.ExtendedTerminal;
+import me.myogoo.extendedterminal.event.RecipeManagerLoadingEvent;
 import me.myogoo.extendedterminal.init.ETItems;
 import me.myogoo.extendedterminal.init.ETParts;
 import me.myogoo.extendedterminal.api.ETModLoad;
 import me.myogoo.extendedterminal.util.extendedcrafting.ShapedTableRecipeBuilder;
+import me.myogoo.extendedterminal.util.mod.ModLoadHelper;
 import net.neoforged.bus.api.SubscribeEvent;
 
-public final class ConfigRecipeManager {
-    private static final ConfigRecipeManager Instance = new ConfigRecipeManager();
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.Arrays;
 
+public final class ConfigRecipeManager {
     @SubscribeEvent
     static void onRegisterRecipes(RecipeManagerLoadingEvent event) {
-
+        Method[] methods = ConfigRecipeManager.class.getDeclaredMethods();
+        for(Method method : methods) {
+            if(method.getParameterCount() == 1 && method.getParameterTypes()[0] == RecipeManagerLoadingEvent.class) {
+                if(Arrays.stream(method.getDeclaredAnnotations()).allMatch(x -> ModLoadHelper.get(x.annotationType()))) {
+                    method.setAccessible(true);
+                    try {
+                        method.invoke(null, event);
+                    } catch (IllegalAccessException | InvocationTargetException e) {
+                        ExtendedTerminal.LOGGER.error("Failed to invoke recipe registration method: {}", method.getName(), e);
+                    }
+                }
+             }
+        }
     }
 
-//    private static RecipeHolder<ITableRecipe> makeTableTerminalRecipe(ItemDefinition<?> terminal) {
-//        return makeTableTerminalRecipe(terminal, 0);
-//    }
-
-//    private static RecipeHolder<ITableRecipe> makeTableTerminalRecipe(ItemDefinition<?> terminal, int tier) {
-//        var id = ExtendedTerminal.makeId(terminal.id + "_table_recipe");
-//    }
-
-
-
     @ETModLoad.ExtendedCrafting
-    private void loadExCraftingRecipe() {
-        ShapedTableRecipeBuilder.shaped(ETParts.BASIC_TERMINAL_PART, 1)
+    private static void loadExCraftingRecipe(RecipeManagerLoadingEvent event) {
+        if(ETConfig.BASIC_TERMINAL_CONFIG.enableTerminal()) event.addRecipe(ShapedTableRecipeBuilder.shaped(ETParts.BASIC_TERMINAL_PART, 1)
                 .pattern("AB")
                 .pattern("C ")
                 .define('A', AEParts.CRAFTING_TERMINAL)
                 .define('B', ModBlocks.BASIC_TABLE.get())
                 .define('C', ETItems.COMPAT_PROCESSOR)
-                .build(ExtendedTerminal.makeId("extended_crafting/basic_terminal"))
+                .build(ExtendedTerminal.makeId("extended_crafting/basic_terminal")));
+
+        if(ETConfig.ADVANCED_TERMINAL_CONFIG.enableTerminal()) event.addRecipe(ShapedTableRecipeBuilder.shaped(ETParts.ADVANCED_TERMINAL_PART, 1)
+                .pattern("AB")
+                .pattern("C ")
+                .define('A', AEParts.CRAFTING_TERMINAL)
+                .define('B', ModBlocks.ADVANCED_TABLE.get())
+                .define('C', ETItems.COMPAT_PROCESSOR)
+                .build(ExtendedTerminal.makeId("extended_crafting/advanced_terminal")));
+
+        if(ETConfig.ELITE_TERMINAL_CONFIG.enableTerminal()) event.addRecipe(ShapedTableRecipeBuilder.shaped(ETParts.ELITE_TERMINAL_PART,1)
+                .pattern("AB")
+                .pattern("C ")
+                .define('A', AEParts.CRAFTING_TERMINAL)
+                .define('B', ModBlocks.ELITE_TABLE.get())
+                .define('C', ETItems.COMPAT_PROCESSOR)
+                .build(ExtendedTerminal.makeId("extended_crafting/elite_terminal")));
+
+        if(ETConfig.ULTIMATE_TERMINAL_CONFIG.enableTerminal()) event.addRecipe(ShapedTableRecipeBuilder.shaped(ETParts.ULTIMATE_TERMINAL_PART, 1)
+                .pattern("AB")
+                .pattern("C ")
+                .define('A', AEParts.CRAFTING_TERMINAL)
+                .define('B', ModBlocks.ULTIMATE_TABLE.get())
+                .define('C', ETItems.COMPAT_PROCESSOR)
+                .build(ExtendedTerminal.makeId("extended_crafting/ultimate_terminal")));
+    }
+
+    @ETModLoad.Avaritia
+    private static void loadAvaritiaRecipe(RecipeManagerLoadingEvent event) {
+
     }
 }
