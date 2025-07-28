@@ -7,10 +7,10 @@ import com.blakebr0.extendedcrafting.compat.jei.category.table.UltimateTableCate
 import me.myogoo.extendedterminal.api.ETJeiRecipeCatalyst;
 import me.myogoo.extendedterminal.config.ETConfig;
 import me.myogoo.extendedterminal.init.ETParts;
-import me.myogoo.extendedterminal.api.ETModLoad;
+import me.myogoo.extendedterminal.api.ModAccessor;
 import mezz.jei.api.registration.IRecipeCatalystRegistration;
 
-@ETModLoad.ExtendedCrafting
+@ModAccessor.ExtendedCrafting
 @ETJeiRecipeCatalyst
 public class ECRecipeCatalyst{
     public static void init(IRecipeCatalystRegistration registration) {

@@ -2,12 +2,11 @@ package me.myogoo.extendedterminal.config;
 
 import appeng.core.definitions.AEParts;
 import com.blakebr0.extendedcrafting.init.ModBlocks;
-import dev.architectury.platform.Mod;
 import me.myogoo.extendedterminal.ExtendedTerminal;
 import me.myogoo.extendedterminal.event.RecipeManagerLoadingEvent;
 import me.myogoo.extendedterminal.init.ETItems;
 import me.myogoo.extendedterminal.init.ETParts;
-import me.myogoo.extendedterminal.api.ETModLoad;
+import me.myogoo.extendedterminal.api.ModAccessor;
 import me.myogoo.extendedterminal.util.extendedcrafting.ShapedTableRecipeBuilder;
 import me.myogoo.extendedterminal.util.mod.ModLoadHelper;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -34,7 +33,7 @@ public final class ConfigRecipeManager {
         }
     }
 
-    @ETModLoad.ExtendedCrafting
+    @ModAccessor.ExtendedCrafting
     private static void loadExCraftingRecipe(RecipeManagerLoadingEvent event) {
         if(ETConfig.BASIC_TERMINAL_CONFIG.enableTerminal()) event.addRecipe(ShapedTableRecipeBuilder.shaped(ETParts.BASIC_TERMINAL_PART, 1)
                 .pattern("AB")
@@ -69,7 +68,7 @@ public final class ConfigRecipeManager {
                 .build(ExtendedTerminal.makeId("extended_crafting/ultimate_terminal")));
     }
 
-    @ETModLoad.Avaritia
+    @ModAccessor.Avaritia
     private static void loadAvaritiaRecipe(RecipeManagerLoadingEvent event) {
 
     }

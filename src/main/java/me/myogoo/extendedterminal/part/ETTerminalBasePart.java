@@ -13,14 +13,14 @@ import net.minecraft.world.item.ItemStack;
 
 import java.util.List;
 
-public abstract class ETBaseTerminalPart extends AbstractTerminalPart {
+public abstract class ETTerminalBasePart extends AbstractTerminalPart {
     public static final ResourceLocation MODEL_OFF = CraftingTerminalPart.MODEL_OFF;
     public static final ResourceLocation MODEL_ON = CraftingTerminalPart.MODEL_ON;
 
     private final AppEngInternalInventory craftingGrid;
     private final ETMenuType menuType;
 
-    public ETBaseTerminalPart(IPartItem<?> partItem, ETMenuType menuType) {
+    public ETTerminalBasePart(IPartItem<?> partItem, ETMenuType menuType) {
         super(partItem);
         this.menuType = menuType;
         this.craftingGrid = new AppEngInternalInventory(this, menuType.getGridSize());

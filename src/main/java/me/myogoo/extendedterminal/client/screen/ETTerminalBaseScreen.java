@@ -9,20 +9,21 @@ import appeng.core.network.serverbound.InventoryActionPacket;
 import appeng.helpers.InventoryAction;
 import appeng.menu.SlotSemantic;
 import com.mojang.blaze3d.platform.InputConstants;
+import me.myogoo.extendedterminal.menu.ETTerminalBaseMenu;
 import me.myogoo.extendedterminal.menu.ETMenuType;
-import me.myogoo.extendedterminal.menu.extendedcrafting.ExtendedTerminalBaseMenu;
-import me.myogoo.extendedterminal.menu.slot.ETBaseCraftingSlot;
+import me.myogoo.extendedterminal.menu.slot.ETCraftingBaseSlot;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.ClickType;
 import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.crafting.Recipe;
 import net.neoforged.neoforge.network.PacketDistributor;
 import org.lwjgl.glfw.GLFW;
 
 import java.util.List;
 
-public class ETBaseTerminalScreen<T extends ExtendedTerminalBaseMenu> extends MEStorageScreen<T> {
-    public ETBaseTerminalScreen(T menu, Inventory playerInventory, Component title, ScreenStyle style) {
+public class ETTerminalBaseScreen<R extends Recipe<?>,T extends ETTerminalBaseMenu<R>> extends MEStorageScreen<T> {
+    public ETTerminalBaseScreen(T menu, Inventory playerInventory, Component title, ScreenStyle style) {
         super(menu, playerInventory, title, style);
 
         ActionButton clearBtn = new ActionButton(ActionItems.S_STASH, btn -> menu.clearCraftingGrid());
@@ -48,7 +49,7 @@ public class ETBaseTerminalScreen<T extends ExtendedTerminalBaseMenu> extends ME
 
     @Override
     protected void slotClicked(Slot slot, int slotIdx, int mouseButton, ClickType clickType) {
-        if (slot instanceof ETBaseCraftingSlot) {
+        if (slot instanceof ETCraftingBaseSlot) {
             InventoryAction action;
             if (hasShiftDown()) {
                 action = InventoryAction.CRAFT_SHIFT;

@@ -5,7 +5,7 @@ import com.blakebr0.extendedcrafting.compat.jei.category.table.BasicTableCategor
 import com.blakebr0.extendedcrafting.compat.jei.category.table.EliteTableCategory;
 import com.blakebr0.extendedcrafting.compat.jei.category.table.UltimateTableCategory;
 import me.myogoo.extendedterminal.api.ETJeiRecipeTransfer;
-import me.myogoo.extendedterminal.api.ETModLoad;
+import me.myogoo.extendedterminal.api.ModAccessor;
 import me.myogoo.extendedterminal.integration.jei.extendedcrafting.handler.ECJeiRecipeTransferHandler;
 import me.myogoo.extendedterminal.menu.extendedcrafting.AdvancedTerminalMenu;
 import me.myogoo.extendedterminal.menu.extendedcrafting.BasicTerminalMenu;
@@ -13,7 +13,7 @@ import me.myogoo.extendedterminal.menu.extendedcrafting.EliteTerminalMenu;
 import me.myogoo.extendedterminal.menu.extendedcrafting.UltimateTerminalMenu;
 import mezz.jei.api.registration.IRecipeTransferRegistration;
 
-@ETModLoad.ExtendedCrafting
+@ModAccessor.ExtendedCrafting
 @ETJeiRecipeTransfer
 public class ECRecipeTransferHandler {
     public static void init(IRecipeTransferRegistration registration) {
