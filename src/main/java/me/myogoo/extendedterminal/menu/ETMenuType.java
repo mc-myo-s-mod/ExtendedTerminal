@@ -2,7 +2,7 @@ package me.myogoo.extendedterminal.menu;
 
 import appeng.menu.SlotSemantic;
 import me.myogoo.extendedterminal.ExtendedTerminal;
-import me.myogoo.extendedterminal.api.ETModLoad;
+import me.myogoo.extendedterminal.api.ModAccessor;
 import me.myogoo.extendedterminal.util.mod.ModLoadHelper;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.fml.common.asm.enumextension.ExtensionInfo;
@@ -16,23 +16,32 @@ import java.util.Arrays;
 public enum ETMenuType implements IExtensibleEnum {
     ET_TERMINAL(3,-1, ETSlotSemantics.BASIC_CRAFTING_GRID, ETSlotSemantics.BASIC_CRAFTING_RESULT),
 
-    @ETModLoad.ExtendedCrafting
+    @ModAccessor.ExtendedCrafting
     BASIC_TERMINAL(3,1, ETSlotSemantics.BASIC_CRAFTING_GRID, ETSlotSemantics.BASIC_CRAFTING_RESULT),
 
-    @ETModLoad.ExtendedCrafting
+    @ModAccessor.ExtendedCrafting
     ADVANCED_TERMINAL(5,2, ETSlotSemantics.ADVANCED_CRAFTING_GRID, ETSlotSemantics.ADVANCED_CRAFTING_RESULT),
 
-    @ETModLoad.ExtendedCrafting
+    @ModAccessor.ExtendedCrafting
     ELITE_TERMINAL(7,3, ETSlotSemantics.ELITE_CRAFTING_GRID, ETSlotSemantics.ELITE_CRAFTING_RESULT),
 
-    @ETModLoad.ExtendedCrafting
+    @ModAccessor.ExtendedCrafting
     ULTIMATE_TERMINAL(9,4, ETSlotSemantics.ULTIMATE_CRAFTING_GRID, ETSlotSemantics.ULTIMATE_CRAFTING_RESULT),
 
-    @ETModLoad.ExtendedCrafting
+    @ModAccessor.ExtendedCrafting
     EXTENDED_CRAFTING_UNIVERSAL_TERMINAL(9,0, ETSlotSemantics.EXTENDED_CRAFTING_UNIVERSAL_GRID, ETSlotSemantics.EXTENDED_CRAFTING_UNIVERSAL_RESULT),
 
-    @ETModLoad.Avaritia
-    AVARITIA_TERMINAL(9, -1, ETSlotSemantics.AVARITIA_CRAFTING_GRID, ETSlotSemantics.AVARITIA_CRAFTING_RESULT),;
+    @ModAccessor.Avaritia
+    SCULK_TERMINAL(3, 1, ETSlotSemantics.SCULK_CRAFTING_GRID, ETSlotSemantics.SCULK_CRAFTING_RESULT),
+
+    @ModAccessor.Avaritia
+    NETHER_TERMINAL(5, 2, ETSlotSemantics.NETHER_CRAFTING_GRID, ETSlotSemantics.NETHER_CRAFTING_RESULT),
+
+    @ModAccessor.Avaritia
+    END_TERMINAL(7, 3, ETSlotSemantics.END_CRAFTING_GRID, ETSlotSemantics.END_CRAFTING_RESULT),
+
+    @ModAccessor.Avaritia
+    EXTREME_TERMINAL(9, 4, ETSlotSemantics.EXTREME_CRAFTING_GRID, ETSlotSemantics.EXTREME_CRAFTING_RESULT),;
 
     private final SlotSemantic slotSemantic_GRID;
     private final SlotSemantic slotSemantic_RESULT;

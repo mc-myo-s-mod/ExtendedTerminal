@@ -10,7 +10,12 @@ import me.myogoo.extendedterminal.ExtendedTerminal;
 import me.myogoo.extendedterminal.item.EmptyPartItem;
 import me.myogoo.extendedterminal.item.ExtendedCraftingPartItem;
 import me.myogoo.extendedterminal.menu.ETMenuType;
+import me.myogoo.extendedterminal.menu.avaritia.SculkTerminalMenu;
 import me.myogoo.extendedterminal.part.EmptyPart;
+import me.myogoo.extendedterminal.part.avaritia.EndTerminalPart;
+import me.myogoo.extendedterminal.part.avaritia.ExtremeTerminalPart;
+import me.myogoo.extendedterminal.part.avaritia.NetherTerminalPart;
+import me.myogoo.extendedterminal.part.avaritia.SculkTerminalPart;
 import me.myogoo.extendedterminal.part.extendedcrafting.AdvancedTerminalPart;
 import me.myogoo.extendedterminal.part.extendedcrafting.BasicExtendedTerminalPart;
 import me.myogoo.extendedterminal.part.extendedcrafting.EliteTerminalPart;
@@ -29,10 +34,16 @@ public class ETParts {
     public static final List<ItemDefinition<? extends PartItem<?>>> PARTS = new ArrayList<>();
     public static final List<ItemDefinition<? extends PartItem<?>>> TERMINAL_PARTS = new ArrayList<>();
 
+    // extended crafting parts
     public static final ItemDefinition<PartItem<BasicExtendedTerminalPart>> BASIC_TERMINAL_PART = createExtendedCraftingPart(ETMenuType.BASIC_TERMINAL, BasicExtendedTerminalPart.class, BasicExtendedTerminalPart::new);
     public static final ItemDefinition<PartItem<AdvancedTerminalPart>> ADVANCED_TERMINAL_PART = createExtendedCraftingPart(ETMenuType.ADVANCED_TERMINAL, AdvancedTerminalPart.class, AdvancedTerminalPart::new);
     public static final ItemDefinition<PartItem<EliteTerminalPart>> ELITE_TERMINAL_PART = createExtendedCraftingPart(ETMenuType.ELITE_TERMINAL, EliteTerminalPart.class, EliteTerminalPart::new);
     public static final ItemDefinition<PartItem<UltimateTerminalPart>> ULTIMATE_TERMINAL_PART = createExtendedCraftingPart(ETMenuType.ULTIMATE_TERMINAL, UltimateTerminalPart.class, UltimateTerminalPart::new);
+    // avaritia parts
+    public static final ItemDefinition<PartItem<SculkTerminalPart>> SCULK_TERMINAL_PART = createTerminalPart(ETMenuType.SCULK_TERMINAL, SculkTerminalPart.class, SculkTerminalPart::new);
+    public static final ItemDefinition<PartItem<NetherTerminalPart>> NETHER_TERMINAL_PART = createTerminalPart(ETMenuType.NETHER_TERMINAL, NetherTerminalPart.class, NetherTerminalPart::new);
+    public static final ItemDefinition<PartItem<EndTerminalPart>> END_TERMINAL_PART = createTerminalPart(ETMenuType.END_TERMINAL, EndTerminalPart.class, EndTerminalPart::new);
+    public static final ItemDefinition<PartItem<ExtremeTerminalPart>> EXTREME_TERMINAL_PART = createTerminalPart(ETMenuType.EXTREME_TERMINAL, ExtremeTerminalPart.class, ExtremeTerminalPart::new);
 
     @SuppressWarnings("unchecked")
     private static <T extends IPart, I extends PartItem<T>> ItemDefinition<I> createPart(ETMenuType menuType, Class<T> partClass, Function<Item.Properties, I> propertiesFactory, boolean terminalPart) {
