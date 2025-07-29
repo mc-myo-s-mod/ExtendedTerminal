@@ -43,10 +43,10 @@ public class ETClient {
         InitScreens.register(event, UltimateTerminalMenu.TYPE, UltimateTerminalScreen::new, "/screens/extended_terminal/ultimate_terminal.json");
 
         // avaritia terminals
-        InitScreens.register(event, SculkTerminalMenu.TYPE, SculkTerminalScreen::new, "/screens/extended_terminal/basic_terminal.json");
-        InitScreens.register(event, NetherTerminalMenu.TYPE, NetherTerminalScreen::new, "/screens/extended_terminal/advanced_terminal.json");
-        InitScreens.register(event, EndTerminalMenu.TYPE, EndTerminalScreen::new, "/screens/extended_terminal/elite_terminal.json");
-        InitScreens.register(event, ExtremeTerminalMenu.TYPE, ExtremeTerminalScreen::new, "/screens/extended_terminal/ultimate_terminal.json");
+        InitScreens.register(event, SculkTerminalMenu.TYPE, SculkTerminalScreen::new, "/screens/avaritia/sculk_terminal.json");
+        InitScreens.register(event, NetherTerminalMenu.TYPE, NetherTerminalScreen::new, "/screens/avaritia/nether_terminal.json");
+        InitScreens.register(event, EndTerminalMenu.TYPE, EndTerminalScreen::new, "/screens/avaritia/end_terminal.json.json");
+        InitScreens.register(event, ExtremeTerminalMenu.TYPE, ExtremeTerminalScreen::new, "/screens/avaritia/extreme_terminal.json");
     }
 
     public static void initColorParts(RegisterColorHandlersEvent.Item event) {
