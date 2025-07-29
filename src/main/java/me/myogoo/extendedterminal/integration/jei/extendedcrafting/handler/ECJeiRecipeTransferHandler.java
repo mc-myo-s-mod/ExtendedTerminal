@@ -14,8 +14,10 @@ import mezz.jei.api.recipe.transfer.IRecipeTransferHandlerHelper;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.item.crafting.Ingredient;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Map;
 import java.util.Objects;
 
 import static appeng.integration.modules.itemlists.TransferHelper.BLUE_PLUS_BUTTON_COLOR;
@@ -23,7 +25,6 @@ import static appeng.integration.modules.itemlists.TransferHelper.ORANGE_PLUS_BU
 import static me.myogoo.extendedterminal.integration.ItemListTermCraftingHelper.getGuiSlotToIngredientMap;
 
 public class ECJeiRecipeTransferHandler<T extends ExtendedTerminalBaseMenu> extends AbstractTableRecipeHandler<T, ITableRecipe> {
-
     private final IRecipeTransferHandlerHelper helper;
 
     public ECJeiRecipeTransferHandler(Class<T> containerClass, MenuType<T> container, RecipeType<ITableRecipe> recipeType, IRecipeTransferHandlerHelper helper) {
@@ -69,8 +70,16 @@ public class ECJeiRecipeTransferHandler<T extends ExtendedTerminalBaseMenu> exte
                 ItemListTermCraftingHelper.performTransfer(menu,null, recipe, craftMissing);
             }
         }
-
         return Result.createSuccessful();
     }
 
+    @Override
+    public void performTransfer(T men, @Nullable ITableRecipe recipe, boolean craftMissing) {
+
+    }
+
+    @Override
+    protected Map<Integer, Ingredient> getGuiSlotToIngredientMap(T menu, ITableRecipe recipe) {
+
+    }
 }

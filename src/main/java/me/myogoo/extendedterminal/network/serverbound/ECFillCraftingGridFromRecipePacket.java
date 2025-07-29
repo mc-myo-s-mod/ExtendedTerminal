@@ -28,23 +28,21 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import org.jetbrains.annotations.Nullable;
-import org.slf4j.Logger;
-
 
 import java.util.*;
 
+import static com.blakebr0.extendedcrafting.ExtendedCrafting.LOGGER;
 import static me.myogoo.extendedterminal.integration.ItemListTermCraftingHelper.ensureNxNCraftingMatrix;
 
-public class ETFillCraftingGridFromRecipePacket implements ServerboundPacket {
-    private static final Logger LOGGER = ExtendedTerminal.LOGGER;
+public class ECFillCraftingGridFromRecipePacket implements ServerboundPacket {
     private static final int NOT_SET_RECIPE_SIZE = -1; //name refactor
-    public static final StreamCodec<RegistryFriendlyByteBuf, ETFillCraftingGridFromRecipePacket> STREAM_CODEC = StreamCodec
+    public static final StreamCodec<RegistryFriendlyByteBuf, ECFillCraftingGridFromRecipePacket> STREAM_CODEC = StreamCodec
             .ofMember(
-                    ETFillCraftingGridFromRecipePacket::write,
-                    ETFillCraftingGridFromRecipePacket::decode);
+                    ECFillCraftingGridFromRecipePacket::write,
+                    ECFillCraftingGridFromRecipePacket::decode);
 
-    public static final Type<ETFillCraftingGridFromRecipePacket> TYPE = new CustomPacketPayload
-            .Type<>(ExtendedTerminal.makeId("fill_crafting_grid_from_recipe"));
+    public static final Type<ECFillCraftingGridFromRecipePacket> TYPE = new CustomPacketPayload
+            .Type<>(ExtendedTerminal.makeId("ec_fill_crafting_grid_from_recipe"));
 
     private final @Nullable ResourceLocation recipeId;
     private final List<ItemStack> ingredientTemplates;
@@ -53,11 +51,11 @@ public class ETFillCraftingGridFromRecipePacket implements ServerboundPacket {
     private final int recipeHeight;
 
     @Override
-    public CustomPacketPayload.Type<ETFillCraftingGridFromRecipePacket> type() {
+    public CustomPacketPayload.Type<ECFillCraftingGridFromRecipePacket> type() {
         return TYPE;
     }
 
-    public ETFillCraftingGridFromRecipePacket(
+    public ECFillCraftingGridFromRecipePacket(
             @Nullable ResourceLocation recipeId,
             List<ItemStack> ingredientTemplates,
             boolean craftMissing
@@ -69,7 +67,7 @@ public class ETFillCraftingGridFromRecipePacket implements ServerboundPacket {
         this.recipeWidth = NOT_SET_RECIPE_SIZE;
     }
 
-    public ETFillCraftingGridFromRecipePacket(
+    public ECFillCraftingGridFromRecipePacket(
             List<ItemStack> ingredientTemplates,
             boolean craftMissing,
             int recipeWidth,
@@ -97,7 +95,7 @@ public class ETFillCraftingGridFromRecipePacket implements ServerboundPacket {
         stream.writeInt(recipeHeight);
     }
 
-    public static ETFillCraftingGridFromRecipePacket decode(RegistryFriendlyByteBuf stream) {
+    public static ECFillCraftingGridFromRecipePacket decode(RegistryFriendlyByteBuf stream) {
         ResourceLocation recipeId = null;
         if (stream.readBoolean()) {
             recipeId = stream.readResourceLocation();
@@ -111,14 +109,14 @@ public class ETFillCraftingGridFromRecipePacket implements ServerboundPacket {
         int recipeWidth = stream.readInt();
         int recipeHeight = stream.readInt();
         if (recipeId != null) {
-            return new ETFillCraftingGridFromRecipePacket(recipeId, ingredientTemplates, craftMissing);
+            return new ECFillCraftingGridFromRecipePacket(recipeId, ingredientTemplates, craftMissing);
         } else {
             if (recipeWidth <= 0 || recipeHeight <= 0) { //hmm.. ai generated code
                 LOGGER.warn("Received ETFillCraftingGridFromRecipePacket with invalid recipe size: {}x{}",
                         recipeWidth, recipeHeight);
-                return new ETFillCraftingGridFromRecipePacket(recipeId, ingredientTemplates, craftMissing);
+                return new ECFillCraftingGridFromRecipePacket(recipeId, ingredientTemplates, craftMissing);
             }
-            return new ETFillCraftingGridFromRecipePacket(ingredientTemplates, craftMissing, recipeWidth, recipeHeight);
+            return new ECFillCraftingGridFromRecipePacket(ingredientTemplates, craftMissing, recipeWidth, recipeHeight);
         }
     }
 
@@ -335,13 +333,5 @@ public class ETFillCraftingGridFromRecipePacket implements ServerboundPacket {
                         key -> ((AEItemKey) key).matches(ingredient)))
                 .filter(Objects::nonNull)
                 .findAny();
-    }
-
-    private int calculateCraftingGridOffsetX() {
-        return 0;
-    }
-
-    private int calculateCraftingGridOffsetY() {
-        return 0;
     }
 }

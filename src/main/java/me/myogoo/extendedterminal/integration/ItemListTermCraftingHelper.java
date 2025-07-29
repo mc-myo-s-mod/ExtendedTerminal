@@ -10,8 +10,10 @@ import com.blakebr0.extendedcrafting.api.crafting.ITableRecipe;
 import com.blakebr0.extendedcrafting.crafting.recipe.ShapedTableRecipe;
 import com.blakebr0.extendedcrafting.crafting.recipe.ShapelessTableRecipe;
 import me.myogoo.extendedterminal.ExtendedTerminal;
+import me.myogoo.extendedterminal.menu.avaritia.AvaritiaTerminalBaseMenu;
 import me.myogoo.extendedterminal.menu.extendedcrafting.ExtendedTerminalBaseMenu;
-import me.myogoo.extendedterminal.network.serverbound.ETFillCraftingGridFromRecipePacket;
+import me.myogoo.extendedterminal.network.serverbound.AVFillCraftingGridFromRecipePacket;
+import me.myogoo.extendedterminal.network.serverbound.ECFillCraftingGridFromRecipePacket;
 import me.myogoo.extendedterminal.util.extendedcrafting.ExtendedCraftingHelper;
 import net.minecraft.core.NonNullList;
 import net.minecraft.resources.ResourceLocation;
@@ -45,7 +47,7 @@ public class ItemListTermCraftingHelper {
             recipeId = null;
         }
 
-        ServerboundPacket message = new ETFillCraftingGridFromRecipePacket(recipeId, templateItems, craftMissing);
+        ServerboundPacket message = new ECFillCraftingGridFromRecipePacket(recipeId, templateItems, craftMissing);
         PacketDistributor.sendToServer(message);
     }
 
@@ -53,9 +55,16 @@ public class ItemListTermCraftingHelper {
                                        int recipeWidth, int recipeHeight) {
         var templateItems = findGoodTemplateItems(recipe, menu);
 
-        ServerboundPacket message =new ETFillCraftingGridFromRecipePacket(templateItems,craftMissing,
+        ServerboundPacket message = new ECFillCraftingGridFromRecipePacket(templateItems,craftMissing,
                 recipeWidth,recipeHeight);
         PacketDistributor.sendToServer(message);
+    }
+
+     public static void performAVTransfer(AvaritiaTerminalBaseMenu menu, Recipe<?> recipe, boolean craftMissing,
+                                          int recipeWidth, int recipeHeight) {
+        //var templateItems = findGoodTemplateItems(recipe, menu);
+
+       // ServerboundPacket message = new AVFillCraftingGridFromRecipePacket(templateItems, craftMissing)
     }
 
     private static NonNullList<ItemStack> findGoodTemplateItems(Recipe<?> recipe, ExtendedTerminalBaseMenu menu) {
