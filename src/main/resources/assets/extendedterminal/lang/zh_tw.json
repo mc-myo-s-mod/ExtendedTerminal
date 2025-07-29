@@ -1,0 +1,21 @@
+{
+  "itemGroup.extendedterminal": "合成拓展終端機",
+
+  "item.extendedterminal.basic_terminal": "基礎合成拓展終端機",
+  "item.extendedterminal.advanced_terminal": "高級合成拓展終端機",
+  "item.extendedterminal.elite_terminal": "菁英合成拓展終端機",
+  "item.extendedterminal.ultimate_terminal": "終極合成拓展終端機",
+
+  "item.extendedterminal.compat_processor": "兼容處理器",
+  "item.extendedterminal.printed_compat_processor": "兼容印刷電路板",
+
+  "gui.extendedterminal.basicTerminal": "基礎合成拓展終端機",
+  "gui.extendedterminal.advancedTerminal": "高級合成拓展終端機",
+  "gui.extendedterminal.eliteTerminal": "菁英合成拓展終端機",
+  "gui.extendedterminal.ultimateTerminal": "終極合成拓展終端機",
+
+  "emi.category.extendedterminal.basic_crafting_table": "基礎合成",
+  "emi.category.extendedterminal.advanced_crafting_table": "高級合成",
+  "emi.category.extendedterminal.elite_crafting_table": "菁英合成",
+  "emi.category.extendedterminal.ultimate_crafting_table": "終極合成"
+}

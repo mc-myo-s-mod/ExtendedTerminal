@@ -1,6 +1,5 @@
 {
-  "itemgroup.extendedcrafting": "Extended Terminal",
-  "itemgroup.extendedcrafting.title": "확장된 터미널",
+  "itemGroup.extendedterminal": "Extended Terminal",
 
   "item.extendedterminal.basic_terminal": "기본 조합 터미널",
   "item.extendedterminal.advanced_terminal": "고급 조합 터미널",

@@ -1,6 +1,5 @@
 {
-  "itemgroup.extendedcrafting": "Extended Terminal",
-  "itemgroup.extendedcrafting.title": "Extended Terminal",
+  "itemGroup.extendedterminal": "Extended Terminal",
 
   "item.extendedterminal.basic_terminal": "Extended Crafting用基本型クラフトターミナル",
   "item.extendedterminal.advanced_terminal": "Extended Crafting用発展型クラフトターミナル",
