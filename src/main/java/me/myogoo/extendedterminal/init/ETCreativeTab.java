@@ -3,6 +3,7 @@ package me.myogoo.extendedterminal.init;
 import appeng.core.definitions.AEParts;
 import appeng.core.definitions.ItemDefinition;
 import me.myogoo.extendedterminal.ExtendedTerminal;
+import me.myogoo.extendedterminal.config.ETConfig;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.CreativeModeTab;
