@@ -1,8 +1,8 @@
 package me.myogoo.extendedterminal.integration.jei;
 
 import me.myogoo.extendedterminal.ExtendedTerminal;
-import me.myogoo.extendedterminal.api.ETJeiRecipeCatalyst;
-import me.myogoo.extendedterminal.api.ETJeiRecipeTransfer;
+import me.myogoo.extendedterminal.api.integration.jei.ETJeiRecipeCatalyst;
+import me.myogoo.extendedterminal.api.integration.jei.ETJeiRecipeTransfer;
 import me.myogoo.extendedterminal.util.SafeClass;
 import me.myogoo.extendedterminal.util.mod.ModLoadHelper;
 import mezz.jei.api.registration.IRecipeCatalystRegistration;
@@ -22,7 +22,7 @@ public class JeiRegisterHelper {
                 .stream()
                 .filter(a -> a.annotationType().equals(Type.getType(ETJeiRecipeCatalyst.class)))
                 .map(a -> SafeClass.forType(a.clazz()))
-                .filter(a -> Arrays.stream(a.getAnnotations()).anyMatch(b -> ModLoadHelper.get(b.annotationType())))
+                .filter(a -> Arrays.stream(a.getAnnotations()).allMatch(b -> ModLoadHelper.get(b.annotationType())))
                 .forEach(x -> {
                     try {
                         Method method = x.getDeclaredMethod("init", IRecipeCatalystRegistration.class);
@@ -40,7 +40,7 @@ public class JeiRegisterHelper {
                 .stream()
                 .filter(a -> a.annotationType().equals(Type.getType(ETJeiRecipeTransfer.class)))
                 .map(a -> SafeClass.forType(a.clazz()))
-                .filter(a -> Arrays.stream(a.getAnnotations()).anyMatch(b -> ModLoadHelper.get(b.annotationType())))
+                .filter(a -> Arrays.stream(a.getAnnotations()).allMatch(b -> ModLoadHelper.get(b.annotationType())))
                 .forEach(x -> {
                     try {
                         Method method = x.getDeclaredMethod("init", IRecipeTransferRegistration.class);

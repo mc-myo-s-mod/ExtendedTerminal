@@ -45,7 +45,7 @@ public class ETClient {
         // avaritia terminals
         InitScreens.register(event, SculkTerminalMenu.TYPE, SculkTerminalScreen::new, "/screens/avaritia/sculk_terminal.json");
         InitScreens.register(event, NetherTerminalMenu.TYPE, NetherTerminalScreen::new, "/screens/avaritia/nether_terminal.json");
-        InitScreens.register(event, EndTerminalMenu.TYPE, EndTerminalScreen::new, "/screens/avaritia/end_terminal.json.json");
+        InitScreens.register(event, EndTerminalMenu.TYPE, EndTerminalScreen::new, "/screens/avaritia/end_terminal.json");
         InitScreens.register(event, ExtremeTerminalMenu.TYPE, ExtremeTerminalScreen::new, "/screens/avaritia/extreme_terminal.json");
     }
 

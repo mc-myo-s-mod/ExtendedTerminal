@@ -1,11 +1,14 @@
 package me.myogoo.extendedterminal.integration.jei.extendedcrafting.handler;
 
 import appeng.core.localization.ItemModText;
+import appeng.core.network.ServerboundPacket;
 import com.blakebr0.extendedcrafting.api.crafting.ITableRecipe;
 import com.blakebr0.extendedcrafting.crafting.recipe.ShapedTableRecipe;
+import me.myogoo.extendedterminal.api.adapter.recipe.ITableRecipeAdapter;
 import me.myogoo.extendedterminal.integration.ItemListTermCraftingHelper;
 import me.myogoo.extendedterminal.integration.jei.handler.AbstractTableRecipeHandler;
 import me.myogoo.extendedterminal.menu.extendedcrafting.ExtendedTerminalBaseMenu;
+import me.myogoo.extendedterminal.network.serverbound.FillTableCraftingGridFromRecipePacket;
 import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.recipe.RecipeType;
@@ -14,15 +17,15 @@ import mezz.jei.api.recipe.transfer.IRecipeTransferHandlerHelper;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.MenuType;
-import net.minecraft.world.item.crafting.Ingredient;
+import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Map;
 import java.util.Objects;
 
 import static appeng.integration.modules.itemlists.TransferHelper.BLUE_PLUS_BUTTON_COLOR;
 import static appeng.integration.modules.itemlists.TransferHelper.ORANGE_PLUS_BUTTON_COLOR;
 import static me.myogoo.extendedterminal.integration.ItemListTermCraftingHelper.getGuiSlotToIngredientMap;
+import static me.myogoo.extendedterminal.network.serverbound.FillTableCraftingGridFromRecipePacket.NOT_SET_RECIPE_SIZE;
 
 public class ECJeiRecipeTransferHandler<T extends ExtendedTerminalBaseMenu> extends AbstractTableRecipeHandler<T, ITableRecipe> {
     private final IRecipeTransferHandlerHelper helper;
@@ -34,18 +37,18 @@ public class ECJeiRecipeTransferHandler<T extends ExtendedTerminalBaseMenu> exte
 
     @Override
     public @Nullable IRecipeTransferError transferRecipe(T menu, ITableRecipe recipe, IRecipeSlotsView recipeSlots, Player player, boolean maxTransfer, boolean doTransfer) {
-        if(recipe.getIngredients().isEmpty()) {
+        if (recipe.getIngredients().isEmpty()) {
             return Result.createInCompatibleError(helper);
         }
 
-        if(!recipe.canCraftInDimensions(menu.getCraftingGridWidth(),menu.getCraftingGridHeight())) {
+        if (!recipe.canCraftInDimensions(menu.getCraftingGridWidth(), menu.getCraftingGridHeight())) {
             return Result.createRecipeToLargeError(helper);
         }
 
         boolean craftMissing = AbstractContainerScreen.hasControlDown();
         var inputSlots = recipeSlots.getSlotViews(RecipeIngredientRole.INPUT);
 
-        var slotToIngredientMap = getGuiSlotToIngredientMap(recipe, menu.getETMenuType().getGridSideLength());
+        var slotToIngredientMap = getGuiSlotToIngredientMap(ITableRecipeAdapter.of(recipe), menu.getETMenuType().getGridSideLength());
         var missingSlots = menu.findMissingIngredients(slotToIngredientMap);
 
         if (missingSlots.missingSlots().size() == slotToIngredientMap.size()) {
@@ -63,23 +66,22 @@ public class ECJeiRecipeTransferHandler<T extends ExtendedTerminalBaseMenu> exte
                 return new Result.PartiallyCraftable(missingSlots, color, craftMissing);
             }
         } else {
-            if(recipe instanceof ShapedTableRecipe shapedRecipe) {
-                ItemListTermCraftingHelper.performTransfer(menu, recipe,craftMissing,
-                        shapedRecipe.getWidth(), shapedRecipe.getHeight());
-            } else {
-                ItemListTermCraftingHelper.performTransfer(menu,null, recipe, craftMissing);
-            }
+            performTransfer(menu, recipe, craftMissing);
         }
         return Result.createSuccessful();
     }
 
     @Override
-    public void performTransfer(T men, @Nullable ITableRecipe recipe, boolean craftMissing) {
+    public void performTransfer(T menu, @Nullable ITableRecipe recipe, boolean craftMissing) {
+        var templateItems = ItemListTermCraftingHelper.findGoodTemplateItems(ITableRecipeAdapter.of(recipe), menu);
+        int recipeWidth = NOT_SET_RECIPE_SIZE;
+        int recipeHeight = NOT_SET_RECIPE_SIZE;
+        if (recipe instanceof ShapedTableRecipe shapedRecipe) {
+            recipeWidth = shapedRecipe.getWidth();
+            recipeHeight = shapedRecipe.getHeight();
+        }
 
-    }
-
-    @Override
-    protected Map<Integer, Ingredient> getGuiSlotToIngredientMap(T menu, ITableRecipe recipe) {
-
+        ServerboundPacket message = new FillTableCraftingGridFromRecipePacket(templateItems, craftMissing, recipeWidth, recipeHeight);
+        PacketDistributor.sendToServer(message);
     }
 }

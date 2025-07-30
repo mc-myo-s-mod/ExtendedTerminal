@@ -3,9 +3,7 @@ package me.myogoo.extendedterminal.integration.jei.handler;
 import appeng.core.localization.ItemModText;
 import appeng.integration.modules.itemlists.TransferHelper;
 import appeng.menu.me.items.CraftingTermMenu;
-import com.blakebr0.extendedcrafting.api.crafting.ITableRecipe;
 import me.myogoo.extendedterminal.menu.ETTerminalBaseMenu;
-import me.myogoo.extendedterminal.menu.extendedcrafting.ExtendedTerminalBaseMenu;
 import mezz.jei.api.gui.builder.ITooltipBuilder;
 import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.recipe.RecipeIngredientRole;
@@ -15,11 +13,10 @@ import mezz.jei.api.recipe.transfer.IRecipeTransferHandler;
 import mezz.jei.api.recipe.transfer.IRecipeTransferHandlerHelper;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.world.inventory.MenuType;
-import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Map;
 import java.util.Optional;
 
 import static appeng.integration.modules.itemlists.TransferHelper.*;
@@ -36,27 +33,25 @@ public abstract class AbstractTableRecipeHandler<T extends ETTerminalBaseMenu<R>
     }
 
     @Override
-    public Class<? extends T> getContainerClass() {
+    public @NotNull Class<? extends T> getContainerClass() {
         return containerClass;
     }
 
     @Override
-    public Optional<MenuType<T>> getMenuType() {
+    public @NotNull Optional<MenuType<T>> getMenuType() {
         return Optional.of(menuType);
     }
 
     @Override
-    public RecipeType<R> getRecipeType() {
+    public @NotNull RecipeType<R> getRecipeType() {
         return recipeType;
     }
 
-    protected abstract void performTransfer(T men, @Nullable R recipe, boolean craftMissing);
-
-    protected abstract Map<Integer, Ingredient> getGuiSlotToIngredientMap(T menu,R recipe);
+    protected abstract void performTransfer(T mene, @Nullable R recipe, boolean craftMissing);
 
     protected static abstract class Result implements IRecipeTransferError {
         @Override
-        public Type getType() {
+        public @NotNull Type getType() {
             return Type.COSMETIC;
         }
 

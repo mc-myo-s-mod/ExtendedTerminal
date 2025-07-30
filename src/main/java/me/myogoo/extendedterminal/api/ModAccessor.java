@@ -11,8 +11,6 @@ public class ModAccessor {
     @Retention(RetentionPolicy.RUNTIME)
     public @interface ExtendedCrafting {}
 
-
-
     @Target({ElementType.TYPE, ElementType.METHOD, ElementType.FIELD})
     @Retention(RetentionPolicy.RUNTIME)
     public @interface Avaritia {}

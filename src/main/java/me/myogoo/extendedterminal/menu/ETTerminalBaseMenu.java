@@ -10,7 +10,7 @@ import appeng.menu.me.crafting.CraftConfirmMenu;
 import appeng.menu.me.items.CraftingTermMenu;
 import appeng.util.inv.PlayerInternalInventory;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
-import me.myogoo.extendedterminal.api.IETTerminalConfig;
+import me.myogoo.extendedterminal.api.config.IETTerminalConfig;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Inventory;

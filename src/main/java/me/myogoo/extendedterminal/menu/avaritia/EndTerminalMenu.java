@@ -13,6 +13,6 @@ public class EndTerminalMenu extends AvaritiaTerminalBaseMenu {
             .buildUnregistered(ETMenuType.END_TERMINAL.getId());
 
     public EndTerminalMenu(MenuType<?> menuType, int id, Inventory ip, ITerminalHost host) {
-        super(menuType, id, ip, host, ETMenuType.ET_TERMINAL, ETConfig.END_TERMINAL_CONFIG);
+        super(menuType, id, ip, host, ETMenuType.END_TERMINAL, ETConfig.END_TERMINAL_CONFIG);
     }
 }

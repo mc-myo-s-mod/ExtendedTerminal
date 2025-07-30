@@ -1,12 +1,12 @@
-package me.myogoo.extendedterminal.config;
+package me.myogoo.extendedterminal.init;
 
 import appeng.core.definitions.AEParts;
 import com.blakebr0.extendedcrafting.init.ModBlocks;
+import committee.nova.mods.avaritia.common.crafting.recipe.ShapedTableCraftingRecipe;
 import me.myogoo.extendedterminal.ExtendedTerminal;
-import me.myogoo.extendedterminal.event.RecipeManagerLoadingEvent;
-import me.myogoo.extendedterminal.init.ETItems;
-import me.myogoo.extendedterminal.init.ETParts;
 import me.myogoo.extendedterminal.api.ModAccessor;
+import me.myogoo.extendedterminal.config.ETConfig;
+import me.myogoo.extendedterminal.event.RecipeManagerLoadingEvent;
 import me.myogoo.extendedterminal.util.extendedcrafting.ShapedTableRecipeBuilder;
 import me.myogoo.extendedterminal.util.mod.ModLoadHelper;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -15,10 +15,10 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 
-public final class ConfigRecipeManager {
+public class ETRecipeGen {
     @SubscribeEvent
     static void onRegisterRecipes(RecipeManagerLoadingEvent event) {
-        Method[] methods = ConfigRecipeManager.class.getDeclaredMethods();
+        Method[] methods = ETRecipeGen.class.getDeclaredMethods();
         for(Method method : methods) {
             if(method.getParameterCount() == 1 && method.getParameterTypes()[0] == RecipeManagerLoadingEvent.class) {
                 if(Arrays.stream(method.getDeclaredAnnotations()).allMatch(x -> ModLoadHelper.get(x.annotationType()))) {
@@ -29,7 +29,7 @@ public final class ConfigRecipeManager {
                         ExtendedTerminal.LOGGER.error("Failed to invoke recipe registration method: {}", method.getName(), e);
                     }
                 }
-             }
+            }
         }
     }
 
@@ -70,6 +70,5 @@ public final class ConfigRecipeManager {
 
     @ModAccessor.Avaritia
     private static void loadAvaritiaRecipe(RecipeManagerLoadingEvent event) {
-
     }
 }

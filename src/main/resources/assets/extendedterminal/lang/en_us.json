@@ -1,6 +1,5 @@
 {
-  "itemgroup.extendedcrafting": "Extended Terminal",
-  "itemgroup.extendedcrafting.title": "Extended Terminal",
+  "itemGroup.extendedterminal": "Extended Terminal",
 
   "item.extendedterminal.tooltip.empty": "This item cannot be crafted.",
 
@@ -9,11 +8,22 @@
   "item.extendedterminal.elite_terminal": "Elite Extended Crafting Terminal",
   "item.extendedterminal.ultimate_terminal": "Ultimate Extended Crafting Terminal",
 
+  "item.extendedterminal.sculk_terminal": "Sculk Crafting Terminal",
+  "item.extendedterminal.nether_terminal": "Nether Crafting Terminal",
+  "item.extendedterminal.end_terminal": "End Crafting Terminal",
+  "item.extendedterminal.extreme_terminal": "Extreme Crafting Terminal",
+
   "item.extendedterminal.compat_processor": "Compat Processor",
   "item.extendedterminal.printed_compat_processor": "Printed Compat Circuit",
+
 
   "gui.extendedterminal.basicTerminal": "Basic Extended Terminal",
   "gui.extendedterminal.advancedTerminal": "Advanced Extended Terminal",
   "gui.extendedterminal.eliteTerminal": "Elite Extended Terminal",
-  "gui.extendedterminal.ultimateTerminal": "Ultimate Extended Terminal"
+  "gui.extendedterminal.ultimateTerminal": "Ultimate Extended Terminal",
+
+  "gui.extendedterminal.sculkTerminal": "Sculk Crafting Terminal",
+  "gui.extendedterminal.netherTerminal": "Nether Crafting Terminal",
+  "gui.extendedterminal.endTerminal": "End Crafting Terminal",
+  "gui.extendedterminal.extremeTerminal": "Extreme Crafting Terminal"
 }

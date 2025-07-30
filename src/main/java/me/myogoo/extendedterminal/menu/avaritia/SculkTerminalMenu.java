@@ -3,7 +3,6 @@ package me.myogoo.extendedterminal.menu.avaritia;
 
 import appeng.api.storage.ITerminalHost;
 import appeng.menu.implementations.MenuTypeBuilder;
-import me.myogoo.extendedterminal.api.IETTerminalConfig;
 import me.myogoo.extendedterminal.config.ETConfig;
 import me.myogoo.extendedterminal.menu.ETMenuType;
 import net.minecraft.world.entity.player.Inventory;

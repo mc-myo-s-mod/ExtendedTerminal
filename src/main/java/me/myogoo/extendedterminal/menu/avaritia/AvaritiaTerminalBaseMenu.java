@@ -12,7 +12,7 @@ import com.google.common.base.Preconditions;
 import committee.nova.mods.avaritia.api.common.crafting.ITierCraftingRecipe;
 import committee.nova.mods.avaritia.api.common.crafting.TierInput;
 import committee.nova.mods.avaritia.init.registry.ModRecipeTypes;
-import me.myogoo.extendedterminal.api.IETTerminalConfig;
+import me.myogoo.extendedterminal.api.config.IETTerminalConfig;
 import me.myogoo.extendedterminal.menu.ETTerminalBaseMenu;
 import me.myogoo.extendedterminal.menu.ETMenuType;
 import me.myogoo.extendedterminal.menu.avaritia.slot.AvaritiaCraftingTerminalSlot;
@@ -82,10 +82,6 @@ public class AvaritiaTerminalBaseMenu extends ETTerminalBaseMenu<ITierCraftingRe
         } else {
             this.outputSlot.set(this.currentRecipe.value().assemble(testInput,registryAccess()));
         }
-    }
-
-    public ETMenuType getETMenuType() {
-        return menuType;
     }
 
     @Override

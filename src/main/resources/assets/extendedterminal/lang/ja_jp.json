@@ -1,6 +1,5 @@
 {
-  "itemgroup.extendedcrafting": "Extended Terminal",
-  "itemgroup.extendedcrafting.title": "Extended Terminal",
+  "itemGroup.extendedterminal": "Extended Terminal",
 
   "item.extendedterminal.basic_terminal": "Extended Crafting用基本型クラフトターミナル",
   "item.extendedterminal.advanced_terminal": "Extended Crafting用発展型クラフトターミナル",
@@ -13,10 +12,5 @@
   "gui.extendedterminal.basicTerminal": "基本型クラフトターミナル",
   "gui.extendedterminal.advancedTerminal": "発展型クラフトターミナル",
   "gui.extendedterminal.eliteTerminal": "精鋭型クラフトターミナル",
-  "gui.extendedterminal.ultimateTerminal": "究極型クラフトターミナル",
-
-  "emi.category.extendedterminal.basic_crafting_table": "基本型クラフト",
-  "emi.category.extendedterminal.advanced_crafting_table": "発展型クラフト",
-  "emi.category.extendedterminal.elite_crafting_table": "精鋭型クラフト",
-  "emi.category.extendedterminal.ultimate_crafting_table": "究極型クラフト"
+  "gui.extendedterminal.ultimateTerminal": "究極型クラフトターミナル"
 }

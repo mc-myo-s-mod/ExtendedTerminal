@@ -10,8 +10,8 @@ import java.lang.annotation.Annotation;
 import java.util.HashMap;
 import java.util.Map;
 
+//TODO: Refactor this class
 public class ModLoadHelper {
-    public static ModLoadHelper Instance;
     private static final Map<Class<? extends Annotation>, Boolean> loadedAnnotations = new HashMap<>();
     private static final Map<Type, Boolean> loadedAnnotationTypes = new HashMap<>();
     private static final Map<String, Boolean> loadedModIds = new HashMap<>();

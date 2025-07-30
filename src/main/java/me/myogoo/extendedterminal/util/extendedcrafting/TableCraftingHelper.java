@@ -1,24 +1,24 @@
 package me.myogoo.extendedterminal.util.extendedcrafting;
 
-import com.blakebr0.extendedcrafting.api.crafting.ITableRecipe;
+import me.myogoo.extendedterminal.api.adapter.recipe.ITableRecipeAdapter;
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.item.crafting.Ingredient;
 
-public final class ExtendedCraftingHelper {
-    public static int getCraftingGridWidth(ITableRecipe recipe) {
-        return recipe.getTier() * 2 + 1;
+public final class TableCraftingHelper {
+    public static int getCraftingGridWidth(ITableRecipeAdapter recipe) {
+        return recipe.tier() * 2 + 1;
     }
 
-    public static int getCraftingGridHeight(ITableRecipe recipe) {
-        return recipe.getTier() * 2 + 1;
+    public static int getCraftingGridHeight(ITableRecipeAdapter recipe) {
+        return recipe.tier() * 2 + 1;
     }
 
-    public static int getCraftingGridSize(ITableRecipe recipe) {
+    public static int getCraftingGridSize(ITableRecipeAdapter recipe) {
         int dim = getCraftingGridWidth(recipe);
         return dim * dim;
     }
 
-    public static NonNullList<Ingredient> makeNxNIngredients(ITableRecipe recipe) {
+    public static NonNullList<Ingredient> makeNxNIngredients(ITableRecipeAdapter recipe) {
         return NonNullList.withSize(getCraftingGridSize(recipe), Ingredient.EMPTY);
     }
 
@@ -38,6 +38,7 @@ public final class ExtendedCraftingHelper {
     public static class GridCoordinate {
         private final int sideLength;
         private final int[][] matrix;
+
         public GridCoordinate(int sideLength, int width, int height) {
             this.sideLength = sideLength;
 

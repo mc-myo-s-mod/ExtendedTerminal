@@ -4,7 +4,7 @@ import com.blakebr0.extendedcrafting.compat.jei.category.table.AdvancedTableCate
 import com.blakebr0.extendedcrafting.compat.jei.category.table.BasicTableCategory;
 import com.blakebr0.extendedcrafting.compat.jei.category.table.EliteTableCategory;
 import com.blakebr0.extendedcrafting.compat.jei.category.table.UltimateTableCategory;
-import me.myogoo.extendedterminal.api.ETJeiRecipeTransfer;
+import me.myogoo.extendedterminal.api.integration.jei.ETJeiRecipeTransfer;
 import me.myogoo.extendedterminal.api.ModAccessor;
 import me.myogoo.extendedterminal.integration.jei.extendedcrafting.handler.ECJeiRecipeTransferHandler;
 import me.myogoo.extendedterminal.menu.extendedcrafting.AdvancedTerminalMenu;

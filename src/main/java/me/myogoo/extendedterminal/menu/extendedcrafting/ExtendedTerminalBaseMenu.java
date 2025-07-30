@@ -12,7 +12,7 @@ import com.blakebr0.extendedcrafting.api.TableCraftingInput;
 import com.blakebr0.extendedcrafting.api.crafting.ITableRecipe;
 import com.blakebr0.extendedcrafting.init.ModRecipeTypes;
 import com.google.common.base.Preconditions;
-import me.myogoo.extendedterminal.api.IETTerminalConfig;
+import me.myogoo.extendedterminal.api.config.IETTerminalConfig;
 import me.myogoo.extendedterminal.menu.ETTerminalBaseMenu;
 import me.myogoo.extendedterminal.menu.ETMenuType;
 import me.myogoo.extendedterminal.menu.extendedcrafting.slot.ExCraftingTerminalSlot;

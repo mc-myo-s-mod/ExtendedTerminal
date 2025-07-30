@@ -4,7 +4,7 @@ import committee.nova.mods.avaritia.init.compat.jei.category.tables.EndCraftingT
 import committee.nova.mods.avaritia.init.compat.jei.category.tables.ExtremeCraftingTableCategory;
 import committee.nova.mods.avaritia.init.compat.jei.category.tables.NetherCraftingTableCategory;
 import committee.nova.mods.avaritia.init.compat.jei.category.tables.SculkCraftingTableCategory;
-import me.myogoo.extendedterminal.api.ETJeiRecipeCatalyst;
+import me.myogoo.extendedterminal.api.integration.jei.ETJeiRecipeCatalyst;
 import me.myogoo.extendedterminal.api.ModAccessor;
 import me.myogoo.extendedterminal.config.ETConfig;
 import me.myogoo.extendedterminal.init.ETParts;

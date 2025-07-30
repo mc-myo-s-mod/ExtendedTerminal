@@ -1,7 +1,7 @@
 package me.myogoo.extendedterminal.config;
 
 import me.myogoo.extendedterminal.ExtendedTerminal;
-import me.myogoo.extendedterminal.api.IETTerminalConfig;
+import me.myogoo.extendedterminal.api.config.IETTerminalConfig;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.event.config.ModConfigEvent;

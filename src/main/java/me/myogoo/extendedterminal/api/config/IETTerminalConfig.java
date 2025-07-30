@@ -1,4 +1,4 @@
-package me.myogoo.extendedterminal.api;
+package me.myogoo.extendedterminal.api.config;
 
 public interface IETTerminalConfig {
     boolean enableTerminal();
