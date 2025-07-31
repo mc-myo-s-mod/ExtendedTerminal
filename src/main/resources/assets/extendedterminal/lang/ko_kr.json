@@ -9,13 +9,15 @@
   "item.extendedterminal.compat_processor": "통합 프로세서",
   "item.extendedterminal.printed_compat_processor": "인쇄된 통합 프로세서",
 
+  "item.extendedterminal.item.tooltip.unregistered_terminal": "등록되지 않은 터미널",
+
   "gui.extendedterminal.basicTerminal": "기본 조합 터미널",
   "gui.extendedterminal.advancedTerminal": "고급 조합 터미널",
   "gui.extendedterminal.eliteTerminal": "엘리트 조합 터미널",
   "gui.extendedterminal.ultimateTerminal": "최고 조합 터미널",
 
-  "emi.category.extendedterminal.basic_crafting_table": "Basic Crafting",
-  "emi.category.extendedterminal.advanced_crafting_table": "Advanced Crafting",
-  "emi.category.extendedterminal.elite_crafting_table": "Elite Crafting",
-  "emi.category.extendedterminal.ultimate_crafting_table": "Ultimate Crafting"
+  "gui.extendedterminal.sculkTerminal": "스컬크 조합 터미널",
+  "gui.extendedterminal.netherTerminal": "네더 조합 터미널",
+  "gui.extendedterminal.endTerminal": "엔드 조합 터미널",
+  "gui.extendedterminal.extremeTerminal": "익스트림 조합 터미널"
 }

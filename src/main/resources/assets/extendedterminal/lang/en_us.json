@@ -16,6 +16,7 @@
   "item.extendedterminal.compat_processor": "Compat Processor",
   "item.extendedterminal.printed_compat_processor": "Printed Compat Circuit",
 
+  "item.extendedterminal.item.tooltip.unregistered_terminal": "unregistered Terminal",
 
   "gui.extendedterminal.basicTerminal": "Basic Extended Terminal",
   "gui.extendedterminal.advancedTerminal": "Advanced Extended Terminal",

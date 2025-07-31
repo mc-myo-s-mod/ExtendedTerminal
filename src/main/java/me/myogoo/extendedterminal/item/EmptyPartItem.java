@@ -18,7 +18,7 @@ public class EmptyPartItem<T extends IPart> extends PartItem<T> {
 
     @Override
     public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltip, TooltipFlag flag) {
-        tooltip.add(Component.translatable("item.extendedterminal.item.empty"));
+        tooltip.add(Component.translatable("item.extendedterminal.item.tooltip.unregistered_terminal"));
     }
 
 }
