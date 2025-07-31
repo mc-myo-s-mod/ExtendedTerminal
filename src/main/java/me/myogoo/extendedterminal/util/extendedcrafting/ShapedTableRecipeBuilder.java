@@ -2,6 +2,8 @@ package me.myogoo.extendedterminal.util.extendedcrafting;
 
 import com.blakebr0.extendedcrafting.api.crafting.ITableRecipe;
 import com.blakebr0.extendedcrafting.crafting.recipe.ShapedTableRecipe;
+import committee.nova.mods.avaritia.api.common.crafting.ITierCraftingRecipe;
+import committee.nova.mods.avaritia.common.crafting.recipe.ShapedTableCraftingRecipe;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.data.recipes.ShapedRecipeBuilder;
@@ -20,7 +22,7 @@ public class ShapedTableRecipeBuilder extends ShapedRecipeBuilder {
         return new ShapedTableRecipeBuilder(result, count);
     }
 
-    public ShapedTableRecipeBuilder setTier(int tier) {
+    public ShapedTableRecipeBuilder tier(int tier) {
         if (tier < 0 || tier > 4) {
             throw new IllegalArgumentException("Tier must be between 0 and 4");
         }
@@ -45,8 +47,13 @@ public class ShapedTableRecipeBuilder extends ShapedRecipeBuilder {
         recipeOutput.accept(id, shapedTableRecipe, null);
     }
 
-    public RecipeHolder<ITableRecipe> build(ResourceLocation id) {
+    public RecipeHolder<ITableRecipe> buildEC(ResourceLocation id) {
         ShapedRecipePattern shapedrecipepattern = ShapedRecipePattern.of(this.key, this.rows);
         return new RecipeHolder<>(id, new ShapedTableRecipe(shapedrecipepattern,getResult().getDefaultInstance(),tier));
+    }
+
+    public RecipeHolder<ITierCraftingRecipe> buildReAV(ResourceLocation id) {
+        ShapedRecipePattern shapedrecipepattern = ShapedRecipePattern.of(this.key, this.rows);
+        return new RecipeHolder<>(id, new ShapedTableCraftingRecipe(shapedrecipepattern,getResult().getDefaultInstance(),tier));
     }
 }
