@@ -101,27 +101,18 @@ public class FillTableCraftingGridFromRecipePacket extends FillRecipePacketBase 
                 }
             }
         } else {
-            Deque<ItemStack> queue = new ArrayDeque<>();
+            int cursor = 0;
             var coordinator = TableCraftingHelper.indexToCoordinate(ingredientTemplates.size(), recipeWidth, recipeHeight);
 
             for (int i = 0; i < ingredients.size(); i++) {
-                var template = ingredientTemplates.get(i);
-                if(!template.isEmpty()) {
-                    queue.addLast(template);
+                if (coordinator.test(i)) {
+                    ingredients.set(i, Ingredient.of(ingredientTemplates.get(cursor++)));
                 }
-                if(coordinator.test(i) && !queue.isEmpty()) {
-                    ingredients.set(i, Ingredient.of(queue.pop()));
-                }
-            }
-
-            if(!queue.isEmpty()) {
-                ExtendedTerminal.LOGGER.warn("Received ECFillCraftingGridFromRecipePacket with {} excess items: {}",
-                        queue.size(), queue);
             }
         }
 
         return ingredients;
-    }
+}
 
     @Override
     public void handleOnServer(ServerPlayer player) {
