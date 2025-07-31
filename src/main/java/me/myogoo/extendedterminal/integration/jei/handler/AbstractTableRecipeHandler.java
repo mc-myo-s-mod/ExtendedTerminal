@@ -3,6 +3,7 @@ package me.myogoo.extendedterminal.integration.jei.handler;
 import appeng.core.localization.ItemModText;
 import appeng.integration.modules.itemlists.TransferHelper;
 import appeng.menu.me.items.CraftingTermMenu;
+import me.myogoo.extendedterminal.api.adapter.recipe.ITableRecipeAdapter;
 import me.myogoo.extendedterminal.menu.ETTerminalBaseMenu;
 import mezz.jei.api.gui.builder.ITooltipBuilder;
 import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
@@ -13,10 +14,12 @@ import mezz.jei.api.recipe.transfer.IRecipeTransferHandler;
 import mezz.jei.api.recipe.transfer.IRecipeTransferHandlerHelper;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Map;
 import java.util.Optional;
 
 import static appeng.integration.modules.itemlists.TransferHelper.*;
@@ -121,4 +124,6 @@ public abstract class AbstractTableRecipeHandler<T extends ETTerminalBaseMenu<R>
             }
         }
     }
+
+    public abstract Map<Integer, Ingredient> getGuiSlotToIngredientMap(T menu, ITableRecipeAdapter recipe);
 }

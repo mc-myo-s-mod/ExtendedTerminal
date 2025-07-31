@@ -4,6 +4,7 @@ import appeng.core.localization.ItemModText;
 import appeng.core.network.ServerboundPacket;
 import com.blakebr0.extendedcrafting.api.crafting.ITableRecipe;
 import com.blakebr0.extendedcrafting.crafting.recipe.ShapedTableRecipe;
+import me.myogoo.extendedterminal.api.adapter.recipe.IShapedTableRecipeAdapter;
 import me.myogoo.extendedterminal.api.adapter.recipe.ITableRecipeAdapter;
 import me.myogoo.extendedterminal.integration.ItemListTermCraftingHelper;
 import me.myogoo.extendedterminal.integration.jei.handler.AbstractTableRecipeHandler;
@@ -17,13 +18,18 @@ import mezz.jei.api.recipe.transfer.IRecipeTransferHandlerHelper;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.item.crafting.Ingredient;
 import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 import static appeng.integration.modules.itemlists.TransferHelper.BLUE_PLUS_BUTTON_COLOR;
 import static appeng.integration.modules.itemlists.TransferHelper.ORANGE_PLUS_BUTTON_COLOR;
+import static me.myogoo.extendedterminal.integration.ItemListTermCraftingHelper.ensureFittedCraftingGrid;
 import static me.myogoo.extendedterminal.integration.ItemListTermCraftingHelper.getGuiSlotToIngredientMap;
 import static me.myogoo.extendedterminal.network.serverbound.FillTableCraftingGridFromRecipePacket.NOT_SET_RECIPE_SIZE;
 
@@ -48,7 +54,7 @@ public class ECJeiRecipeTransferHandler<T extends ExtendedTerminalBaseMenu> exte
         boolean craftMissing = AbstractContainerScreen.hasControlDown();
         var inputSlots = recipeSlots.getSlotViews(RecipeIngredientRole.INPUT);
 
-        var slotToIngredientMap = getGuiSlotToIngredientMap(ITableRecipeAdapter.of(recipe), menu.getETMenuType().getGridSideLength());
+        var slotToIngredientMap = getGuiSlotToIngredientMap(menu, ITableRecipeAdapter.of(recipe));
         var missingSlots = menu.findMissingIngredients(slotToIngredientMap);
 
         if (missingSlots.missingSlots().size() == slotToIngredientMap.size()) {
@@ -83,5 +89,42 @@ public class ECJeiRecipeTransferHandler<T extends ExtendedTerminalBaseMenu> exte
 
         ServerboundPacket message = new FillTableCraftingGridFromRecipePacket(templateItems, craftMissing, recipeWidth, recipeHeight);
         PacketDistributor.sendToServer(message);
+    }
+
+    @Override
+    public Map<Integer, Ingredient> getGuiSlotToIngredientMap(T menu, ITableRecipeAdapter recipe) {
+        int gridSideLength = menu.getCraftingGridWidth();
+        var raw = recipe.recipe().getIngredients();
+        List<Ingredient> ingredients;
+
+        int offsetX = 0;
+        int offsetY = 0;
+        int width = gridSideLength;
+        int height = gridSideLength;
+        if (recipe instanceof IShapedTableRecipeAdapter shapedRecipe) {
+            ingredients = ensureFittedCraftingGrid(shapedRecipe);
+            width = shapedRecipe.width();
+            height = shapedRecipe.height();
+            offsetX = Math.floorDiv(gridSideLength - shapedRecipe.width(),2);
+            offsetY = Math.floorDiv(gridSideLength - shapedRecipe.height(),2);
+        } else {
+            ingredients = raw;
+        }
+
+        int max = gridSideLength * gridSideLength;
+        int count = Math.min(ingredients.size(), max);
+        var result = new HashMap<Integer, Ingredient>(count);
+        for (int i = 0; i < count; i++) {
+            int x = i % width;
+            int y = i / width;
+
+            var guiSlot = (y + offsetY) * gridSideLength + (x + offsetX);
+            var ing = ingredients.get(i);
+            if (!ing.isEmpty()) {
+                result.put(guiSlot, ing);
+            }
+        }
+        return result;
+
     }
 }

@@ -3,7 +3,6 @@ package me.myogoo.extendedterminal.integration;
 import appeng.api.stacks.AEItemKey;
 import appeng.integration.modules.itemlists.EncodingHelper;
 import appeng.menu.me.common.GridInventoryEntry;
-import me.myogoo.extendedterminal.ExtendedTerminal;
 import me.myogoo.extendedterminal.api.adapter.recipe.IShapedTableRecipeAdapter;
 import me.myogoo.extendedterminal.api.adapter.recipe.IShapelessTableRecipeAdapter;
 import me.myogoo.extendedterminal.api.adapter.recipe.ITableRecipeAdapter;
@@ -12,7 +11,6 @@ import me.myogoo.extendedterminal.util.extendedcrafting.TableCraftingHelper;
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
-import org.slf4j.Logger;
 
 import java.util.*;
 
@@ -24,12 +22,10 @@ public class ItemListTermCraftingHelper {
         var ingredientPriorities = EncodingHelper.getIngredientPriorities(menu, ENTRY_COMPARATOR);
 
         var templateItems = NonNullList.withSize(menu.getCraftingGridSize(), ItemStack.EMPTY);
-        var ingredients = ensureNxNCraftingMatrix(recipe);
+        var ingredients = ensureFittedCraftingGrid(recipe);
         for (int i = 0; i < ingredients.size(); i++) {
             var ingredient = ingredients.get(i);
             if (!ingredient.isEmpty()) {
-                // Try to find the best item. In case the ingredient is a tag, it might contain versions the
-                // player doesn't actually have
                 var stack = ingredientPriorities.entrySet()
                         .stream()
                         .filter(e -> e.getKey() instanceof AEItemKey itemKey && itemKey.matches(ingredient))
@@ -51,7 +47,7 @@ public class ItemListTermCraftingHelper {
         int width = gridSideLength;
         int height = gridSideLength;
         if (recipe instanceof IShapedTableRecipeAdapter shapedRecipe) {
-            ingredients = fittedCraftingMatrix(shapedRecipe);
+            ingredients = ensureFittedCraftingGrid(shapedRecipe);
             width = shapedRecipe.width();
             height = shapedRecipe.height();
             offsetX = Math.floorDiv(gridSideLength - shapedRecipe.width(),2);
@@ -73,10 +69,10 @@ public class ItemListTermCraftingHelper {
                 result.put(guiSlot, ing);
             }
         }
-         return result;
+        return result;
     }
 
-    public static NonNullList<Ingredient> fittedCraftingMatrix(ITableRecipeAdapter recipe) {
+    public static NonNullList<Ingredient> ensureFittedCraftingGrid(ITableRecipeAdapter recipe) {
         var ingredients = recipe.recipe().getIngredients();
         NonNullList<Ingredient> expandedIngredients;
 
@@ -109,35 +105,4 @@ public class ItemListTermCraftingHelper {
 
         return expandedIngredients;
     }
-
-    public static NonNullList<Ingredient> ensureNxNCraftingMatrix(ITableRecipeAdapter recipe) {
-        var ingredients = recipe.recipe().getIngredients();
-        NonNullList<Ingredient> expandedIngredients;
-        if(recipe instanceof ITableRecipeAdapter tableRecipe) {
-            expandedIngredients = TableCraftingHelper.makeNxNIngredients(tableRecipe);
-
-            if(tableRecipe instanceof IShapedTableRecipeAdapter shapedRecipe) {
-                var width = shapedRecipe.width();
-                var height = shapedRecipe.height();
-                int matrixWidth = TableCraftingHelper.getCraftingGridWidth(shapedRecipe);
-                // Map shaped recipe into center of NxN matrix
-                for(int h = 0; h < height; h++) {
-                    for(int w = 0; w < width; w++) {
-                        var source = w + h * width;
-                        var target = w + h * matrixWidth;
-                        var ing = ingredients.get(source);
-                        expandedIngredients.set(target, ing);
-                    }
-                }
-            } else if (tableRecipe instanceof IShapelessTableRecipeAdapter) {
-                for(int i = 0; i < ingredients.size(); i++) {
-                    expandedIngredients.set(i, ingredients.get(i));
-                }
-            }
-        } else {
-            expandedIngredients = NonNullList.withSize(9, Ingredient.EMPTY);
-        }
-        return expandedIngredients;
-    }
-
 }

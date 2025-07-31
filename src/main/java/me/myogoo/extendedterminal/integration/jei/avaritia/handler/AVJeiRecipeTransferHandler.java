@@ -4,6 +4,7 @@ import appeng.core.localization.ItemModText;
 import appeng.core.network.ServerboundPacket;
 import committee.nova.mods.avaritia.api.common.crafting.ITierCraftingRecipe;
 import committee.nova.mods.avaritia.common.crafting.recipe.ShapedTableCraftingRecipe;
+import me.myogoo.extendedterminal.api.adapter.recipe.IShapedTableRecipeAdapter;
 import me.myogoo.extendedterminal.api.adapter.recipe.ITableRecipeAdapter;
 import me.myogoo.extendedterminal.integration.jei.handler.AbstractTableRecipeHandler;
 import me.myogoo.extendedterminal.menu.avaritia.AvaritiaTerminalBaseMenu;
@@ -16,9 +17,13 @@ import mezz.jei.api.recipe.transfer.IRecipeTransferHandlerHelper;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.item.crafting.Ingredient;
 import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 import static appeng.integration.modules.itemlists.TransferHelper.BLUE_PLUS_BUTTON_COLOR;
@@ -47,7 +52,7 @@ public class AVJeiRecipeTransferHandler<T extends AvaritiaTerminalBaseMenu> exte
         boolean craftMissing = AbstractContainerScreen.hasControlDown();
         var inputSlots = recipeSlots.getSlotViews(RecipeIngredientRole.INPUT);
 
-        var slotToIngredientMap = getGuiSlotToIngredientMap(ITableRecipeAdapter.of(recipe), menu.getETMenuType().getGridSideLength());
+        var slotToIngredientMap = getGuiSlotToIngredientMap(menu,ITableRecipeAdapter.of(recipe));
         var missingSlots = menu.findMissingIngredients(slotToIngredientMap);
 
         if (missingSlots.missingSlots().size() == slotToIngredientMap.size()) {
@@ -83,6 +88,37 @@ public class AVJeiRecipeTransferHandler<T extends AvaritiaTerminalBaseMenu> exte
         ServerboundPacket message = new FillTableCraftingGridFromRecipePacket(templateItems, craftMissing,
                 recipeWidth, recipeHeight);
         PacketDistributor.sendToServer(message);
+    }
 
+    @Override
+    public Map<Integer, Ingredient> getGuiSlotToIngredientMap(AvaritiaTerminalBaseMenu menu, ITableRecipeAdapter recipe) {
+        int gridSideLength = menu.getCraftingGridWidth();
+        var raw = recipe.recipe().getIngredients();
+        List<Ingredient> ingredients;
+
+        int width = gridSideLength;
+        int height = gridSideLength;
+        if (recipe instanceof IShapedTableRecipeAdapter shapedRecipe) {
+            ingredients = ensureFittedCraftingGrid(shapedRecipe);
+            width = shapedRecipe.width();
+            height = shapedRecipe.height();
+        } else {
+            ingredients = raw;
+        }
+
+        int max = gridSideLength * gridSideLength;
+        int count = Math.min(ingredients.size(), max);
+        var result = new HashMap<Integer, Ingredient>(count);
+        for (int i = 0; i < count; i++) {
+            int x = i % width;
+            int y = i / width;
+
+            var guiSlot = y * width + x;
+            var ing = ingredients.get(i);
+            if (!ing.isEmpty()) {
+                result.put(guiSlot, ing);
+            }
+        }
+        return result;
     }
 }

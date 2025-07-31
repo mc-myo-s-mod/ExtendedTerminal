@@ -37,24 +37,24 @@ public final class TableCraftingHelper {
 
     public static class GridCoordinate {
         private final int sideLength;
-        private final int[][] matrix;
+        private final boolean[][] matrix;
 
         public GridCoordinate(int sideLength, int width, int height) {
             this.sideLength = sideLength;
 
-            matrix = new int[sideLength][sideLength];
+            matrix = new boolean[sideLength][sideLength];
             int offsetX = Math.floorDiv(sideLength - width,2);
             int offsetY = Math.floorDiv(sideLength - height,2);
             for(int y = offsetY; y < offsetY + height; y++) {
                 for(int x = offsetX; x < offsetX + width; x++) {
-                    matrix[x][y] = 1;
+                    matrix[x][y] = true;
                 }
             }
         }
 
         public boolean test(int index) {
             if(index < 0 || index > sideLength * sideLength) { return false; }
-            return matrix[index % sideLength][index / sideLength] == 1;
+            return matrix[index % sideLength][index / sideLength];
         }
     }
 }
