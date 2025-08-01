@@ -1,7 +1,5 @@
-package me.myogoo.extendedterminal.integration.jei;
+package me.myogoo.extendedterminal.integration.jei.handler;
 
-import appeng.client.gui.AEBaseScreen;
-import appeng.menu.AEBaseMenu;
 import me.myogoo.extendedterminal.client.screen.ETTerminalBaseScreen;
 import me.myogoo.extendedterminal.menu.ETTerminalBaseMenu;
 import mezz.jei.api.gui.handlers.IGuiClickableArea;

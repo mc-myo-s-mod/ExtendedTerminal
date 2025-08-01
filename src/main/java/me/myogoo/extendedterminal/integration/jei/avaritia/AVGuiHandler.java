@@ -11,7 +11,7 @@ import me.myogoo.extendedterminal.client.screen.avaritia.EndTerminalScreen;
 import me.myogoo.extendedterminal.client.screen.avaritia.ExtremeTerminalScreen;
 import me.myogoo.extendedterminal.client.screen.avaritia.NetherTerminalScreen;
 import me.myogoo.extendedterminal.client.screen.avaritia.SculkTerminalScreen;
-import me.myogoo.extendedterminal.integration.jei.JeiTableGuiHandler;
+import me.myogoo.extendedterminal.integration.jei.handler.JeiTableGuiHandler;
 import mezz.jei.api.registration.IGuiHandlerRegistration;
 
 @ModAccessor.Avaritia

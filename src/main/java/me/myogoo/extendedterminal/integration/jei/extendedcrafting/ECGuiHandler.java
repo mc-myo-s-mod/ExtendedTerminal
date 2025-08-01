@@ -1,6 +1,5 @@
 package me.myogoo.extendedterminal.integration.jei.extendedcrafting;
 
-import appeng.core.AEConfig;
 import com.blakebr0.extendedcrafting.compat.jei.category.table.AdvancedTableCategory;
 import com.blakebr0.extendedcrafting.compat.jei.category.table.BasicTableCategory;
 import com.blakebr0.extendedcrafting.compat.jei.category.table.EliteTableCategory;
@@ -12,17 +11,8 @@ import me.myogoo.extendedterminal.client.screen.extendedcrafting.AdvancedTermina
 import me.myogoo.extendedterminal.client.screen.extendedcrafting.BasicTerminalScreen;
 import me.myogoo.extendedterminal.client.screen.extendedcrafting.EliteTerminalScreen;
 import me.myogoo.extendedterminal.client.screen.extendedcrafting.UltimateTerminalScreen;
-import me.myogoo.extendedterminal.integration.jei.JeiTableGuiHandler;
-import mezz.jei.api.gui.handlers.IGuiClickableArea;
-import mezz.jei.api.gui.handlers.IGuiContainerHandler;
+import me.myogoo.extendedterminal.integration.jei.handler.JeiTableGuiHandler;
 import mezz.jei.api.registration.IGuiHandlerRegistration;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.Rect2i;
-import org.jetbrains.annotations.NotNull;
-
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
 
 @ModAccessor.ExtendedCrafting
 @ETJeiGuiHandler
