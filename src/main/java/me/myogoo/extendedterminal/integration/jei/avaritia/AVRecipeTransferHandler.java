@@ -4,6 +4,7 @@ import committee.nova.mods.avaritia.init.compat.jei.category.tables.EndCraftingT
 import committee.nova.mods.avaritia.init.compat.jei.category.tables.ExtremeCraftingTableCategory;
 import committee.nova.mods.avaritia.init.compat.jei.category.tables.NetherCraftingTableCategory;
 import committee.nova.mods.avaritia.init.compat.jei.category.tables.SculkCraftingTableCategory;
+import me.myogoo.extendedterminal.api.SubscribeLoadEvent;
 import me.myogoo.extendedterminal.api.integration.jei.ETJeiRecipeTransfer;
 import me.myogoo.extendedterminal.api.ModAccessor;
 import me.myogoo.extendedterminal.integration.jei.avaritia.handler.AVJeiRecipeTransferHandler;
@@ -16,6 +17,7 @@ import mezz.jei.api.registration.IRecipeTransferRegistration;
 @ETJeiRecipeTransfer
 @ModAccessor.Avaritia
 public class AVRecipeTransferHandler {
+    @SubscribeLoadEvent
     public static void init(IRecipeTransferRegistration registration) {
         var helper = registration.getTransferHelper();
 

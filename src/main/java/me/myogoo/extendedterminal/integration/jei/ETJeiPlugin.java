@@ -4,6 +4,7 @@ import com.mojang.logging.LogUtils;
 import me.myogoo.extendedterminal.ExtendedTerminal;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
+import mezz.jei.api.registration.IGuiHandlerRegistration;
 import mezz.jei.api.registration.IRecipeCatalystRegistration;
 import mezz.jei.api.registration.IRecipeTransferRegistration;
 import net.minecraft.resources.ResourceLocation;
@@ -28,5 +29,10 @@ public class ETJeiPlugin implements IModPlugin {
     @Override
     public void registerRecipeTransferHandlers(@NotNull IRecipeTransferRegistration registration) {
         JeiRegisterHelper.registerRecipeTransfer(registration);
+    }
+
+    @Override
+    public void registerGuiHandlers(@NotNull IGuiHandlerRegistration registration) {
+        JeiRegisterHelper.registerGuiHandler(registration);
     }
 }
