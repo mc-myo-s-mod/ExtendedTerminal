@@ -1,3 +1,7 @@
 {
-  "parent": "extendedterminal:item/base/avaritia_terminal_base"
+  "parent": "extendedterminal:item/base/avaritia_terminal_base",
+  "textures": {
+    "front_base": "extendedterminal:part/avaritia/sculk_terminal_front",
+    "sides": "extendedterminal:part/avaritia/sculk_terminal_side"
+  }
 }

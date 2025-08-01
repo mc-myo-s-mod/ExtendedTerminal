@@ -15,7 +15,7 @@ import net.minecraft.world.inventory.MenuType;
 
 public class SculkTerminalPart extends ETTerminalBasePart {
     @PartModels
-    public static final ResourceLocation BASIC_MODEL_BASE = ExtendedTerminal.makeId("part/extendedcrafting/basic_terminal_base");
+    public static final ResourceLocation BASIC_MODEL_BASE = ExtendedTerminal.makeId("part/avaritia/sculk_terminal_base");
 
     public static final IPartModel MODELS_OFF = new PartModel(BASIC_MODEL_BASE, MODEL_OFF, MODEL_STATUS_OFF);
     public static final IPartModel MODELS_ON = new PartModel(BASIC_MODEL_BASE, MODEL_ON, MODEL_STATUS_ON);

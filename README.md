@@ -2,7 +2,7 @@
     <img width="200" src="readme/extended_terminal.png" alt="logo">  
 </p>
 <hr>
-<h1 align="center">Extended Terminal</p>
+<h1 align="center">Extended Terminal</h1>
 <p align="center">
     <a href="https://www.curseforge.com/minecraft/mc-mods/extended-terminal" target="_blank">
       <img alt="CurseForge Downloads" src="https://img.shields.io/curseforge/dt/1302078?style=flat-square&logo=curseforge&color=f16436">
