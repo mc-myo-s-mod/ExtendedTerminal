@@ -14,7 +14,7 @@ import me.myogoo.extendedterminal.client.screen.avaritia.SculkTerminalScreen;
 import me.myogoo.extendedterminal.integration.jei.handler.JeiTableGuiHandler;
 import mezz.jei.api.registration.IGuiHandlerRegistration;
 
-@ModAccessor.Avaritia
+@ModAccessor.ReAvaritia
 @ETJeiGuiHandler
 public class AVGuiHandler {
     @SubscribeLoadEvent

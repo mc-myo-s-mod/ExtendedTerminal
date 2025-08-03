@@ -31,16 +31,16 @@ public enum ETMenuType implements IExtensibleEnum {
     @ModAccessor.ExtendedCrafting
     EXTENDED_CRAFTING_UNIVERSAL_TERMINAL(9,0, ETSlotSemantics.EXTENDED_CRAFTING_UNIVERSAL_GRID, ETSlotSemantics.EXTENDED_CRAFTING_UNIVERSAL_RESULT),
 
-    @ModAccessor.Avaritia
+    @ModAccessor.ReAvaritia
     SCULK_TERMINAL(3, 1, ETSlotSemantics.SCULK_CRAFTING_GRID, ETSlotSemantics.SCULK_CRAFTING_RESULT),
 
-    @ModAccessor.Avaritia
+    @ModAccessor.ReAvaritia
     NETHER_TERMINAL(5, 2, ETSlotSemantics.NETHER_CRAFTING_GRID, ETSlotSemantics.NETHER_CRAFTING_RESULT),
 
-    @ModAccessor.Avaritia
+    @ModAccessor.ReAvaritia
     END_TERMINAL(7, 3, ETSlotSemantics.END_CRAFTING_GRID, ETSlotSemantics.END_CRAFTING_RESULT),
 
-    @ModAccessor.Avaritia
+    @ModAccessor.ReAvaritia
     EXTREME_TERMINAL(9, 4, ETSlotSemantics.EXTREME_CRAFTING_GRID, ETSlotSemantics.EXTREME_CRAFTING_RESULT),;
 
     private final SlotSemantic slotSemantic_GRID;

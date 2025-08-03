@@ -3,6 +3,7 @@ package me.myogoo.extendedterminal.util;
 import me.myogoo.extendedterminal.ExtendedTerminal;
 import org.objectweb.asm.Type;
 
+//maybe unsafe?
 public class SafeClass {
     public static Class<?> forName(String name) {
         try {

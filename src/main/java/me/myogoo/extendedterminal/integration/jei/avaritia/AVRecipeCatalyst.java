@@ -12,7 +12,7 @@ import me.myogoo.extendedterminal.init.ETParts;
 import mezz.jei.api.registration.IRecipeCatalystRegistration;
 
 @ETJeiRecipeCatalyst
-@ModAccessor.Avaritia
+@ModAccessor.ReAvaritia
 public class AVRecipeCatalyst {
     @SubscribeLoadEvent
     public static void init(IRecipeCatalystRegistration registration) {

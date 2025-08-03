@@ -15,7 +15,7 @@ import me.myogoo.extendedterminal.menu.avaritia.SculkTerminalMenu;
 import mezz.jei.api.registration.IRecipeTransferRegistration;
 
 @ETJeiRecipeTransfer
-@ModAccessor.Avaritia
+@ModAccessor.ReAvaritia
 public class AVRecipeTransferHandler {
     @SubscribeLoadEvent
     public static void init(IRecipeTransferRegistration registration) {

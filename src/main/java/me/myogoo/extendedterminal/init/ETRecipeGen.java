@@ -67,7 +67,7 @@ public class ETRecipeGen {
                 .buildEC(ExtendedTerminal.makeId("extended_crafting/ultimate_terminal")));
     }
 
-    @ModAccessor.Avaritia
+    @ModAccessor.ReAvaritia
     private static void loadAvaritiaRecipe(RecipeManagerLoadingEvent event) {
         if(ETConfig.SCULK_TERMINAL_CONFIG.enableTerminal()) event.addRecipe(ShapedTableRecipeBuilder.shaped(ETParts.SCULK_TERMINAL_PART,1)
                 .pattern("AB")
