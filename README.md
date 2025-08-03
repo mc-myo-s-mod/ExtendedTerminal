@@ -22,4 +22,3 @@
 - code: LGPL 3.0
 - Assets
   - AE2: [See Details ![Badge](https://img.shields.io/badge/License-CC%20BY--NC--SA%203.0-green?style=flat-square)](readme/ae2-license.md)
-  - Re:Avaritia: [See Details ![Badge](https://img.shields.io/badge/License-CC%20BY--NC--SA%204.0-green?style=flat-square)](readme/reavaritia-license.md)

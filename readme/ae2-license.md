@@ -1,0 +1,13 @@
+# [CC BY-NC-SA 3.0][license]
+
+## Extended Crafting
+- [basic_terminal_front](src/main/resources/assets/extendedterminal/textures/part/extendedcrafting/basic_terminal_front.png), [advanced_terminal_front](src/main/resources/assets/extendedterminal/textures/part/extendedcrafting/advanced_terminal_front.png), [elite_terminal_front](src/main/resources/assets/extendedterminal/textures/part/extendedcrafting/elite_terminal_front.png), and [ultimate_terminal_front](src/main/resources/assets/extendedterminal/textures/part/extendedcrafting/ultimate_terminal_front.png) are adapted from "[monitor_front](https://github.com/AppliedEnergistics/Applied-Energistics-2/blob/main/src/main/resources/assets/ae2/textures/part/monitor_front.png)" by [Ridanisaurus Rid][author], used under [CC BY-NC-SA 3.0][license]. These derivative works are licensed under [CC BY-NC-SA 3.0][license] by NJoyShadow
+- [basic_terminal_side](src/main/resources/assets/extendedterminal/textures/part/extendedcrafting/basic_terminal_side.png), [advanced_terminal_side](src/main/resources/assets/extendedterminal/textures/part/extendedcrafting/advanced_terminal_side.png), [elite_terminal_side](src/main/resources/assets/extendedterminal/textures/part/extendedcrafting/elite_terminal_side.png), and [ultimate_terminal_side](src/main/resources/assets/extendedterminal/textures/part/extendedcrafting/ultimate_terminal_side.png) are adapted from "[monitor_front](https://github.com/AppliedEnergistics/Applied-Energistics-2/blob/main/src/main/resources/assets/ae2/textures/part/monitor_sides.png)" by [Ridanisaurus Rid][author], used under [CC BY-NC-SA 3.0][license]. These derivative works are licensed under [CC BY-NC-SA 3.0][license] by NJoyShadow
+
+## Avaritia
+
+- [sculk_terminal_side](src/main/resources/assets/extendedterminal/textures/part/avaritia/sculk_terminal_side.png), [nether_terminal_side](src/main/resources/assets/extendedterminal/textures/part/avaritia/nether_terminal_side.png), [end_terminal_side](src/main/resources/assets/extendedterminal/textures/part/avaritia/end_terminal_side.png), and [extreme_terminal_side](src/main/resources/assets/extendedterminal/textures/part/avaritia/extreme_terminal_side.png) are adapted from "[monitor_front](https://github.com/AppliedEnergistics/Applied-Energistics-2/blob/main/src/main/resources/assets/ae2/textures/part/monitor_sides.png)" by [Ridanisaurus Rid][author], used under [CC BY-NC-SA 3.0][license]. These derivative works are licensed under [CC BY-NC-SA 3.0][license] by NJoyShadow
+
+[license]: https://creativecommons.org/licenses/by-nc-sa/3.0/deed.en
+[author]: https://github.com/Ridanisaurus/
+[ae2]: https://github.com/AppliedEnergistics/Applied-Energistics-2
