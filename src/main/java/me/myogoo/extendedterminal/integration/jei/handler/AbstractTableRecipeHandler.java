@@ -3,8 +3,8 @@ package me.myogoo.extendedterminal.integration.jei.handler;
 import appeng.core.localization.ItemModText;
 import appeng.integration.modules.itemlists.TransferHelper;
 import appeng.menu.me.items.CraftingTermMenu;
-import com.blakebr0.extendedcrafting.api.crafting.ITableRecipe;
-import me.myogoo.extendedterminal.menu.extendedcrafting.ExtendedTerminalBaseMenu;
+import me.myogoo.extendedterminal.api.adapter.recipe.ITableRecipeAdapter;
+import me.myogoo.extendedterminal.menu.ETTerminalBaseMenu;
 import mezz.jei.api.gui.builder.ITooltipBuilder;
 import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.recipe.RecipeIngredientRole;
@@ -14,40 +14,47 @@ import mezz.jei.api.recipe.transfer.IRecipeTransferHandler;
 import mezz.jei.api.recipe.transfer.IRecipeTransferHandlerHelper;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.Recipe;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Map;
 import java.util.Optional;
 
 import static appeng.integration.modules.itemlists.TransferHelper.*;
 
-abstract class AbstractTableRecipeHandler<T extends ExtendedTerminalBaseMenu> implements IRecipeTransferHandler<T, ITableRecipe> {
+public abstract class AbstractTableRecipeHandler<T extends ETTerminalBaseMenu<R>, R extends Recipe<?>> implements IRecipeTransferHandler<T, R> {
     private final Class<T> containerClass;
     private final MenuType<T> menuType;
-    private final RecipeType<ITableRecipe> recipeType;
-    AbstractTableRecipeHandler(Class<T> containerClass, MenuType<T> menuType, RecipeType<ITableRecipe> recipeType) {
+    private final RecipeType<R> recipeType;
+
+    public AbstractTableRecipeHandler(Class<T> containerClass, MenuType<T> menuType, RecipeType<R> recipeType) {
         this.containerClass = containerClass;
         this.menuType = menuType;
         this.recipeType = recipeType;
     }
 
     @Override
-    public Class<? extends T> getContainerClass() {
+    public @NotNull Class<? extends T> getContainerClass() {
         return containerClass;
     }
 
     @Override
-    public Optional<MenuType<T>> getMenuType() {
+    public @NotNull Optional<MenuType<T>> getMenuType() {
         return Optional.of(menuType);
     }
 
     @Override
-    public RecipeType<ITableRecipe> getRecipeType() {
+    public @NotNull RecipeType<R> getRecipeType() {
         return recipeType;
     }
 
+    protected abstract void performTransfer(T mene, @Nullable R recipe, boolean craftMissing);
+
     protected static abstract class Result implements IRecipeTransferError {
         @Override
-        public Type getType() {
+        public @NotNull Type getType() {
             return Type.COSMETIC;
         }
 
@@ -68,11 +75,11 @@ abstract class AbstractTableRecipeHandler<T extends ExtendedTerminalBaseMenu> im
             return helper.createUserErrorWithTooltip(ItemModText.RECIPE_TOO_LARGE.text());
         }
 
-        static final class PartiallyCraftable extends Result {
+        public static final class PartiallyCraftable extends Result {
             private final CraftingTermMenu.MissingIngredientSlots missingSlots;
             private final boolean craftMissing;
             private final int color;
-            PartiallyCraftable(CraftingTermMenu.MissingIngredientSlots missingSlots, int color, boolean craftMissing) {
+            public PartiallyCraftable(CraftingTermMenu.MissingIngredientSlots missingSlots, int color, boolean craftMissing) {
                 this.missingSlots = missingSlots;
                 this.craftMissing = craftMissing;
                 this.color = color;
@@ -117,4 +124,6 @@ abstract class AbstractTableRecipeHandler<T extends ExtendedTerminalBaseMenu> im
             }
         }
     }
+
+    public abstract Map<Integer, Ingredient> getGuiSlotToIngredientMap(T menu, ITableRecipeAdapter recipe);
 }

@@ -1,26 +1,16 @@
 package me.myogoo.extendedterminal.integration;
 
 import appeng.api.stacks.AEItemKey;
-import appeng.core.AELog;
-import appeng.core.network.ServerboundPacket;
 import appeng.integration.modules.itemlists.EncodingHelper;
 import appeng.menu.me.common.GridInventoryEntry;
-import appeng.util.CraftingRecipeUtil;
-import com.blakebr0.extendedcrafting.api.crafting.ITableRecipe;
-import com.blakebr0.extendedcrafting.crafting.recipe.ShapedTableRecipe;
-import com.blakebr0.extendedcrafting.crafting.recipe.ShapelessTableRecipe;
-import me.myogoo.extendedterminal.ExtendedTerminal;
-import me.myogoo.extendedterminal.menu.extendedcrafting.ExtendedTerminalBaseMenu;
-import me.myogoo.extendedterminal.network.serverbound.ETFillCraftingGridFromRecipePacket;
-import me.myogoo.extendedterminal.util.extendedcrafting.ExtendedCraftingHelper;
+import me.myogoo.extendedterminal.api.adapter.recipe.IShapedTableRecipeAdapter;
+import me.myogoo.extendedterminal.api.adapter.recipe.IShapelessTableRecipeAdapter;
+import me.myogoo.extendedterminal.api.adapter.recipe.ITableRecipeAdapter;
+import me.myogoo.extendedterminal.menu.ETTerminalBaseMenu;
+import me.myogoo.extendedterminal.util.extendedcrafting.TableCraftingHelper;
 import net.minecraft.core.NonNullList;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.item.crafting.Recipe;
-import net.neoforged.neoforge.network.PacketDistributor;
-import org.jetbrains.annotations.Nullable;
-import org.slf4j.Logger;
 
 import java.util.*;
 
@@ -28,46 +18,14 @@ public class ItemListTermCraftingHelper {
     private static final Comparator<GridInventoryEntry> ENTRY_COMPARATOR = Comparator
             .comparing(GridInventoryEntry::getStoredAmount);
 
-    private static final Logger LOGGER = ExtendedTerminal.LOGGER;
-
-    private ItemListTermCraftingHelper() {
-    }
-
-    public static void performTransfer(ExtendedTerminalBaseMenu menu, @Nullable ResourceLocation recipeId, Recipe<?> recipe,
-                                       boolean craftMissing) {
-
-        // We send the items in the recipe in any case to serve as a fallback in case the recipe is transient
-        var templateItems = findGoodTemplateItems(recipe, menu);
-        // Don't transmit a recipe id to the server in case the recipe is not actually resolvable
-        // this is the case for recipes synthetically generated for JEI
-        if (recipeId != null && menu.getPlayer().level().getRecipeManager().byKey(recipeId).isEmpty()) {
-            AELog.debug("Cannot send recipe id %s to server because it's transient", recipeId);
-            recipeId = null;
-        }
-
-        ServerboundPacket message = new ETFillCraftingGridFromRecipePacket(recipeId, templateItems, craftMissing);
-        PacketDistributor.sendToServer(message);
-    }
-
-    public static void performTransfer(ExtendedTerminalBaseMenu menu, Recipe<?> recipe, boolean craftMissing,
-                                       int recipeWidth, int recipeHeight) {
-        var templateItems = findGoodTemplateItems(recipe, menu);
-
-        ServerboundPacket message =new ETFillCraftingGridFromRecipePacket(templateItems,craftMissing,
-                recipeWidth,recipeHeight);
-        PacketDistributor.sendToServer(message);
-    }
-
-    private static NonNullList<ItemStack> findGoodTemplateItems(Recipe<?> recipe, ExtendedTerminalBaseMenu menu) {
+    public static NonNullList<ItemStack> findGoodTemplateItems(ITableRecipeAdapter recipe, ETTerminalBaseMenu<?> menu) {
         var ingredientPriorities = EncodingHelper.getIngredientPriorities(menu, ENTRY_COMPARATOR);
 
         var templateItems = NonNullList.withSize(menu.getCraftingGridSize(), ItemStack.EMPTY);
-        var ingredients = ensureNxNCraftingMatrix(recipe);
+        var ingredients = ensureFittedCraftingGrid(recipe);
         for (int i = 0; i < ingredients.size(); i++) {
             var ingredient = ingredients.get(i);
             if (!ingredient.isEmpty()) {
-                // Try to find the best item. In case the ingredient is a tag, it might contain versions the
-                // player doesn't actually have
                 var stack = ingredientPriorities.entrySet()
                         .stream()
                         .filter(e -> e.getKey() instanceof AEItemKey itemKey && itemKey.matches(ingredient))
@@ -80,20 +38,20 @@ public class ItemListTermCraftingHelper {
         return templateItems;
     }
 
-    public static Map<Integer, Ingredient> getGuiSlotToIngredientMap(ITableRecipe recipe, int gridSideLength) {
-        var raw = recipe.getIngredients();
+    public static Map<Integer, Ingredient> getGuiSlotToIngredientMap(ITableRecipeAdapter recipe, int gridSideLength) {
+        var raw = recipe.recipe().getIngredients();
         List<Ingredient> ingredients;
 
         int offsetX = 0;
         int offsetY = 0;
         int width = gridSideLength;
         int height = gridSideLength;
-        if (recipe instanceof ShapedTableRecipe tableRecipe) {
-            ingredients = fittedCraftingMatrix(tableRecipe);
-            width = tableRecipe.getWidth();
-            height = tableRecipe.getHeight();
-            offsetX = Math.floorDiv(gridSideLength - tableRecipe.getWidth(),2);
-            offsetY = Math.floorDiv(gridSideLength - tableRecipe.getHeight(),2);
+        if (recipe instanceof IShapedTableRecipeAdapter shapedRecipe) {
+            ingredients = ensureFittedCraftingGrid(shapedRecipe);
+            width = shapedRecipe.width();
+            height = shapedRecipe.height();
+            offsetX = Math.floorDiv(gridSideLength - shapedRecipe.width(),2);
+            offsetY = Math.floorDiv(gridSideLength - shapedRecipe.height(),2);
         } else {
             ingredients = raw;
         }
@@ -111,15 +69,16 @@ public class ItemListTermCraftingHelper {
                 result.put(guiSlot, ing);
             }
         }
-         return result;
+        return result;
     }
 
-    public static NonNullList<Ingredient> fittedCraftingMatrix(Recipe<?> recipe) {
-        var ingredients = recipe.getIngredients();
+    public static NonNullList<Ingredient> ensureFittedCraftingGrid(ITableRecipeAdapter recipe) {
+        var ingredients = recipe.recipe().getIngredients();
         NonNullList<Ingredient> expandedIngredients;
-        if(recipe instanceof ShapedTableRecipe shapedTableRecipe) {
-            int width = shapedTableRecipe.getWidth();
-            int height = shapedTableRecipe.getHeight();
+
+        if(recipe instanceof IShapedTableRecipeAdapter shapedTableRecipe) {
+            int width = shapedTableRecipe.width();
+            int height = shapedTableRecipe.height();
             int matrixSize = width * height;
 
             expandedIngredients = NonNullList.withSize(matrixSize, Ingredient.EMPTY);
@@ -135,49 +94,15 @@ public class ItemListTermCraftingHelper {
                 }
             }
             return  expandedIngredients;
-        } else if (recipe instanceof ShapelessTableRecipe shapelessTableRecipe) {
-            expandedIngredients = ExtendedCraftingHelper.makeNxNIngredients(shapelessTableRecipe);
+        } else if (recipe instanceof IShapelessTableRecipeAdapter shapelessTableRecipe) {
+            expandedIngredients = TableCraftingHelper.makeNxNIngredients(shapelessTableRecipe);
             for(int i = 0; i < ingredients.size(); i++) {
                 expandedIngredients.set(i, ingredients.get(i));
             }
-        }
-        else {
-            return CraftingRecipeUtil.ensure3by3CraftingMatrix(recipe);
-        }
-
-        return expandedIngredients = NonNullList.withSize(9, Ingredient.EMPTY);
-    }
-
-    public static NonNullList<Ingredient> ensureNxNCraftingMatrix(Recipe<?> recipe) {
-        var ingredients = recipe.getIngredients();
-        NonNullList<Ingredient> expandedIngredients;
-        if(recipe instanceof ITableRecipe tableRecipe) {
-            int size = ExtendedCraftingHelper.getCraftingGridSize(tableRecipe);
-            expandedIngredients = ExtendedCraftingHelper.makeNxNIngredients(tableRecipe);
-
-            if(tableRecipe instanceof ShapedTableRecipe shapedTableRecipe) {
-                var tier = shapedTableRecipe.getTier();
-                var width = shapedTableRecipe.getWidth();
-                var height = shapedTableRecipe.getHeight();
-                int matrixWidth = ExtendedCraftingHelper.getCraftingGridWidth(shapedTableRecipe);
-                // Map shaped recipe into center of NxN matrix
-                for(int h = 0; h < height; h++) {
-                    for(int w = 0; w < width; w++) {
-                        var source = w + h * width;
-                        var target = w + h * matrixWidth;
-                        var ing = ingredients.get(source);
-                        expandedIngredients.set(target, ing);
-                    }
-                }
-            } else if (tableRecipe instanceof ShapelessTableRecipe) {
-                for(int i = 0; i < ingredients.size(); i++) {
-                    expandedIngredients.set(i, ingredients.get(i));
-                }
-            }
         } else {
-            return CraftingRecipeUtil.ensure3by3CraftingMatrix(recipe);
+            expandedIngredients = NonNullList.withSize(9, Ingredient.EMPTY);
         }
+
         return expandedIngredients;
     }
-
 }

@@ -12,34 +12,30 @@ import com.blakebr0.extendedcrafting.api.TableCraftingInput;
 import com.blakebr0.extendedcrafting.api.crafting.ITableRecipe;
 import com.blakebr0.extendedcrafting.init.ModRecipeTypes;
 import com.google.common.base.Preconditions;
-import me.myogoo.extendedterminal.config.ETConfig;
-import me.myogoo.extendedterminal.menu.ETBaseTerminalMenu;
+import me.myogoo.extendedterminal.api.config.IETTerminalConfig;
+import me.myogoo.extendedterminal.menu.ETTerminalBaseMenu;
 import me.myogoo.extendedterminal.menu.ETMenuType;
-import me.myogoo.extendedterminal.menu.slot.ETBaseCraftingSlot;
+import me.myogoo.extendedterminal.menu.extendedcrafting.slot.ExCraftingTerminalSlot;
+import me.myogoo.extendedterminal.menu.slot.ETCraftingBaseSlot;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.RecipeHolder;
 import net.neoforged.neoforge.network.PacketDistributor;
 
 import javax.annotation.Nullable;
 import java.util.*;
 
 
-public class ExtendedTerminalBaseMenu extends ETBaseTerminalMenu<ITableRecipe> {
-    private final ETBaseCraftingSlot outputSlot;
+public class ExtendedTerminalBaseMenu extends ETTerminalBaseMenu<ITableRecipe> {
+    private final ETCraftingBaseSlot outputSlot;
     private final ISegmentedInventory craftingInventoryHost;
     private final CraftingMatrixSlot[] craftingSlots;
-    private final ETMenuType menuType;
     @Nullable
     private TableCraftingInput lastTestedInput;
-    private ETConfig.ExtendedCraftingConfig config;
 
-    public ExtendedTerminalBaseMenu(MenuType<?> menuType, int id, Inventory ip, ITerminalHost host, ETMenuType etMenuType, ETConfig.ExtendedCraftingConfig config) {
-        super(menuType, id, ip, host);
-        this.menuType = etMenuType;
-        this.config = config;
+    public ExtendedTerminalBaseMenu(MenuType<?> menuType, int id, Inventory ip, ITerminalHost host, ETMenuType etMenuType, IETTerminalConfig config) {
+        super(menuType, id, ip, host,etMenuType, config);
         this.craftingInventoryHost = (ISegmentedInventory) host;
         this.craftingSlots = new CraftingMatrixSlot[this.menuType.getGridSize()];
         var craftingGridInv = this.craftingInventoryHost
@@ -49,7 +45,7 @@ public class ExtendedTerminalBaseMenu extends ETBaseTerminalMenu<ITableRecipe> {
         }
 
         var linkStatusInventory = new LinkStatusRespectingInventory(host.getInventory(), this::getLinkStatus);
-        this.addSlot(this.outputSlot = new ETBaseCraftingSlot(this.getPlayerInventory().player, this.getActionSource(),
+        this.addSlot(this.outputSlot = new ExCraftingTerminalSlot(this.getPlayerInventory().player, this.getActionSource(),
                         this.energySource, linkStatusInventory, craftingGridInv, craftingGridInv, this,this.menuType),
                 this.menuType.getSlotSemanticResult());
 
@@ -66,9 +62,7 @@ public class ExtendedTerminalBaseMenu extends ETBaseTerminalMenu<ITableRecipe> {
 
     @Override
     protected void updateCurrentRecipeAndOutput(boolean forceUpdate) {
-        if(config.enableCraftOnlyPowered() && (this.getGridNode() == null || (this.getGridNode() != null && !this.getGridNode().isActive()))) {
-            return;
-        }
+        if(checkCraftingOnlyActive()) return;
 
         var testItems = new ArrayList<ItemStack>(this.craftingSlots.length);
         for(var craftingSlot : craftingSlots) {
@@ -90,13 +84,6 @@ public class ExtendedTerminalBaseMenu extends ETBaseTerminalMenu<ITableRecipe> {
         } else {
             this.outputSlot.set(this.currentRecipe.value().assemble(testInput,registryAccess()));
         }
-    }
-    public RecipeHolder<ITableRecipe> getCurrentRecipe() {
-        return this.currentRecipe;
-    }
-
-    public ETMenuType getETMenuType() {
-        return menuType;
     }
 
     @Override
@@ -131,8 +118,7 @@ public class ExtendedTerminalBaseMenu extends ETBaseTerminalMenu<ITableRecipe> {
 
     @Override
     public void doAction(ServerPlayer player, InventoryAction action, int slot, long id) {
-        var s = this.getSlot(slot);
-        if(s instanceof ETBaseCraftingSlot craftingSlot) {
+        if(this.getSlot(slot) instanceof ExCraftingTerminalSlot craftingSlot) {
             switch (action) {
                 case CRAFT_SHIFT:
                 case CRAFT_ALL:

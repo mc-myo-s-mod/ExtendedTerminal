@@ -13,6 +13,7 @@ import net.minecraft.world.item.TooltipFlag;
 import java.util.List;
 import java.util.function.Function;
 
+
 public class ExtendedCraftingPartItem<T extends IPart> extends PartItem<T> {
     private final ETMenuType menuType;
     public ExtendedCraftingPartItem(Properties properties, ETMenuType menuType, Class<T> partClass, Function<IPartItem<T>, T> factory) {

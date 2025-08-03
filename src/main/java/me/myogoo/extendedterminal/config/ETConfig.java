@@ -1,17 +1,12 @@
 package me.myogoo.extendedterminal.config;
 
-import appeng.core.definitions.ItemDefinition;
 import me.myogoo.extendedterminal.ExtendedTerminal;
-import me.myogoo.extendedterminal.init.ETParts;
+import me.myogoo.extendedterminal.api.config.IETTerminalConfig;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.event.config.ModConfigEvent;
 import net.neoforged.neoforge.common.ModConfigSpec;
 
-import java.util.Map;
-
-// An example config class. This is not required, but it's a good idea to have one to keep your config organized.
-// Demonstrates how to use Neo's config APIs
 @EventBusSubscriber(modid = ExtendedTerminal.MODID, bus = EventBusSubscriber.Bus.MOD)
 public class ETConfig {
     private static final ModConfigSpec.Builder BUILDER = new ModConfigSpec.Builder();
@@ -36,6 +31,27 @@ public class ETConfig {
     private static final ModConfigSpec.BooleanValue ENABLE_ULTIMATE_CRAFT_ONLY_POWERED;
     private static final ModConfigSpec.DoubleValue ULTIMATE_CRAFTING_TERMINAL_PASSIVE_DRAIN_AE;
 
+    // Avaritia
+    // Sculk crafting terminal
+    private static final ModConfigSpec.BooleanValue ENABLE_SCULK_CRAFTING_TERMINAL;
+    private static final ModConfigSpec.BooleanValue ENABLE_SCULK_CRAFT_ONLY_POWERED;
+    private static final ModConfigSpec.DoubleValue SCULK_CRAFTING_TERMINAL_PASSIVE_DRAIN_AE;
+
+    // nether crafting terminal
+    private static final ModConfigSpec.BooleanValue ENABLE_NETHER_CRAFTING_TERMINAL;
+    private static final ModConfigSpec.BooleanValue ENABLE_NETHER_CRAFT_ONLY_POWERED;
+    private static final ModConfigSpec.DoubleValue NETHER_CRAFTING_TERMINAL_PASSIVE_DRAIN_AE;
+
+    // end crafting terminal
+    private static final ModConfigSpec.BooleanValue ENABLE_END_CRAFTING_TERMINAL;
+    private static final ModConfigSpec.BooleanValue ENABLE_END_CRAFT_ONLY_POWERED;
+    private static final ModConfigSpec.DoubleValue END_CRAFTING_TERMINAL_PASSIVE_DRAIN_AE;
+
+    // Xtreme crafting terminal
+    private static final ModConfigSpec.BooleanValue ENABLE_EXTREME_CRAFTING_TERMINAL;
+    private static final ModConfigSpec.BooleanValue ENABLE_EXTREME_CRAFT_ONLY_POWERED;
+    private static final ModConfigSpec.DoubleValue EXTREME_CRAFTING_TERMINAL_PASSIVE_DRAIN_AE;
+
     static {
         BUILDER.comment("setting for common").push("Common Settings");
         BUILDER.pop();
@@ -59,17 +75,33 @@ public class ETConfig {
         ENABLE_ULTIMATE_CRAFTING_TERMINAL = BUILDER.comment("enable ultimate crafting terminal").define("Enable", true);
         ENABLE_ULTIMATE_CRAFT_ONLY_POWERED = BUILDER.comment("The AE system must be online and powered to perform the crafting.").define("Craftable when Active", false);
         ULTIMATE_CRAFTING_TERMINAL_PASSIVE_DRAIN_AE = BUILDER.comment("ultimate crafting terminal drain passive AE").defineInRange("Passive drain", 1, 0.0, Double.MAX_VALUE);
+        BUILDER.pop(2);
+        BUILDER.comment("setting for Avaritia").push("Avaritia");
+        BUILDER.comment("Sculk Terminal").push("Sculk Crafting Terminal");
+        ENABLE_SCULK_CRAFTING_TERMINAL = BUILDER.comment("enable sculk crafting terminal").define("Enable", true);
+        ENABLE_SCULK_CRAFT_ONLY_POWERED = BUILDER.comment("The AE system must be online and powered to perform the crafting.").define("Craftable when Active", false);
+        SCULK_CRAFTING_TERMINAL_PASSIVE_DRAIN_AE = BUILDER.comment("sculk crafting terminal drain passive AE").defineInRange("Passive drain AE", 1, 0.0, Double.MAX_VALUE);
         BUILDER.pop();
+        BUILDER.comment("Nether Terminal").push("Nether Crafting Terminal");
+        ENABLE_NETHER_CRAFTING_TERMINAL = BUILDER.comment("enable nether crafting terminal").define("Enable", true);
+        ENABLE_NETHER_CRAFT_ONLY_POWERED = BUILDER.comment("The AE system must be online and powered to perform the crafting.").define("Craftable when Active", false);
+        NETHER_CRAFTING_TERMINAL_PASSIVE_DRAIN_AE = BUILDER.comment("nether crafting terminal drain passive AE").defineInRange("Passive drain AE", 1, 0.0, Double.MAX_VALUE);
+        BUILDER.pop();
+        BUILDER.comment("End Terminal").push("End Crafting Terminal");
+        ENABLE_END_CRAFTING_TERMINAL = BUILDER.comment("enable end crafting terminal").define("Enable", true);
+        ENABLE_END_CRAFT_ONLY_POWERED = BUILDER.comment("The AE system must be online and powered to perform the crafting.").define("Craftable when Active", false);
+        END_CRAFTING_TERMINAL_PASSIVE_DRAIN_AE = BUILDER.comment("end crafting terminal drain passive AE").defineInRange("Passive drain AE", 1, 0.0, Double.MAX_VALUE);
+        BUILDER.pop();
+        BUILDER.comment("Extreme Terminal").push("Extreme Crafting Terminal");
+        ENABLE_EXTREME_CRAFTING_TERMINAL = BUILDER.comment("enable Extreme crafting terminal").define("Enable", true);
+        ENABLE_EXTREME_CRAFT_ONLY_POWERED = BUILDER.comment("The AE system must be online and powered to perform the crafting.").define("Craftable when Active", false);
+        EXTREME_CRAFTING_TERMINAL_PASSIVE_DRAIN_AE = BUILDER.comment("Extreme crafting terminal drain passive AE").defineInRange("Passive drain AE", 1, 0.0, Double.MAX_VALUE);
+        BUILDER.pop(2);
+
         COMMON = BUILDER.build();
     }
     public static void init() {
-        DISABLED_TERMINALS = Map.of(
-                ETParts.BASIC_TERMINAL_PART, !ENABLE_BASIC_CRAFTING_TERMINAL.get(),
-                ETParts.ADVANCED_TERMINAL_PART, !ENABLE_ADVANCED_CRAFTING_TERMINAL.get(),
-                ETParts.ELITE_TERMINAL_PART, !ENABLE_ELITE_CRAFTING_TERMINAL.get(),
-                ETParts.ULTIMATE_TERMINAL_PART, !ENABLE_ULTIMATE_CRAFTING_TERMINAL.get()
-        );
-
+        // Extended Crafting Configs
         BASIC_TERMINAL_CONFIG = new ExtendedCraftingConfig(
                 ENABLE_BASIC_CRAFTING_TERMINAL.get(),
                 ENABLE_BASIC_CRAFT_ONLY_POWERED.get(),
@@ -93,13 +125,42 @@ public class ETConfig {
                 ENABLE_ULTIMATE_CRAFT_ONLY_POWERED.get(),
                 ULTIMATE_CRAFTING_TERMINAL_PASSIVE_DRAIN_AE.get()
         );
+
+        // Avaritia Configs
+        SCULK_TERMINAL_CONFIG = new AvaritiaConfig(
+                ENABLE_SCULK_CRAFTING_TERMINAL.get(),
+                ENABLE_SCULK_CRAFT_ONLY_POWERED.get(),
+                SCULK_CRAFTING_TERMINAL_PASSIVE_DRAIN_AE.get()
+        );
+
+        NETHER_TERMINAL_CONFIG = new AvaritiaConfig(
+                ENABLE_NETHER_CRAFTING_TERMINAL.get(),
+                ENABLE_NETHER_CRAFT_ONLY_POWERED.get(),
+                NETHER_CRAFTING_TERMINAL_PASSIVE_DRAIN_AE.get()
+        );
+
+        END_TERMINAL_CONFIG = new AvaritiaConfig(
+                ENABLE_END_CRAFTING_TERMINAL.get(),
+                ENABLE_END_CRAFT_ONLY_POWERED.get(),
+                END_CRAFTING_TERMINAL_PASSIVE_DRAIN_AE.get()
+        );
+
+        EXTREME_TERMINAL_CONFIG = new AvaritiaConfig(
+                ENABLE_EXTREME_CRAFTING_TERMINAL.get(),
+                ENABLE_EXTREME_CRAFT_ONLY_POWERED.get(),
+                EXTREME_CRAFTING_TERMINAL_PASSIVE_DRAIN_AE.get()
+        );
     }
 
     public static ExtendedCraftingConfig BASIC_TERMINAL_CONFIG;
     public static ExtendedCraftingConfig ADVANCED_TERMINAL_CONFIG;
     public static ExtendedCraftingConfig ELITE_TERMINAL_CONFIG;
     public static ExtendedCraftingConfig ULTIMATE_TERMINAL_CONFIG;
-    public static Map<ItemDefinition<?>, Boolean> DISABLED_TERMINALS;
+
+    public static AvaritiaConfig SCULK_TERMINAL_CONFIG;
+    public static AvaritiaConfig NETHER_TERMINAL_CONFIG;
+    public static AvaritiaConfig END_TERMINAL_CONFIG;
+    public static AvaritiaConfig EXTREME_TERMINAL_CONFIG;
     @SubscribeEvent
     static void onLoad(final ModConfigEvent event) {
         if(event.getConfig().getSpec() == COMMON) {
@@ -112,5 +173,11 @@ public class ETConfig {
             boolean enableTerminal,
             boolean enableCraftOnlyPowered,
             double passiveDrainAE
-    ) {}
+    ) implements IETTerminalConfig {}
+
+    public record AvaritiaConfig(
+            boolean enableTerminal,
+            boolean enableCraftOnlyPowered,
+            double passiveDrainAE
+    ) implements IETTerminalConfig {}
 }

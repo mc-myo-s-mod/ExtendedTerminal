@@ -1,5 +1,6 @@
 package me.myogoo.extendedterminal.init;
 
+import appeng.core.definitions.AEParts;
 import appeng.core.definitions.ItemDefinition;
 import me.myogoo.extendedterminal.ExtendedTerminal;
 import me.myogoo.extendedterminal.config.ETConfig;
@@ -14,13 +15,12 @@ public class ETCreativeTab {
 
     public static final DeferredHolder<CreativeModeTab, CreativeModeTab> CREATIVE_TAB = REGISTER.register("creative_tab", () -> CreativeModeTab.builder()
             .title(Component.translatable("itemGroup." + ExtendedTerminal.MODID))
-            .icon(ETParts.ULTIMATE_TERMINAL_PART::stack)
+            .icon(AEParts.CRAFTING_TERMINAL::stack)
             .displayItems((params, output) -> {
                 for (ItemDefinition<?> item : ETItems.ITEMS) {
-                    if (!ETConfig.DISABLED_TERMINALS.getOrDefault(item, false)) {
-                        output.accept(item);
-                    }
+                    output.accept(item);
                 }
             })
             .build());
+
 }

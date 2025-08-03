@@ -10,6 +10,7 @@ import appeng.menu.me.crafting.CraftConfirmMenu;
 import appeng.menu.me.items.CraftingTermMenu;
 import appeng.util.inv.PlayerInternalInventory;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
+import me.myogoo.extendedterminal.api.config.IETTerminalConfig;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Inventory;
@@ -20,12 +21,16 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
-public abstract class ETBaseTerminalMenu<R extends Recipe<?>> extends MEStorageMenu implements ICraftingGridMenu {
+public abstract class ETTerminalBaseMenu<R extends Recipe<?>> extends MEStorageMenu implements ICraftingGridMenu {
     protected RecipeHolder<R> currentRecipe;
+    private final IETTerminalConfig config;
+    protected final ETMenuType menuType;
     private static final String ACTION_CLEAR_TO_PLAYER = "clearToPlayer";
 
-    public ETBaseTerminalMenu(MenuType<?> menuType, int id, Inventory ip, ITerminalHost host) {
+    public ETTerminalBaseMenu(MenuType<?> menuType, int id, Inventory ip, ITerminalHost host, ETMenuType etMenuType, IETTerminalConfig config) {
         super(menuType, id, ip, host);
+        this.menuType = etMenuType;
+        this.config = config;
         registerClientAction(ACTION_CLEAR_TO_PLAYER, this::clearToPlayerInventory);
     }
 
@@ -48,7 +53,9 @@ public abstract class ETBaseTerminalMenu<R extends Recipe<?>> extends MEStorageM
 
     protected abstract void updateCurrentRecipeAndOutput(boolean forceUpdate);
 
-
+    public ETMenuType getETMenuType() {
+        return this.menuType;
+    }
     //Override Methods
 
     @Override
@@ -155,7 +162,6 @@ public abstract class ETBaseTerminalMenu<R extends Recipe<?>> extends MEStorageM
         return new CraftingTermMenu.MissingIngredientSlots(missingSlots, craftableSlots);
     }
 
-
     public void clearToPlayerInventory() {
         if (isClientSide()) {
             sendClientAction(ACTION_CLEAR_TO_PLAYER);
@@ -184,5 +190,9 @@ public abstract class ETBaseTerminalMenu<R extends Recipe<?>> extends MEStorageM
                 }
             }
         }
+    }
+
+    protected boolean checkCraftingOnlyActive() {
+        return config.enableCraftOnlyPowered() && (this.getGridNode() == null || (this.getGridNode() != null && !this.getGridNode().isActive()));
     }
 }

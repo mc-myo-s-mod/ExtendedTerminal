@@ -1,6 +1,5 @@
 package me.myogoo.extendedterminal.network.serverbound;
 
-import appeng.api.config.FuzzyMode;
 import appeng.api.networking.crafting.ICraftingService;
 import appeng.api.networking.storage.IStorageService;
 import appeng.api.stacks.AEItemKey;
@@ -11,71 +10,52 @@ import appeng.core.network.ServerboundPacket;
 import appeng.helpers.ICraftingGridMenu;
 import appeng.items.storage.ViewCellItem;
 import appeng.me.storage.NullInventory;
-import appeng.util.prioritylist.IPartitionList;
 import com.google.common.base.Preconditions;
 import com.google.common.primitives.Ints;
-import me.myogoo.extendedterminal.ExtendedTerminal;
-import me.myogoo.extendedterminal.util.extendedcrafting.ExtendedCraftingHelper;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntList;
+import me.myogoo.extendedterminal.ExtendedTerminal;
+import me.myogoo.extendedterminal.util.extendedcrafting.TableCraftingHelper;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.slf4j.Logger;
-
 
 import java.util.*;
 
-import static me.myogoo.extendedterminal.integration.ItemListTermCraftingHelper.ensureNxNCraftingMatrix;
+public class FillTableCraftingGridFromRecipePacket extends FillRecipePacketBase implements ServerboundPacket {
+    public static final int NOT_SET_RECIPE_SIZE = -1;
 
-public class ETFillCraftingGridFromRecipePacket implements ServerboundPacket {
-    private static final Logger LOGGER = ExtendedTerminal.LOGGER;
-    private static final int NOT_SET_RECIPE_SIZE = -1; //name refactor
-    public static final StreamCodec<RegistryFriendlyByteBuf, ETFillCraftingGridFromRecipePacket> STREAM_CODEC = StreamCodec
+    public static final StreamCodec<RegistryFriendlyByteBuf, FillTableCraftingGridFromRecipePacket> STREAM_CODEC = StreamCodec
             .ofMember(
-                    ETFillCraftingGridFromRecipePacket::write,
-                    ETFillCraftingGridFromRecipePacket::decode);
+                    FillTableCraftingGridFromRecipePacket::write,
+                    FillTableCraftingGridFromRecipePacket::decode);
 
-    public static final Type<ETFillCraftingGridFromRecipePacket> TYPE = new CustomPacketPayload
-            .Type<>(ExtendedTerminal.makeId("fill_crafting_grid_from_recipe"));
+    public static final CustomPacketPayload.Type<FillTableCraftingGridFromRecipePacket> TYPE = new CustomPacketPayload
+            .Type<>(ExtendedTerminal.makeId("fill_table_crafting_grid_from_recipe"));
 
-    private final @Nullable ResourceLocation recipeId;
     private final List<ItemStack> ingredientTemplates;
     private final boolean craftMissing;
     private final int recipeWidth;
     private final int recipeHeight;
 
     @Override
-    public CustomPacketPayload.Type<ETFillCraftingGridFromRecipePacket> type() {
+    public CustomPacketPayload.@NotNull Type<FillTableCraftingGridFromRecipePacket> type() {
         return TYPE;
     }
 
-    public ETFillCraftingGridFromRecipePacket(
-            @Nullable ResourceLocation recipeId,
-            List<ItemStack> ingredientTemplates,
-            boolean craftMissing
-    ) {
-        this.recipeId = recipeId;
-        this.ingredientTemplates = NonNullList.copyOf(ingredientTemplates.stream().map(ItemStack::copy).toList());
-        this.craftMissing = craftMissing;
-        this.recipeHeight = NOT_SET_RECIPE_SIZE;
-        this.recipeWidth = NOT_SET_RECIPE_SIZE;
-    }
-
-    public ETFillCraftingGridFromRecipePacket(
+    public FillTableCraftingGridFromRecipePacket(
             List<ItemStack> ingredientTemplates,
             boolean craftMissing,
             int recipeWidth,
             int recipeHeight
     ) {
-        this.recipeId = null;
         this.ingredientTemplates = NonNullList.copyOf(ingredientTemplates.stream().map(ItemStack::copy).toList());
         this.craftMissing = craftMissing;
         this.recipeWidth = recipeWidth;
@@ -83,11 +63,6 @@ public class ETFillCraftingGridFromRecipePacket implements ServerboundPacket {
     }
 
     public void write(RegistryFriendlyByteBuf stream) {
-        stream.writeBoolean(recipeId != null);
-        if (recipeId != null) {
-            stream.writeResourceLocation(recipeId);
-        }
-
         stream.writeInt(ingredientTemplates.size());
         for (var ingredientTemplate : ingredientTemplates) {
             ItemStack.OPTIONAL_STREAM_CODEC.encode(stream, ingredientTemplate);
@@ -97,12 +72,7 @@ public class ETFillCraftingGridFromRecipePacket implements ServerboundPacket {
         stream.writeInt(recipeHeight);
     }
 
-    public static ETFillCraftingGridFromRecipePacket decode(RegistryFriendlyByteBuf stream) {
-        ResourceLocation recipeId = null;
-        if (stream.readBoolean()) {
-            recipeId = stream.readResourceLocation();
-        }
-
+    public static FillTableCraftingGridFromRecipePacket decode(RegistryFriendlyByteBuf stream) {
         var ingredientTemplates = NonNullList.withSize(stream.readInt(), ItemStack.EMPTY);
         for (int i = 0; i < ingredientTemplates.size(); i++) {
             ingredientTemplates.set(i, ItemStack.OPTIONAL_STREAM_CODEC.decode(stream));
@@ -110,17 +80,39 @@ public class ETFillCraftingGridFromRecipePacket implements ServerboundPacket {
         var craftMissing = stream.readBoolean();
         int recipeWidth = stream.readInt();
         int recipeHeight = stream.readInt();
-        if (recipeId != null) {
-            return new ETFillCraftingGridFromRecipePacket(recipeId, ingredientTemplates, craftMissing);
-        } else {
-            if (recipeWidth <= 0 || recipeHeight <= 0) { //hmm.. ai generated code
-                LOGGER.warn("Received ETFillCraftingGridFromRecipePacket with invalid recipe size: {}x{}",
-                        recipeWidth, recipeHeight);
-                return new ETFillCraftingGridFromRecipePacket(recipeId, ingredientTemplates, craftMissing);
-            }
-            return new ETFillCraftingGridFromRecipePacket(ingredientTemplates, craftMissing, recipeWidth, recipeHeight);
-        }
+
+        return new FillTableCraftingGridFromRecipePacket(ingredientTemplates, craftMissing, recipeWidth, recipeHeight);
     }
+
+
+    @Override
+    protected NonNullList<Ingredient> getDesiredIngredients(Player player) {
+        var ingredients = NonNullList.withSize(this.ingredientTemplates.size(), Ingredient.EMPTY);
+        Preconditions.checkArgument(ingredients.size() == this.ingredientTemplates.size(),
+                "Got %d ingredient templates from client, expected %d",
+                ingredientTemplates.size(), ingredients.size());
+
+        //shapeless recipes
+        if (recipeWidth == NOT_SET_RECIPE_SIZE || recipeHeight == NOT_SET_RECIPE_SIZE) {
+            for (int i = 0; i < ingredients.size(); i++) {
+                var template = ingredientTemplates.get(i);
+                if (!template.isEmpty()) {
+                    ingredients.set(i, Ingredient.of(template));
+                }
+            }
+        } else {
+            int cursor = 0;
+            var coordinator = TableCraftingHelper.indexToCoordinate(ingredientTemplates.size(), recipeWidth, recipeHeight);
+
+            for (int i = 0; i < ingredients.size(); i++) {
+                if (coordinator.test(i)) {
+                    ingredients.set(i, Ingredient.of(ingredientTemplates.get(cursor++)));
+                }
+            }
+        }
+
+        return ingredients;
+}
 
     @Override
     public void handleOnServer(ServerPlayer player) {
@@ -242,106 +234,5 @@ public class ETFillCraftingGridFromRecipePacket implements ServerboundPacket {
                     .map(e -> new ICraftingGridMenu.AutoCraftEntry(e.getKey(), e.getValue())).toList();
             cct.startAutoCrafting(stacks);
         }
-    }
-
-    private ItemStack takeIngredientFromPlayer(ICraftingGridMenu cct, ServerPlayer player, Ingredient ingredient) {
-        var playerInv = player.getInventory();
-        for (int i = 0; i < playerInv.items.size(); i++) {
-            // Do not take ingredients out of locked slots
-            if (cct.isPlayerInventorySlotLocked(i)) {
-                continue;
-            }
-
-            var item = playerInv.getItem(i);
-            if (ingredient.test(item)) {
-                var result = item.split(1);
-                if (!result.isEmpty()) {
-                    return result;
-                }
-            }
-        }
-        return ItemStack.EMPTY;
-    }
-
-    private NonNullList<Ingredient> getDesiredIngredients(Player player) {
-        // Try to retrieve the real recipe on the server-side
-        if (this.recipeId != null) {
-            var recipe = player.level().getRecipeManager().byKey(this.recipeId).orElse(null);
-            if (recipe != null) {
-                return ensureNxNCraftingMatrix(recipe.value());
-            }
-        }
-
-        // If the recipe is unavailable for any reason, use the templates provided by the client
-        var ingredients = NonNullList.withSize(this.ingredientTemplates.size(), Ingredient.EMPTY);
-        Preconditions.checkArgument(ingredients.size() == this.ingredientTemplates.size(),
-                "Got %d ingredient templates from client, expected %d",
-                ingredientTemplates.size(), ingredients.size());
-
-        //shapeless recipes
-        if (recipeWidth == NOT_SET_RECIPE_SIZE || recipeHeight == NOT_SET_RECIPE_SIZE) {
-            for (int i = 0; i < ingredients.size(); i++) {
-                var template = ingredientTemplates.get(i);
-                if (!template.isEmpty()) {
-                    ingredients.set(i, Ingredient.of(template));
-                }
-            }
-        } else {
-            Deque<ItemStack> deque = new ArrayDeque<>();
-            var coordinator = ExtendedCraftingHelper.indexToCoordinate(ingredientTemplates.size(), recipeWidth, recipeHeight);
-
-            for (int i = 0; i < ingredients.size(); i++) {
-                var template = ingredientTemplates.get(i);
-                if(!template.isEmpty()) {
-                    deque.addLast(template);
-                }
-                if(coordinator.test(i) && !deque.isEmpty()) {
-                    ingredients.set(i, Ingredient.of(deque.pop()));
-                }
-            }
-
-            if(!deque.isEmpty()) {
-                ExtendedTerminal.LOGGER.warn("Received ETFillCraftingGridFromRecipePacket with {} excess items: {}",
-                        deque.size(), deque);
-            }
-        }
-
-        return ingredients;
-    }
-
-    /**
-     * //@see FillCraftingGridFromRecipePacket#findBestMatchingItemStack(Ingredient, IPartitionList, KeyCounter)
-     */
-    private List<AEItemKey> findBestMatchingItemStack(Ingredient ingredient, IPartitionList filter,
-                                                      KeyCounter storage) {
-        return Arrays.stream(ingredient.getItems())//
-                .map(AEItemKey::of) //
-                .filter(r -> r != null && (filter == null || filter.isListed(r)))
-                .flatMap(s -> storage.findFuzzy(s, FuzzyMode.IGNORE_ALL).stream())
-                // While FuzzyMode.IGNORE_ALL will retrieve all stacks of the same Item which matches
-                // standard Vanilla Ingredient matching, there are NBT-matching Ingredient subclasses on Forge,
-                // and Mods might actually have mixed into Ingredient
-                .filter(e -> ((AEItemKey) e.getKey()).matches(ingredient))
-                // Sort in descending order of availability
-                .sorted((a, b) -> Long.compare(b.getLongValue(), a.getLongValue()))
-                .map(e -> (AEItemKey) e.getKey())
-                .toList();
-    }
-
-    private Optional<AEItemKey> findCraftableKey(Ingredient ingredient, ICraftingService craftingService) {
-        return Arrays.stream(ingredient.getItems())
-                .map(AEItemKey::of)
-                .map(s -> (AEItemKey) craftingService.getFuzzyCraftable(s,
-                        key -> ((AEItemKey) key).matches(ingredient)))
-                .filter(Objects::nonNull)
-                .findAny();
-    }
-
-    private int calculateCraftingGridOffsetX() {
-        return 0;
-    }
-
-    private int calculateCraftingGridOffsetY() {
-        return 0;
     }
 }

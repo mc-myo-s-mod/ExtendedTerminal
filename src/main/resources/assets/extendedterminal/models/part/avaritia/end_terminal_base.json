@@ -1,0 +1,7 @@
+{
+  "parent": "ae2:part/display_base",
+  "textures": {
+    "front": "extendedterminal:part/avaritia/end_terminal_front",
+    "sides": "extendedterminal:part/avaritia/end_terminal_side"
+  }
+}

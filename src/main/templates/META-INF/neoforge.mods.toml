@@ -28,7 +28,13 @@ versionRange = "[19,)"
 
 [[dependencies."${mod_id}"]]
 modId = "extendedcrafting"
-type = "REQUIRED"
+type = "OPTIONAL"
 ordering="AFTER"
 side="BOTH"
 versionRange = "[7,)"
+
+[[dependencies."${mod_id}"]]
+modId = "avaritia"
+type = "OPTIONAL"
+ordering="AFTER"
+side="BOTH"
