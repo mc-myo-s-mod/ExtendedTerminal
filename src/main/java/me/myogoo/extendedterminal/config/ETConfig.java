@@ -31,7 +31,7 @@ public class ETConfig {
     private static final ModConfigSpec.BooleanValue ENABLE_ULTIMATE_CRAFT_ONLY_POWERED;
     private static final ModConfigSpec.DoubleValue ULTIMATE_CRAFTING_TERMINAL_PASSIVE_DRAIN_AE;
 
-    // Avaritia
+    // Re:Avaritia
     // Sculk crafting terminal
     private static final ModConfigSpec.BooleanValue ENABLE_SCULK_CRAFTING_TERMINAL;
     private static final ModConfigSpec.BooleanValue ENABLE_SCULK_CRAFT_ONLY_POWERED;
@@ -47,10 +47,15 @@ public class ETConfig {
     private static final ModConfigSpec.BooleanValue ENABLE_END_CRAFT_ONLY_POWERED;
     private static final ModConfigSpec.DoubleValue END_CRAFTING_TERMINAL_PASSIVE_DRAIN_AE;
 
-    // Xtreme crafting terminal
+    // Extreme crafting terminal
     private static final ModConfigSpec.BooleanValue ENABLE_EXTREME_CRAFTING_TERMINAL;
     private static final ModConfigSpec.BooleanValue ENABLE_EXTREME_CRAFT_ONLY_POWERED;
     private static final ModConfigSpec.DoubleValue EXTREME_CRAFTING_TERMINAL_PASSIVE_DRAIN_AE;
+
+    // AvaritiaNeo
+    private static final ModConfigSpec.BooleanValue ENABLE_NEO_EXTREME_CRAFTING_TERMINAL;
+    private static final ModConfigSpec.BooleanValue ENABLE_NEO_EXTREME_CRAFT_ONLY_POWERED;
+    private static final ModConfigSpec.DoubleValue NEO_EXTREME_CRAFTING_TERMINAL_PASSIVE_DRAIN_AE;
 
     static {
         BUILDER.comment("setting for common").push("Common Settings");
@@ -76,7 +81,7 @@ public class ETConfig {
         ENABLE_ULTIMATE_CRAFT_ONLY_POWERED = BUILDER.comment("The AE system must be online and powered to perform the crafting.").define("Craftable when Active", false);
         ULTIMATE_CRAFTING_TERMINAL_PASSIVE_DRAIN_AE = BUILDER.comment("ultimate crafting terminal drain passive AE").defineInRange("Passive drain", 1, 0.0, Double.MAX_VALUE);
         BUILDER.pop(2);
-        BUILDER.comment("setting for Avaritia").push("Avaritia");
+        BUILDER.comment("setting for Re:Avaritia").push("Re:Avaritia");
         BUILDER.comment("Sculk Terminal").push("Sculk Crafting Terminal");
         ENABLE_SCULK_CRAFTING_TERMINAL = BUILDER.comment("enable sculk crafting terminal").define("Enable", true);
         ENABLE_SCULK_CRAFT_ONLY_POWERED = BUILDER.comment("The AE system must be online and powered to perform the crafting.").define("Craftable when Active", false);
@@ -97,6 +102,11 @@ public class ETConfig {
         ENABLE_EXTREME_CRAFT_ONLY_POWERED = BUILDER.comment("The AE system must be online and powered to perform the crafting.").define("Craftable when Active", false);
         EXTREME_CRAFTING_TERMINAL_PASSIVE_DRAIN_AE = BUILDER.comment("Extreme crafting terminal drain passive AE").defineInRange("Passive drain AE", 1, 0.0, Double.MAX_VALUE);
         BUILDER.pop(2);
+        BUILDER.comment("setting for AvaritiaNeo").push("AvaritiaNeo");
+        BUILDER.comment("Neo Extreme Terminal").push("Neo Extreme Crafting Terminal");
+        ENABLE_NEO_EXTREME_CRAFTING_TERMINAL = BUILDER.comment("enable Neo Extreme crafting terminal").define("Enable", true);
+        ENABLE_NEO_EXTREME_CRAFT_ONLY_POWERED = BUILDER.comment("The AE system must be online and powered to perform the crafting.").define("Craftable when Active", false);
+        NEO_EXTREME_CRAFTING_TERMINAL_PASSIVE_DRAIN_AE = BUILDER.comment("Neo Extreme crafting terminal drain passive AE").defineInRange("Passive drain AE", 1, 0.0, Double.MAX_VALUE);
 
         COMMON = BUILDER.build();
     }
@@ -150,6 +160,12 @@ public class ETConfig {
                 ENABLE_EXTREME_CRAFT_ONLY_POWERED.get(),
                 EXTREME_CRAFTING_TERMINAL_PASSIVE_DRAIN_AE.get()
         );
+        // AvaritiaNeo Configs
+        NEO_EXTREME_TERMINAL_CONFIG = new AvaritiaConfig(
+                ENABLE_NEO_EXTREME_CRAFTING_TERMINAL.get(),
+                ENABLE_NEO_EXTREME_CRAFT_ONLY_POWERED.get(),
+                NEO_EXTREME_CRAFTING_TERMINAL_PASSIVE_DRAIN_AE.get()
+        );
     }
 
     public static ExtendedCraftingConfig BASIC_TERMINAL_CONFIG;
@@ -161,6 +177,8 @@ public class ETConfig {
     public static AvaritiaConfig NETHER_TERMINAL_CONFIG;
     public static AvaritiaConfig END_TERMINAL_CONFIG;
     public static AvaritiaConfig EXTREME_TERMINAL_CONFIG;
+
+    public static AvaritiaConfig NEO_EXTREME_TERMINAL_CONFIG;
     @SubscribeEvent
     static void onLoad(final ModConfigEvent event) {
         if(event.getConfig().getSpec() == COMMON) {

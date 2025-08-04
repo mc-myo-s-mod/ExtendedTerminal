@@ -6,6 +6,13 @@
   "item.extendedterminal.elite_terminal": "엘리트 조합 터미널",
   "item.extendedterminal.ultimate_terminal": "최고 조합 터미널",
 
+  "item.extendedterminal.sculk_terminal": "스컬크 조합 터미널",
+  "item.extendedterminal.nether_terminal": "네더 조합 터미널",
+  "item.extendedterminal.end_terminal": "엔드 조합 터미널",
+  "item.extendedterminal.extreme_terminal": "익스트림 조합 터미널",
+
+  "item.extendedterminal.neo_extreme_terminal": "익스트림 조합 터미널",
+
   "item.extendedterminal.compat_processor": "통합 프로세서",
   "item.extendedterminal.printed_compat_processor": "인쇄된 통합 프로세서",
 

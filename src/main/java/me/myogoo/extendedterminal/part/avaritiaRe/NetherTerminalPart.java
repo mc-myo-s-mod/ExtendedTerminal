@@ -1,4 +1,4 @@
-package me.myogoo.extendedterminal.part.avaritia;
+package me.myogoo.extendedterminal.part.avaritiaRe;
 
 import appeng.api.parts.IPartItem;
 import appeng.api.parts.IPartModel;
@@ -7,7 +7,7 @@ import appeng.parts.PartModel;
 import me.myogoo.extendedterminal.ExtendedTerminal;
 import me.myogoo.extendedterminal.config.ETConfig;
 import me.myogoo.extendedterminal.menu.ETMenuType;
-import me.myogoo.extendedterminal.menu.avaritia.NetherTerminalMenu;
+import me.myogoo.extendedterminal.menu.avaritiaRe.NetherTerminalMenu;
 import me.myogoo.extendedterminal.part.ETTerminalBasePart;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;

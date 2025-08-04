@@ -1,4 +1,4 @@
-package me.myogoo.extendedterminal.integration.jei.avaritia;
+package me.myogoo.extendedterminal.integration.jei.avaritiaRe;
 
 import committee.nova.mods.avaritia.init.compat.jei.category.tables.EndCraftingTableCategory;
 import committee.nova.mods.avaritia.init.compat.jei.category.tables.ExtremeCraftingTableCategory;

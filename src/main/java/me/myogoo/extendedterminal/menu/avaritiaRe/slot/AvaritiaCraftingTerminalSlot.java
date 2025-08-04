@@ -1,4 +1,4 @@
-package me.myogoo.extendedterminal.menu.avaritia.slot;
+package me.myogoo.extendedterminal.menu.avaritiaRe.slot;
 
 import appeng.api.config.Actionable;
 import appeng.api.config.PowerMultiplier;
@@ -11,17 +11,16 @@ import appeng.api.storage.MEStorage;
 import appeng.helpers.ICraftingGridMenu;
 import appeng.items.storage.ViewCellItem;
 import appeng.util.prioritylist.IPartitionList;
-import com.blakebr0.extendedcrafting.api.TableCraftingInput;
-import com.blakebr0.extendedcrafting.api.crafting.ITableRecipe;
 import committee.nova.mods.avaritia.api.common.crafting.ITierCraftingRecipe;
 import committee.nova.mods.avaritia.api.common.crafting.TierInput;
 import committee.nova.mods.avaritia.init.registry.ModRecipeTypes;
 import me.myogoo.extendedterminal.menu.ETMenuType;
-import me.myogoo.extendedterminal.menu.avaritia.AvaritiaTerminalBaseMenu;
+import me.myogoo.extendedterminal.menu.avaritiaRe.AvaritiaTerminalBaseMenu;
 import me.myogoo.extendedterminal.menu.slot.ETCraftingBaseSlot;
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.common.CommonHooks;
@@ -37,7 +36,7 @@ public class AvaritiaCraftingTerminalSlot extends ETCraftingBaseSlot<ITierCrafti
 
     @Override
     protected RecipeHolder<ITierCraftingRecipe> findRecipe(TierInput ic, Level level) {
-        if( this.menu instanceof AvaritiaTerminalBaseMenu terminalMenu) {
+        if(this.menu instanceof AvaritiaTerminalBaseMenu terminalMenu) {
             var recipe = terminalMenu.getCurrentRecipe();
             if (recipe != null && recipe.value().matches(ic, level)) {
                 return terminalMenu.getCurrentRecipe();

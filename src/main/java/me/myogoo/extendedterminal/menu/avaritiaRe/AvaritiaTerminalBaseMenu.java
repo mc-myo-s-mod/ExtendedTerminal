@@ -1,4 +1,4 @@
-package me.myogoo.extendedterminal.menu.avaritia;
+package me.myogoo.extendedterminal.menu.avaritiaRe;
 
 import appeng.api.inventories.ISegmentedInventory;
 import appeng.api.inventories.InternalInventory;
@@ -15,7 +15,7 @@ import committee.nova.mods.avaritia.init.registry.ModRecipeTypes;
 import me.myogoo.extendedterminal.api.config.IETTerminalConfig;
 import me.myogoo.extendedterminal.menu.ETTerminalBaseMenu;
 import me.myogoo.extendedterminal.menu.ETMenuType;
-import me.myogoo.extendedterminal.menu.avaritia.slot.AvaritiaCraftingTerminalSlot;
+import me.myogoo.extendedterminal.menu.avaritiaRe.slot.AvaritiaCraftingTerminalSlot;
 import me.myogoo.extendedterminal.menu.slot.ETCraftingBaseSlot;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Inventory;

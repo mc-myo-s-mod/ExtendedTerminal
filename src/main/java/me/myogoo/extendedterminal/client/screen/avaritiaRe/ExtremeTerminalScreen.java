@@ -1,9 +1,9 @@
-package me.myogoo.extendedterminal.client.screen.avaritia;
+package me.myogoo.extendedterminal.client.screen.avaritiaRe;
 
 import appeng.client.gui.style.ScreenStyle;
 import committee.nova.mods.avaritia.api.common.crafting.ITierCraftingRecipe;
 import me.myogoo.extendedterminal.client.screen.ETTerminalBaseScreen;
-import me.myogoo.extendedterminal.menu.avaritia.ExtremeTerminalMenu;
+import me.myogoo.extendedterminal.menu.avaritiaRe.ExtremeTerminalMenu;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 

@@ -1,8 +1,6 @@
 {
   "itemGroup.extendedterminal": "拓展终端",
 
-  "item.extendedterminal.tooltip.empty": "这个物品无法被合成。",
-
   "item.extendedterminal.basic_terminal": "基础合成终端",
   "item.extendedterminal.advanced_terminal": "高级合成终端",
   "item.extendedterminal.elite_terminal": "精英合成终端",
@@ -12,6 +10,8 @@
   "item.extendedterminal.nether_terminal": "炼狱合成终端",
   "item.extendedterminal.end_terminal": "终末合成终端",
   "item.extendedterminal.extreme_terminal": "终焉合成终端",
+
+  "item.extendedterminal.neo_extreme_terminal": "终焉合成终端",
 
   "item.extendedterminal.compat_processor": "兼容处理器",
   "item.extendedterminal.printed_compat_processor": "兼容电路板",

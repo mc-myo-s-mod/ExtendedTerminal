@@ -1,4 +1,4 @@
-package me.myogoo.extendedterminal.menu.avaritia;
+package me.myogoo.extendedterminal.menu.avaritiaRe;
 
 
 import appeng.api.storage.ITerminalHost;

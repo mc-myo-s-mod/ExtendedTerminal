@@ -28,6 +28,10 @@ public class ShapedTableRecipeAdapter implements IShapedTableRecipeAdapter {
         this(recipe, recipe.getTier(), recipe.getWidth(), recipe.getHeight());
     }
 
+    public ShapedTableRecipeAdapter(net.byAqua3.avaritia.recipe.RecipeExtremeShaped recipe) {
+        this(recipe, 4, recipe.getWidth(), recipe.getHeight());
+    }
+
     @Override
     @SuppressWarnings("unchecked")
     public <R extends Recipe<?>> R recipe() {
