@@ -8,6 +8,7 @@ import me.myogoo.extendedterminal.config.ETConfig;
 import me.myogoo.extendedterminal.event.RecipeManagerLoadingEvent;
 import me.myogoo.extendedterminal.util.extendedcrafting.ShapedTableRecipeBuilder;
 import me.myogoo.extendedterminal.util.mod.ModLoadHelper;
+import net.byAqua3.avaritia.loader.AvaritiaBlocks;
 import net.neoforged.bus.api.SubscribeEvent;
 
 import java.lang.reflect.InvocationTargetException;
@@ -100,5 +101,16 @@ public class ETRecipeGen {
                 .define('B', committee.nova.mods.avaritia.init.registry.ModBlocks.extreme_crafting_table)
                 .define('C', ETItems.COMPAT_PROCESSOR)
                 .buildReAV(ExtendedTerminal.makeId("avaritia/extreme_terminal")));
+    }
+
+    @ModAccessor.AvaritiaNeo
+    private static void loadAvaritiaNeoRecipe(RecipeManagerLoadingEvent event) {
+        if(ETConfig.NEO_EXTREME_TERMINAL_CONFIG.enableTerminal()) event.addRecipe(ShapedTableRecipeBuilder.shaped(ETParts.NEO_EXTREME_TERMINAL_PART, 1)
+                .pattern("AB")
+                .pattern("C ")
+                .define('A', AEParts.CRAFTING_TERMINAL)
+                .define('B', AvaritiaBlocks.EXTREME_CRAFTING_TABLE.get())
+                .define('C', ETItems.COMPAT_PROCESSOR)
+                .buildAVNeo(ExtendedTerminal.makeId("avaritia/neo_extreme_terminal")));
     }
 }
