@@ -31,8 +31,8 @@ public abstract class ETCraftingBaseSlot<R extends Recipe<?>, I extends Crafting
 
     protected final IActionSource mySrc;
     protected final IEnergySource energySrc;
-    private final MEStorage storage;
     protected final ICraftingGridMenu menu;
+    private final MEStorage storage;
 
     protected final ETMenuType menuType;
 

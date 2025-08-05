@@ -1,4 +1,4 @@
-package me.myogoo.extendedterminal.integration.jei.avaritia;
+package me.myogoo.extendedterminal.integration.jei.avaritiaRe;
 
 import committee.nova.mods.avaritia.init.compat.jei.category.tables.EndCraftingTableCategory;
 import committee.nova.mods.avaritia.init.compat.jei.category.tables.ExtremeCraftingTableCategory;
@@ -7,10 +7,10 @@ import committee.nova.mods.avaritia.init.compat.jei.category.tables.SculkCraftin
 import me.myogoo.extendedterminal.api.ModAccessor;
 import me.myogoo.extendedterminal.api.SubscribeLoadEvent;
 import me.myogoo.extendedterminal.api.integration.jei.ETJeiGuiHandler;
-import me.myogoo.extendedterminal.client.screen.avaritia.EndTerminalScreen;
-import me.myogoo.extendedterminal.client.screen.avaritia.ExtremeTerminalScreen;
-import me.myogoo.extendedterminal.client.screen.avaritia.NetherTerminalScreen;
-import me.myogoo.extendedterminal.client.screen.avaritia.SculkTerminalScreen;
+import me.myogoo.extendedterminal.client.screen.avaritiaRe.EndTerminalScreen;
+import me.myogoo.extendedterminal.client.screen.avaritiaRe.ExtremeTerminalScreen;
+import me.myogoo.extendedterminal.client.screen.avaritiaRe.NetherTerminalScreen;
+import me.myogoo.extendedterminal.client.screen.avaritiaRe.SculkTerminalScreen;
 import me.myogoo.extendedterminal.integration.jei.handler.JeiTableGuiHandler;
 import mezz.jei.api.registration.IGuiHandlerRegistration;
 

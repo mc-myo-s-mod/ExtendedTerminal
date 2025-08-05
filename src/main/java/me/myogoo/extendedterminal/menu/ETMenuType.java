@@ -41,7 +41,10 @@ public enum ETMenuType implements IExtensibleEnum {
     END_TERMINAL(7, 3, ETSlotSemantics.END_CRAFTING_GRID, ETSlotSemantics.END_CRAFTING_RESULT),
 
     @ModAccessor.ReAvaritia
-    EXTREME_TERMINAL(9, 4, ETSlotSemantics.EXTREME_CRAFTING_GRID, ETSlotSemantics.EXTREME_CRAFTING_RESULT),;
+    EXTREME_TERMINAL(9, 4, ETSlotSemantics.EXTREME_CRAFTING_GRID, ETSlotSemantics.EXTREME_CRAFTING_RESULT),
+
+    @ModAccessor.AvaritiaNeo
+    NEO_EXTREME_TERMINAL(9, 4, ETSlotSemantics.EXTREME_CRAFTING_GRID, ETSlotSemantics.EXTREME_CRAFTING_RESULT);
 
     private final SlotSemantic slotSemantic_GRID;
     private final SlotSemantic slotSemantic_RESULT;

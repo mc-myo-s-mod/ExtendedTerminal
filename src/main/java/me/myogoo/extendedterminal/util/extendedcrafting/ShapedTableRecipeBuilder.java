@@ -4,6 +4,8 @@ import com.blakebr0.extendedcrafting.api.crafting.ITableRecipe;
 import com.blakebr0.extendedcrafting.crafting.recipe.ShapedTableRecipe;
 import committee.nova.mods.avaritia.api.common.crafting.ITierCraftingRecipe;
 import committee.nova.mods.avaritia.common.crafting.recipe.ShapedTableCraftingRecipe;
+import net.byAqua3.avaritia.recipe.RecipeExtremeCrafting;
+import net.byAqua3.avaritia.recipe.RecipeExtremeShaped;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.data.recipes.ShapedRecipeBuilder;
@@ -55,5 +57,10 @@ public class ShapedTableRecipeBuilder extends ShapedRecipeBuilder {
     public RecipeHolder<ITierCraftingRecipe> buildReAV(ResourceLocation id) {
         ShapedRecipePattern shapedrecipepattern = ShapedRecipePattern.of(this.key, this.rows);
         return new RecipeHolder<>(id, new ShapedTableCraftingRecipe(shapedrecipepattern,getResult().getDefaultInstance(),tier));
+    }
+
+    public RecipeHolder<RecipeExtremeCrafting> buildAVNeo(ResourceLocation id) {
+        ShapedRecipePattern shapedrecipepattern = ShapedRecipePattern.of(this.key, this.rows);
+        return new RecipeHolder<>(id, new RecipeExtremeShaped("",shapedrecipepattern,getResult().getDefaultInstance()));
     }
 }

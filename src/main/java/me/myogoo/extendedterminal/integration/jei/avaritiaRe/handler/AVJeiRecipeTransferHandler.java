@@ -1,4 +1,4 @@
-package me.myogoo.extendedterminal.integration.jei.avaritia.handler;
+package me.myogoo.extendedterminal.integration.jei.avaritiaRe.handler;
 
 import appeng.core.localization.ItemModText;
 import appeng.core.network.ServerboundPacket;
@@ -7,7 +7,7 @@ import committee.nova.mods.avaritia.common.crafting.recipe.ShapedTableCraftingRe
 import me.myogoo.extendedterminal.api.adapter.recipe.IShapedTableRecipeAdapter;
 import me.myogoo.extendedterminal.api.adapter.recipe.ITableRecipeAdapter;
 import me.myogoo.extendedterminal.integration.jei.handler.AbstractTableRecipeHandler;
-import me.myogoo.extendedterminal.menu.avaritia.AvaritiaTerminalBaseMenu;
+import me.myogoo.extendedterminal.menu.avaritiaRe.AvaritiaTerminalBaseMenu;
 import me.myogoo.extendedterminal.network.serverbound.FillTableCraftingGridFromRecipePacket;
 import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.recipe.RecipeIngredientRole;
@@ -51,8 +51,9 @@ public class AVJeiRecipeTransferHandler<T extends AvaritiaTerminalBaseMenu> exte
 
         boolean craftMissing = AbstractContainerScreen.hasControlDown();
         var inputSlots = recipeSlots.getSlotViews(RecipeIngredientRole.INPUT);
+        var adapterRecipe = ITableRecipeAdapter.of(recipe);
 
-        var slotToIngredientMap = getGuiSlotToIngredientMap(menu,ITableRecipeAdapter.of(recipe));
+        var slotToIngredientMap = getGuiSlotToIngredientMap(menu,adapterRecipe);
         var missingSlots = menu.findMissingIngredients(slotToIngredientMap);
 
         if (missingSlots.missingSlots().size() == slotToIngredientMap.size()) {
@@ -70,24 +71,10 @@ public class AVJeiRecipeTransferHandler<T extends AvaritiaTerminalBaseMenu> exte
                 return new Result.PartiallyCraftable(missingSlots, color, craftMissing);
             }
         } else {
-            performTransfer(menu, recipe, craftMissing);
+            performTransfer(menu, adapterRecipe, craftMissing);
         }
 
         return Result.createSuccessful();
-    }
-
-    @Override
-    public void performTransfer(T menu, @Nullable ITierCraftingRecipe recipe, boolean craftMissing) {
-        var templateItems = findGoodTemplateItems(ITableRecipeAdapter.of(recipe), menu);
-        int recipeWidth = NOT_SET_RECIPE_SIZE;
-        int recipeHeight = NOT_SET_RECIPE_SIZE;
-        if (recipe instanceof ShapedTableCraftingRecipe shapedRecipe) {
-            recipeWidth = shapedRecipe.getWidth();
-            recipeHeight = shapedRecipe.getHeight();
-        }
-        ServerboundPacket message = new FillTableCraftingGridFromRecipePacket(templateItems, craftMissing,
-                recipeWidth, recipeHeight);
-        PacketDistributor.sendToServer(message);
     }
 
     @Override

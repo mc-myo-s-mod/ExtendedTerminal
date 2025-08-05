@@ -2,10 +2,11 @@ package me.myogoo.extendedterminal.init;
 
 import me.myogoo.extendedterminal.ExtendedTerminal;
 import me.myogoo.extendedterminal.menu.ETMenuType;
-import me.myogoo.extendedterminal.menu.avaritia.EndTerminalMenu;
-import me.myogoo.extendedterminal.menu.avaritia.ExtremeTerminalMenu;
-import me.myogoo.extendedterminal.menu.avaritia.NetherTerminalMenu;
-import me.myogoo.extendedterminal.menu.avaritia.SculkTerminalMenu;
+import me.myogoo.extendedterminal.menu.avaritiaNeo.NeoExtremeTerminalMenu;
+import me.myogoo.extendedterminal.menu.avaritiaRe.EndTerminalMenu;
+import me.myogoo.extendedterminal.menu.avaritiaRe.ExtremeTerminalMenu;
+import me.myogoo.extendedterminal.menu.avaritiaRe.NetherTerminalMenu;
+import me.myogoo.extendedterminal.menu.avaritiaRe.SculkTerminalMenu;
 import me.myogoo.extendedterminal.menu.extendedcrafting.AdvancedTerminalMenu;
 import me.myogoo.extendedterminal.menu.extendedcrafting.BasicTerminalMenu;
 import me.myogoo.extendedterminal.menu.extendedcrafting.EliteTerminalMenu;
@@ -25,12 +26,12 @@ public final class ETMenus {
     public static final Supplier<MenuType<EliteTerminalMenu>> ELITE_TERMINAL = REGISTER.register(ETMenuType.ELITE_TERMINAL.getIdAsString(), () -> EliteTerminalMenu.TYPE);
     public static final Supplier<MenuType<UltimateTerminalMenu>> ULTIMATE_TERMINAL = REGISTER.register(ETMenuType.ULTIMATE_TERMINAL.getIdAsString(), () -> UltimateTerminalMenu.TYPE);
     
-    // Avaritia terminals
+    // Re:Avaritia terminals
     public static final Supplier<MenuType<SculkTerminalMenu>> SCULK_TERMINAL = REGISTER.register(ETMenuType.SCULK_TERMINAL.getIdAsString(), () -> SculkTerminalMenu.TYPE);
     public static final Supplier<MenuType<NetherTerminalMenu>> NETHER_TERMINAL = REGISTER.register(ETMenuType.NETHER_TERMINAL.getIdAsString(), () -> NetherTerminalMenu.TYPE);
     public static final Supplier<MenuType<EndTerminalMenu>> END_TERMINAL = REGISTER.register(ETMenuType.END_TERMINAL.getIdAsString(), () -> EndTerminalMenu.TYPE);
     public static final Supplier<MenuType<ExtremeTerminalMenu>> EXTREME_TERMINAL = REGISTER.register(ETMenuType.EXTREME_TERMINAL.getIdAsString(), () -> ExtremeTerminalMenu.TYPE);
-    
-    
-    
+
+    // AvaritiaNeo terminal
+    public static final Supplier<MenuType<NeoExtremeTerminalMenu>> NEO_EXTREME_TERMINAL = REGISTER.register(ETMenuType.NEO_EXTREME_TERMINAL.getIdAsString(), () -> NeoExtremeTerminalMenu.TYPE);
 }

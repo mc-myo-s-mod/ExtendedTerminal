@@ -1,8 +1,6 @@
 {
   "itemGroup.extendedterminal": "Extended Terminal",
 
-  "item.extendedterminal.tooltip.empty": "This item cannot be crafted.",
-
   "item.extendedterminal.basic_terminal": "Basic Extended Crafting Terminal",
   "item.extendedterminal.advanced_terminal": "Advanced Extended Crafting Terminal",
   "item.extendedterminal.elite_terminal": "Elite Extended Crafting Terminal",
@@ -12,6 +10,8 @@
   "item.extendedterminal.nether_terminal": "Nether Crafting Terminal",
   "item.extendedterminal.end_terminal": "End Crafting Terminal",
   "item.extendedterminal.extreme_terminal": "Extreme Crafting Terminal",
+
+  "item.extendedterminal.neo_extreme_terminal": "Extreme Crafting Terminal",
 
   "item.extendedterminal.compat_processor": "Compat Processor",
   "item.extendedterminal.printed_compat_processor": "Printed Compat Circuit",
