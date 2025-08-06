@@ -1,0 +1,107 @@
+{
+  "includes": [
+    "../terminals/terminal.json"
+  ],
+  "slots": {
+    "NETHER_CRAFTING_GRID": {
+      "left": 14,
+      "bottom": 188
+    },
+    "NETHER_CRAFTING_RESULT": {
+      "left": 142,
+      "bottom": 153
+    },
+    "PLAYER_ARMOR": {
+      "left": -16,
+      "bottom": 82,
+      "grid": "VERTICAL"
+    }
+  },
+  "text": {
+    "dialog_title": {
+      "text": {
+        "translate": "gui.ae2.Terminal"
+      },
+      "position": {
+        "left": 8,
+        "top": 6
+      }
+    },
+    "crafting_grid_title": {
+      "text": {
+        "translate": "gui.extendedterminal.netherTerminal"
+      },
+      "position": {
+        "left": 8,
+        "bottom": 200
+      }
+    }
+  },
+  "terminalStyle": {
+    "header": {
+      "texture": "guis/advanced_terminal.png",
+      "textureWidth": 512,
+      "textureHeight": 512,
+      "srcRect": [
+        0,
+        0,
+        195,
+        17
+      ]
+    },
+    "firstRow": {
+      "texture": "guis/advanced_terminal.png",
+      "textureWidth": 512,
+      "textureHeight": 512,
+      "srcRect": [
+        0,
+        17,
+        195,
+        18
+      ]
+    },
+    "row": {
+      "texture": "guis/advanced_terminal.png",
+      "textureWidth": 512,
+      "textureHeight": 512,
+      "srcRect": [
+        0,
+        35,
+        195,
+        18
+      ]
+    },
+    "lastRow": {
+      "texture": "guis/advanced_terminal.png",
+      "textureWidth": 512,
+      "textureHeight": 512,
+      "srcRect": [
+        0,
+        53,
+        195,
+        18
+      ]
+    },
+    "bottom": {
+      "texture": "guis/advanced_terminal.png",
+      "textureWidth": 512,
+      "textureHeight": 512,
+      "srcRect": [
+        0,
+        71,
+        195,
+        203
+      ]
+    }
+  },
+  "widgets": {
+    "clearCraftingGrid": {
+      "left": 105,
+      "bottom": 189
+    },
+    "clearToPlayerInv": {
+      "left": 115,
+      "bottom": 189
+    }
+  }
+}

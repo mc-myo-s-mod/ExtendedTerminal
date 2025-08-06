@@ -1,6 +1,5 @@
 package me.myogoo.extendedterminal.menu;
 
-import appeng.api.networking.energy.IEnergySource;
 import appeng.api.stacks.AEItemKey;
 import appeng.api.storage.ITerminalHost;
 import appeng.helpers.IMenuCraftingPacket;
@@ -10,6 +9,7 @@ import appeng.menu.me.crafting.CraftConfirmMenu;
 import appeng.menu.me.items.CraftingTermMenu;
 import appeng.util.inv.PlayerInternalInventory;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
+import me.myogoo.extendedterminal.api.config.IETTerminalConfig;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Inventory;
@@ -24,13 +24,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public abstract class ETBaseTerminalMenu<R extends Recipe<?>> extends MEStorageMenu implements IMenuCraftingPacket {
+public abstract class ETTerminalBaseMenu<R extends Recipe<?>> extends MEStorageMenu implements IMenuCraftingPacket {
     protected R currentRecipe;
+    protected final ETMenuType menuType;
     private static final String ACTION_CLEAR_TO_PLAYER = "clearToPlayer";
-
-    public ETBaseTerminalMenu(MenuType<?> menuType, int id, Inventory ip, ITerminalHost host) {
+    private final IETTerminalConfig config;
+    public ETTerminalBaseMenu(MenuType<?> menuType, int id, Inventory ip, ITerminalHost host,ETMenuType etMenuType, IETTerminalConfig config) {
         super(menuType, id, ip, host);
-
+        this.menuType = etMenuType;
+        this.config = config;
         registerClientAction(ACTION_CLEAR_TO_PLAYER, this::clearToPlayerInventory);
     }
 
@@ -54,6 +56,10 @@ public abstract class ETBaseTerminalMenu<R extends Recipe<?>> extends MEStorageM
     protected abstract void updateCurrentRecipeAndOutput(boolean forceUpdate);
 
     //Override Methods
+    @Override
+    public boolean useRealItems() {
+        return true;
+    }
 
     @Override
     public boolean hasIngredient(Ingredient ingredient, Object2IntOpenHashMap<Object> reservedAmounts) {
@@ -74,7 +80,6 @@ public abstract class ETBaseTerminalMenu<R extends Recipe<?>> extends MEStorageM
     public void startAutoCrafting(List<AutoCraftEntry> toCraft) {
         CraftConfirmMenu.openWithCraftingList(getActionHost(), (ServerPlayer) getPlayer(), getLocator(), toCraft);
     }
-
 
     @Override
     public void slotsChanged(@NonNull Container inventory) {
@@ -155,7 +160,6 @@ public abstract class ETBaseTerminalMenu<R extends Recipe<?>> extends MEStorageM
         return new CraftingTermMenu.MissingIngredientSlots(missingSlots, craftableSlots);
     }
 
-
     public void clearToPlayerInventory() {
         if (isClientSide()) {
             sendClientAction(ACTION_CLEAR_TO_PLAYER);
@@ -184,5 +188,13 @@ public abstract class ETBaseTerminalMenu<R extends Recipe<?>> extends MEStorageM
                 }
             }
         }
+    }
+
+    protected boolean checkCraftingOnlyActive() {
+        return config.enableCraftOnlyPowered() && (this.getNetworkNode() == null || (this.getNetworkNode() != null && !this.getNetworkNode().isActive()));
+    }
+
+    public ETMenuType getETMenuType() {
+        return this.menuType;
     }
 }

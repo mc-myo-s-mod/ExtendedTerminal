@@ -22,6 +22,6 @@ public class ETDataGen {
         var pack = generator.getVanillaPack(true);
 
         pack.addProvider(InscriberRecipeProvider::new);
-        pack.addProvider(ExtendedCraftingRecipeProvider::new);
+        //pack.addProvider(ExtendedCraftingRecipeProvider::new);
     }
 }

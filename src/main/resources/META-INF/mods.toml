@@ -70,7 +70,7 @@ versionRange = "[15.4.0,)"
 
 [[dependencies."${mod_id}"]]
 modId = "extendedcrafting"
-mandatory = true
+mandatory = false
 side = "BOTH"
 versionRange = "[6.0.0,)"
 

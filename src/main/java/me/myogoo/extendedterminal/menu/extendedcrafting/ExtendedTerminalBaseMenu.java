@@ -11,10 +11,11 @@ import appeng.menu.slot.CraftingMatrixSlot;
 import com.blakebr0.extendedcrafting.api.crafting.ITableRecipe;
 import com.blakebr0.extendedcrafting.init.ModRecipeTypes;
 import com.google.common.base.Preconditions;
+import me.myogoo.extendedterminal.api.config.IETTerminalConfig;
 import me.myogoo.extendedterminal.config.ETConfig;
-import me.myogoo.extendedterminal.menu.ETBaseTerminalMenu;
+import me.myogoo.extendedterminal.menu.ETTerminalBaseMenu;
 import me.myogoo.extendedterminal.menu.ETMenuType;
-import me.myogoo.extendedterminal.menu.slot.ETBaseCraftingSlot;
+import me.myogoo.extendedterminal.menu.extendedcrafting.slot.ExCraftingTerminalSlot;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.CraftingContainer;
@@ -22,18 +23,14 @@ import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.TransientCraftingContainer;
 import net.minecraft.world.item.ItemStack;
 
-public class ExtendedTerminalBaseMenu extends ETBaseTerminalMenu<ITableRecipe> {
-    private final ETBaseCraftingSlot outputSlot;
+public class ExtendedTerminalBaseMenu extends ETTerminalBaseMenu<ITableRecipe> {
+    private final ExCraftingTerminalSlot outputSlot;
     private final ISegmentedInventory craftingInventoryHost;
     private final CraftingMatrixSlot[] craftingSlots;
-    private final ETMenuType menuType;
     private final CraftingContainer recipeTestContainer;
-    private final ETConfig.ExtendedCraftingConfig config;
 
-    public ExtendedTerminalBaseMenu(MenuType<?> menuType, int id, Inventory ip, ITerminalHost host, ETMenuType etMenuType, ETConfig.ExtendedCraftingConfig config) {
-        super(menuType, id, ip, host);
-        this.config = config;
-        this.menuType = etMenuType;
+    public ExtendedTerminalBaseMenu(MenuType<?> menuType, int id, Inventory ip, ITerminalHost host, ETMenuType etMenuType, IETTerminalConfig config) {
+        super(menuType, id, ip, host, etMenuType, config);
         this.craftingInventoryHost = (ISegmentedInventory) host;
         this.craftingSlots = new CraftingMatrixSlot[this.menuType.getGridSize()];
         this.recipeTestContainer = new TransientCraftingContainer(this,this.menuType.getGridSideLength() , this.menuType.getGridSideLength());
@@ -43,7 +40,7 @@ public class ExtendedTerminalBaseMenu extends ETBaseTerminalMenu<ITableRecipe> {
             this.addSlot(this.craftingSlots[i] = new CraftingMatrixSlot(this,craftingGridInv,i), this.menuType.getSlotSemanticGrid());
         }
 
-        this.addSlot(this.outputSlot = new ETBaseCraftingSlot(this.getPlayerInventory().player, this.getActionSource(),
+        this.addSlot(this.outputSlot = new ExCraftingTerminalSlot(this.getPlayerInventory().player, this.getActionSource(),
                         this.powerSource, host.getInventory(), craftingGridInv, craftingGridInv, this, this.menuType),
                 this.menuType.getSlotSemanticResult());
 
@@ -60,7 +57,7 @@ public class ExtendedTerminalBaseMenu extends ETBaseTerminalMenu<ITableRecipe> {
 
     @Override
     protected void updateCurrentRecipeAndOutput(boolean forceUpdate) {
-        if(config.enableCraftOnlyPowered() && (this.getNetworkNode() == null || (this.getNetworkNode() != null && !this.getNetworkNode().isActive()))) {
+        if(checkCraftingOnlyActive()) {
             return;
         }
 
@@ -126,23 +123,19 @@ public class ExtendedTerminalBaseMenu extends ETBaseTerminalMenu<ITableRecipe> {
     }
 
     @Override
-    public boolean useRealItems() {
-        return true;
-    }
-
-    @Override
     public void doAction(ServerPlayer player, InventoryAction action, int slot, long id) {
         var s = this.getSlot(slot);
-        if(s instanceof ETBaseCraftingSlot craftingSlot) {
+        if(s instanceof ExCraftingTerminalSlot craftingSlot) {
             switch (action) {
                 case CRAFT_SHIFT:
                 case CRAFT_ALL:
                 case CRAFT_ITEM:
                 case CRAFT_STACK:
                     craftingSlot.doClick(action, player);
+                default:
+                    return;
             }
-        } else {
-            super.doAction(player, action, slot, id);
         }
+        super.doAction(player, action, slot, id);
     }
 }

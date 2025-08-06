@@ -3,6 +3,7 @@ package me.myogoo.extendedterminal;
 import com.mojang.logging.LogUtils;
 import me.myogoo.extendedterminal.config.ETConfig;
 import me.myogoo.extendedterminal.init.*;
+import me.myogoo.extendedterminal.util.mod.ModLoadHelper;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -16,10 +17,12 @@ import org.slf4j.Logger;
 @Mod(ExtendedTerminal.MODID)
 public class ExtendedTerminal {
     public static final String MODID = "extendedterminal";
-    private static final Logger LOGGER = LogUtils.getLogger();
+    public static final Logger LOGGER = LogUtils.getLogger();
 
     public ExtendedTerminal() {
         ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, ETConfig.COMMON);
+        ModLoadHelper.init();
+
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
         ETBlocks.REGISTER.register(modEventBus);
         ETItems.REGISTER.register(modEventBus);
@@ -27,6 +30,7 @@ public class ExtendedTerminal {
         ETMenus.REGISTER.register(modEventBus);
         ETCreativeTab.REGISTER.register(modEventBus);
 
+        MinecraftForge.EVENT_BUS.register(ETRecipeGen.class);
         MinecraftForge.EVENT_BUS.register(this);
     }
 

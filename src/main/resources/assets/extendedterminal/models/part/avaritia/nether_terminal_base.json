@@ -1,0 +1,8 @@
+{
+  "parent": "ae2:part/display_base",
+  "textures": {
+    "front": "extendedterminal:part/extendedcrafting/advanced_terminal_front",
+    "back": "extendedterminal:part/extendedcrafting/advanced_terminal_back",
+    "sides": "extendedterminal:part/extendedcrafting/advanced_terminal_side"
+  }
+}

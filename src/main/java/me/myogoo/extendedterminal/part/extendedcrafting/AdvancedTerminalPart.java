@@ -8,12 +8,12 @@ import me.myogoo.extendedterminal.ExtendedTerminal;
 import me.myogoo.extendedterminal.config.ETConfig;
 import me.myogoo.extendedterminal.menu.ETMenuType;
 import me.myogoo.extendedterminal.menu.extendedcrafting.AdvancedTerminalMenu;
-import me.myogoo.extendedterminal.part.ETBaseTerminalPart;
+import me.myogoo.extendedterminal.part.ETTerminalBasePart;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.MenuType;
 
-public class AdvancedTerminalPart extends ETBaseTerminalPart {
+public class AdvancedTerminalPart extends ETTerminalBasePart {
     @PartModels
     public static final ResourceLocation ADVANCED_MODEL_BASE = ExtendedTerminal.makeId("part/extendedcrafting/advanced_terminal_base");
 
