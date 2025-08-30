@@ -4,12 +4,12 @@ import me.myogoo.extendedterminal.ExtendedTerminal;
 import me.myogoo.extendedterminal.api.ModAccessor;
 import net.neoforged.fml.ModList;
 import net.neoforged.neoforgespi.language.ModFileScanData;
-import org.objectweb.asm.Type;
 import org.slf4j.Logger;
 
 import java.lang.annotation.Annotation;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 //TODO: Refactor this class
 public class ModLoadHelper {
@@ -50,4 +50,7 @@ public class ModLoadHelper {
         return ScanData;
     }
 
+    public static Set<ModFileScanData.AnnotationData> getLoadedAnnotation() {
+        return ScanData.getAnnotations();
+    }
 }

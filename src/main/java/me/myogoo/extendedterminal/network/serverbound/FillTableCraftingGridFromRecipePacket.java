@@ -15,7 +15,7 @@ import com.google.common.primitives.Ints;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntList;
 import me.myogoo.extendedterminal.ExtendedTerminal;
-import me.myogoo.extendedterminal.util.extendedcrafting.TableCraftingHelper;
+import me.myogoo.extendedterminal.util.TableCraftingHelper;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
@@ -29,7 +29,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
-public class FillTableCraftingGridFromRecipePacket extends FillRecipePacketBase implements ServerboundPacket {
+public class FillTableCraftingGridFromRecipePacket extends FillRecipeBasePacket implements ServerboundPacket {
     public static final int NOT_SET_RECIPE_SIZE = -1;
 
     public static final StreamCodec<RegistryFriendlyByteBuf, FillTableCraftingGridFromRecipePacket> STREAM_CODEC = StreamCodec
@@ -110,9 +110,8 @@ public class FillTableCraftingGridFromRecipePacket extends FillRecipePacketBase 
                 }
             }
         }
-
         return ingredients;
-}
+    }
 
     @Override
     public void handleOnServer(ServerPlayer player) {

@@ -1,4 +1,4 @@
-package me.myogoo.extendedterminal.util.extendedcrafting;
+package me.myogoo.extendedterminal.util;
 
 import me.myogoo.extendedterminal.api.adapter.recipe.ITableRecipeAdapter;
 import net.minecraft.core.NonNullList;

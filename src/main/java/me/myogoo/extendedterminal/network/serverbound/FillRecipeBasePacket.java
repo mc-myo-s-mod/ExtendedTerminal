@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
-public abstract class FillRecipePacketBase {
+public abstract class FillRecipeBasePacket {
     protected abstract NonNullList<Ingredient> getDesiredIngredients(Player player);
 
     protected ItemStack takeIngredientFromPlayer(ICraftingGridMenu cct, ServerPlayer player, Ingredient ingredient) {

@@ -6,7 +6,7 @@ import me.myogoo.extendedterminal.ExtendedTerminal;
 import me.myogoo.extendedterminal.api.ModAccessor;
 import me.myogoo.extendedterminal.config.ETConfig;
 import me.myogoo.extendedterminal.event.RecipeManagerLoadingEvent;
-import me.myogoo.extendedterminal.util.extendedcrafting.ShapedTableRecipeBuilder;
+import me.myogoo.extendedterminal.util.ShapedTableRecipeBuilder;
 import me.myogoo.extendedterminal.util.mod.ModLoadHelper;
 import net.byAqua3.avaritia.loader.AvaritiaBlocks;
 import net.neoforged.bus.api.SubscribeEvent;

@@ -151,13 +151,14 @@ dependencies {
     compileOnly "curse.maven:re-avaritia-623969:6640715"
     //Avaritia Neo 1.21.1-1.1.9
     compileOnly "curse.maven:avaritianeo-1083158:6824390"
-    //compileOnly "mezz.jei:jei-${minecraft_version}-neoforge-api:${JEI_version}"
+
     compileOnly "mezz.jei:jei-${minecraft_version}-neoforge-api:${JEI_version}"
     compileOnly "me.shedaniel:RoughlyEnoughItems-neoforge:${REI_version}"
     compileOnly "dev.emi:emi-neoforge:${EMI_version}:api"
     switch (project.itemListMod) {
         case "jei":
             runtimeOnly "mezz.jei:jei-${minecraft_version}-neoforge:${JEI_version}"
+            runtimeOnly "curse.maven:ae2-jei-integration-1074338:5748513"
             break;
         case "rei":
             runtimeOnly "me.shedaniel:RoughlyEnoughItems-neoforge:${REI_version}"
