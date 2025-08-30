@@ -63,7 +63,7 @@ public class ECTableRecipe extends BasicEmiRecipe {
             widgets.addTexture(EmiTexture.SHAPELESS, outputX - 25, outputY - 4 - 14);
         }
 
-        widgets.addTexture(EmiTexture.EMPTY_ARROW, outputX - 58, outputY - 4);
+        widgets.addTexture(EmiTexture.EMPTY_ARROW, outputX - 58, outputY);
 
         String tooltipText = String.format("Require Tier %d Crafting Table", this.recipe.getTier());
         var tooltip = ClientTooltipComponent.create(FormattedCharSequence.forward(tooltipText, Style.EMPTY));

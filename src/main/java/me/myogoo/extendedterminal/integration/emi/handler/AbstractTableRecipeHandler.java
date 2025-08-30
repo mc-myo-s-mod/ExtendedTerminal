@@ -1,4 +1,4 @@
-package me.myogoo.extendedterminal.integration.emi.extendedcrafting.handler;
+package me.myogoo.extendedterminal.integration.emi.handler;
 
 import appeng.api.stacks.AEKey;
 import appeng.api.stacks.GenericStack;
@@ -10,7 +10,6 @@ import appeng.menu.AEBaseMenu;
 import appeng.menu.SlotSemantics;
 import appeng.menu.me.common.MEStorageMenu;
 import appeng.menu.me.items.CraftingTermMenu;
-import com.blakebr0.extendedcrafting.api.crafting.ITableRecipe;
 import dev.emi.emi.api.recipe.EmiPlayerInventory;
 import dev.emi.emi.api.recipe.EmiRecipe;
 import dev.emi.emi.api.recipe.handler.EmiCraftContext;
@@ -22,8 +21,7 @@ import dev.emi.emi.api.widget.SlotWidget;
 import dev.emi.emi.api.widget.Widget;
 import me.myogoo.extendedterminal.api.adapter.recipe.IShapedTableRecipeAdapter;
 import me.myogoo.extendedterminal.api.adapter.recipe.ITableRecipeAdapter;
-import me.myogoo.extendedterminal.integration.emi.extendedcrafting.recipe.ECTableRecipe;
-import me.myogoo.extendedterminal.menu.extendedcrafting.ExtendedTerminalBaseMenu;
+import me.myogoo.extendedterminal.menu.ETTerminalBaseMenu;
 import me.myogoo.extendedterminal.network.serverbound.FillTableCraftingGridFromRecipePacket;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -37,7 +35,6 @@ import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.Nullable;
-
 import java.util.*;
 
 import static appeng.integration.modules.itemlists.TransferHelper.BLUE_SLOT_HIGHLIGHT_COLOR;
@@ -45,10 +42,10 @@ import static appeng.integration.modules.itemlists.TransferHelper.RED_SLOT_HIGHL
 import static me.myogoo.extendedterminal.integration.ItemListTermCraftingHelper.findGoodTemplateItems;
 import static me.myogoo.extendedterminal.network.serverbound.FillTableCraftingGridFromRecipePacket.NOT_SET_RECIPE_SIZE;
 
-public abstract class AbstractTableRecipeHandler<T extends ExtendedTerminalBaseMenu> implements StandardRecipeHandler<T> {
+public abstract class AbstractTableRecipeHandler<T extends ETTerminalBaseMenu<?>> implements StandardRecipeHandler<T> {
     private final Class<T> containerClass;
 
-    AbstractTableRecipeHandler(Class<T> containerClass) {
+    public AbstractTableRecipeHandler(Class<T> containerClass) {
         this.containerClass = containerClass;
     }
 
@@ -136,7 +133,7 @@ public abstract class AbstractTableRecipeHandler<T extends ExtendedTerminalBaseM
 
     @Override
     public boolean supportsRecipe(EmiRecipe recipe) {
-        return true;
+        return false;
     }
 
     @Override
@@ -159,6 +156,7 @@ public abstract class AbstractTableRecipeHandler<T extends ExtendedTerminalBaseM
 
     @Override
     public void render(EmiRecipe recipe, EmiCraftContext<T> context, List<Widget> widgets, GuiGraphics draw) {
+
         transferRecipe(recipe, context, false).render(recipe, context, widgets, draw);
     }
 
@@ -174,12 +172,6 @@ public abstract class AbstractTableRecipeHandler<T extends ExtendedTerminalBaseM
         return null;
     }
 
-    protected final boolean isCraftingRecipe(Recipe<?> recipe, EmiRecipe emiRecipe) {
-        if(recipe instanceof ITableRecipe tableRecipe) {
-            return emiRecipe.getCategory().equals(ECTableRecipe.getCategory(tableRecipe.getTier()));
-        }
-        return false;
-    }
 
     protected final boolean fitsInNxNGrid(Recipe<?> recipe, EmiRecipe emiRecipe,int gridSize) {
         if (recipe != null) {
@@ -214,7 +206,7 @@ public abstract class AbstractTableRecipeHandler<T extends ExtendedTerminalBaseM
         /**
          * There are missing ingredients, but at least one is present.
          */
-        static final class PartiallyCraftable extends Result {
+        public static final class PartiallyCraftable extends Result {
             private final CraftingTermMenu.MissingIngredientSlots missingSlots;
 
             public PartiallyCraftable(CraftingTermMenu.MissingIngredientSlots missingSlots) {
@@ -329,19 +321,19 @@ public abstract class AbstractTableRecipeHandler<T extends ExtendedTerminalBaseM
             }
         }
 
-        static Result.NotApplicable createNotApplicable() {
+        public static Result.NotApplicable createNotApplicable() {
             return new Result.NotApplicable();
         }
 
-        static Result.Success createSuccessful() {
+        public static Result.Success createSuccessful() {
             return new Result.Success();
         }
 
-        static Result.Error createFailed(Component text) {
+        public static Result.Error createFailed(Component text) {
             return new Result.Error(text, Set.of());
         }
 
-        static Result.Error createFailed(Component text, Set<Integer> missingSlots) {
+        public static Result.Error createFailed(Component text, Set<Integer> missingSlots) {
             return new Result.Error(text, missingSlots);
         }
     }
@@ -391,7 +383,8 @@ public abstract class AbstractTableRecipeHandler<T extends ExtendedTerminalBaseM
         }
         return inputSlots;
     }
-    
+    protected abstract boolean isCraftingRecipe(Recipe<?> recipe, EmiRecipe emiRecipe);
+
     protected abstract Map<Integer, Ingredient> getGuiSlotToIngredientMap(T menu, ITableRecipeAdapter recipe);
 
     protected void performTransfer(T menu, @Nullable ITableRecipeAdapter recipe, boolean craftMissing) {

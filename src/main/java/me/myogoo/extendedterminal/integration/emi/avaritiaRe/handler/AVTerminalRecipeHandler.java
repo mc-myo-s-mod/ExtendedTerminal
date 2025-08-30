@@ -1,8 +1,9 @@
-package me.myogoo.extendedterminal.integration.emi.extendedcrafting.handler;
+package me.myogoo.extendedterminal.integration.emi.avaritiaRe.handler;
 
 import appeng.core.localization.ItemModText;
-import com.blakebr0.extendedcrafting.api.crafting.ITableRecipe;
-import com.blakebr0.extendedcrafting.crafting.recipe.ShapedTableRecipe;
+import committee.nova.mods.avaritia.api.common.crafting.ITierCraftingRecipe;
+import committee.nova.mods.avaritia.common.crafting.recipe.ShapedTableCraftingRecipe;
+import committee.nova.mods.avaritia.init.compat.emi.category.tables.*;
 import dev.emi.emi.api.recipe.EmiRecipe;
 import dev.emi.emi.api.recipe.EmiRecipeCategory;
 import dev.emi.emi.api.stack.EmiStack;
@@ -11,14 +12,11 @@ import me.myogoo.extendedterminal.api.adapter.recipe.ITableRecipeAdapter;
 import me.myogoo.extendedterminal.integration.emi.extendedcrafting.recipe.ECTableRecipe;
 import me.myogoo.extendedterminal.integration.emi.handler.AbstractTableRecipeHandler;
 import me.myogoo.extendedterminal.menu.ETMenuType;
-import me.myogoo.extendedterminal.menu.extendedcrafting.*;
+import me.myogoo.extendedterminal.menu.avaritiaRe.AvaritiaTerminalBaseMenu;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.item.crafting.Recipe;
-import net.minecraft.world.item.crafting.RecipeHolder;
-import net.minecraft.world.item.crafting.ShapedRecipePattern;
+import net.minecraft.world.item.crafting.*;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
@@ -28,62 +26,20 @@ import java.util.Optional;
 
 import static me.myogoo.extendedterminal.integration.ItemListTermCraftingHelper.ensureFittedCraftingGrid;
 
-public class ECTerminalRecipeHandler<T extends ExtendedTerminalBaseMenu> extends AbstractTableRecipeHandler<T> {
+public class AVTerminalRecipeHandler<T extends AvaritiaTerminalBaseMenu> extends AbstractTableRecipeHandler<T> {
     private final ETMenuType menuType;
     private final EmiRecipeCategory category;
-    public ECTerminalRecipeHandler(EmiRecipeCategory category, Class<T> containerClass, ETMenuType menuType) {
+    public AVTerminalRecipeHandler(EmiRecipeCategory category, Class<T> containerClass, ETMenuType menuType) {
         super(containerClass);
         this.menuType = menuType;
         this.category = category;
     }
+
     @Override
     public boolean supportsRecipe(EmiRecipe recipe) {
         return recipe.getCategory().equals(this.category);
     }
 
-    @Override
-    protected boolean isCraftingRecipe(Recipe<?> recipe, EmiRecipe emiRecipe) {
-        if(recipe instanceof ITableRecipe tableRecipe) {
-            return emiRecipe.getCategory().equals(ECTableRecipe.getCategory(tableRecipe.getTier()));
-        }
-        return false;
-    }
-
-    @Override
-    protected Map<Integer, Ingredient> getGuiSlotToIngredientMap(T menu, ITableRecipeAdapter recipe) {
-        int gridSideLength = menu.getCraftingGridWidth();
-        var raw = recipe.recipe().getIngredients();
-        List<Ingredient> ingredients;
-
-        int offsetX = 0;
-        int offsetY = 0;
-        int width = gridSideLength;
-        int height = gridSideLength;
-        if (recipe instanceof IShapedTableRecipeAdapter shapedRecipe) {
-            ingredients = ensureFittedCraftingGrid(shapedRecipe);
-            width = shapedRecipe.width();
-            height = shapedRecipe.height();
-            offsetX = Math.floorDiv(gridSideLength - shapedRecipe.width(),2);
-            offsetY = Math.floorDiv(gridSideLength - shapedRecipe.height(),2);
-        } else {
-            ingredients = raw;
-        }
-
-        int max = gridSideLength * gridSideLength;
-        int count = Math.min(ingredients.size(), max);
-        var result = new HashMap<Integer, Ingredient>(count);
-        for (int i = 0; i < count; i++) {
-            int x = i % width;
-            int y = i / width;
-
-            var guiSlot = (y + offsetY) * gridSideLength + (x + offsetX);
-            var ing = ingredients.get(i);
-            if (!ing.isEmpty()) {
-                result.put(guiSlot, ing);
-            }
-        }
-        return result;
-    }
     @Override
     protected Result transferRecipe(T menu, @Nullable RecipeHolder<?> holder, EmiRecipe emiRecipe, boolean doTransfer) {
         var recipeId = holder != null ? holder.id() : null;
@@ -102,11 +58,10 @@ public class ECTerminalRecipeHandler<T extends ExtendedTerminalBaseMenu> extends
         }
 
 
-        if(!(recipe instanceof ITableRecipe tableRecipe)) {
+        if(!(recipe instanceof ITierCraftingRecipe tableRecipe)) {
             return Result.createFailed(ItemModText.INCOMPATIBLE_RECIPE.text());
         }
         var adapterRecipe = ITableRecipeAdapter.of(tableRecipe);
-
 
         // Find missing ingredient
         var slotToIngredientMap = getGuiSlotToIngredientMap(menu, adapterRecipe);
@@ -129,8 +84,48 @@ public class ECTerminalRecipeHandler<T extends ExtendedTerminalBaseMenu> extends
         }
 
         // No error
-        return Result.createSuccessful();
+        return Result.createSuccessful();    }
+
+    @Override
+    protected boolean isCraftingRecipe(Recipe<?> recipe, EmiRecipe emiRecipe) {
+        if(recipe instanceof ITierCraftingRecipe tableRecipe) {
+            return emiRecipe.getCategory().equals(getCategory(tableRecipe.getTier()));
+        }
+        return false;
     }
+
+    @Override
+    protected Map<Integer, Ingredient> getGuiSlotToIngredientMap(T menu, ITableRecipeAdapter recipe) {
+        int gridSideLength = menu.getCraftingGridWidth();
+        var raw = recipe.recipe().getIngredients();
+        List<Ingredient> ingredients;
+
+        int width = gridSideLength;
+        int height = gridSideLength;
+        if (recipe instanceof IShapedTableRecipeAdapter shapedRecipe) {
+            ingredients = ensureFittedCraftingGrid(shapedRecipe);
+            width = shapedRecipe.width();
+            height = shapedRecipe.height();
+        } else {
+            ingredients = raw;
+        }
+
+        int max = gridSideLength * gridSideLength;
+        int count = Math.min(ingredients.size(), max);
+        var result = new HashMap<Integer, Ingredient>(count);
+        for (int i = 0; i < count; i++) {
+            int x = i % width;
+            int y = i / width;
+
+            var guiSlot = y * width + x;
+            var ing = ingredients.get(i);
+            if (!ing.isEmpty()) {
+                result.put(guiSlot, ing);
+            }
+        }
+        return result;
+    }
+
 
     private Recipe<?> createFakeRecipe(EmiRecipe display) {
         var ingredients = NonNullList.withSize(menuType.getGridSize(), Ingredient.EMPTY);
@@ -143,6 +138,16 @@ public class ECTerminalRecipeHandler<T extends ExtendedTerminalBaseMenu> extends
         }
 
         var pattern = new ShapedRecipePattern(menuType.getGridSize(), menuType.getGridSize(), ingredients, Optional.empty());
-        return new ShapedTableRecipe(pattern, ItemStack.EMPTY, menuType.getTier());
+        return new ShapedTableCraftingRecipe(pattern, ItemStack.EMPTY, menuType.getTier());
+    }
+
+    private EmiRecipeCategory getCategory(int tier) {
+        return switch (tier) {
+            case 1 -> SculkCraftingTableCategory.CATEGORY;
+            case 2 -> NetherCraftingTableCategory.CATEGORY;
+            case 3 -> EndCraftingTableCategory.CATEGORY;
+            case 4 -> ExtremeCraftingTableCategory.CATEGORY;
+            default -> throw new IllegalArgumentException("Invalid tier: " + tier);
+        };
     }
 }

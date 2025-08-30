@@ -2,7 +2,6 @@ package me.myogoo.extendedterminal.integration.emi.extendedcrafting;
 
 import com.blakebr0.extendedcrafting.init.ModBlocks;
 import dev.emi.emi.api.EmiRegistry;
-import dev.emi.emi.api.stack.EmiIngredient;
 import dev.emi.emi.api.stack.EmiStack;
 import me.myogoo.extendedterminal.api.ModAccessor;
 import me.myogoo.extendedterminal.api.SubscribeLoadEvent;
