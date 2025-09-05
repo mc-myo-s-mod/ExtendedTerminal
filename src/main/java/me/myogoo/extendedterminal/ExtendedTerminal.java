@@ -12,7 +12,6 @@ import net.neoforged.fml.config.ModConfig;
 import net.neoforged.neoforge.common.NeoForge;
 import org.slf4j.Logger;
 
-// The value here should match an entry in the META-INF/neoforge.mods.toml file
 @Mod(ExtendedTerminal.MODID)
 public class ExtendedTerminal {
     public static final String MODID = "extendedterminal";

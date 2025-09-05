@@ -15,11 +15,13 @@ import com.google.common.primitives.Ints;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntList;
 import me.myogoo.extendedterminal.ExtendedTerminal;
-import me.myogoo.extendedterminal.util.extendedcrafting.TableCraftingHelper;
+import me.myogoo.extendedterminal.integration.ItemListTermCraftingHelper;
+import me.myogoo.extendedterminal.util.TableCraftingHelper;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -29,7 +31,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
-public class FillTableCraftingGridFromRecipePacket extends FillRecipePacketBase implements ServerboundPacket {
+public class FillTableCraftingGridFromRecipePacket extends FillRecipeBasePacket implements ServerboundPacket {
     public static final int NOT_SET_RECIPE_SIZE = -1;
 
     public static final StreamCodec<RegistryFriendlyByteBuf, FillTableCraftingGridFromRecipePacket> STREAM_CODEC = StreamCodec
@@ -44,6 +46,7 @@ public class FillTableCraftingGridFromRecipePacket extends FillRecipePacketBase 
     private final boolean craftMissing;
     private final int recipeWidth;
     private final int recipeHeight;
+    private final ResourceLocation recipeId;
 
     @Override
     public CustomPacketPayload.@NotNull Type<FillTableCraftingGridFromRecipePacket> type() {
@@ -51,11 +54,13 @@ public class FillTableCraftingGridFromRecipePacket extends FillRecipePacketBase 
     }
 
     public FillTableCraftingGridFromRecipePacket(
+            ResourceLocation recipeId,
             List<ItemStack> ingredientTemplates,
             boolean craftMissing,
             int recipeWidth,
             int recipeHeight
     ) {
+        this.recipeId = recipeId;
         this.ingredientTemplates = NonNullList.copyOf(ingredientTemplates.stream().map(ItemStack::copy).toList());
         this.craftMissing = craftMissing;
         this.recipeWidth = recipeWidth;
@@ -63,6 +68,13 @@ public class FillTableCraftingGridFromRecipePacket extends FillRecipePacketBase 
     }
 
     public void write(RegistryFriendlyByteBuf stream) {
+        if (recipeId != null) {
+            stream.writeBoolean(true);
+            stream.writeResourceLocation(recipeId);
+        } else {
+            stream.writeBoolean(false);
+        }
+
         stream.writeInt(ingredientTemplates.size());
         for (var ingredientTemplate : ingredientTemplates) {
             ItemStack.OPTIONAL_STREAM_CODEC.encode(stream, ingredientTemplate);
@@ -73,23 +85,32 @@ public class FillTableCraftingGridFromRecipePacket extends FillRecipePacketBase 
     }
 
     public static FillTableCraftingGridFromRecipePacket decode(RegistryFriendlyByteBuf stream) {
-        var ingredientTemplates = NonNullList.withSize(stream.readInt(), ItemStack.EMPTY);
-        for (int i = 0; i < ingredientTemplates.size(); i++) {
-            ingredientTemplates.set(i, ItemStack.OPTIONAL_STREAM_CODEC.decode(stream));
+        ResourceLocation recipeId = null;
+        if (stream.readBoolean()) {
+            recipeId = stream.readResourceLocation();
         }
+        var ingredientTemplates = NonNullList.withSize(stream.readInt(), ItemStack.EMPTY);
+        ingredientTemplates.replaceAll(ignored -> ItemStack.OPTIONAL_STREAM_CODEC.decode(stream));
         var craftMissing = stream.readBoolean();
         int recipeWidth = stream.readInt();
         int recipeHeight = stream.readInt();
 
-        return new FillTableCraftingGridFromRecipePacket(ingredientTemplates, craftMissing, recipeWidth, recipeHeight);
+        return new FillTableCraftingGridFromRecipePacket(recipeId, ingredientTemplates, craftMissing, recipeWidth, recipeHeight);
     }
 
 
     @Override
     protected NonNullList<Ingredient> getDesiredIngredients(Player player) {
+        if (recipeId != null) {
+            var recipe = player.level().getRecipeManager().byKey(this.recipeId);
+            if (recipe.isPresent()) {
+                return ItemListTermCraftingHelper.ensureNxNTableCraftingGrid(recipe.get().value(), ingredientTemplates.size(), recipeWidth, recipeHeight);
+            }
+        }
+
         var ingredients = NonNullList.withSize(this.ingredientTemplates.size(), Ingredient.EMPTY);
         Preconditions.checkArgument(ingredients.size() == this.ingredientTemplates.size(),
-                "Got %d ingredient templates from client, expected %d",
+                "Got {} ingredient templates from client, expected {}",
                 ingredientTemplates.size(), ingredients.size());
 
         //shapeless recipes
@@ -110,9 +131,8 @@ public class FillTableCraftingGridFromRecipePacket extends FillRecipePacketBase 
                 }
             }
         }
-
         return ingredients;
-}
+    }
 
     @Override
     public void handleOnServer(ServerPlayer player) {
