@@ -41,15 +41,25 @@ public abstract class ETTerminalBaseMenu<R extends Recipe<?>> extends MEStorageM
     //Abstract Methods
     public abstract void clearCraftingGrid();
 
-    public abstract SlotSemantic getCraftingGridSlotSemantic();
+    public SlotSemantic getCraftingGridSlotSemantic() {
+        return this.menuType.getSlotSemanticGrid();
+    }
 
-    public abstract SlotSemantic getOutputSlotSemantic();
+    public SlotSemantic getOutputSlotSemantic() {
+        return this.menuType.getSlotSemanticResult();
+    }
 
-    public abstract int getCraftingGridSize();
+    public int getCraftingGridSize() {
+        return this.menuType.getGridSize();
+    }
 
-    public abstract int getCraftingGridWidth();
+    public int getCraftingGridWidth() {
+        return this.menuType.getGridSideLength();
+    }
 
-    public abstract int getCraftingGridHeight();
+    public int getCraftingGridHeight() {
+        return this.menuType.getGridSideLength();
+    }
 
     protected abstract void updateCurrentRecipeAndOutput(boolean forceUpdate);
 

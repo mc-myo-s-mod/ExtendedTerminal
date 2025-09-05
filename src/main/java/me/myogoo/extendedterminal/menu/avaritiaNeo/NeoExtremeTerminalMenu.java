@@ -68,31 +68,6 @@ public class NeoExtremeTerminalMenu extends ETTerminalBaseMenu<RecipeExtremeCraf
     }
 
     @Override
-    public SlotSemantic getCraftingGridSlotSemantic() {
-        return this.menuType.getSlotSemanticGrid();
-    }
-
-    @Override
-    public SlotSemantic getOutputSlotSemantic() {
-        return this.menuType.getSlotSemanticResult();
-    }
-
-    @Override
-    public int getCraftingGridSize() {
-        return this.menuType.getGridSize();
-    }
-
-    @Override
-    public int getCraftingGridWidth() {
-        return this.menuType.getGridSideLength();
-    }
-
-    @Override
-    public int getCraftingGridHeight() {
-        return this.menuType.getGridSideLength();
-    }
-
-    @Override
     protected void updateCurrentRecipeAndOutput(boolean forceUpdate) {
         if(checkCraftingOnlyActive()) return;
 
