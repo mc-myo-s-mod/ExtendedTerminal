@@ -1,27 +1,21 @@
 package me.myogoo.extendedterminal.integration.jei.avaritiaNeo.handler;
 
 import appeng.core.localization.ItemModText;
-import appeng.core.network.ServerboundPacket;
-import committee.nova.mods.avaritia.api.common.crafting.ITierCraftingRecipe;
-import committee.nova.mods.avaritia.common.crafting.recipe.ShapedTableCraftingRecipe;
 import me.myogoo.extendedterminal.api.adapter.recipe.IShapedTableRecipeAdapter;
 import me.myogoo.extendedterminal.api.adapter.recipe.ITableRecipeAdapter;
 import me.myogoo.extendedterminal.integration.jei.handler.AbstractTableRecipeHandler;
 import me.myogoo.extendedterminal.menu.avaritiaNeo.NeoExtremeTerminalMenu;
-import me.myogoo.extendedterminal.menu.avaritiaRe.AvaritiaTerminalBaseMenu;
-import me.myogoo.extendedterminal.network.serverbound.FillTableCraftingGridFromRecipePacket;
 import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.recipe.transfer.IRecipeTransferError;
 import mezz.jei.api.recipe.transfer.IRecipeTransferHandlerHelper;
+import net.byAqua3.avaritia.loader.AvaritiaRecipes;
 import net.byAqua3.avaritia.recipe.RecipeExtremeCrafting;
-import net.byAqua3.avaritia.recipe.RecipeExtremeShaped;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
@@ -32,8 +26,6 @@ import java.util.Objects;
 import static appeng.integration.modules.itemlists.TransferHelper.BLUE_PLUS_BUTTON_COLOR;
 import static appeng.integration.modules.itemlists.TransferHelper.ORANGE_PLUS_BUTTON_COLOR;
 import static me.myogoo.extendedterminal.integration.ItemListTermCraftingHelper.ensureFittedCraftingGrid;
-import static me.myogoo.extendedterminal.integration.ItemListTermCraftingHelper.findGoodTemplateItems;
-import static me.myogoo.extendedterminal.network.serverbound.FillTableCraftingGridFromRecipePacket.NOT_SET_RECIPE_SIZE;
 
 public class AVNeoJeiRecipeTransferHandler<T extends NeoExtremeTerminalMenu> extends AbstractTableRecipeHandler<T, RecipeExtremeCrafting> {
     private final IRecipeTransferHandlerHelper helper;
@@ -75,7 +67,12 @@ public class AVNeoJeiRecipeTransferHandler<T extends NeoExtremeTerminalMenu> ext
                 return new Result.PartiallyCraftable(missingSlots, color, craftMissing);
             }
         } else {
-            performTransfer(menu, adapterRecipe, craftMissing);
+            performTransfer(menu, adapterRecipe, craftMissing, () -> {
+                var level = menu.getPlayer().level();
+                var recipeManager = level.getRecipeManager();
+                var findRecipe = recipeManager.getAllRecipesFor(AvaritiaRecipes.EXTREME_CRAFTING.get()).stream().filter(x -> x.value().equals(recipe)).toList();
+                return !findRecipe.isEmpty() ? findRecipe.getFirst() : null;
+            });
         }
 
         return Result.createSuccessful();

@@ -28,6 +28,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
@@ -112,7 +113,7 @@ public abstract class AbstractTableRecipeHandler<T extends ETTerminalBaseMenu<?>
     }
 
     protected abstract Result transferRecipe(T menu,
-                                             @Nullable RecipeHolder<?> holder,
+                                             RecipeHolder<?> holder,
                                              EmiRecipe emiRecipe,
                                              boolean doTransfer);
 
@@ -387,7 +388,7 @@ public abstract class AbstractTableRecipeHandler<T extends ETTerminalBaseMenu<?>
 
     protected abstract Map<Integer, Ingredient> getGuiSlotToIngredientMap(T menu, ITableRecipeAdapter recipe);
 
-    protected void performTransfer(T menu, @Nullable ITableRecipeAdapter recipe, boolean craftMissing) {
+    protected void performTransfer(T menu, ResourceLocation recipeId, ITableRecipeAdapter recipe, boolean craftMissing) {
         var templateItems = findGoodTemplateItems(recipe, menu);
         int recipeWidth = NOT_SET_RECIPE_SIZE;
         int recipeHeight = NOT_SET_RECIPE_SIZE;
@@ -395,7 +396,7 @@ public abstract class AbstractTableRecipeHandler<T extends ETTerminalBaseMenu<?>
             recipeWidth = shapedRecipe.width();
             recipeHeight = shapedRecipe.height();
         }
-        ServerboundPacket message = new FillTableCraftingGridFromRecipePacket(templateItems, craftMissing,
+        ServerboundPacket message = new FillTableCraftingGridFromRecipePacket(recipeId, templateItems, craftMissing,
                 recipeWidth, recipeHeight);
         PacketDistributor.sendToServer(message);
     }

@@ -9,7 +9,6 @@ import dev.emi.emi.api.recipe.EmiRecipeCategory;
 import dev.emi.emi.api.stack.EmiStack;
 import me.myogoo.extendedterminal.api.adapter.recipe.IShapedTableRecipeAdapter;
 import me.myogoo.extendedterminal.api.adapter.recipe.ITableRecipeAdapter;
-import me.myogoo.extendedterminal.integration.emi.extendedcrafting.recipe.ECTableRecipe;
 import me.myogoo.extendedterminal.integration.emi.handler.AbstractTableRecipeHandler;
 import me.myogoo.extendedterminal.menu.ETMenuType;
 import me.myogoo.extendedterminal.menu.avaritiaRe.AvaritiaTerminalBaseMenu;
@@ -17,7 +16,6 @@ import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.*;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
 import java.util.List;
@@ -41,7 +39,7 @@ public class AVTerminalRecipeHandler<T extends AvaritiaTerminalBaseMenu> extends
     }
 
     @Override
-    protected Result transferRecipe(T menu, @Nullable RecipeHolder<?> holder, EmiRecipe emiRecipe, boolean doTransfer) {
+    protected Result transferRecipe(T menu, RecipeHolder<?> holder, EmiRecipe emiRecipe, boolean doTransfer) {
         var recipeId = holder != null ? holder.id() : null;
         var recipe = holder != null ? holder.value() : null;
         boolean craftingRecipe = isCraftingRecipe(recipe, emiRecipe);
@@ -80,7 +78,7 @@ public class AVTerminalRecipeHandler<T extends AvaritiaTerminalBaseMenu> extends
         } else {
             // Thank you RS for pioneering this amazing feature! :)
             boolean craftMissing = AbstractContainerScreen.hasControlDown();
-            performTransfer(menu, adapterRecipe, craftMissing);
+            performTransfer(menu, holder.id(), adapterRecipe, craftMissing);
         }
 
         // No error

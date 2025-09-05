@@ -107,7 +107,6 @@ public class ECTerminalRecipeHandler<T extends ExtendedTerminalBaseMenu> extends
         }
         var adapterRecipe = ITableRecipeAdapter.of(tableRecipe);
 
-
         // Find missing ingredient
         var slotToIngredientMap = getGuiSlotToIngredientMap(menu, adapterRecipe);
         var missingSlots = menu.findMissingIngredients(slotToIngredientMap);
@@ -125,7 +124,7 @@ public class ECTerminalRecipeHandler<T extends ExtendedTerminalBaseMenu> extends
         } else {
             // Thank you RS for pioneering this amazing feature! :)
             boolean craftMissing = AbstractContainerScreen.hasControlDown();
-            performTransfer(menu, adapterRecipe, craftMissing);
+            performTransfer(menu, holder.id(),adapterRecipe, craftMissing);
         }
 
         // No error
