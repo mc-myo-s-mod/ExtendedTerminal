@@ -1,0 +1,25 @@
+name: public mc mod
+on:
+    push:
+      branches: 
+        - '[0-9]+.[0-9]+.[0-9]+'
+      branches-ignore:
+        - '*-dev'
+        - '*-fix'
+      paths-ignore:
+        - "readme/**"
+        - ".github/**"
+    
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: Kir-Antipov/mc-publish@v3.3
+        with:
+          modrinth-id: extended-terminal
+          modrinth-token: ${{ secrets.MODRINTH_TOKEN }}
+
+          curseforge-id: 1302078
+          curseforge-token: ${{ secrets.CURSEFORGE_TOKEN }}
