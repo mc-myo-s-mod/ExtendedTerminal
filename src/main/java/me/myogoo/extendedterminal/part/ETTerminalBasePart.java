@@ -5,23 +5,23 @@ import appeng.api.parts.IPartItem;
 import appeng.parts.reporting.AbstractTerminalPart;
 import appeng.parts.reporting.CraftingTerminalPart;
 import appeng.util.inv.AppEngInternalInventory;
+import me.myogoo.extendedterminal.api.config.IETTerminalConfig;
 import me.myogoo.extendedterminal.config.ETConfig;
 import me.myogoo.extendedterminal.menu.ETMenuType;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 
 import java.util.List;
 
-public abstract class ETBaseTerminalPart extends AbstractTerminalPart {
+public abstract class ETTerminalBasePart extends AbstractTerminalPart {
     public static final ResourceLocation MODEL_OFF = CraftingTerminalPart.MODEL_OFF;
     public static final ResourceLocation MODEL_ON = CraftingTerminalPart.MODEL_ON;
 
     private final AppEngInternalInventory craftingGrid;
     private final ETMenuType menuType;
 
-    public ETBaseTerminalPart(IPartItem<?> partItem, ETMenuType menuType, ETConfig.ExtendedCraftingConfig config) {
+    public ETTerminalBasePart(IPartItem<?> partItem, ETMenuType menuType, IETTerminalConfig config) {
         super(partItem);
         this.getMainNode().setIdlePowerUsage(config.passiveDrainAE());
         this.menuType = menuType;

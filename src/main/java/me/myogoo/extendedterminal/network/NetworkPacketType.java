@@ -12,7 +12,7 @@ public class NetworkPacketType {
     public static int ET_PACKET_START_ID = 10000;
 
     public enum PacketIDs {
-        EXTENDED_FILL_CRAFTING_GRID(10000);
+        TABLE_FILL_CRAFTING_GRID(10000);
 
         private final int value;
 
@@ -26,7 +26,7 @@ public class NetworkPacketType {
 
     private static final HashMap<Integer,Packet> packetMap = new HashMap<>() {
         {
-            put(PacketIDs.EXTENDED_FILL_CRAFTING_GRID.value,new Packet(ETFillCraftingGridFromRecipePacket.class, ETFillCraftingGridFromRecipePacket::new));
+            put(PacketIDs.TABLE_FILL_CRAFTING_GRID.value,new Packet(ETFillCraftingGridFromRecipePacket.class, ETFillCraftingGridFromRecipePacket::new));
         }
     };
 
@@ -35,12 +35,9 @@ public class NetworkPacketType {
         return Optional.ofNullable(packet);
     }
 
-
     public record Packet(Class<? extends BasePacket> clazz, Function<FriendlyByteBuf, BasePacket> factory) {
-
         public BasePacket parsePacket(FriendlyByteBuf payload) {
             return factory.apply(payload);
         }
-
     }
 }

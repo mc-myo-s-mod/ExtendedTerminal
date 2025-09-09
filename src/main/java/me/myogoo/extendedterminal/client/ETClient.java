@@ -4,11 +4,19 @@ import appeng.api.util.AEColor;
 import appeng.client.render.StaticItemColor;
 import appeng.init.client.InitScreens;
 import me.myogoo.extendedterminal.ExtendedTerminal;
+import me.myogoo.extendedterminal.client.screen.avaritiaRe.EndTerminalScreen;
+import me.myogoo.extendedterminal.client.screen.avaritiaRe.ExtremeTerminalScreen;
+import me.myogoo.extendedterminal.client.screen.avaritiaRe.NetherTerminalScreen;
+import me.myogoo.extendedterminal.client.screen.avaritiaRe.SculkTerminalScreen;
 import me.myogoo.extendedterminal.client.screen.extendedcrafting.AdvancedTerminalScreen;
 import me.myogoo.extendedterminal.client.screen.extendedcrafting.BasicTerminalScreen;
 import me.myogoo.extendedterminal.client.screen.extendedcrafting.EliteTerminalScreen;
 import me.myogoo.extendedterminal.client.screen.extendedcrafting.UltimateTerminalScreen;
 import me.myogoo.extendedterminal.init.ETParts;
+import me.myogoo.extendedterminal.menu.avaritiaRe.EndTerminalMenu;
+import me.myogoo.extendedterminal.menu.avaritiaRe.ExtremeTerminalMenu;
+import me.myogoo.extendedterminal.menu.avaritiaRe.NetherTerminalMenu;
+import me.myogoo.extendedterminal.menu.avaritiaRe.SculkTerminalMenu;
 import me.myogoo.extendedterminal.menu.extendedcrafting.AdvancedTerminalMenu;
 import me.myogoo.extendedterminal.menu.extendedcrafting.BasicTerminalMenu;
 import me.myogoo.extendedterminal.menu.extendedcrafting.EliteTerminalMenu;
@@ -40,6 +48,11 @@ public class ETClient {
         InitScreens.register(AdvancedTerminalMenu.TYPE, AdvancedTerminalScreen::new, "/screens/extended_terminal/advanced_terminal.json");
         InitScreens.register(EliteTerminalMenu.TYPE, EliteTerminalScreen::new, "/screens/extended_terminal/elite_terminal.json");
         InitScreens.register(UltimateTerminalMenu.TYPE, UltimateTerminalScreen::new, "/screens/extended_terminal/ultimate_terminal.json");
+
+        InitScreens.register(SculkTerminalMenu.TYPE, SculkTerminalScreen::new, "/screens/avaritia/sculk_terminal.json");
+        InitScreens.register(NetherTerminalMenu.TYPE, NetherTerminalScreen::new, "/screens/avaritia/nether_terminal.json");
+        InitScreens.register(EndTerminalMenu.TYPE, EndTerminalScreen::new, "/screens/avaritia/end_terminal.json");
+        InitScreens.register(ExtremeTerminalMenu.TYPE,ExtremeTerminalScreen::new, "/screens/avaritia/extreme_terminal.json");
     }
 
     public static void initColorParts(RegisterColorHandlersEvent.Item event) {

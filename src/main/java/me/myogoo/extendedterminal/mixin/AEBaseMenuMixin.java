@@ -14,7 +14,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import java.util.Map;
 
 @Mixin(value = AEBaseMenu.class, remap = false)
-public  class AEBaseMenuMixin {
+public class AEBaseMenuMixin {
     @Shadow @Final private Inventory playerInventory;
 
     @Shadow @Final private Map<Slot, SlotSemantic> semanticBySlot;

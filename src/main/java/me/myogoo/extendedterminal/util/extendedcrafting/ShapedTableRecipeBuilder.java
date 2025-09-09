@@ -1,38 +1,33 @@
 package me.myogoo.extendedterminal.util.extendedcrafting;
 
+import com.blakebr0.extendedcrafting.api.crafting.ITableRecipe;
 import com.blakebr0.extendedcrafting.crafting.recipe.ShapedTableRecipe;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import net.minecraft.advancements.Advancement;
-import net.minecraft.advancements.CriterionTriggerInstance;
+import committee.nova.mods.avaritia.common.crafting.recipe.ITierCraftingRecipe;
+import committee.nova.mods.avaritia.common.crafting.recipe.ShapedTableCraftingRecipe;
+import me.myogoo.extendedterminal.api.RecipeHolder;
+import net.minecraft.core.NonNullList;
 import net.minecraft.data.recipes.*;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.ItemLike;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Consumer;
 
 import static net.minecraft.core.registries.BuiltInRegistries.*;
 
-public class ShapedTableRecipeBuilder extends CraftingRecipeBuilder implements RecipeBuilder {
-    private final Item result;
-    private final int count;
-    private final List<String> rows = Lists.newArrayList();
-    private final Map<Character, Ingredient> key = Maps.newLinkedHashMap();
-    private final Advancement.Builder advancement = Advancement.Builder.recipeAdvancement();
+public class ShapedTableRecipeBuilder extends ShapedRecipeBuilder {
+
     private int tier = 0;
-    public ShapedTableRecipeBuilder(ItemLike result, int count) {
-        this.result = result.asItem();
-        this.count = count;
+    private ShapedTableRecipeBuilder(ItemLike result, int count) {
+        super(RecipeCategory.MISC, result, count);
     }
 
     public static ShapedTableRecipeBuilder shaped(ItemLike result, int count) {
@@ -40,35 +35,28 @@ public class ShapedTableRecipeBuilder extends CraftingRecipeBuilder implements R
     }
 
     public ShapedTableRecipeBuilder define(Character c, ItemLike item) {
-        return this.define(c, Ingredient.of(item));
+        super.define(c, item);
+        return this;
     }
 
     public ShapedTableRecipeBuilder define(Character c, Ingredient ingredient) {
-        if (c == ' ') {
-            throw new IllegalArgumentException("Symbol ' ' is reserved and cannot be defined");
-        } else if (this.key.containsKey(c)) {
-            throw new IllegalArgumentException("Symbol '" + c + "' is already defined!");
-        } else {
-            this.key.put(c, ingredient);
-            return this;
-        }
+        super.define(c, ingredient);
+        return this;
     }
 
     public ShapedTableRecipeBuilder pattern(String row) {
-        if(!row.isEmpty() && !this.rows.isEmpty() && row.length() != this.rows.get(0).length()) {
-            throw new IllegalArgumentException("Pattern must be rectangular! Row length does not match previous rows.");
-        } else {
-            this.rows.add(row);
-            return this;
-        }
+        super.pattern(row);
+        return this;
     }
 
-    public void setTier(int tier) {
+    public ShapedTableRecipeBuilder setTier(int tier) {
         if (tier < 0 || tier > 4) {
             throw new IllegalArgumentException("Tier must be between 0 and 4");
         }
         this.tier = tier;
+        return this;
     }
+
 
     private void ensureValid(ResourceLocation recipeId) {
         if(this.rows.isEmpty()) {
@@ -96,22 +84,6 @@ public class ShapedTableRecipeBuilder extends CraftingRecipeBuilder implements R
     }
 
     @Override
-    public RecipeBuilder unlockedBy(String a, CriterionTriggerInstance b) {
-        this.advancement.addCriterion(a,b);
-        return this;
-    }
-
-    @Override
-    public RecipeBuilder group(@Nullable String group) {
-        return this;
-    }
-
-    @Override
-    public Item getResult() {
-        return this.result;
-    }
-
-    @Override
     public void save(Consumer<FinishedRecipe> recipeOutput, ResourceLocation id) {
         this.ensureValid(id);
         recipeOutput.accept(new Result(id));
@@ -126,7 +98,7 @@ public class ShapedTableRecipeBuilder extends CraftingRecipeBuilder implements R
         @Override
         public void serializeRecipeData(JsonObject json) {}
 
-        public JsonObject serializeRecipe() {
+        public @NotNull JsonObject serializeRecipe() {
             JsonObject json = new JsonObject();
             json.addProperty("type","extendedcrafting:shaped_table");
             if(tier != 0) {
