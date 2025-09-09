@@ -30,7 +30,6 @@ public class ExtendedTerminal {
         ETMenus.REGISTER.register(modEventBus);
         ETCreativeTab.REGISTER.register(modEventBus);
 
-        MinecraftForge.EVENT_BUS.register(ETRecipeGen.class);
         MinecraftForge.EVENT_BUS.register(this);
     }
 
