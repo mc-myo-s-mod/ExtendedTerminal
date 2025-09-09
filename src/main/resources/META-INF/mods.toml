@@ -75,6 +75,12 @@ side = "BOTH"
 versionRange = "[6.0.0,)"
 
 [[dependencies."${mod_id}"]]
+modId = "avaritia"
+mandatory = false
+side = "BOTH"
+versionRange = "[1.3.9.1-release,)"
+
+[[dependencies."${mod_id}"]]
 modId = "jei"
 mandatory = false
 side = "BOTH"

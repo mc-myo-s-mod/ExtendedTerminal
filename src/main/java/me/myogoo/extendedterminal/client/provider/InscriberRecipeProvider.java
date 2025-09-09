@@ -4,7 +4,6 @@ import appeng.core.definitions.AEItems;
 import appeng.datagen.providers.recipes.InscriberRecipes;
 import appeng.recipes.handlers.InscriberProcessType;
 import appeng.recipes.handlers.InscriberRecipeBuilder;
-import com.blakebr0.extendedcrafting.init.ModItems;
 import me.myogoo.extendedterminal.ExtendedTerminal;
 import me.myogoo.extendedterminal.init.ETItems;
 import net.minecraft.data.PackOutput;

@@ -2,27 +2,21 @@ package me.myogoo.extendedterminal.util.extendedcrafting;
 
 import com.blakebr0.extendedcrafting.api.crafting.ITableRecipe;
 import com.blakebr0.extendedcrafting.crafting.recipe.ShapedTableRecipe;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import committee.nova.mods.avaritia.api.common.crafting.ITierRecipe;
-import committee.nova.mods.avaritia.common.crafting.recipe.BaseTableCraftingRecipe;
+import committee.nova.mods.avaritia.common.crafting.recipe.ITierCraftingRecipe;
 import committee.nova.mods.avaritia.common.crafting.recipe.ShapedTableCraftingRecipe;
 import me.myogoo.extendedterminal.api.RecipeHolder;
-import net.minecraft.advancements.Advancement;
-import net.minecraft.advancements.CriterionTriggerInstance;
 import net.minecraft.core.NonNullList;
 import net.minecraft.data.recipes.*;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.ItemLike;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Consumer;
@@ -32,7 +26,7 @@ import static net.minecraft.core.registries.BuiltInRegistries.*;
 public class ShapedTableRecipeBuilder extends ShapedRecipeBuilder {
 
     private int tier = 0;
-    public ShapedTableRecipeBuilder(ItemLike result, int count) {
+    private ShapedTableRecipeBuilder(ItemLike result, int count) {
         super(RecipeCategory.MISC, result, count);
     }
 
@@ -41,7 +35,8 @@ public class ShapedTableRecipeBuilder extends ShapedRecipeBuilder {
     }
 
     public ShapedTableRecipeBuilder define(Character c, ItemLike item) {
-        return this.define(c, Ingredient.of(item));
+        super.define(c, item);
+        return this;
     }
 
     public ShapedTableRecipeBuilder define(Character c, Ingredient ingredient) {
@@ -61,6 +56,7 @@ public class ShapedTableRecipeBuilder extends ShapedRecipeBuilder {
         this.tier = tier;
         return this;
     }
+
 
     private void ensureValid(ResourceLocation recipeId) {
         if(this.rows.isEmpty()) {
@@ -93,24 +89,6 @@ public class ShapedTableRecipeBuilder extends ShapedRecipeBuilder {
         recipeOutput.accept(new Result(id));
     }
 
-    public RecipeHolder<ITableRecipe> buildEC(ResourceLocation id) {
-        NonNullList<Ingredient> ingredients = NonNullList.withSize(this.rows.get(0).length() * this.rows.size(), Ingredient.EMPTY);
-        int i = 0;
-        for(Ingredient ingredient : this.key.values()) {
-            ingredients.set(i++,ingredient);
-        }
-        return RecipeHolder.of(new ShapedTableRecipe(id, this.rows.get(0).length(), this.rows.size(), ingredients, this.result.getDefaultInstance()));
-    }
-
-    public RecipeHolder<BaseTableCraftingRecipe> buildReAV(ResourceLocation id) {
-        NonNullList<Ingredient> ingredients = NonNullList.withSize(this.rows.get(0).length() * this.rows.size(), Ingredient.EMPTY);
-        int i = 0;
-        for(Ingredient ingredient : this.key.values()) {
-            ingredients.set(i++,ingredient);
-        }
-        return RecipeHolder.of(new ShapedTableCraftingRecipe(id, this.rows.get(0).length(), this.rows.size(), ingredients, this.result.getDefaultInstance(), tier));
-    }
-
     class Result implements FinishedRecipe {
         private final ResourceLocation id;
         public Result(ResourceLocation id) {
@@ -120,7 +98,7 @@ public class ShapedTableRecipeBuilder extends ShapedRecipeBuilder {
         @Override
         public void serializeRecipeData(JsonObject json) {}
 
-        public JsonObject serializeRecipe() {
+        public @NotNull JsonObject serializeRecipe() {
             JsonObject json = new JsonObject();
             json.addProperty("type","extendedcrafting:shaped_table");
             if(tier != 0) {

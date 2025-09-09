@@ -6,11 +6,6 @@ public interface RecipeHolder<R extends Recipe<?>> {
     R get();
 
     static <R extends Recipe<?>> RecipeHolder<R> of(R recipe) {
-        return new RecipeHolder<R>() {
-            @Override
-            public R get() {
-                return recipe;
-            }
-        };
+        return () -> recipe;
     }
 }

@@ -16,6 +16,7 @@ import com.google.common.primitives.Ints;
 import io.netty.buffer.Unpooled;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntList;
+import me.myogoo.extendedterminal.integration.ItemListTermCraftingHelper;
 import me.myogoo.extendedterminal.network.NetworkPacketType;
 import me.myogoo.extendedterminal.util.extendedcrafting.TableCraftingHelper;
 import net.minecraft.core.NonNullList;
@@ -35,7 +36,7 @@ import static me.myogoo.extendedterminal.integration.ItemListTermCraftingHelper.
 public class ETFillCraftingGridFromRecipePacket extends FillRecipeBasePacket {
     public static final int NOT_SET_RECIPE_SIZE = -1;
 
-    private @Nullable ResourceLocation recipeId;
+    private @Nullable ResourceLocation recipeId = null;
     private List<ItemStack> ingredientTemplates;
     private boolean craftMissing;
     private int recipeWidth;
@@ -43,6 +44,9 @@ public class ETFillCraftingGridFromRecipePacket extends FillRecipeBasePacket {
 
 
     public ETFillCraftingGridFromRecipePacket(FriendlyByteBuf stream) {
+        if (stream.readBoolean()) {
+            recipeId = stream.readResourceLocation();
+        }
         ingredientTemplates = NonNullList.withSize(stream.readInt(), ItemStack.EMPTY);
         for (int i = 0; i < ingredientTemplates.size(); i++) {
             ingredientTemplates.set(i, stream.readItem());
@@ -53,6 +57,7 @@ public class ETFillCraftingGridFromRecipePacket extends FillRecipeBasePacket {
     }
 
     public ETFillCraftingGridFromRecipePacket(
+            @Nullable ResourceLocation recipeId,
             List<ItemStack> ingredientTemplates,
             boolean craftMissing,
             int recipeWidth,
@@ -61,6 +66,12 @@ public class ETFillCraftingGridFromRecipePacket extends FillRecipeBasePacket {
         var stream = new FriendlyByteBuf(Unpooled.buffer());
         // set packetID
         stream.writeInt(NetworkPacketType.PacketIDs.TABLE_FILL_CRAFTING_GRID.getValue());
+        if (recipeId != null) {
+            stream.writeBoolean(true);
+            stream.writeResourceLocation(recipeId);
+        } else {
+            stream.writeBoolean(false);
+        }
 
         stream.writeInt(ingredientTemplates.size());
         for (var ingredientTemplate : ingredientTemplates) {
@@ -195,6 +206,13 @@ public class ETFillCraftingGridFromRecipePacket extends FillRecipeBasePacket {
 
     @Override
     protected NonNullList<Ingredient> getDesiredIngredients(Player player) {
+        if (recipeId != null) {
+            var recipe = player.level().getRecipeManager().byKey(this.recipeId);
+            if (recipe.isPresent()) {
+                return ItemListTermCraftingHelper.ensureNxNTableCraftingGrid(recipe.get(), ingredientTemplates.size(), recipeWidth, recipeHeight);
+            }
+        }
+
         var ingredients = NonNullList.withSize(this.ingredientTemplates.size(), Ingredient.EMPTY);
         Preconditions.checkArgument(ingredients.size() == this.ingredientTemplates.size(),
                 "Got %d ingredient templates from client, expected %d",

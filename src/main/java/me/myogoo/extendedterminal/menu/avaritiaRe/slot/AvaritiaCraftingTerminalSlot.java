@@ -11,11 +11,10 @@ import appeng.api.storage.MEStorage;
 import appeng.helpers.IMenuCraftingPacket;
 import appeng.items.storage.ViewCellItem;
 import appeng.util.prioritylist.IPartitionList;
-import committee.nova.mods.avaritia.common.crafting.recipe.BaseTableCraftingRecipe;
+import committee.nova.mods.avaritia.common.crafting.recipe.ITierCraftingRecipe;
 import committee.nova.mods.avaritia.init.registry.ModRecipeTypes;
 import me.myogoo.extendedterminal.menu.ETMenuType;
 import me.myogoo.extendedterminal.menu.avaritiaRe.AvaritiaTerminalBaseMenu;
-import me.myogoo.extendedterminal.menu.avaritiaRe.ExtremeTerminalMenu;
 import me.myogoo.extendedterminal.menu.slot.ETCraftingBaseSlot;
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.entity.player.Player;
@@ -28,12 +27,12 @@ import net.minecraft.world.level.Level;
 import java.util.Arrays;
 import java.util.List;
 
-public class AvaritiaCraftingTerminalSlot extends ETCraftingBaseSlot<BaseTableCraftingRecipe, CraftingContainer> {
+public class AvaritiaCraftingTerminalSlot extends ETCraftingBaseSlot<ITierCraftingRecipe, CraftingContainer> {
     public AvaritiaCraftingTerminalSlot(Player player, IActionSource mySrc, IEnergySource energySrc, MEStorage storage, InternalInventory cMatrix, InternalInventory secondMatrix, IMenuCraftingPacket ccp, ETMenuType menuType) {
         super(player, mySrc, energySrc, storage, cMatrix, secondMatrix, ccp, menuType);
     }
 
-    protected BaseTableCraftingRecipe findRecipe(CraftingContainer ic, Level level) {
+    protected ITierCraftingRecipe findRecipe(CraftingContainer ic, Level level) {
         if (this.menu instanceof AvaritiaTerminalBaseMenu terminalMenu) {
             var recipe = terminalMenu.getCurrentRecipe();
 
@@ -117,7 +116,7 @@ public class AvaritiaCraftingTerminalSlot extends ETCraftingBaseSlot<BaseTableCr
                                                   IActionSource mySrc,
                                                   MEStorage src,
                                                   Level level,
-                                                  BaseTableCraftingRecipe r,
+                                                  ITierCraftingRecipe r,
                                                   ItemStack output,
                                                   int gridWidth, int gridHeight,
                                                   AbstractContainerMenu menu,

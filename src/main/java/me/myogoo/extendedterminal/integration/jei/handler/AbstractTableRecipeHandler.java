@@ -67,7 +67,7 @@ public abstract class AbstractTableRecipeHandler<T extends ETTerminalBaseMenu<R>
             recipeWidth = shapedRecipe.width();
             recipeHeight = shapedRecipe.height();
         }
-        var message = new ETFillCraftingGridFromRecipePacket(templateItems, craftMissing, recipeWidth, recipeHeight);
+        var message = new ETFillCraftingGridFromRecipePacket(recipe.recipeId(), templateItems, craftMissing, recipeWidth, recipeHeight);
         NetworkHandler.instance().sendToServer(message);
     }
 

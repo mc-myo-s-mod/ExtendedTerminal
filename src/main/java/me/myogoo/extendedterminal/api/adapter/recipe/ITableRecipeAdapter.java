@@ -8,6 +8,7 @@ import me.myogoo.extendedterminal.adapter.recipe.ShapedTableRecipeAdapter;
 import me.myogoo.extendedterminal.adapter.recipe.ShapelessTableRecipeAdapter;
 import me.myogoo.extendedterminal.api.ModAccessor;
 
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.crafting.Recipe;
 
 import java.util.Optional;
@@ -15,6 +16,7 @@ import java.util.Optional;
 public interface ITableRecipeAdapter {
     <R extends Recipe<?>> Optional<R> unwrap(Class<R> recipeClass);
     <R extends Recipe<?>> R recipe();
+    ResourceLocation recipeId();
     int tier();
 
     @ModAccessor.ExtendedCrafting
@@ -28,7 +30,7 @@ public interface ITableRecipeAdapter {
     }
 
     @ModAccessor.ReAvaritia
-    static ITableRecipeAdapter of(BaseTableCraftingRecipe recipe) {
+    static ITableRecipeAdapter of(ITierCraftingRecipe recipe) {
         if (recipe instanceof ShapedTableCraftingRecipe shaped) {
             return new ShapedTableRecipeAdapter(shaped);
         } else if (recipe instanceof ShapelessTableCraftingRecipe shapeless) {

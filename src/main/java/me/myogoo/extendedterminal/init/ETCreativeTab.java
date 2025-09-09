@@ -1,5 +1,6 @@
 package me.myogoo.extendedterminal.init;
 
+import appeng.core.definitions.AEParts;
 import appeng.core.definitions.ItemDefinition;
 import me.myogoo.extendedterminal.ExtendedTerminal;
 import net.minecraft.core.registries.Registries;
@@ -12,8 +13,8 @@ public class ETCreativeTab {
 
     static {
         REGISTER.register("itemgroup.extendedcrafting",() -> CreativeModeTab.builder()
-                .title(Component.translatable("itemgroup.extendedcrafting.title"))
-                .icon(ETParts.ULTIMATE_TERMINAL_PART::stack)
+                .title(Component.translatable("itemGroup.extendedterminal"))
+                .icon(AEParts.CRAFTING_TERMINAL::stack)
                 .displayItems((params, output) -> {
                     for (ItemDefinition<?> item : ETItems.ITEMS) {
                         output.accept(item.stack());

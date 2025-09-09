@@ -23,6 +23,7 @@ public class ModLoadHelper {
             .getScanResult();
 
     public static void init() {
+        loadedAnnotations.clear();
         if (ModList.get().isLoaded(ExCrafting_ID)) {
             loadedAnnotations.put(ModAccessor.ExtendedCrafting.class, true);
         }

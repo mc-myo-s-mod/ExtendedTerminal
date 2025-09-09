@@ -8,10 +8,9 @@ import appeng.helpers.InventoryAction;
 import appeng.menu.SlotSemantic;
 import appeng.menu.slot.CraftingMatrixSlot;
 import com.google.common.base.Preconditions;
-import committee.nova.mods.avaritia.common.crafting.recipe.BaseTableCraftingRecipe;
+import committee.nova.mods.avaritia.common.crafting.recipe.ITierCraftingRecipe;
 import committee.nova.mods.avaritia.init.registry.ModRecipeTypes;
 import me.myogoo.extendedterminal.api.config.IETTerminalConfig;
-import me.myogoo.extendedterminal.config.ETConfig;
 import me.myogoo.extendedterminal.menu.ETMenuType;
 import me.myogoo.extendedterminal.menu.ETTerminalBaseMenu;
 import me.myogoo.extendedterminal.menu.avaritiaRe.slot.AvaritiaCraftingTerminalSlot;
@@ -22,7 +21,7 @@ import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.TransientCraftingContainer;
 import net.minecraft.world.item.ItemStack;
 
-public class AvaritiaTerminalBaseMenu extends ETTerminalBaseMenu<BaseTableCraftingRecipe> {
+public class AvaritiaTerminalBaseMenu extends ETTerminalBaseMenu<ITierCraftingRecipe> {
     private final AvaritiaCraftingTerminalSlot outputSlot;
     private final ISegmentedInventory craftingInventoryHost;
     private final CraftingMatrixSlot[] craftingSlots;

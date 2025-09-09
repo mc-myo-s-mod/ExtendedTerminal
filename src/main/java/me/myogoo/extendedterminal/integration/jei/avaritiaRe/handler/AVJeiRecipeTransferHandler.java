@@ -1,7 +1,7 @@
 package me.myogoo.extendedterminal.integration.jei.avaritiaRe.handler;
 
 import appeng.core.localization.ItemModText;
-import committee.nova.mods.avaritia.common.crafting.recipe.BaseTableCraftingRecipe;
+import committee.nova.mods.avaritia.common.crafting.recipe.ITierCraftingRecipe;
 import me.myogoo.extendedterminal.api.adapter.recipe.IShapedTableRecipeAdapter;
 import me.myogoo.extendedterminal.api.adapter.recipe.ITableRecipeAdapter;
 import me.myogoo.extendedterminal.integration.jei.handler.AbstractTableRecipeHandler;
@@ -26,16 +26,16 @@ import static appeng.integration.modules.jeirei.TransferHelper.BLUE_PLUS_BUTTON_
 import static appeng.integration.modules.jeirei.TransferHelper.ORANGE_PLUS_BUTTON_COLOR;
 import static me.myogoo.extendedterminal.integration.ItemListTermCraftingHelper.ensureFittedCraftingGrid;
 
-public class AVJeiRecipeTransferHandler<T extends AvaritiaTerminalBaseMenu> extends AbstractTableRecipeHandler<T, BaseTableCraftingRecipe> {
+public class AVJeiRecipeTransferHandler<T extends AvaritiaTerminalBaseMenu> extends AbstractTableRecipeHandler<T, ITierCraftingRecipe> {
     private final IRecipeTransferHandlerHelper helper;
 
-    public AVJeiRecipeTransferHandler(Class<T> containerClass, MenuType<T> menuType, RecipeType<BaseTableCraftingRecipe> recipeType, IRecipeTransferHandlerHelper helper) {
+    public AVJeiRecipeTransferHandler(Class<T> containerClass, MenuType<T> menuType, RecipeType<ITierCraftingRecipe> recipeType, IRecipeTransferHandlerHelper helper) {
         super(containerClass, menuType, recipeType);
         this.helper = helper;
     }
 
     @Override
-    public @Nullable IRecipeTransferError transferRecipe(T menu, BaseTableCraftingRecipe recipe, IRecipeSlotsView recipeSlots, Player player, boolean maxTransfer, boolean doTransfer) {
+    public @Nullable IRecipeTransferError transferRecipe(T menu, ITierCraftingRecipe recipe, IRecipeSlotsView recipeSlots, Player player, boolean maxTransfer, boolean doTransfer) {
         if (recipe.getIngredients().isEmpty()) {
             return Result.createInCompatibleError(helper);
         }

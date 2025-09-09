@@ -5,6 +5,7 @@ import committee.nova.mods.avaritia.common.crafting.recipe.EternalSingularityCra
 import committee.nova.mods.avaritia.common.crafting.recipe.InfinityCatalystCraftRecipe;
 import committee.nova.mods.avaritia.common.crafting.recipe.ShapelessTableCraftingRecipe;
 import me.myogoo.extendedterminal.api.adapter.recipe.IShapelessTableRecipeAdapter;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.crafting.Recipe;
 
 import java.util.Optional;
@@ -39,6 +40,11 @@ public class ShapelessTableRecipeAdapter implements IShapelessTableRecipeAdapter
     @SuppressWarnings("unchecked")
     public <R extends Recipe<?>> R recipe() {
         return (R) this.recipe;
+    }
+
+    @Override
+    public ResourceLocation recipeId() {
+        return recipe.getId();
     }
 
     @Override

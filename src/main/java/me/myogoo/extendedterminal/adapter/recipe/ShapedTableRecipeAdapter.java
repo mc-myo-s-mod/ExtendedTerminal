@@ -3,6 +3,7 @@ package me.myogoo.extendedterminal.adapter.recipe;
 import com.blakebr0.extendedcrafting.crafting.recipe.ShapedTableRecipe;
 import committee.nova.mods.avaritia.common.crafting.recipe.ShapedTableCraftingRecipe;
 import me.myogoo.extendedterminal.api.adapter.recipe.IShapedTableRecipeAdapter;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.crafting.Recipe;
 
 
@@ -58,5 +59,10 @@ public class ShapedTableRecipeAdapter implements IShapedTableRecipeAdapter {
     @Override
     public int height() {
         return recipeHeight;
+    }
+
+    @Override
+    public ResourceLocation recipeId() {
+        return recipe.getId();
     }
 }

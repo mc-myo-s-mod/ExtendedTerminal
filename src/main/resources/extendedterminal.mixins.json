@@ -6,8 +6,7 @@
   "refmap": "extendedterminal.refmap.json",
   "mixins": [
     "AEBaseMenuMixin",
-    "NetworkHandlerMixin",
-    "RecipeManagerMixin"
+    "NetworkHandlerMixin"
   ],
   "injectors": {
     "defaultRequire": 1
