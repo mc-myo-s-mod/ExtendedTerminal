@@ -1,0 +1,57 @@
+name: build mod
+
+on:
+    push:
+        branches-ignore:
+            - '*-dev'
+            - '*-fix'
+            - '*/*'
+        paths-ignore:
+            - "readme/**"
+            - ".github/**"
+    pull_request:
+        branches-ignore:
+            - '*-dev'
+            - '*-fix'
+            - '*/*'
+        paths-ignore:
+            - "readme/**"
+            - ".github/**"
+
+jobs:
+    build:
+        runs-on: ubuntu-latest
+        steps:
+          - name: Checkout code
+            uses: actions/checkout@v4
+
+          - name: Read Java version from gradle.properties
+            id: read_java_version
+            run: |
+                version=$(grep 'java_version | cut -d'=' -f2)
+                echo "version=$version" >> $GITHUB_OUTPUT
+
+          - name: Setup Java
+            uses: actions/setup-java@v4
+            with:
+                java-version: ${{ steps.read_java_version.outputs.version }}
+                distribution: 'temurin'
+
+
+          - name: Set up JDK 17
+            uses: actions/setup-java@v4
+            with:
+                java-version: '17'
+                distribution: 'temurin'
+
+          - name: Make gradlew executable
+            run: chmod +x ./gradlew
+
+          - name: Build with Gradle
+            run: ./gradlew build
+
+          - name: Upload build artifacts
+            uses: actions/upload-artifact@v4
+            with:
+                name: build-artifacts
+                path: build/libs/
