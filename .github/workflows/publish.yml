@@ -1,6 +1,8 @@
 name: public mc mod
 on:
-    push:
+    pull_request: 
+      types:
+        - closed
       branches-ignore:
         - '*-dev'
         - '*-fix'
@@ -10,7 +12,34 @@ on:
         - ".github/**"
     
 jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Read Java version from gradle.properties
+        id: read_java_version
+        run: |
+          version=$(grep 'java_version | cut -d'=' -f2)
+          echo "version=$version" >> $GITHUB_OUTPUT
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          java-version: ${{ steps.read_java_version.outputs.version }}
+          distribution: 'temurin'
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v3
+
+      - name: Build with Gradle
+        run: ./gradlew build
+
+
   publish:
+    needs: build
+    if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
     permissions:
       contents: write
