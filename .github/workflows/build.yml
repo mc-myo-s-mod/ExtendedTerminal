@@ -37,13 +37,6 @@ jobs:
                 java-version: ${{ steps.read_java_version.outputs.version }}
                 distribution: 'temurin'
 
-
-          - name: Set up JDK 17
-            uses: actions/setup-java@v4
-            with:
-                java-version: '17'
-                distribution: 'temurin'
-
           - name: Make gradlew executable
             run: chmod +x ./gradlew
 
