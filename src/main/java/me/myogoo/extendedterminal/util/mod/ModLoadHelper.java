@@ -11,12 +11,14 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class ModLoadHelper {
+    public final static String ECCrafting_ID = "extendedcrafting";
+    public final static String Avaritia_ID = "avaritia";
+
     private static final Map<Class<? extends Annotation>, Boolean> loadedAnnotations = new HashMap<>();
     private static final Logger logger = ExtendedTerminal.LOGGER;
-    private final static String ExCrafting_ID = "extendedcrafting";
-    private final static String Avaritia_ID = "avaritia";
     private final static String ReAvaritia = "Re-Avaritia-forged";
     private final static String AvaritiaNeo = "Avaritia";
+
     private final static ModFileScanData ScanData = ModList.get()
             .getModFileById(ExtendedTerminal.MODID)
             .getFile()
@@ -24,7 +26,7 @@ public class ModLoadHelper {
 
     public static void init() {
         loadedAnnotations.clear();
-        if (ModList.get().isLoaded(ExCrafting_ID)) {
+        if (ModList.get().isLoaded(ECCrafting_ID)) {
             loadedAnnotations.put(ModAccessor.ExtendedCrafting.class, true);
         }
         if (ModList.get().isLoaded(Avaritia_ID)) {

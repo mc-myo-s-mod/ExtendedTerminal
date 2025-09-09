@@ -1,4 +1,4 @@
-package me.myogoo.extendedterminal.client.provider;
+package me.myogoo.extendedterminal.datagen.provider;
 
 import appeng.core.definitions.AEItems;
 import appeng.datagen.providers.recipes.InscriberRecipes;
