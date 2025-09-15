@@ -3,7 +3,7 @@ package me.myogoo.extendedterminal;
 import com.mojang.logging.LogUtils;
 import me.myogoo.extendedterminal.config.ETConfig;
 import me.myogoo.extendedterminal.init.*;
-import me.myogoo.extendedterminal.util.mod.ModLoadHelper;
+import me.myogoo.extendedterminal.util.mod.ModIntegrationManager;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
@@ -19,12 +19,13 @@ public class ExtendedTerminal {
 
     public ExtendedTerminal(IEventBus modEventBus, ModContainer modContainer) {
         modContainer.registerConfig(ModConfig.Type.COMMON, ETConfig.COMMON);
-        ModLoadHelper.init();
+        ModIntegrationManager.initialize();
 
         ETCreativeTab.REGISTER.register(modEventBus);
         ETItems.REGISTER.register(modEventBus);
         ETParts.REGISTER.register(modEventBus);
         ETMenus.REGISTER.register(modEventBus);
+        ETCondition.REGISTER.register(modEventBus);
 
         NeoForge.EVENT_BUS.register(ETRecipeGen.class);
         modEventBus.addListener(ETNetwork::init);

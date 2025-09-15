@@ -3,7 +3,8 @@ package me.myogoo.extendedterminal.integration;
 import me.myogoo.extendedterminal.ExtendedTerminal;
 import me.myogoo.extendedterminal.api.SubscribeLoadEvent;
 import me.myogoo.extendedterminal.util.SafeClass;
-import me.myogoo.extendedterminal.util.mod.ModLoadHelper;
+import me.myogoo.extendedterminal.util.mod.AnnotationScanner;
+import me.myogoo.extendedterminal.util.mod.ModIntegrationManager;
 import org.objectweb.asm.Type;
 
 import java.lang.reflect.InvocationTargetException;
@@ -17,12 +18,12 @@ public class ItemListModLoadHelper {
             Class<R> parameterType,
             R parameter
     ) {
-        ModLoadHelper
-                .getLoadedAnnotation()
+        AnnotationScanner
+                .getModAnnotations()
                 .stream()
                 .filter(a -> a.annotationType().equals(markerAnnotation))
                 .map(a -> SafeClass.forType(a.clazz()))
-                .filter(c -> Arrays.stream(c.getDeclaredAnnotations()).anyMatch(a -> ModLoadHelper.get(a.annotationType())))
+                .filter(c -> Arrays.stream(c.getDeclaredAnnotations()).anyMatch(a -> ModIntegrationManager.isLoaded(a.annotationType())))
                 .forEach(clazz -> invokeMethod(clazz,parameterType, parameter));
     }
 

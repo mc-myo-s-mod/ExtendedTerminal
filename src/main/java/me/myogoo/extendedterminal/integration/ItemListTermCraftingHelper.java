@@ -41,40 +41,6 @@ public class ItemListTermCraftingHelper {
         return templateItems;
     }
 
-    public static Map<Integer, Ingredient> getGuiSlotToIngredientMap(ITableRecipeAdapter recipe, int gridSideLength) {
-        var raw = recipe.recipe().getIngredients();
-        List<Ingredient> ingredients;
-
-        int offsetX = 0;
-        int offsetY = 0;
-        int width = gridSideLength;
-        int height = gridSideLength;
-        if (recipe instanceof IShapedTableRecipeAdapter shapedRecipe) {
-            ingredients = ensureFittedCraftingGrid(shapedRecipe);
-            width = shapedRecipe.width();
-            height = shapedRecipe.height();
-            offsetX = Math.floorDiv(gridSideLength - shapedRecipe.width(),2);
-            offsetY = Math.floorDiv(gridSideLength - shapedRecipe.height(),2);
-        } else {
-            ingredients = raw;
-        }
-
-        int max = gridSideLength * gridSideLength;
-        int count = Math.min(ingredients.size(), max);
-        var result = new HashMap<Integer, Ingredient>(count);
-        for (int i = 0; i < count; i++) {
-            int x = i % width;
-            int y = i / width;
-
-            var guiSlot = (y + offsetY) * gridSideLength + (x + offsetX);
-            var ing = ingredients.get(i);
-            if (!ing.isEmpty()) {
-                result.put(guiSlot, ing);
-            }
-        }
-        return result;
-    }
-
     public static NonNullList<Ingredient> ensureNxNTableCraftingGrid(Recipe<?> recipe, int gridSize, int recipeWidth, int recipeHeight) {
         var ingredients = recipe.getIngredients();
         var expandedIngredients = NonNullList.withSize(gridSize, Ingredient.EMPTY);

@@ -1,35 +1,31 @@
 package me.myogoo.extendedterminal.init;
 
+import appeng.core.definitions.AEItems;
 import appeng.core.definitions.AEParts;
 import com.blakebr0.extendedcrafting.init.ModBlocks;
 import me.myogoo.extendedterminal.ExtendedTerminal;
 import me.myogoo.extendedterminal.api.ModAccessor;
 import me.myogoo.extendedterminal.config.ETConfig;
 import me.myogoo.extendedterminal.event.RecipeManagerLoadingEvent;
-import me.myogoo.extendedterminal.util.ShapedTableRecipeBuilder;
-import me.myogoo.extendedterminal.util.mod.ModLoadHelper;
+import me.myogoo.extendedterminal.util.recipe.ShapedTableRecipeBuilder;
 import net.byAqua3.avaritia.loader.AvaritiaBlocks;
 import net.neoforged.bus.api.SubscribeEvent;
-
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.Arrays;
+import net.neoforged.fml.loading.FMLEnvironment;
 
 public class ETRecipeGen {
     @SubscribeEvent
     static void onRegisterRecipes(RecipeManagerLoadingEvent event) {
-        Method[] methods = ETRecipeGen.class.getDeclaredMethods();
-        for(Method method : methods) {
-            if(method.getParameterCount() == 1 && method.getParameterTypes()[0] == RecipeManagerLoadingEvent.class) {
-                if(Arrays.stream(method.getDeclaredAnnotations()).allMatch(x -> ModLoadHelper.get(x.annotationType()))) {
-                    method.setAccessible(true);
-                    try {
-                        method.invoke(null, event);
-                    } catch (IllegalAccessException | InvocationTargetException e) {
-                        ExtendedTerminal.LOGGER.error("Failed to invoke recipe registration method: {}", method.getName(), e);
-                    }
-                }
-            }
+        if(!FMLEnvironment.production) {
+            event.addRecipe(ShapedTableRecipeBuilder.shaped(ETItems.COMPAT_PROCESSOR,1)
+                    .pattern(" A ")
+                    .pattern("BCB")
+                    .pattern(" D ")
+                    .define('A', AEParts.PATTERN_PROVIDER)
+                    .define('B', AEParts.QUARTZ_FIBER)
+                    .define('C', AEItems.CERTUS_QUARTZ_CRYSTAL)
+                    .define('D', AEItems.FLUIX_DUST)
+                    .tier(2)
+                    .buildEC(ExtendedTerminal.makeId("extended_crafting/compat_processor")));
         }
     }
 
