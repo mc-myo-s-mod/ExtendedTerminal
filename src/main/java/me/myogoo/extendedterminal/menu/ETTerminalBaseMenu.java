@@ -93,11 +93,6 @@ public abstract class ETTerminalBaseMenu<R extends Recipe<?>> extends MEStorageM
         return this.energySource;
     }
 
-    @Override
-    public void slotsChanged(@NotNull Container inventory) {
-        updateCurrentRecipeAndOutput(false);
-    }
-
     protected boolean isCraftable(ItemStack itemStack) {
         var clientRepo = getClientRepo();
 

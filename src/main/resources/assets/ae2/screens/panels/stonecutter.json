@@ -1,0 +1,19 @@
+{
+  "slots" : {
+    "STONECUTTING_INPUT": {
+      "left": 15,
+      "bottom": 140
+    },
+    "STONECUTTING_RESULT": {
+      "left": 134,
+      "bottom": 140
+    }
+  },
+  "widgets" : {
+    "stonecuttingPatternModeScrollbar": {
+        "left": 117,
+        "bottom": 156,
+        "height": 50
+    }
+  }
+}

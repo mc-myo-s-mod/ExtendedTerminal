@@ -11,6 +11,7 @@ import me.myogoo.extendedterminal.menu.extendedcrafting.AdvancedTerminalMenu;
 import me.myogoo.extendedterminal.menu.extendedcrafting.BasicTerminalMenu;
 import me.myogoo.extendedterminal.menu.extendedcrafting.EliteTerminalMenu;
 import me.myogoo.extendedterminal.menu.extendedcrafting.UltimateTerminalMenu;
+import me.myogoo.extendedterminal.menu.extendedterminal.ETTerminalMenu;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.inventory.MenuType;
 import net.neoforged.neoforge.registries.DeferredRegister;
@@ -19,6 +20,9 @@ import java.util.function.Supplier;
 
 public final class ETMenus {
     public static final DeferredRegister<MenuType<?>> REGISTER = DeferredRegister.create(Registries.MENU, ExtendedTerminal.MODID);
+
+    // Extended Terminal terminal
+    public static final Supplier<MenuType<ETTerminalMenu>> ET_TERMINAL = REGISTER.register(ETMenuType.ET_TERMINAL.getIdAsString(), () -> ETTerminalMenu.TYPE);
 
     // Extended Crafting terminals
     public static final Supplier<MenuType<BasicTerminalMenu>> BASIC_TERMINAL = REGISTER.register(ETMenuType.BASIC_TERMINAL.getIdAsString(), () -> BasicTerminalMenu.TYPE);

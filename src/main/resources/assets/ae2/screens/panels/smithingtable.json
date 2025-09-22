@@ -1,0 +1,23 @@
+{
+  "slots" : {
+    "SMITHING_TABLE_TEMPLATE": {
+      "left": 26,
+      "bottom": 140
+    },
+    "SMITHING_TABLE_BASE": {
+      "left": 44,
+      "bottom": 140
+    },
+    "SMITHING_TABLE_ADDITION": {
+      "left": 62,
+      "bottom": 140
+    },
+    "SMITHING_TABLE_RESULT": {
+      "left": 134,
+      "bottom": 140
+    }
+  },
+  "widgets" : {
+
+  }
+}

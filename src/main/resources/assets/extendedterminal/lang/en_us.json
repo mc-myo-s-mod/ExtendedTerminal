@@ -1,6 +1,8 @@
 {
   "itemGroup.extendedterminal": "Extended Terminal",
 
+  "item.extendedterminal.et_terminal": "Extended Terminal",
+
   "item.extendedterminal.basic_terminal": "Basic Extended Crafting Terminal",
   "item.extendedterminal.advanced_terminal": "Advanced Extended Crafting Terminal",
   "item.extendedterminal.elite_terminal": "Elite Extended Crafting Terminal",
@@ -26,5 +28,10 @@
   "gui.extendedterminal.sculkTerminal": "Sculk Crafting Terminal",
   "gui.extendedterminal.netherTerminal": "Nether Crafting Terminal",
   "gui.extendedterminal.endTerminal": "End Crafting Terminal",
-  "gui.extendedterminal.extremeTerminal": "Extreme Crafting Terminal"
+  "gui.extendedterminal.extremeTerminal": "Extreme Crafting Terminal",
+
+  "gui.extendedterminal.et_terminal": "Extended Terminal",
+  "gui.extendedterminal.craftingpanel": "Crafting",
+  "gui.extendedterminal.smithingtablepanel": "Smithing",
+  "gui.extendedterminal.stonecutterpanel": "Stonecutter"
 }

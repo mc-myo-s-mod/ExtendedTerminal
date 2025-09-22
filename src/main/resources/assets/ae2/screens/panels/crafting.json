@@ -1,0 +1,23 @@
+{
+  "slots" : {
+    "CRAFTING_GRID": {
+      "left": 26,
+      "bottom": 158,
+      "grid": "BREAK_AFTER_3COLS"
+    },
+    "CRAFTING_RESULT": {
+      "left": 134,
+      "bottom": 140
+    }
+  },
+  "widgets" : {
+    "clearCraftingGrid": {
+      "left": 81,
+      "bottom": 159
+    },
+    "clearToPlayerInv": {
+      "left": 91,
+      "bottom": 159
+    }
+  }
+}
