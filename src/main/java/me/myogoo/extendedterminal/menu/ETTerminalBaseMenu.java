@@ -68,6 +68,12 @@ public abstract class ETTerminalBaseMenu<R extends Recipe<?>> extends MEStorageM
     }
     //Override Methods
 
+
+    @Override
+    public void slotsChanged(Container container) {
+        updateCurrentRecipeAndOutput(false);
+    }
+
     @Override
     public boolean hasIngredient(Ingredient ingredient, Object2IntOpenHashMap<Object> reservedAmounts) {
         for (var slot : getSlots(this.getCraftingGridSlotSemantic())) {

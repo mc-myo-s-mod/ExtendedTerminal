@@ -134,11 +134,6 @@ public class ETTerminalMenu extends ETTerminalBaseMenu<CraftingRecipe> {
     }
 
     @Override
-    public void slotsChanged(Container container) {
-        updateCurrentRecipeAndOutput(false);
-    }
-
-    @Override
     public void clearCraftingGrid() {
         Preconditions.checkState(isClientSide());
         CraftingMatrixSlot slot = craftingSlots[0];
