@@ -1,9 +1,10 @@
-package me.myogoo.extendedterminal.adapter.recipe;
+package me.myogoo.extendedterminal.adapter.recipe.table;
 
 import com.blakebr0.extendedcrafting.crafting.recipe.ShapedTableRecipe;
 import committee.nova.mods.avaritia.common.crafting.recipe.ShapedTableCraftingRecipe;
-import me.myogoo.extendedterminal.api.adapter.recipe.IShapedTableRecipeAdapter;
+import me.myogoo.extendedterminal.api.adapter.recipe.table.IShapedTableRecipeAdapter;
 import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.ShapedRecipe;
 
 import java.util.Optional;
 
@@ -32,19 +33,14 @@ public class ShapedTableRecipeAdapter implements IShapedTableRecipeAdapter {
         this(recipe, 4, recipe.getWidth(), recipe.getHeight());
     }
 
+    public ShapedTableRecipeAdapter(ShapedRecipe recipe) {
+        this(recipe, 1, recipe.getWidth(), recipe.getHeight());
+    }
+
     @Override
     @SuppressWarnings("unchecked")
     public <R extends Recipe<?>> R recipe() {
         return (R) this.recipe;
-    }
-
-    @Override
-    public <R extends Recipe<?>> Optional<R> unwrap(Class<R> recipeClass)
-    {
-        if(recipeClass.isInstance(this.recipe)) {
-            return Optional.of(recipeClass.cast(this.recipe));
-        }
-        return Optional.empty();
     }
 
     @Override

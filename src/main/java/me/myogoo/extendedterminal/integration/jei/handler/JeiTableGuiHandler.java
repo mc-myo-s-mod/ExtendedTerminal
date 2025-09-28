@@ -27,8 +27,8 @@ public class JeiTableGuiHandler<R extends Recipe<?>, T extends ETTerminalBaseMen
     @Override
     public @NotNull Collection<IGuiClickableArea> getGuiClickableAreas(S screen, double guiMouseX, double guiMouseY) {
         var outputSlot = screen.getMenu().getSlots(screen.getMenu().getOutputSlotSemantic()).getFirst();
-        int x = outputSlot.x - 40;
+        int x = outputSlot.x - 50;
         int y = outputSlot.y;
-        return List.of(IGuiClickableArea.createBasic(outputSlot.x - 50, outputSlot.y, 40, 24, recipeType));
+        return List.of(IGuiClickableArea.createBasic(x, y, 40, 24, recipeType));
     }
 }

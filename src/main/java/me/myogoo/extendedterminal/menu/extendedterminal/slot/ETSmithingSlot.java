@@ -17,10 +17,7 @@ import me.myogoo.extendedterminal.menu.slot.ETCraftingBaseSlot;
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.RecipeHolder;
-import net.minecraft.world.item.crafting.RecipeType;
-import net.minecraft.world.item.crafting.SmithingRecipe;
-import net.minecraft.world.item.crafting.SmithingRecipeInput;
+import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.common.CommonHooks;
 
@@ -66,18 +63,17 @@ public class ETSmithingSlot extends ETCraftingBaseSlot<SmithingRecipe, SmithingR
 
         var items = NonNullList.withSize(this.craftInv.size(), ItemStack.EMPTY);
 
-        if(this.craftInv.size() != SMITHING_SLOT_SIZE) return;
-
         for (int i = 0; i < this.craftInv.size(); i++) {
             items.set(i, this.craftInv.getStackInSlot(i));
         }
-        var input = new SmithingRecipeInput(items.get(0), items.get(1), items.get(2));
+
+        var input =new SmithingRecipeInput(items.get(0), items.get(1), items.get(2));
 
         CommonHooks.setCraftingPlayer(player);
         var remainingItems = this.getETRemainingItems(input, player.level());
         CommonHooks.setCraftingPlayer(null);
 
-        for(int i = 0; i < SMITHING_SLOT_SIZE; i++) {
+        for (int i = 0; i < SMITHING_SLOT_SIZE; i++) {
             this.craftInv.extractItem(i, 1, false);
             if (i < remainingItems.size()) {
                 var remainingInSlot = remainingItems.get(i);
@@ -103,9 +99,9 @@ public class ETSmithingSlot extends ETCraftingBaseSlot<SmithingRecipe, SmithingR
         final var set = new ItemStack[this.getPattern().size()];
         // Safeguard for empty slots in the inventory for now
         Arrays.fill(set, ItemStack.EMPTY);
-
         // add one of each item to the items on the board...
         var level = p.level();
+
         if (!level.isClientSide()) {
             final var ic = NonNullList.withSize(SMITHING_SLOT_SIZE, ItemStack.EMPTY);
             for (var x = 0; x < ic.size(); x++) {
@@ -153,8 +149,7 @@ public class ETSmithingSlot extends ETCraftingBaseSlot<SmithingRecipe, SmithingR
                                                   ItemStack providedTemplate,
                                                   int slot,
                                                   KeyCounter items,
-                                                  IPartitionList filter)
-    {
+                                                  IPartitionList filter) {
         if (energySrc.extractAEPower(1, Actionable.SIMULATE, PowerMultiplier.CONFIG) > 0.9) {
             if (providedTemplate == null) {
                 return ItemStack.EMPTY;

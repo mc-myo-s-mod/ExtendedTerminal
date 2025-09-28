@@ -7,7 +7,7 @@ import me.myogoo.extendedterminal.ExtendedTerminal;
 import me.myogoo.extendedterminal.api.ModAccessor;
 import me.myogoo.extendedterminal.config.ETConfig;
 import me.myogoo.extendedterminal.event.RecipeManagerLoadingEvent;
-import me.myogoo.extendedterminal.util.recipe.ShapedTableRecipeBuilder;
+import me.myogoo.extendedterminal.util.recipe.builder.ShapedTableRecipeBuilder;
 import net.byAqua3.avaritia.loader.AvaritiaBlocks;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.loading.FMLEnvironment;

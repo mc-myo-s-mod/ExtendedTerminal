@@ -1,10 +1,11 @@
-package me.myogoo.extendedterminal.adapter.recipe;
+package me.myogoo.extendedterminal.adapter.recipe.table;
 
 import com.blakebr0.extendedcrafting.crafting.recipe.ShapelessTableRecipe;
 import committee.nova.mods.avaritia.common.crafting.recipe.ShapelessTableCraftingRecipe;
-import me.myogoo.extendedterminal.api.adapter.recipe.IShapelessTableRecipeAdapter;
+import me.myogoo.extendedterminal.api.adapter.recipe.table.IShapelessTableRecipeAdapter;
 import net.byAqua3.avaritia.recipe.RecipeExtremeShapeless;
 import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.ShapelessRecipe;
 
 import java.util.Optional;
 
@@ -25,13 +26,7 @@ public class ShapelessTableRecipeAdapter implements IShapelessTableRecipeAdapter
 
     public ShapelessTableRecipeAdapter(RecipeExtremeShapeless recipe) { this(recipe, 4); }
 
-    @Override
-    public <R extends Recipe<?>> Optional<R> unwrap(Class<R> recipeClass) {
-        if(recipeClass.isInstance(this.recipe)) {
-            return Optional.of(recipeClass.cast(this.recipe));
-        }
-        return Optional.empty();
-    }
+    public ShapelessTableRecipeAdapter(ShapelessRecipe recipe) { this(recipe, -1); }
 
     @Override
     @SuppressWarnings("unchecked")

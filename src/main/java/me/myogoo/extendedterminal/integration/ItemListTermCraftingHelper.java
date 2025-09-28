@@ -3,9 +3,9 @@ package me.myogoo.extendedterminal.integration;
 import appeng.api.stacks.AEItemKey;
 import appeng.integration.modules.itemlists.EncodingHelper;
 import appeng.menu.me.common.GridInventoryEntry;
-import me.myogoo.extendedterminal.api.adapter.recipe.IShapedTableRecipeAdapter;
-import me.myogoo.extendedterminal.api.adapter.recipe.IShapelessTableRecipeAdapter;
-import me.myogoo.extendedterminal.api.adapter.recipe.ITableRecipeAdapter;
+import me.myogoo.extendedterminal.api.adapter.recipe.table.IShapedTableRecipeAdapter;
+import me.myogoo.extendedterminal.api.adapter.recipe.table.IShapelessTableRecipeAdapter;
+import me.myogoo.extendedterminal.api.adapter.recipe.table.ITableRecipeAdapter;
 import me.myogoo.extendedterminal.menu.ETTerminalBaseMenu;
 import me.myogoo.extendedterminal.util.TableCraftingHelper;
 import net.minecraft.core.NonNullList;
@@ -18,7 +18,7 @@ import java.util.*;
 import static me.myogoo.extendedterminal.network.serverbound.FillTableCraftingGridFromRecipePacket.NOT_SET_RECIPE_SIZE;
 
 public class ItemListTermCraftingHelper {
-    private static final Comparator<GridInventoryEntry> ENTRY_COMPARATOR = Comparator
+    public static final Comparator<GridInventoryEntry> ENTRY_COMPARATOR = Comparator
             .comparing(GridInventoryEntry::getStoredAmount);
 
     public static NonNullList<ItemStack> findGoodTemplateItems(ITableRecipeAdapter recipe, ETTerminalBaseMenu<?> menu) {

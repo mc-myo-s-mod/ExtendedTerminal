@@ -21,7 +21,6 @@ import me.myogoo.extendedterminal.menu.extendedterminal.slot.ETStoneCutterSlot;
 import me.myogoo.extendedterminal.menu.slot.ETCraftingBaseSlot;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
@@ -112,7 +111,6 @@ public class ETTerminalMenu extends ETTerminalBaseMenu<CraftingRecipe> {
     public void setMode(ETTerminalMode mode) {
         if(isClientSide()) {
             sendClientAction(ACTION_SET_MODE, mode);
-            //PacketDistributor.sendToServer(new ETModePacket(mode));
         } else {
             this.currentMode = mode;
             updateCurrentRecipeAndOutput(true);
@@ -144,6 +142,14 @@ public class ETTerminalMenu extends ETTerminalBaseMenu<CraftingRecipe> {
     @Override
     public InternalInventory getCraftingMatrix() {
         return this.craftingInventoryHost.getSubInventory(menuType.getCraftingInventory());
+    }
+
+    public InternalInventory getSmithingInventory() {
+        return this.craftingInventoryHost.getSubInventory(SmithingInventory);
+    }
+
+    public InternalInventory getStoneCutterInventory() {
+        return this.craftingInventoryHost.getSubInventory(StoneCutterInventory);
     }
 
     @Override
@@ -196,13 +202,16 @@ public class ETTerminalMenu extends ETTerminalBaseMenu<CraftingRecipe> {
         }
 
         var level = getPlayer().level();
-        this.smithingRecipe = level.getRecipeManager().getRecipeFor(RecipeType.SMITHING, smithingTestInput, level).orElse(null);
-        this.lastTestedSmithingInput = smithingTestInput;
-
-        if (smithingRecipe == null) {
+        var smithingRecipes = level.getRecipeManager().getRecipesFor(RecipeType.SMITHING, smithingTestInput, level);
+        if(smithingRecipes.isEmpty()) {
             this.smithingOutputSlot.set(ItemStack.EMPTY);
         } else {
-            this.smithingOutputSlot.set(this.smithingRecipe.value().getResultItem(level.registryAccess()));
+            RecipeHolder<SmithingRecipe> recipeHolder = smithingRecipes.getFirst();
+            var result = recipeHolder.value().assemble(smithingTestInput, level.registryAccess());;
+            if(result.isItemEnabled(level.enabledFeatures())) {
+                this.smithingRecipe = recipeHolder;
+                this.smithingOutputSlot.set(result);
+            }
         }
     }
 

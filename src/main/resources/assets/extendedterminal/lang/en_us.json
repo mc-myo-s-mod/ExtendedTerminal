@@ -33,5 +33,7 @@
   "gui.extendedterminal.et_terminal": "Extended Terminal",
   "gui.extendedterminal.craftingpanel": "Crafting",
   "gui.extendedterminal.smithingtablepanel": "Smithing",
-  "gui.extendedterminal.stonecutterpanel": "Stonecutter"
+  "gui.extendedterminal.stonecutterpanel": "Stonecutter",
+
+  "extendedterminal.jei.notsupportederror": "This Recipe Currently Not Supported"
 }

@@ -1,4 +1,4 @@
-package me.myogoo.extendedterminal.util.recipe;
+package me.myogoo.extendedterminal.util.recipe.builder;
 
 import appeng.core.definitions.AEParts;
 import me.myogoo.extendedterminal.init.ETItems;

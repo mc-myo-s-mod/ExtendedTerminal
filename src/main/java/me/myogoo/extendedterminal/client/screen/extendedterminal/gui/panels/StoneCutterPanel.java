@@ -139,8 +139,7 @@ public class StoneCutterPanel extends ETTerminalModePanel {
         var recipe = getRecipeAt(new Point(mouseX, mouseY));
         if (recipe != null) {
             var lines = screen.getTooltipFromContainerItem(recipe.value().getResultItem(getRegistryAccess()));
-            //temp disable
-            //return new Tooltip(lines);
+            return new Tooltip(lines);
         }
         return null;
     }

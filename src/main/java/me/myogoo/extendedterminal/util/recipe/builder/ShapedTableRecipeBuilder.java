@@ -1,4 +1,4 @@
-package me.myogoo.extendedterminal.util.recipe;
+package me.myogoo.extendedterminal.util.recipe.builder;
 
 import com.blakebr0.extendedcrafting.api.crafting.ITableRecipe;
 import com.blakebr0.extendedcrafting.crafting.recipe.ShapedTableRecipe;

@@ -112,6 +112,10 @@ public abstract class ETTerminalBaseMenu<R extends Recipe<?>> extends MEStorageM
         return false;
     }
 
+    /**
+     * @param ingredients
+     * @return
+     */
     public CraftingTermMenu.MissingIngredientSlots findMissingIngredients(Map<Integer, Ingredient> ingredients) {
 
         // Try to figure out if any slots have missing ingredients

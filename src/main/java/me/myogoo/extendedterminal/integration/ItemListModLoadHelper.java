@@ -23,7 +23,7 @@ public class ItemListModLoadHelper {
                 .stream()
                 .filter(a -> a.annotationType().equals(markerAnnotation))
                 .map(a -> SafeClass.forType(a.clazz()))
-                .filter(c -> Arrays.stream(c.getDeclaredAnnotations()).anyMatch(a -> ModIntegrationManager.isLoaded(a.annotationType())))
+                .filter(c -> c.getDeclaredAnnotations().length == 0 || Arrays.stream(c.getDeclaredAnnotations()).anyMatch(a -> ModIntegrationManager.isLoaded(a.annotationType())))
                 .forEach(clazz -> invokeMethod(clazz,parameterType, parameter));
     }
 
