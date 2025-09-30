@@ -20,6 +20,7 @@ import mezz.jei.api.recipe.transfer.IRecipeTransferHandlerHelper;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeHolder;
@@ -33,9 +34,9 @@ import java.util.*;
 import static appeng.integration.modules.itemlists.TransferHelper.BLUE_PLUS_BUTTON_COLOR;
 import static appeng.integration.modules.itemlists.TransferHelper.ORANGE_PLUS_BUTTON_COLOR;
 
-public class ETStonecutterRecipeTransfer extends ETTerminalBaseRecipeTransfer<RecipeHolder<StonecutterRecipe>> {
-    public ETStonecutterRecipeTransfer(IRecipeTransferHandlerHelper helper) {
-        super(helper);
+public class ETStonecutterRecipeTransfer<T extends ETTerminalMenu> extends ETTerminalBaseRecipeTransfer<T ,RecipeHolder<StonecutterRecipe>> {
+    public ETStonecutterRecipeTransfer(MenuType<T> menuType, Class<T> classContainer, IRecipeTransferHandlerHelper helper) {
+        super(menuType, classContainer, helper);
     }
 
     @Override
@@ -50,7 +51,7 @@ public class ETStonecutterRecipeTransfer extends ETTerminalBaseRecipeTransfer<Re
 
 
     @Override
-    public @Nullable IRecipeTransferError transferRecipe(ETTerminalMenu menu, RecipeHolder<StonecutterRecipe> recipeHolder, IRecipeSlotsView recipeSlots, Player player, boolean maxTransfer, boolean doTransfer) {
+    public @Nullable IRecipeTransferError transferRecipe(T menu, RecipeHolder<StonecutterRecipe> recipeHolder, IRecipeSlotsView recipeSlots, Player player, boolean maxTransfer, boolean doTransfer) {
         var recipe = recipeHolder.value();
 
         boolean craftingMissing = AbstractContainerScreen.hasControlDown();

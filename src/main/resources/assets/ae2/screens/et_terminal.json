@@ -3,7 +3,8 @@
     "terminals/terminal.json",
     "panels/crafting.json",
     "panels/stonecutter.json",
-    "panels/smithingtable.json"
+    "panels/smithingtable.json",
+    "panels/anvil.json"
   ],
   "slots": {
     "PLAYER_ARMOR": {
@@ -80,10 +81,6 @@
     }
   },
   "widgets": {
-    "viewCells": {
-      "right": 0,
-      "top": 0
-    },
     "modeTabButtonCraftingPanel": {
       "left": 173,
       "bottom": 174,
@@ -102,6 +99,12 @@
       "width": 22,
       "height": 22
     },
+    "modeTabButtonAnvilPanel": {
+      "left": 173,
+      "bottom": 112,
+      "width": 22,
+      "height": 22
+    },
     "modePanelCraftingPanel": {
       "left": 9,
       "bottom": 166
@@ -111,6 +114,10 @@
       "bottom": 166
     },
     "modePanelStoneCutterPanel": {
+      "left": 9,
+      "bottom": 166
+    },
+    "modePanelAnvilPanel": {
       "left": 9,
       "bottom": 166
     }

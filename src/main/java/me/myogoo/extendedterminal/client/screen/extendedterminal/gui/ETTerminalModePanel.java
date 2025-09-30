@@ -10,14 +10,14 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 
 public abstract class ETTerminalModePanel implements ICompositeWidget {
-    protected final ETTerminalScreen screen;
+    protected final ETTerminalScreen<?> screen;
     protected final ETTerminalMenu menu;
     protected final WidgetContainer widgets;
     protected boolean visible = false;
     protected int x;
     protected int y;
 
-    public ETTerminalModePanel(ETTerminalScreen screen, WidgetContainer widgets) {
+    public ETTerminalModePanel(ETTerminalScreen<?> screen, WidgetContainer widgets) {
         this.screen = screen;
         this.menu = screen.getMenu();
         this.widgets = widgets;

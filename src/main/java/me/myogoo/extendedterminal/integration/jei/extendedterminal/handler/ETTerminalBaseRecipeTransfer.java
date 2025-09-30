@@ -10,10 +10,14 @@ import net.minecraft.world.item.crafting.Ingredient;
 import java.util.Map;
 import java.util.Optional;
 
-public abstract class ETTerminalBaseRecipeTransfer<R> implements IRecipeTransferHandler<ETTerminalMenu, R>, IAbstractRecipeHandler {
+public abstract class ETTerminalBaseRecipeTransfer<T extends ETTerminalMenu,R> implements IRecipeTransferHandler<T, R>, IAbstractRecipeHandler {
+    private final MenuType<T> menuType;
+    private final Class<T> containerClass;
     protected IRecipeTransferHandlerHelper helper;
 
-    public ETTerminalBaseRecipeTransfer(IRecipeTransferHandlerHelper helper) {
+    public ETTerminalBaseRecipeTransfer(MenuType<T> menuType, Class<T> containerClass, IRecipeTransferHandlerHelper helper) {
+        this.menuType = menuType;
+        this.containerClass = containerClass;
         this.helper = helper;
     }
 
@@ -22,12 +26,12 @@ public abstract class ETTerminalBaseRecipeTransfer<R> implements IRecipeTransfer
     protected abstract void performTransfer(ETTerminalMenu menu, R recipeHolder, boolean craftingMissing);
 
     @Override
-    public Optional<MenuType<ETTerminalMenu>> getMenuType() {
-        return Optional.of(ETTerminalMenu.TYPE);
+    public Optional<MenuType<T>> getMenuType() {
+        return Optional.of(menuType);
     }
 
     @Override
-    public Class<? extends ETTerminalMenu> getContainerClass() {
-        return ETTerminalMenu.class;
+    public Class<? extends T> getContainerClass() {
+        return containerClass;
     }
 }

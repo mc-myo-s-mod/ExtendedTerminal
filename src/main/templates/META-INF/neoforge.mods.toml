@@ -27,6 +27,12 @@ side="BOTH"
 versionRange = "[19,)"
 
 [[dependencies."${mod_id}"]]
+modId = "ae2wtlib"
+type = "OPTIONAL"
+ordering = "BEFORE"
+side = "BOTH"
+
+[[dependencies."${mod_id}"]]
 modId = "extendedcrafting"
 type = "OPTIONAL"
 ordering="AFTER"

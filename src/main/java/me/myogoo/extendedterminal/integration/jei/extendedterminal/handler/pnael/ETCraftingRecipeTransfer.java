@@ -16,6 +16,7 @@ import mezz.jei.api.recipe.transfer.IRecipeTransferError;
 import mezz.jei.api.recipe.transfer.IRecipeTransferHandlerHelper;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeHolder;
@@ -31,14 +32,14 @@ import static appeng.integration.modules.itemlists.TransferHelper.BLUE_PLUS_BUTT
 import static appeng.integration.modules.itemlists.TransferHelper.ORANGE_PLUS_BUTTON_COLOR;
 import static me.myogoo.extendedterminal.integration.ItemListTermCraftingHelper.findGoodTemplateItems;
 
-public class ETCraftingRecipeTransfer extends ETTerminalBaseRecipeTransfer<RecipeHolder<CraftingRecipe>> {
-    public ETCraftingRecipeTransfer(IRecipeTransferHandlerHelper helper) {
-        super(helper);
+public class ETCraftingRecipeTransfer<T extends ETTerminalMenu> extends ETTerminalBaseRecipeTransfer<T, RecipeHolder<CraftingRecipe>> {
+     public ETCraftingRecipeTransfer(MenuType<T> menuType, Class<T> containerClass, IRecipeTransferHandlerHelper helper) {
+        super(menuType, containerClass, helper);
     }
 
 
     @Override
-    public @Nullable IRecipeTransferError transferRecipe(ETTerminalMenu menu, RecipeHolder<CraftingRecipe> recipeHolder, IRecipeSlotsView recipeSlots, Player player, boolean maxTransfer, boolean doTransfer) {
+    public @Nullable IRecipeTransferError transferRecipe(T menu, RecipeHolder<CraftingRecipe> recipeHolder, IRecipeSlotsView recipeSlots, Player player, boolean maxTransfer, boolean doTransfer) {
         var recipe = recipeHolder.value();
         if (recipe.getIngredients().isEmpty()) {
             return Result.createInCompatibleError(helper);
@@ -113,5 +114,4 @@ public class ETCraftingRecipeTransfer extends ETTerminalBaseRecipeTransfer<Recip
     public RecipeType<RecipeHolder<CraftingRecipe>> getRecipeType() {
         return RecipeTypes.CRAFTING;
     }
-
 }

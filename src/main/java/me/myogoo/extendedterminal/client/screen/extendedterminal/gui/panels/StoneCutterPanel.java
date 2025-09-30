@@ -5,7 +5,6 @@ import appeng.client.gui.Tooltip;
 import appeng.client.gui.WidgetContainer;
 import appeng.client.gui.style.Blitter;
 import appeng.client.gui.widgets.Scrollbar;
-import appeng.menu.SlotSemantics;
 import me.myogoo.extendedterminal.client.screen.extendedterminal.ETTerminalScreen;
 import me.myogoo.extendedterminal.client.screen.extendedterminal.gui.ETTerminalModePanel;
 import me.myogoo.extendedterminal.menu.ETSlotSemantics;
@@ -72,7 +71,7 @@ public class StoneCutterPanel extends ETTerminalModePanel {
     public void setVisible(boolean visible) {
         super.setVisible(visible);
 
-        screen.setSlotsHidden(SlotSemantics.STONECUTTING_INPUT, !visible);
+        screen.setSlotsHidden(ETSlotSemantics.STONECUTTING_INPUT, !visible);
         screen.setSlotsHidden(ETSlotSemantics.STONECUTTING_RESULT, !visible);
         scrollbar.setVisible(visible);
     }

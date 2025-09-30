@@ -19,6 +19,7 @@ import mezz.jei.api.recipe.transfer.IRecipeTransferHandlerHelper;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.*;
 import net.neoforged.neoforge.network.PacketDistributor;
@@ -33,11 +34,11 @@ import static appeng.integration.modules.itemlists.TransferHelper.BLUE_PLUS_BUTT
 import static appeng.integration.modules.itemlists.TransferHelper.ORANGE_PLUS_BUTTON_COLOR;
 
 
-public class ETSmithingRecipeTransfer extends ETTerminalBaseRecipeTransfer<RecipeHolder<SmithingRecipe>> {
+public class ETSmithingRecipeTransfer<T extends ETTerminalMenu> extends ETTerminalBaseRecipeTransfer<T,RecipeHolder<SmithingRecipe>> {
     private static final int SMITHING_SLOT_COUNT = 3;
 
-    public ETSmithingRecipeTransfer(IRecipeTransferHandlerHelper helper) {
-        super(helper);
+    public ETSmithingRecipeTransfer(MenuType<T> menuType, Class<T> classContainer, IRecipeTransferHandlerHelper helper) {
+        super(menuType, classContainer, helper);
     }
 
     @Override
@@ -56,7 +57,7 @@ public class ETSmithingRecipeTransfer extends ETTerminalBaseRecipeTransfer<Recip
     }
 
     @Override
-    public @Nullable IRecipeTransferError transferRecipe(ETTerminalMenu menu, RecipeHolder<SmithingRecipe> recipeHolder, IRecipeSlotsView recipeSlots, Player player, boolean maxTransfer, boolean doTransfer) {
+    public @Nullable IRecipeTransferError transferRecipe(T menu, RecipeHolder<SmithingRecipe> recipeHolder, IRecipeSlotsView recipeSlots, Player player, boolean maxTransfer, boolean doTransfer) {
         var recipe = recipeHolder.value();
 
         boolean craftingMissing = AbstractContainerScreen.hasControlDown();

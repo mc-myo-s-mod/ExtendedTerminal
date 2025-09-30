@@ -9,6 +9,8 @@ import java.util.function.Predicate;
 
 public enum SupportedMod {
 
+    AE2WT("ae2wtlib", ModAccessor.AE2WT.class),
+
     ExtendedCrafting("extendedcrafting", ModAccessor.ExtendedCrafting.class),
     ReAvaritia("avaritia", ModAccessor.ReAvaritia.class, "Re-Avaritia"),
     AvaritiaNeo("avaritia", ModAccessor.AvaritiaNeo.class, "Avaritia");

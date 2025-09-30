@@ -6,6 +6,7 @@ import appeng.client.gui.style.Blitter;
 import appeng.menu.SlotSemantics;
 import me.myogoo.extendedterminal.client.screen.extendedterminal.ETTerminalScreen;
 import me.myogoo.extendedterminal.client.screen.extendedterminal.gui.ETTerminalModePanel;
+import me.myogoo.extendedterminal.menu.ETSlotSemantics;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.world.item.ItemStack;
@@ -27,9 +28,9 @@ public class SmithingTablePanel extends ETTerminalModePanel {
     public void setVisible(boolean visible) {
         super.setVisible(visible);
 
-        screen.setSlotsHidden(SlotSemantics.SMITHING_TABLE_TEMPLATE, !visible);
-        screen.setSlotsHidden(SlotSemantics.SMITHING_TABLE_BASE, !visible);
-        screen.setSlotsHidden(SlotSemantics.SMITHING_TABLE_ADDITION, !visible);
+        screen.setSlotsHidden(ETSlotSemantics.SMITHING_TABLE_TEMPLATE, !visible);
+        screen.setSlotsHidden(ETSlotSemantics.SMITHING_TABLE_BASE, !visible);
+        screen.setSlotsHidden(ETSlotSemantics.SMITHING_TABLE_ADDITION, !visible);
         screen.setSlotsHidden(SlotSemantics.SMITHING_TABLE_RESULT, !visible);
     }
 

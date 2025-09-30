@@ -90,6 +90,10 @@ public enum ETMenuType implements IExtensibleEnum {
         return this.name().toLowerCase();
     }
 
+    public String getWTIdAsString() {
+        return this.name().toLowerCase() + "_wt";
+    }
+
     public String getEnglishName() {
         return this.name().toLowerCase().replace("_", " ");
     }

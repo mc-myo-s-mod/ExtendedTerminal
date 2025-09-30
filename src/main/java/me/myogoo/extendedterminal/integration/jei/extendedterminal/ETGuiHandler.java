@@ -10,6 +10,6 @@ import mezz.jei.api.registration.IGuiHandlerRegistration;
 public class ETGuiHandler {
     @SubscribeLoadEvent
     public static void init(IGuiHandlerRegistration registration) {
-        registration.addGuiContainerHandler(ETTerminalScreen.class, new ETTerminalGuiHandler());
+        //registration.addGuiContainerHandler(ETTerminalScreen<ET>.class, new ETTerminalGuiHandler());
     }
 }
