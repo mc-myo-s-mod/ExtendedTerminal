@@ -16,11 +16,11 @@ import net.minecraft.world.item.crafting.CraftingRecipe;
 import java.util.EnumMap;
 import java.util.Map;
 
-public class ETTerminalScreen extends ETTerminalBaseScreen<CraftingRecipe, ETTerminalMenu> {
+public class ETTerminalScreen<T extends ETTerminalMenu> extends ETTerminalBaseScreen<CraftingRecipe, T> {
     private final Map<ETTerminalMode, ETTerminalModePanel> modePanels = new EnumMap<>(ETTerminalMode.class);
     private final Map<ETTerminalMode, TabButton> modeTabButtons = new EnumMap<>(ETTerminalMode.class);
 
-    public ETTerminalScreen(ETTerminalMenu menu, Inventory playerInventory, Component title, ScreenStyle style) {
+    public ETTerminalScreen(T menu, Inventory playerInventory, Component title, ScreenStyle style) {
         super(menu, playerInventory, title, style);
 
         for(var mode : ETTerminalMode.loadableValues()) {

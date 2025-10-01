@@ -89,15 +89,15 @@ public class ETTerminalMenu extends ETTerminalBaseMenu<CraftingRecipe> {
 
         // Smithing Table
         var smithingInv = this.craftingInventoryHost.getSubInventory(SmithingInventory);
-        this.addSlot(this.smithingTemplateSlot = new CraftingMatrixSlot(this, smithingInv, 0), SlotSemantics.SMITHING_TABLE_TEMPLATE);
-        this.addSlot(this.smithingBaseSlot = new CraftingMatrixSlot(this, smithingInv, 1), SlotSemantics.SMITHING_TABLE_BASE);
-        this.addSlot(this.smithingAdditionSlot = new CraftingMatrixSlot(this, smithingInv, 2), SlotSemantics.SMITHING_TABLE_ADDITION);
+        this.addSlot(this.smithingTemplateSlot = new CraftingMatrixSlot(this, smithingInv, 0), ETSlotSemantics.SMITHING_TABLE_TEMPLATE);
+        this.addSlot(this.smithingBaseSlot = new CraftingMatrixSlot(this, smithingInv, 1), ETSlotSemantics.SMITHING_TABLE_BASE);
+        this.addSlot(this.smithingAdditionSlot = new CraftingMatrixSlot(this, smithingInv, 2), ETSlotSemantics.SMITHING_TABLE_ADDITION);
         this.addSlot(this.smithingOutputSlot = new ETSmithingSlot(player, this.getActionSource(),
                 this.energySource, linkStatusInventory, smithingInv, smithingInv, this), SlotSemantics.SMITHING_TABLE_RESULT);
 
         // Stonecutting
         var stonecuttingInv = this.craftingInventoryHost.getSubInventory(StoneCutterInventory);
-        this.addSlot(this.stonecuttingSlot = new CraftingMatrixSlot(this, stonecuttingInv, 0), SlotSemantics.STONECUTTING_INPUT);
+        this.addSlot(this.stonecuttingSlot = new CraftingMatrixSlot(this, stonecuttingInv, 0), ETSlotSemantics.STONECUTTING_INPUT);
         this.addSlot(this.stoneCutterOutputSlot = new ETStoneCutterSlot(player, this.getActionSource(),
                 this.energySource, linkStatusInventory, stonecuttingInv, stonecuttingInv, this), ETSlotSemantics.STONECUTTING_RESULT);
 
@@ -105,7 +105,6 @@ public class ETTerminalMenu extends ETTerminalBaseMenu<CraftingRecipe> {
 
         registerClientAction(ACTION_SET_STONECUTTING_RECIPE_ID, ResourceLocation.class, this::setStoneCutterRecipeId);
         registerClientAction(ACTION_SET_MODE, ETTerminalMode.class, this::setMode);
-
     }
 
     public void setMode(ETTerminalMode mode) {
