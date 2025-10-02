@@ -48,7 +48,7 @@ public class ETCraftingRecipeTransfer<T extends ETTerminalMenu> extends ETTermin
         boolean craftingMissing = AbstractContainerScreen.hasControlDown();
         var inputSlots = recipeSlots.getSlotViews(RecipeIngredientRole.INPUT);
 
-        var slotToIngredientMap = getGuiSlotToIngredientMap(menu, recipeHolder);
+        var slotToIngredientMap = helper.getGuiSlotIndexToIngredientMap(recipeHolder);
         var missingSlots = menu.findMissingIngredients(slotToIngredientMap);
 
         if (missingSlots.missingSlots().size() == slotToIngredientMap.size()) {
@@ -103,7 +103,7 @@ public class ETCraftingRecipeTransfer<T extends ETTerminalMenu> extends ETTermin
 
         if (menu.getPlayer().level().getRecipeManager().byKey(recipeId).isEmpty()) {
             ExtendedTerminal.LOGGER.warn("ETCraftingRecipeTransfer#performTransfer: recipe with id {} not found in recipe manager", recipeId);
-            return;
+            recipeId = null;
         }
 
         ServerboundPacket message = new FillCraftingGridFromRecipePacket(recipeHolder.id(), templateItems, craftingMissing);
