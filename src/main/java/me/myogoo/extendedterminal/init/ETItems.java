@@ -30,8 +30,8 @@ public class ETItems {
             ExtendedTerminal.makeId("printed_compat_processor"),
             Item::new);
 
-    public static final ItemDefinition<ETWTItem> ET_WT = createWTItem("Extended Wireless Terminal",
-            ExtendedTerminal.makeId("et_wt"),
+    public static final ItemDefinition<ETWTItem> WIRELESS_ET_TERMINAL = createWTItem("Extended Wireless Terminal",
+            ExtendedTerminal.makeId("wireless_et_terminal"),
             ETWTItem::new);
 
     public static <T extends Item> ItemDefinition<T> createItem(String name, ResourceLocation id, Function<Item.Properties, T> itemFactory) {
@@ -45,7 +45,7 @@ public class ETItems {
     }
 
     private static <T extends ItemWT> ItemDefinition<T> createWTItem(String name, ResourceLocation id, Function<Item.Properties, T> itemFactory) {
-        var item = REGISTER.registerItem(id.getPath(), p -> ModIntegrationManager.isLoaded(SupportedMod.AE2WT) ? itemFactory.apply(p) : (T) new Item(p));
+        var item = REGISTER.registerItem(id.getPath(), p -> ModIntegrationManager.isLoaded(SupportedMod.AE2WTLib) ? itemFactory.apply(p) : (T) new Item(p));
         var definition = new ItemDefinition<>(name, item);
         WT_ITEMS.add(definition);
         return definition;

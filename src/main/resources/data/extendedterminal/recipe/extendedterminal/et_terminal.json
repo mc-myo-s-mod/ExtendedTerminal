@@ -1,0 +1,26 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "   ",
+    "ABC",
+    " D "
+  ],
+  "key": {
+    "A": {
+      "item": "minecraft:smithing_table"
+    },
+    "B": {
+      "item": "ae2:crafting_terminal"
+    },
+    "C": {
+      "item": "minecraft:stonecutter"
+    },
+    "D": {
+      "item": "extendedterminal:compat_processor"
+    }
+  },
+  "result": {
+    "id": "extendedterminal:et_terminal"
+  },
+  "show_notification": false
+}

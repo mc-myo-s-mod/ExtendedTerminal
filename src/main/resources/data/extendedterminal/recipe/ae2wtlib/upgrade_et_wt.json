@@ -1,0 +1,14 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "extendedterminal:et_mod",
+      "et_mod": "AE2WTLib"
+    }
+  ],
+  "type": "ae2wtlib:upgrade",
+  "terminal": {
+    "item": "extendedterminal:wireless_et_terminal"
+  },
+  "terminalName": "wireless_et_terminal"
+}
+

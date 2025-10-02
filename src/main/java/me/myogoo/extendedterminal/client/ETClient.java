@@ -45,7 +45,7 @@ public class ETClient {
     public static void initScreens(RegisterMenuScreensEvent event) {
         // extended terminal
         InitScreens.register(event, ETTerminalMenu.TYPE, ETTerminalScreen<ETTerminalMenu>::new, "/screens/et_terminal.json");
-        InitScreens.register(event, ETWTMenu.TYPE, ETWTScreen::new, "/screens/et_wt.json");
+        InitScreens.register(event, ETWTMenu.TYPE, ETWTScreen::new, "/screens/wireless_et_terminal.json");
 
         // extended crafting terminals
         InitScreens.register(event, BasicTerminalMenu.TYPE, BasicTerminalScreen::new, "/screens/extended_terminal/basic_terminal.json");

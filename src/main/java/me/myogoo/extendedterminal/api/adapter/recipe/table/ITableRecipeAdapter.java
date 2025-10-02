@@ -28,8 +28,9 @@ public interface ITableRecipeAdapter extends IRecipeAdapter {
             return new ShapedTableRecipeAdapter(shaped);
         } else if (recipe instanceof ShapelessRecipe shapeless) {
             return new ShapelessTableRecipeAdapter(shapeless);
+        } else {
+            return new ShapelessTableRecipeAdapter(recipe);
         }
-        throw new IllegalArgumentException("Unknown CraftingRecipe implementation: " + recipe.getClass().getName());
     }
 
     @ModAccessor.ExtendedCrafting

@@ -23,7 +23,7 @@ public class ETCreativeTab {
                 for (ItemDefinition<?> item : ETItems.ITEMS) {
                     output.accept(item);
                 }
-                if(ModIntegrationManager.isLoaded(SupportedMod.AE2WT)) {
+                if(ModIntegrationManager.isLoaded(SupportedMod.AE2WTLib)) {
                     for(var wt : ETItems.WT_ITEMS) {
                         var stack = wt.stack();
                         output.accept(stack.copy());

@@ -7,13 +7,13 @@ import me.myogoo.extendedterminal.init.ETItems;
 import mezz.jei.api.constants.RecipeTypes;
 import mezz.jei.api.registration.IRecipeCatalystRegistration;
 
-@ModAccessor.AE2WT
+@ModAccessor.AE2WTLib
 @ETJeiRecipeCatalyst
 public class ETWTRecipeCatalyst {
     @SubscribeLoadEvent
     public static void init(IRecipeCatalystRegistration registration) {
-        registration.addRecipeCatalyst(ETItems.ET_WT, RecipeTypes.CRAFTING);
-        registration.addRecipeCatalyst(ETItems.ET_WT, RecipeTypes.SMITHING);
-        registration.addRecipeCatalyst(ETItems.ET_WT, RecipeTypes.STONECUTTING);
+        registration.addRecipeCatalyst(ETItems.WIRELESS_ET_TERMINAL, RecipeTypes.CRAFTING);
+        registration.addRecipeCatalyst(ETItems.WIRELESS_ET_TERMINAL, RecipeTypes.SMITHING);
+        registration.addRecipeCatalyst(ETItems.WIRELESS_ET_TERMINAL, RecipeTypes.STONECUTTING);
     }
 }

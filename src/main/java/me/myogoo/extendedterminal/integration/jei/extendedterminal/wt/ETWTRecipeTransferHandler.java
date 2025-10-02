@@ -10,7 +10,7 @@ import me.myogoo.extendedterminal.menu.extendedterminal.wt.ETWTMenu;
 import mezz.jei.api.constants.RecipeTypes;
 import mezz.jei.api.registration.IRecipeTransferRegistration;
 
-@ModAccessor.AE2WT
+@ModAccessor.AE2WTLib
 @ETJeiRecipeTransfer
 public class ETWTRecipeTransferHandler {
     @SubscribeLoadEvent

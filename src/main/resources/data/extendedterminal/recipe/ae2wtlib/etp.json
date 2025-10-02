@@ -2,16 +2,16 @@
   "neoforge:conditions": [
     {
       "type": "extendedterminal:et_mod",
-      "et_mod": "AE2WT"
+      "et_mod": "AE2WTLib"
     }
   ],
   "type": "ae2wtlib:combine",
   "terminalA": {
-    "item": "extendedterminal:et_wt"
+    "item": "extendedterminal:wireless_et_terminal"
   },
   "terminalB": {
     "item": "ae2wtlib:wireless_pattern_encoding_terminal"
   },
-  "terminalAName": "et_wt",
+  "terminalAName": "wireless_et_terminal",
   "terminalBName": "pattern_encoding"
 }

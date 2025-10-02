@@ -91,7 +91,7 @@ public enum ETMenuType implements IExtensibleEnum {
     }
 
     public String getWTIdAsString() {
-        return this.name().toLowerCase() + "_wt";
+        return  "wireless_" + this.name().toLowerCase();
     }
 
     public String getEnglishName() {
