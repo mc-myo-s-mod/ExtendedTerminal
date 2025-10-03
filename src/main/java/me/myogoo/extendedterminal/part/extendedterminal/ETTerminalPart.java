@@ -7,6 +7,7 @@ import appeng.api.upgrades.IUpgradeInventory;
 import appeng.api.upgrades.MachineUpgradesChanged;
 import appeng.api.upgrades.UpgradeInventories;
 import appeng.items.parts.PartModels;
+import appeng.parts.PartModel;
 import appeng.util.inv.AppEngInternalInventory;
 import me.myogoo.extendedterminal.ExtendedTerminal;
 import me.myogoo.extendedterminal.menu.ETMenuType;
@@ -24,6 +25,17 @@ import java.util.List;
 import static appeng.parts.reporting.CraftingTerminalPart.*;
 
 public class ETTerminalPart extends ETTerminalBasePart {
+    @PartModels
+    public static final ResourceLocation MODEL_OFF = ExtendedTerminal.makeId("part/extendedterminal/extended_terminal_off");
+    @PartModels
+    public static final ResourceLocation MODEL_ON = ExtendedTerminal.makeId("part/extendedterminal/extended_terminal_on");
+
+
+    public static final IPartModel MODELS_OFF = new PartModel(MODEL_BASE, MODEL_OFF, MODEL_STATUS_OFF);
+    public static final IPartModel MODELS_ON = new PartModel(MODEL_BASE, MODEL_ON, MODEL_STATUS_ON);
+    public static final IPartModel MODELS_HAS_CHANNEL = new PartModel(MODEL_BASE, MODEL_ON, MODEL_STATUS_HAS_CHANNEL);
+
+
     public static final ResourceLocation SmithingInventory = ExtendedTerminal.makeId("smithing_crafting_inventory");
     public static final ResourceLocation StoneCutterInventory = ExtendedTerminal.makeId("stonecutter_crafting_inventory");
     public static final ResourceLocation UpgradeInventory = ExtendedTerminal.makeId("upgrade_inventory");
@@ -90,5 +102,10 @@ public class ETTerminalPart extends ETTerminalBasePart {
                 drops.add(is);
             }
         }
+    }
+
+    @Override
+    protected IPartModel selectModel(IPartModel offModels, IPartModel onModels, IPartModel hasChannelModels) {
+        return super.selectModel(MODELS_OFF, MODELS_ON, MODELS_HAS_CHANNEL);
     }
 }
