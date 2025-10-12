@@ -81,7 +81,6 @@ public class ETSmithingRecipeTransfer<T extends ETTerminalMenu> extends ETTermin
                 return new Result.PartiallyCraftable(missingSlots, color, craftingMissing);
             }
         } else {
-            menu.setMode(ETTerminalMode.SMITHING);
             performTransfer(menu, recipeHolder, craftingMissing);
         }
 

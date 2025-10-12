@@ -14,15 +14,6 @@
     }
   },
   "text": {
-    "dialog_title": {
-      "text": {
-        "translate": "gui.ae2.Terminal"
-      },
-      "position": {
-        "left": 8,
-        "top": 6
-      }
-    },
     "crafting_grid_title": {
       "text": {
         "translate": "gui.extendedterminal.et_terminal"
@@ -81,45 +72,5 @@
     }
   },
   "widgets": {
-    "modeTabButtonCraftingPanel": {
-      "left": 173,
-      "bottom": 174,
-      "width": 22,
-      "height": 22
-    },
-    "modeTabButtonSmithingTablePanel": {
-      "left": 173,
-      "bottom": 153,
-      "width": 22,
-      "height": 22
-    },
-    "modeTabButtonStoneCutterPanel": {
-      "left": 173,
-      "bottom": 132,
-      "width": 22,
-      "height": 22
-    },
-    "modeTabButtonAnvilPanel": {
-      "left": 173,
-      "bottom": 112,
-      "width": 22,
-      "height": 22
-    },
-    "modePanelCraftingPanel": {
-      "left": 9,
-      "bottom": 166
-    },
-    "modePanelSmithingTablePanel": {
-      "left": 9,
-      "bottom": 166
-    },
-    "modePanelStoneCutterPanel": {
-      "left": 9,
-      "bottom": 166
-    },
-    "modePanelAnvilPanel": {
-      "left": 9,
-      "bottom": 166
-    }
   }
 }

@@ -1,13 +1,12 @@
 package me.myogoo.extendedterminal.init.wt;
 
 import appeng.api.features.GridLinkables;
-import appeng.core.definitions.ItemDefinition;
 import appeng.items.tools.powered.WirelessTerminalItem;
+import appeng.items.tools.powered.powersink.PoweredItemCapabilities;
 import de.mari_023.ae2wtlib.api.gui.Icon;
 import de.mari_023.ae2wtlib.api.registration.AddTerminalEvent;
 import de.mari_023.ae2wtlib.api.registration.WTDefinition;
 import de.mari_023.ae2wtlib.api.terminal.ItemWT;
-import de.mari_023.ae2wtlib.api.terminal.WTMenuHost;
 import me.myogoo.extendedterminal.ExtendedTerminal;
 import me.myogoo.extendedterminal.init.ETItems;
 import me.myogoo.extendedterminal.me.host.ETWTHost;
@@ -19,7 +18,8 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.level.ItemLike;
-import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.registries.RegisterEvent;
 
 public class WTInit {
@@ -38,5 +38,17 @@ public class WTInit {
                         .addTerminal());
 
         GridLinkables.register(terminal, WirelessTerminalItem.LINKABLE_HANDLER);
+    }
+
+    public static void initCapabilities(RegisterCapabilitiesEvent event) {
+        if(!ModIntegrationManager.isLoaded(SupportedMod.AE2WTLib)) {
+            return;
+        }
+        
+        for(var def : ETItems.WT_ITEMS) {
+            ItemWT item = def.asItem();
+            event.registerItem(Capabilities.EnergyStorage.ITEM, (object ,index) -> new PoweredItemCapabilities(object,item), item);
+        }
+
     }
 }

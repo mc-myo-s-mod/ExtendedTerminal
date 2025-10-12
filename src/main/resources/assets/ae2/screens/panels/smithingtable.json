@@ -1,5 +1,5 @@
 {
-  "slots" : {
+  "slots": {
     "ET_SMITHING_TABLE_TEMPLATE": {
       "left": 26,
       "bottom": 140
@@ -17,7 +17,16 @@
       "bottom": 140
     }
   },
-  "widgets" : {
-
+  "widgets": {
+    "modeTabButtonSmithingTablePanel": {
+      "left": 173,
+      "bottom": 153,
+      "width": 22,
+      "height": 22
+    },
+    "modePanelSmithingTablePanel": {
+      "left": 9,
+      "bottom": 166
+    }
   }
 }

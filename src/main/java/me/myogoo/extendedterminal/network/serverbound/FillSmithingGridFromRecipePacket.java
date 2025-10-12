@@ -16,6 +16,7 @@ import it.unimi.dsi.fastutil.ints.IntList;
 import me.myogoo.extendedterminal.ExtendedTerminal;
 import me.myogoo.extendedterminal.api.adapter.recipe.smithing.ISmithingRecipeAdapter;
 import me.myogoo.extendedterminal.menu.extendedterminal.ETTerminalMenu;
+import me.myogoo.extendedterminal.menu.extendedterminal.ETTerminalMode;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
@@ -26,7 +27,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.SmithingRecipe;
-import net.minecraft.world.item.crafting.SmithingTransformRecipe;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.LinkedHashMap;
@@ -182,6 +182,11 @@ public class FillSmithingGridFromRecipePacket extends FillRecipeBasePacket imple
                 currentItem = takeIngredientFromPlayer(cct, player, ingredient);
             }
 
+            // If still nothing, try taking it form other grid inventory
+            if (currentItem.isEmpty() && cct.getSmithingInventory() != null) {
+                currentItem = takeIngredientFromOtherGrid(cct, ingredient);
+            }
+
             craftMatrix.setItemDirect(x, currentItem);
 
             // If we couldn't find the item, schedule its autocrafting
@@ -207,6 +212,7 @@ public class FillSmithingGridFromRecipePacket extends FillRecipeBasePacket imple
                     .map(e -> new ICraftingGridMenu.AutoCraftEntry(e.getKey(), e.getValue())).toList();
             cct.startAutoCrafting(stacks);
         }
+        cct.setMode(ETTerminalMode.SMITHING);
     }
 
     @Override

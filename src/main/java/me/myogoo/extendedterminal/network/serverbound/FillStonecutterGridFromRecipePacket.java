@@ -15,6 +15,7 @@ import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntList;
 import me.myogoo.extendedterminal.ExtendedTerminal;
 import me.myogoo.extendedterminal.menu.extendedterminal.ETTerminalMenu;
+import me.myogoo.extendedterminal.menu.extendedterminal.ETTerminalMode;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
@@ -179,6 +180,11 @@ public class FillStonecutterGridFromRecipePacket extends FillRecipeBasePacket im
                 currentItem = takeIngredientFromPlayer(cct, player, ingredient);
             }
 
+            // If still nothing, try taking it form other grid inventory
+            if (currentItem.isEmpty() && cct.getStoneCutterInventory() != null) {
+                currentItem = takeIngredientFromOtherGrid(cct, ingredient);
+            }
+
             craftMatrix.setItemDirect(x, currentItem);
 
             //마지막 한번더 확인 기존 아이템이 없을 경우를 대비하여
@@ -209,6 +215,7 @@ public class FillStonecutterGridFromRecipePacket extends FillRecipeBasePacket im
                     .map(e -> new ICraftingGridMenu.AutoCraftEntry(e.getKey(), e.getValue())).toList();
             cct.startAutoCrafting(stacks);
         }
+        cct.setMode(ETTerminalMode.STONECUTTING);
     }
 
     @Override

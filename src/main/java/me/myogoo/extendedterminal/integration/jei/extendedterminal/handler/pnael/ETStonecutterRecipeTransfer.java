@@ -75,7 +75,6 @@ public class ETStonecutterRecipeTransfer<T extends ETTerminalMenu> extends ETTer
                 return new Result.PartiallyCraftable(missingSlots, color, craftingMissing);
             }
         } else {
-            menu.setMode(ETTerminalMode.STONECUTTING);
             performTransfer(menu, recipeHolder, craftingMissing);
         }
 
