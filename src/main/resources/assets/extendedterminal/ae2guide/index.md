@@ -2,12 +2,14 @@
 navigation:
   title: "Extended Terminal"
   position: 80
-item_ids:
-  - et_terminal
 ---
 
 # Extended Terminal
 
-<GameScene>
-    <Block id="ae2:controller" />
-</GameScene>
+## Misc, Ingredient Items
+- [Compat Processor](compat_processor.md)
+
+## Terminals
+- [Extended Crafting Terminal](terminals/extendedcrafting.md)
+- [Re:Avaritia Crafting Terminal](terminals/re_avaritia.md)
+- [AvaritiaNeo Crafting Terminal](terminals/avaritianeo.md)
