@@ -2,6 +2,7 @@
   "itemGroup.extendedterminal": "Extended Terminal",
 
   "item.extendedterminal.et_terminal": "Extended Terminal",
+  "item.extendedterminal.wireless_et_terminal": "Wireless Extended Terminal",
 
   "item.extendedterminal.basic_terminal": "Basic Extended Crafting Terminal",
   "item.extendedterminal.advanced_terminal": "Advanced Extended Crafting Terminal",
@@ -34,6 +35,10 @@
   "gui.extendedterminal.craftingpanel": "Crafting",
   "gui.extendedterminal.smithingtablepanel": "Smithing",
   "gui.extendedterminal.stonecutterpanel": "Stonecutter",
+  "gui.extendedterminal.anvilpanel": "Anvil",
+  "gui.extendedterminal.anvilpanel.xpcost": "XP Cost: %d",
 
-  "extendedterminal.jei.notsupportederror": "This Recipe Currently Not Supported"
+
+  "extendedterminal.jei.notsupportederror": "This Recipe Currently Not Supported",
+  "gui.extendedterminal.et_terminal.anvil.cost": "30Lv"
 }

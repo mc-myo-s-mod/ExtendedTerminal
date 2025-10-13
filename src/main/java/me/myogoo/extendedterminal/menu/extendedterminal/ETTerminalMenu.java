@@ -9,13 +9,16 @@ import appeng.me.storage.LinkStatusRespectingInventory;
 import appeng.menu.SlotSemantics;
 import appeng.menu.guisync.GuiSync;
 import appeng.menu.implementations.MenuTypeBuilder;
+import appeng.menu.me.items.CraftingTermMenu;
 import appeng.menu.slot.CraftingMatrixSlot;
 import appeng.menu.slot.CraftingTermSlot;
 import com.google.common.base.Preconditions;
+import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import me.myogoo.extendedterminal.config.ETConfig;
 import me.myogoo.extendedterminal.menu.ETMenuType;
 import me.myogoo.extendedterminal.menu.ETSlotSemantics;
 import me.myogoo.extendedterminal.menu.ETTerminalBaseMenu;
+import me.myogoo.extendedterminal.menu.extendedterminal.slot.ETAnvilSlot;
 import me.myogoo.extendedterminal.menu.extendedterminal.slot.ETSmithingSlot;
 import me.myogoo.extendedterminal.menu.extendedterminal.slot.ETStoneCutterSlot;
 import me.myogoo.extendedterminal.menu.slot.ETCraftingBaseSlot;
@@ -23,17 +26,15 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.*;
 import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
-import static me.myogoo.extendedterminal.part.extendedterminal.ETTerminalPart.SmithingInventory;
-import static me.myogoo.extendedterminal.part.extendedterminal.ETTerminalPart.StoneCutterInventory;
+import static me.myogoo.extendedterminal.part.extendedterminal.ETTerminalPart.*;
 
 public class ETTerminalMenu extends ETTerminalBaseMenu<CraftingRecipe> {
     public static final MenuType<ETTerminalMenu> TYPE = MenuTypeBuilder
@@ -43,7 +44,7 @@ public class ETTerminalMenu extends ETTerminalBaseMenu<CraftingRecipe> {
     private static final String ACTION_SET_STONECUTTING_RECIPE_ID = "setStonecuttingRecipeId";
     private static final String ACTION_SET_MODE = "setMode";
     private static final String ACTION_UPDATE_STONECUTTER_RECIPES = "updateStoneCutterRecipes";
-
+    private static final String ACTION_SET_ANVIL_ITEM_NAME = "setAnvilItemName";
     // ---------------------------------------------------------------------
     // Fields : 공용
     // ---------------------------------------------------------------------
@@ -70,6 +71,10 @@ public class ETTerminalMenu extends ETTerminalBaseMenu<CraftingRecipe> {
     private ResourceLocation stoneCutterRecipeId = null;
     private ItemStack lastTestedStoneCutterInputItem = ItemStack.EMPTY;
 
+    private final CraftingMatrixSlot anvilLeftSlot;
+    private final CraftingMatrixSlot anvilRightSlot;
+    private final ETAnvilSlot anvilOutputSlot;
+    private final FakeAnvilMenu anvilDelegate;
     public ETTerminalMenu(MenuType<?> menuType, int id, Inventory ip, ITerminalHost host) {
         super(menuType, id, ip, host, ETMenuType.ET_TERMINAL, ETConfig.ADVANCED_TERMINAL_CONFIG);
         this.craftingInventoryHost = (ISegmentedInventory) host;
@@ -101,10 +106,16 @@ public class ETTerminalMenu extends ETTerminalBaseMenu<CraftingRecipe> {
         this.addSlot(this.stoneCutterOutputSlot = new ETStoneCutterSlot(player, this.getActionSource(),
                 this.energySource, linkStatusInventory, stonecuttingInv, stonecuttingInv, this), ETSlotSemantics.STONECUTTING_RESULT);
 
+        var anvilInv = this.craftingInventoryHost.getSubInventory(AnvilInventory);
+        this.anvilDelegate = new FakeAnvilMenu(0, player.getInventory());
+        this.addSlot(this.anvilLeftSlot = new CraftingMatrixSlot(this, anvilInv, 0),ETSlotSemantics.ANVIL_LEFT_INPUT);
+        this.addSlot(this.anvilRightSlot = new CraftingMatrixSlot(this, anvilInv,1),ETSlotSemantics.ANVIL_RIGHT_INPUT);
+        this.addSlot(this.anvilOutputSlot = new ETAnvilSlot(player, this.getActionSource(), this.energySource, linkStatusInventory, anvilInv, anvilDelegate, this), ETSlotSemantics.ANVIL_RESULT);
         updateCurrentRecipeAndOutput(true);
 
         registerClientAction(ACTION_SET_STONECUTTING_RECIPE_ID, ResourceLocation.class, this::setStoneCutterRecipeId);
         registerClientAction(ACTION_SET_MODE, ETTerminalMode.class, this::setMode);
+        registerClientAction(ACTION_SET_ANVIL_ITEM_NAME, String.class, this::setAnvilItemName);
     }
 
     public void setMode(ETTerminalMode mode) {
@@ -126,6 +137,7 @@ public class ETTerminalMenu extends ETTerminalBaseMenu<CraftingRecipe> {
             case CRAFTING -> updateCraftingOutput(forceUpdate);
             case SMITHING -> updateSmithingOutput(forceUpdate);
             case STONECUTTING -> updateStonecuttingOutput(forceUpdate);
+            case ANVIL -> updateAnvilOutput(forceUpdate);
             case null, default -> {}
         }
     }
@@ -151,6 +163,14 @@ public class ETTerminalMenu extends ETTerminalBaseMenu<CraftingRecipe> {
         return this.craftingInventoryHost.getSubInventory(StoneCutterInventory);
     }
 
+    public InternalInventory getAnvilInventory() {
+        return this.craftingInventoryHost.getSubInventory(AnvilInventory);
+    }
+
+    public InternalInventory getInventory(ResourceLocation id) {
+        return this.craftingInventoryHost.getSubInventory(id);
+    }
+
     @Override
     public void doAction(ServerPlayer player, InventoryAction action, int slot, long id) {
         if (this.getSlot(slot) instanceof ETCraftingBaseSlot<?, ?> craftingSlot) {
@@ -163,7 +183,7 @@ public class ETTerminalMenu extends ETTerminalBaseMenu<CraftingRecipe> {
     }
 
     // ---------------------------------------------------------------------
-    // Crafting 섹션
+    // Crafting Section
     // ---------------------------------------------------------------------
     private void updateCraftingOutput(boolean forceUpdate) {
         var testItems = new ArrayList<ItemStack>(this.craftingSlots.length);
@@ -184,8 +204,7 @@ public class ETTerminalMenu extends ETTerminalBaseMenu<CraftingRecipe> {
         if (this.currentRecipe == null) {
             this.outputSlot.set(ItemStack.EMPTY);
         } else {
-            var outputItem = this.currentRecipe.value().getResultItem(level.registryAccess());
-            this.outputSlot.set(outputItem);
+            this.outputSlot.set(this.currentRecipe.value().assemble(testInput,level.registryAccess()));
         }
     }
 
@@ -193,6 +212,9 @@ public class ETTerminalMenu extends ETTerminalBaseMenu<CraftingRecipe> {
         return this.currentRecipe;
     }
 
+    // ---------------------------------------------------------------------
+    // Smithing Section
+    // ---------------------------------------------------------------------
     private void updateSmithingOutput(boolean forceUpdate) {
         var smithingTestInput = new SmithingRecipeInput(smithingTemplateSlot.getItem().copy(), smithingBaseSlot.getItem().copy(), smithingAdditionSlot.getItem().copy());
 
@@ -219,7 +241,7 @@ public class ETTerminalMenu extends ETTerminalBaseMenu<CraftingRecipe> {
     }
 
     // ---------------------------------------------------------------------
-    // Stonecutting 섹션
+    // Stonecutting Section
     // ---------------------------------------------------------------------
     private void updateStonecuttingOutput(boolean forceUpdate) {
         var input = stonecuttingSlot.getItem();
@@ -273,5 +295,57 @@ public class ETTerminalMenu extends ETTerminalBaseMenu<CraftingRecipe> {
 
     public List<RecipeHolder<StonecutterRecipe>> getStoneCutterRecipes() {
         return stoneCutterRecipes;
+    }
+
+    // ---------------------------------------------------------------------
+    // Anvil Section
+    // ---------------------------------------------------------------------
+    public FakeAnvilMenu getAnvilDelegate() {
+        return anvilDelegate;
+    }
+    @GuiSync(2)
+    private int anvilCost = 0;
+    public int getanvilCost() {
+        return anvilCost;
+    }
+
+    public void updateAnvilOutput(boolean forceUpdate) {
+        this.anvilDelegate.slots.get(0).set(this.anvilLeftSlot.getItem());
+        this.anvilDelegate.slots.get(1).set(this.anvilRightSlot.getItem());
+        this.anvilOutputSlot.set(anvilDelegate.getResultItem());
+        this.anvilCost = anvilDelegate.getCost();
+
+    }
+
+    public void setAnvilItemName(String name) {
+        if(isServerSide()) {
+            if(this.anvilDelegate.setItemName(name)) {
+                updateCurrentRecipeAndOutput(true);
+            }
+        } else {
+            sendClientAction(ACTION_SET_ANVIL_ITEM_NAME, name);
+        }
+    }
+
+    @Override
+    public boolean hasIngredient(Ingredient ingredient, Object2IntOpenHashMap<Object> reservedAmounts) {
+        List<Slot> slots = ETTerminalMode.loadableValues().stream()
+                .map(ETTerminalMode::getSlotSemantics)
+                .flatMap(Collection::stream)
+                .map(this::getSlots)
+                .flatMap(Collection::stream)
+                .toList();
+
+        for (var slot : slots) {
+            var stackInSlot = slot.getItem();
+            if (!stackInSlot.isEmpty() && ingredient.test(stackInSlot)) {
+                var reservedAmount = reservedAmounts.getOrDefault(slot, 0);
+                if (stackInSlot.getCount() > reservedAmount) {
+                    reservedAmounts.merge(slot, 1, Integer::sum);
+                    return true;
+                }
+            }
+        }
+        return super.hasIngredient(ingredient, reservedAmounts);
     }
 }

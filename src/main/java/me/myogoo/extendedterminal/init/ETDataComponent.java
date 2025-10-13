@@ -23,6 +23,10 @@ public class ETDataComponent {
             .persistent(ItemContainerContents.CODEC)
             .networkSynchronized(ItemContainerContents.STREAM_CODEC));
 
+    public static final DataComponentType<ItemContainerContents> ANVIL_INV= register("anvil_inv", bulder -> bulder
+            .persistent(ItemContainerContents.CODEC)
+            .networkSynchronized(ItemContainerContents.STREAM_CODEC));
+
 
     private static <T> DataComponentType<T> register(String name, Consumer<DataComponentType.Builder<T>> customizer) {
         var builder = DataComponentType.<T>builder();

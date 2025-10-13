@@ -13,7 +13,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Blocks;
 
 public class CraftingPanel extends ETTerminalModePanel {
-    private static final Blitter BG = Blitter.texture("guis/et_terminal_panel.png").src(0, 0, 159, 65);
+    private static final Blitter BG = Blitter.texture("guis/et_terminal_panel.png",512,512).src(0, 0, 159, 65);
 
     private final ActionButton clearToStorage;
     private final ActionButton clearToInv;

@@ -4,6 +4,7 @@ import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.widgets.TabButton;
 import me.myogoo.extendedterminal.client.screen.ETTerminalBaseScreen;
 import me.myogoo.extendedterminal.client.screen.extendedterminal.gui.ETTerminalModePanel;
+import me.myogoo.extendedterminal.client.screen.extendedterminal.gui.panels.AnvilPanel;
 import me.myogoo.extendedterminal.client.screen.extendedterminal.gui.panels.CraftingPanel;
 import me.myogoo.extendedterminal.client.screen.extendedterminal.gui.panels.SmithingTablePanel;
 import me.myogoo.extendedterminal.client.screen.extendedterminal.gui.panels.StoneCutterPanel;
@@ -22,12 +23,12 @@ public class ETTerminalScreen<T extends ETTerminalMenu> extends ETTerminalBaseSc
 
     public ETTerminalScreen(T menu, Inventory playerInventory, Component title, ScreenStyle style) {
         super(menu, playerInventory, title, style);
-
         for(var mode : ETTerminalMode.loadableValues()) {
             var panel = switch (mode) {
                 case CRAFTING -> new CraftingPanel(this, widgets, clearBtn, clearToPlayerInvBtn);
                 case SMITHING -> new SmithingTablePanel(this, this.widgets);
                 case STONECUTTING -> new StoneCutterPanel(this, widgets);
+                case ANVIL -> new AnvilPanel(this, widgets);
                 case null, default -> null;
             };
 

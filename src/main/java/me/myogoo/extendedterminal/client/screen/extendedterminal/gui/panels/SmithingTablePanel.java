@@ -13,7 +13,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Blocks;
 
 public class SmithingTablePanel extends ETTerminalModePanel {
-    private static final Blitter BG = Blitter.texture("guis/et_terminal_panel.png").src(0, 67, 159, 65);
+    private static final Blitter BG = Blitter.texture("guis/et_terminal_panel.png",512,512).src(0, 67, 159, 65);
 
     public SmithingTablePanel(ETTerminalScreen screen, WidgetContainer widgets) {
         super(screen, widgets);

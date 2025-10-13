@@ -14,21 +14,25 @@ import java.util.Set;
 public class ConditionTag implements TagCompiler {
     @Override
     public void compileBlockContext(PageCompiler compiler, LytBlockContainer parent, MdxJsxFlowElement el) {
+        var silently = el.getAttributeString("silent", "false");
         var condition = el.getAttributeString("load", "");
         if (condition.isEmpty()) {
             compiler.compileBlockContext(el, parent);
         } else {
             try {
-                var modName = SupportedMod.valueOf(condition);
-                if (modName.isLoaded()) {
+                var mod = SupportedMod.valueOf(condition);
+                if (mod.isLoaded()) {
                     compiler.compileBlockContext(el, parent);
                 } else {
+                    if (silently.equals("true")) {
+                        return;
+                    }
                     var heading = new LytHeading();
                     var frontText = new LytFlowText();
                     frontText.setText("This content is hidden because the mod ");
                     var boldText = new LytFlowText();
                     boldText.setStyle(TextStyle.builder().bold(true).build());
-                    boldText.setText(modName.name());
+                    boldText.setText(mod.name());
                     var endText = new LytFlowText();
                     endText.setText(" is not loaded.");
                     heading.setDepth(2);
@@ -38,7 +42,7 @@ public class ConditionTag implements TagCompiler {
                     parent.append(heading);
                 }
             } catch (IllegalArgumentException e) {
-                parent.appendError(compiler,condition + "is not loaded" ,el);
+                parent.appendError(compiler, condition + "is not loaded", el);
             }
         }
     }

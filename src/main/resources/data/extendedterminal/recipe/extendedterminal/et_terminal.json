@@ -1,7 +1,7 @@
 {
   "type": "minecraft:crafting_shaped",
   "pattern": [
-    "   ",
+    " E ",
     "ABC",
     " D "
   ],
@@ -17,6 +17,9 @@
     },
     "D": {
       "item": "extendedterminal:compat_processor"
+    },
+    "E" : {
+      "item": "minecraft:anvil"
     }
   },
   "result": {

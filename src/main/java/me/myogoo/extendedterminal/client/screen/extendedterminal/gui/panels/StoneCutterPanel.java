@@ -23,7 +23,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Objects;
 
 public class StoneCutterPanel extends ETTerminalModePanel {
-    private static final Blitter BG = Blitter.texture("guis/et_terminal_panel.png").src(0, 134, 159, 65);
+    private static final Blitter BG = Blitter.texture("guis/et_terminal_panel.png",512,512).src(0, 134, 159, 65);
     private static final Blitter AE_BG = Blitter.texture("guis/pattern_modes.png").src(0, 140, 124, 66);
     private static final Blitter BG_SLOT = AE_BG
             .copy()
