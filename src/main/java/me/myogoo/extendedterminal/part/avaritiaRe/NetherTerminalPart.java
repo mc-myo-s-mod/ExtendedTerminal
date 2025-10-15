@@ -5,7 +5,7 @@ import appeng.api.parts.IPartModel;
 import appeng.items.parts.PartModels;
 import appeng.parts.PartModel;
 import me.myogoo.extendedterminal.ExtendedTerminal;
-import me.myogoo.extendedterminal.config.ETConfig;
+import me.myogoo.extendedterminal.config.avaritiaRe.AvaritiaReConfig;
 import me.myogoo.extendedterminal.menu.ETMenuType;
 import me.myogoo.extendedterminal.menu.avaritiaRe.NetherTerminalMenu;
 import me.myogoo.extendedterminal.part.ETTerminalBasePart;
@@ -23,7 +23,7 @@ public class NetherTerminalPart extends ETTerminalBasePart {
 
     public NetherTerminalPart(IPartItem<?> partItem) {
         super(partItem, ETMenuType.NETHER_TERMINAL);
-        this.getMainNode().setIdlePowerUsage(ETConfig.NETHER_TERMINAL_CONFIG.passiveDrainAE());
+        this.getMainNode().setIdlePowerUsage(AvaritiaReConfig.INSTANCE.getNetherConfig().passiveDrainAE());
     }
 
     @Override

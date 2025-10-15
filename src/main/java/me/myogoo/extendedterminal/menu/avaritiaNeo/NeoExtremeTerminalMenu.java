@@ -6,11 +6,10 @@ import appeng.api.storage.ITerminalHost;
 import appeng.core.network.serverbound.InventoryActionPacket;
 import appeng.helpers.InventoryAction;
 import appeng.me.storage.LinkStatusRespectingInventory;
-import appeng.menu.SlotSemantic;
 import appeng.menu.implementations.MenuTypeBuilder;
 import appeng.menu.slot.CraftingMatrixSlot;
 import com.google.common.base.Preconditions;
-import me.myogoo.extendedterminal.config.ETConfig;
+import me.myogoo.extendedterminal.config.avaritiaNeo.AvaritiaNeoConfig;
 import me.myogoo.extendedterminal.menu.ETMenuType;
 import me.myogoo.extendedterminal.menu.ETTerminalBaseMenu;
 import me.myogoo.extendedterminal.menu.avaritiaNeo.slot.AvaritiaNeoCraftingTerminalSlot;
@@ -41,7 +40,7 @@ public class NeoExtremeTerminalMenu extends ETTerminalBaseMenu<RecipeExtremeCraf
     private CraftingInput lastTestedInput;
 
     public NeoExtremeTerminalMenu(MenuType<?> menuType, int id, Inventory ip, ITerminalHost host) {
-        super(menuType, id, ip, host, ETMenuType.NEO_EXTREME_TERMINAL, ETConfig.NEO_EXTREME_TERMINAL_CONFIG);
+        super(menuType, id, ip, host, ETMenuType.NEO_EXTREME_TERMINAL, AvaritiaNeoConfig.INSTANCE.getExtremeConfig());
         this.craftingInventoryHost = (ISegmentedInventory) host;
         this.craftingSlots = new CraftingMatrixSlot[this.menuType.getGridSize()];
         var craftingGridInv = this.craftingInventoryHost

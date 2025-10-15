@@ -9,12 +9,11 @@ import appeng.me.storage.LinkStatusRespectingInventory;
 import appeng.menu.SlotSemantics;
 import appeng.menu.guisync.GuiSync;
 import appeng.menu.implementations.MenuTypeBuilder;
-import appeng.menu.me.items.CraftingTermMenu;
 import appeng.menu.slot.CraftingMatrixSlot;
 import appeng.menu.slot.CraftingTermSlot;
 import com.google.common.base.Preconditions;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
-import me.myogoo.extendedterminal.config.ETConfig;
+import me.myogoo.extendedterminal.config.ExtendedTerminalConfig;
 import me.myogoo.extendedterminal.menu.ETMenuType;
 import me.myogoo.extendedterminal.menu.ETSlotSemantics;
 import me.myogoo.extendedterminal.menu.ETTerminalBaseMenu;
@@ -76,7 +75,7 @@ public class ETTerminalMenu extends ETTerminalBaseMenu<CraftingRecipe> {
     private final ETAnvilSlot anvilOutputSlot;
     private final FakeAnvilMenu anvilDelegate;
     public ETTerminalMenu(MenuType<?> menuType, int id, Inventory ip, ITerminalHost host) {
-        super(menuType, id, ip, host, ETMenuType.ET_TERMINAL, ETConfig.ADVANCED_TERMINAL_CONFIG);
+        super(menuType, id, ip, host, ETMenuType.ET_TERMINAL, ExtendedTerminalConfig.INSTANCE.getExtendedTerminalConfig());
         this.craftingInventoryHost = (ISegmentedInventory) host;
         this.craftingSlots = new CraftingMatrixSlot[this.menuType.getGridSize()];
 

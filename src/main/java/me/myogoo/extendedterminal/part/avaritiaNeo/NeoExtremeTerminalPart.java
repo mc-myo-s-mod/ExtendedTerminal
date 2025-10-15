@@ -5,10 +5,9 @@ import appeng.api.parts.IPartModel;
 import appeng.items.parts.PartModels;
 import appeng.parts.PartModel;
 import me.myogoo.extendedterminal.ExtendedTerminal;
-import me.myogoo.extendedterminal.config.ETConfig;
+import me.myogoo.extendedterminal.config.avaritiaNeo.AvaritiaNeoConfig;
 import me.myogoo.extendedterminal.menu.ETMenuType;
 import me.myogoo.extendedterminal.menu.avaritiaNeo.NeoExtremeTerminalMenu;
-import me.myogoo.extendedterminal.menu.avaritiaRe.ExtremeTerminalMenu;
 import me.myogoo.extendedterminal.part.ETTerminalBasePart;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
@@ -24,7 +23,7 @@ public class NeoExtremeTerminalPart extends ETTerminalBasePart {
 
     public NeoExtremeTerminalPart(IPartItem<?> partItem) {
         super(partItem, ETMenuType.NEO_EXTREME_TERMINAL);
-        this.getMainNode().setIdlePowerUsage(ETConfig.NEO_EXTREME_TERMINAL_CONFIG.passiveDrainAE());
+        this.getMainNode().setIdlePowerUsage(AvaritiaNeoConfig.INSTANCE.getExtremeConfig().passiveDrainAE());
     }
 
     @Override
