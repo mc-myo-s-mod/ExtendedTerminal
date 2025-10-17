@@ -1,11 +1,7 @@
 package me.myogoo.extendedterminal.menu.extendedterminal.wt;
 
-import appeng.api.networking.security.IActionHost;
-import appeng.api.storage.ITerminalHost;
 import appeng.menu.implementations.MenuTypeBuilder;
 import appeng.menu.slot.RestrictedInputSlot;
-import appeng.util.inv.AppEngInternalInventory;
-import appeng.util.inv.InternalInventoryHost;
 import de.mari_023.ae2wtlib.api.gui.AE2wtlibSlotSemantics;
 import de.mari_023.ae2wtlib.api.terminal.ItemWUT;
 import de.mari_023.ae2wtlib.api.terminal.WTMenuHost;

@@ -13,6 +13,7 @@ import appeng.menu.slot.CraftingMatrixSlot;
 import appeng.menu.slot.CraftingTermSlot;
 import com.google.common.base.Preconditions;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
+import me.myogoo.extendedterminal.api.host.IETTerminalHost;
 import me.myogoo.extendedterminal.config.ExtendedTerminalConfig;
 import me.myogoo.extendedterminal.menu.ETMenuType;
 import me.myogoo.extendedterminal.menu.ETSlotSemantics;
@@ -37,7 +38,7 @@ import static me.myogoo.extendedterminal.part.extendedterminal.ETTerminalPart.*;
 
 public class ETTerminalMenu extends ETTerminalBaseMenu<CraftingRecipe> {
     public static final MenuType<ETTerminalMenu> TYPE = MenuTypeBuilder
-            .create(ETTerminalMenu::new, ITerminalHost.class)
+            .create(ETTerminalMenu::new, IETTerminalHost.class)
             .buildUnregistered(ETMenuType.ET_TERMINAL.getId());
 
     private static final String ACTION_SET_STONECUTTING_RECIPE_ID = "setStonecuttingRecipeId";
@@ -68,14 +69,16 @@ public class ETTerminalMenu extends ETTerminalBaseMenu<CraftingRecipe> {
     private List<RecipeHolder<StonecutterRecipe>> stoneCutterRecipes = new ArrayList<>();
     @GuiSync(1)
     private ResourceLocation stoneCutterRecipeId = null;
-    private ItemStack lastTestedStoneCutterInputItem = ItemStack.EMPTY;
 
     private final CraftingMatrixSlot anvilLeftSlot;
     private final CraftingMatrixSlot anvilRightSlot;
     private final ETAnvilSlot anvilOutputSlot;
     private final FakeAnvilMenu anvilDelegate;
-    public ETTerminalMenu(MenuType<?> menuType, int id, Inventory ip, ITerminalHost host) {
+    private final IETTerminalHost host;
+    public ETTerminalMenu(MenuType<?> menuType, int id, Inventory ip, IETTerminalHost host) {
         super(menuType, id, ip, host, ETMenuType.ET_TERMINAL, ExtendedTerminalConfig.INSTANCE.getExtendedTerminalConfig());
+        this.host = host;
+        this.currentMode = host.getMode();
         this.craftingInventoryHost = (ISegmentedInventory) host;
         this.craftingSlots = new CraftingMatrixSlot[this.menuType.getGridSize()];
 
@@ -105,23 +108,32 @@ public class ETTerminalMenu extends ETTerminalBaseMenu<CraftingRecipe> {
         this.addSlot(this.stoneCutterOutputSlot = new ETStoneCutterSlot(player, this.getActionSource(),
                 this.energySource, linkStatusInventory, stonecuttingInv, stonecuttingInv, this), ETSlotSemantics.STONECUTTING_RESULT);
 
+
         var anvilInv = this.craftingInventoryHost.getSubInventory(AnvilInventory);
         this.anvilDelegate = new FakeAnvilMenu(0, player.getInventory());
-        this.addSlot(this.anvilLeftSlot = new CraftingMatrixSlot(this, anvilInv, 0),ETSlotSemantics.ANVIL_LEFT_INPUT);
-        this.addSlot(this.anvilRightSlot = new CraftingMatrixSlot(this, anvilInv,1),ETSlotSemantics.ANVIL_RIGHT_INPUT);
+        this.addSlot(this.anvilLeftSlot = new CraftingMatrixSlot(this, anvilInv, 0), ETSlotSemantics.ANVIL_LEFT_INPUT);
+        this.addSlot(this.anvilRightSlot = new CraftingMatrixSlot(this, anvilInv, 1), ETSlotSemantics.ANVIL_RIGHT_INPUT);
         this.addSlot(this.anvilOutputSlot = new ETAnvilSlot(player, this.getActionSource(), this.energySource, linkStatusInventory, anvilInv, anvilDelegate, this), ETSlotSemantics.ANVIL_RESULT);
-        updateCurrentRecipeAndOutput(true);
 
         registerClientAction(ACTION_SET_STONECUTTING_RECIPE_ID, ResourceLocation.class, this::setStoneCutterRecipeId);
         registerClientAction(ACTION_SET_MODE, ETTerminalMode.class, this::setMode);
         registerClientAction(ACTION_SET_ANVIL_ITEM_NAME, String.class, this::setAnvilItemName);
+
+        updateCurrentRecipeAndOutput(true);
+    }
+
+    @Override
+    public void initializeContents(int stateId, List<ItemStack> items, ItemStack carried) {
+        super.initializeContents(stateId, items, carried);
+        setMode(currentMode);
     }
 
     public void setMode(ETTerminalMode mode) {
-        if(isClientSide()) {
-            sendClientAction(ACTION_SET_MODE, mode);
+        if (isClientSide()) {
+            sendClientAction(ACTION_SET_MODE,mode);
         } else {
-            this.currentMode = mode;
+            this.host.setMode(mode);
+            this.currentMode = host.getMode();
             updateCurrentRecipeAndOutput(true);
         }
     }
@@ -137,7 +149,8 @@ public class ETTerminalMenu extends ETTerminalBaseMenu<CraftingRecipe> {
             case SMITHING -> updateSmithingOutput(forceUpdate);
             case STONECUTTING -> updateStonecuttingOutput(forceUpdate);
             case ANVIL -> updateAnvilOutput(forceUpdate);
-            case null, default -> {}
+            case null, default -> {
+            }
         }
     }
 
@@ -203,7 +216,7 @@ public class ETTerminalMenu extends ETTerminalBaseMenu<CraftingRecipe> {
         if (this.currentRecipe == null) {
             this.outputSlot.set(ItemStack.EMPTY);
         } else {
-            this.outputSlot.set(this.currentRecipe.value().assemble(testInput,level.registryAccess()));
+            this.outputSlot.set(this.currentRecipe.value().assemble(testInput, level.registryAccess()));
         }
     }
 
@@ -223,12 +236,13 @@ public class ETTerminalMenu extends ETTerminalBaseMenu<CraftingRecipe> {
 
         var level = getPlayer().level();
         var smithingRecipes = level.getRecipeManager().getRecipesFor(RecipeType.SMITHING, smithingTestInput, level);
-        if(smithingRecipes.isEmpty()) {
+        if (smithingRecipes.isEmpty()) {
             this.smithingOutputSlot.set(ItemStack.EMPTY);
         } else {
             RecipeHolder<SmithingRecipe> recipeHolder = smithingRecipes.getFirst();
-            var result = recipeHolder.value().assemble(smithingTestInput, level.registryAccess());;
-            if(result.isItemEnabled(level.enabledFeatures())) {
+            var result = recipeHolder.value().assemble(smithingTestInput, level.registryAccess());
+            ;
+            if (result.isItemEnabled(level.enabledFeatures())) {
                 this.smithingRecipe = recipeHolder;
                 this.smithingOutputSlot.set(result);
             }
@@ -244,7 +258,6 @@ public class ETTerminalMenu extends ETTerminalBaseMenu<CraftingRecipe> {
     // ---------------------------------------------------------------------
     private void updateStonecuttingOutput(boolean forceUpdate) {
         var input = stonecuttingSlot.getItem();
-        lastTestedStoneCutterInputItem = input;
         stoneCutterRecipes.clear();
 
         if (input.isEmpty()) {
@@ -275,11 +288,12 @@ public class ETTerminalMenu extends ETTerminalBaseMenu<CraftingRecipe> {
 
     public void setStoneCutterRecipeId(ResourceLocation stoneCutterRecipeId) {
         if (isClientSide()) {
-            sendClientAction(ACTION_SET_STONECUTTING_RECIPE_ID, stoneCutterRecipeId);
+            this.host.setStoneCutterRecipeId(stoneCutterRecipeId);
+            sendClientAction(ACTION_SET_STONECUTTING_RECIPE_ID, host.getStoneCutterRecipeId());
         } else {
             this.stoneCutterRecipeId = stoneCutterRecipeId;
             var optionalRecipeHolder = getPlayer().level().getRecipeManager().byKey(stoneCutterRecipeId);
-            if(optionalRecipeHolder.isPresent()) {
+            if (optionalRecipeHolder.isPresent()) {
                 var recipe = optionalRecipeHolder.get().value();
                 stoneCutterOutputSlot.set(recipe.getResultItem(getPlayer().level().registryAccess()));
             } else {
@@ -289,7 +303,7 @@ public class ETTerminalMenu extends ETTerminalBaseMenu<CraftingRecipe> {
     }
 
     public ResourceLocation getStoneCutterRecipeId() {
-        return stoneCutterRecipeId;
+        return this.stoneCutterRecipeId;
     }
 
     public List<RecipeHolder<StonecutterRecipe>> getStoneCutterRecipes() {
@@ -302,8 +316,10 @@ public class ETTerminalMenu extends ETTerminalBaseMenu<CraftingRecipe> {
     public FakeAnvilMenu getAnvilDelegate() {
         return anvilDelegate;
     }
+
     @GuiSync(2)
     private int anvilCost = 0;
+
     public int getanvilCost() {
         return anvilCost;
     }
@@ -317,8 +333,8 @@ public class ETTerminalMenu extends ETTerminalBaseMenu<CraftingRecipe> {
     }
 
     public void setAnvilItemName(String name) {
-        if(isServerSide()) {
-            if(this.anvilDelegate.setItemName(name)) {
+        if (isServerSide()) {
+            if (this.anvilDelegate.setItemName(name)) {
                 updateCurrentRecipeAndOutput(true);
             }
         } else {

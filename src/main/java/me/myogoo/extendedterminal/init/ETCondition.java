@@ -15,4 +15,5 @@ public class ETCondition {
 
     public static final Supplier<MapCodec<ETModCondition>> ET_MOD_LOAD =
             REGISTER.register("et_mod", () -> ETModCondition.CODEC);
+
 }

@@ -10,21 +10,25 @@ import appeng.items.parts.PartModels;
 import appeng.parts.PartModel;
 import appeng.util.inv.AppEngInternalInventory;
 import me.myogoo.extendedterminal.ExtendedTerminal;
+import me.myogoo.extendedterminal.api.host.IETTerminalHost;
 import me.myogoo.extendedterminal.menu.ETMenuType;
 import me.myogoo.extendedterminal.menu.extendedterminal.ETTerminalMenu;
+import me.myogoo.extendedterminal.menu.extendedterminal.ETTerminalMode;
 import me.myogoo.extendedterminal.part.ETTerminalBasePart;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
 import static appeng.parts.reporting.CraftingTerminalPart.*;
 
-public class ETTerminalPart extends ETTerminalBasePart {
+public class ETTerminalPart extends ETTerminalBasePart implements IETTerminalHost {
     @PartModels
     public static final ResourceLocation MODEL_OFF = ExtendedTerminal.makeId("part/extendedterminal/extended_terminal_off");
     @PartModels
@@ -45,6 +49,11 @@ public class ETTerminalPart extends ETTerminalBasePart {
     private final AppEngInternalInventory stoneCutterGrid = new AppEngInternalInventory(this, 1);
     private final AppEngInternalInventory anvilInv = new AppEngInternalInventory(this, 2);
 
+    private ETTerminalMode mode = ETTerminalMode.CRAFTING;
+    @Nullable
+    private ResourceLocation stonecuttingRecipeId;
+    private boolean isLoading = false;
+
     public ETTerminalPart(IPartItem<?> partItem) {
         super(partItem, ETMenuType.ET_TERMINAL);
     }
@@ -54,6 +63,7 @@ public class ETTerminalPart extends ETTerminalBasePart {
         super.clearContent();
         smithingGrid.clear();
         stoneCutterGrid.clear();
+        anvilInv.clear();
     }
 
     @Override
@@ -63,18 +73,18 @@ public class ETTerminalPart extends ETTerminalBasePart {
 
     @Override
     public IPartModel getStaticModels() {
-        return this.selectModel(MODELS_ON,MODELS_OFF,MODELS_HAS_CHANNEL);
+        return this.selectModel(MODELS_ON, MODELS_OFF, MODELS_HAS_CHANNEL);
     }
 
     @Override
     public InternalInventory getSubInventory(ResourceLocation id) {
-        if(id.equals(SmithingInventory)){
+        if (id.equals(SmithingInventory)) {
             return smithingGrid;
-        } else if(id.equals(StoneCutterInventory)){
+        } else if (id.equals(StoneCutterInventory)) {
             return stoneCutterGrid;
         } else if (id.equals(AnvilInventory)) {
             return anvilInv;
-        } else if(id.equals(UpgradeInventory)){
+        } else if (id.equals(UpgradeInventory)) {
         }
         return super.getSubInventory(id);
     }
@@ -82,17 +92,47 @@ public class ETTerminalPart extends ETTerminalBasePart {
     @Override
     public void writeToNBT(CompoundTag data, HolderLookup.Provider registries) {
         super.writeToNBT(data, registries);
+        data.putString("mode", this.mode.name());
+        if (this.stonecuttingRecipeId != null) {
+            data.putString("stonecuttingRecipeId", this.stonecuttingRecipeId.toString());
+        }
+
         smithingGrid.writeToNBT(data, "smithingGrid", registries);
         stoneCutterGrid.writeToNBT(data, "stoneCutterGrid", registries);
         anvilInv.writeToNBT(data, "anvilInv", registries);
+
+    }
+
+    @Override
+    public void saveChanges() {
+        if(!isLoading) {
+            super.saveChanges();
+        }
     }
 
     @Override
     public void readFromNBT(CompoundTag data, HolderLookup.Provider registries) {
-        super.readFromNBT(data, registries);
-        smithingGrid.readFromNBT(data, "smithingGrid", registries);
-        stoneCutterGrid.readFromNBT(data, "stoneCutterGrid", registries);
-        anvilInv.readFromNBT(data, "anvilInv", registries);
+        isLoading = false;
+        try {
+            super.readFromNBT(data, registries);
+            try {
+                this.mode = ETTerminalMode.valueOf(data.getString("mode"));
+            } catch (IllegalArgumentException ignored) {
+                this.mode = ETTerminalMode.CRAFTING;
+            }
+
+            if (data.contains("stonecuttingRecipeId", Tag.TAG_STRING)) {
+                this.stonecuttingRecipeId = ResourceLocation.parse(data.getString("stonecuttingRecipeId"));
+            } else {
+                this.stonecuttingRecipeId = null;
+            }
+            smithingGrid.readFromNBT(data, "smithingGrid", registries);
+            stoneCutterGrid.readFromNBT(data, "stoneCutterGrid", registries);
+            anvilInv.readFromNBT(data, "anvilInv", registries);
+
+        } finally {
+            isLoading = false;
+        }
     }
 
     @Override
@@ -115,6 +155,28 @@ public class ETTerminalPart extends ETTerminalBasePart {
             }
         }
     }
+
+    public ETTerminalMode getMode() {
+        return mode;
+    }
+
+    @Override
+    public void setMode(ETTerminalMode mode) {
+        this.mode = mode;
+        this.saveChanges();
+    }
+
+    @Override
+    public @Nullable ResourceLocation getStoneCutterRecipeId() {
+        return stonecuttingRecipeId;
+    }
+
+    @Override
+    public void setStoneCutterRecipeId(@Nullable ResourceLocation stonecuttingRecipeId) {
+        this.stonecuttingRecipeId = stonecuttingRecipeId;
+        this.saveChanges();
+    }
+
 
     @Override
     protected IPartModel selectModel(IPartModel offModels, IPartModel onModels, IPartModel hasChannelModels) {
