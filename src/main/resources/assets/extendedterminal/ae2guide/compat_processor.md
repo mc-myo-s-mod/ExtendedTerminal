@@ -9,6 +9,7 @@ categories:
 item_ids:
   - compat_processor
   - printed_compat_processor
+  - compat_press
 ---
 
 # Compat Processor

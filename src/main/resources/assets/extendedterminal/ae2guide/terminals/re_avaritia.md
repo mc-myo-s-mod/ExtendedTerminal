@@ -15,12 +15,16 @@ item_ids:
 
 # Re:Avaritia Crafting Terminal
 
+<et:condition load="ReAvaritia">
+
+
 <GameScene zoom={4} interactive={true}>
     <ImportStructure src="../structures/reavaritia.snbt" />
     <IsometricCamera yaw="225" pitch="20" />
 </GameScene>
 
 ## Sculk Crafting Terminal
+
 <Row>
 <ItemImage id="extendedterminal:sculk_terminal" scale={3}/>
 <ItemImage id="avaritia:sculk_crafting_table" scale={3}/>
@@ -49,7 +53,6 @@ item_ids:
 <ItemLink id="extendedterminal:extreme_terminal" /> is terminal version of <ItemLink
     id="avaritia:extreme_crafting_table"/>.
 
-
 ## Recipes
 
 <Column>
@@ -62,3 +65,5 @@ item_ids:
         <RecipeFor id="extendedterminal:extreme_terminal" />
     </Row>
 </Column>
+
+</et:condition>

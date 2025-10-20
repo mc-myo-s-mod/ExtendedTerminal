@@ -45,6 +45,8 @@ public class StoneCutterPanel extends ETTerminalModePanel {
         this.scrollbar = widgets.addScrollBar("stonecuttingPatternModeScrollbar", Scrollbar.SMALL);
         this.scrollbar.setRange(0, 0, COLS);
         this.scrollbar.setCaptureMouseWheel(false);
+
+        setVisible(false);
     }
 
     @Override

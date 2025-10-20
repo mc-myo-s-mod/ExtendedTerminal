@@ -30,7 +30,7 @@ public class ETWTHost extends WTMenuHost implements IViewCellStorage, IETTermina
     private final SupplierInternalInventory<InternalInventory> stoneCutterGrid;
     private final SupplierInternalInventory<InternalInventory> anvilInv;
 
-    private ETTerminalMode mode = ETTerminalMode.CRAFTING;
+    private ETTerminalMode mode;
     private @Nullable ResourceLocation stonecuttingRecipeId = null;
 
     public ETWTHost(ItemWT item, Player player, ItemMenuHostLocator locator, BiConsumer<Player, ISubMenu> returnToMainMenu) {
@@ -43,6 +43,8 @@ public class ETWTHost extends WTMenuHost implements IViewCellStorage, IETTermina
         var tag = this.getItemStack().getOrDefault(ET_TERMINAL_HOST_TAG, new CompoundTag());
         if(tag.contains("mode", Tag.TAG_STRING))
             this.mode = ETTerminalMode.valueOf(tag.getString("mode"));
+        else
+            this.mode = ETTerminalMode.loadableValues().getFirst();
 
         if(tag.contains("stonecuttingRecipeId", Tag.TAG_STRING))
             this.stonecuttingRecipeId = ResourceLocation.tryParse(tag.getString("stonecuttingRecipeId"));

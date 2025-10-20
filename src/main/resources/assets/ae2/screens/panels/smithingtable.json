@@ -27,6 +27,14 @@
     "modePanelSmithingTablePanel": {
       "left": 9,
       "bottom": 166
+    },
+    "clearSmithingGrid": {
+      "left" : 60,
+      "bottom" : 151
+    },
+    "clearSmithingGridToPlayerInv": {
+        "left" : 71,
+        "bottom" : 151
     }
   }
 }

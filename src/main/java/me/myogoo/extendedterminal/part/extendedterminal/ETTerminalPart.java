@@ -49,13 +49,14 @@ public class ETTerminalPart extends ETTerminalBasePart implements IETTerminalHos
     private final AppEngInternalInventory stoneCutterGrid = new AppEngInternalInventory(this, 1);
     private final AppEngInternalInventory anvilInv = new AppEngInternalInventory(this, 2);
 
-    private ETTerminalMode mode = ETTerminalMode.CRAFTING;
+    private ETTerminalMode mode;
     @Nullable
     private ResourceLocation stonecuttingRecipeId;
     private boolean isLoading = false;
 
     public ETTerminalPart(IPartItem<?> partItem) {
         super(partItem, ETMenuType.ET_TERMINAL);
+        this.mode = ETTerminalMode.loadableValues().getFirst();
     }
 
     @Override

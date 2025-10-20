@@ -4,7 +4,12 @@ import appeng.menu.SlotSemantic;
 import appeng.menu.SlotSemantics;
 
 public final class ETSlotSemantics {
-    public static final SlotSemantic PLAYER_ARMOR = SlotSemantics.register("PLAYER_ARMOR", true, 1500);
+    public static final SlotSemantic PLAYER_HELMET = SlotSemantics.register("ET_HELMET", true, 39);
+    public static final SlotSemantic PLAYER_CHESTPLATE = SlotSemantics.register("ET_CHESTPLATE", true, 38);
+    public static final SlotSemantic PLAYER_LEGGINGS = SlotSemantics.register("ET_LEGGINGS", true, 37);
+    public static final SlotSemantic PLAYER_BOOTS = SlotSemantics.register("ET_BOOTS", true, 36);
+    public static final SlotSemantic PLAYER_OFFHAND = SlotSemantics.register("ET_OFFHAND", true, 40);
+
     public static final SlotSemantic PLAYER_CURIOS = SlotSemantics.register("PLAYER_CURIOS", true, -1);
 
     public static final SlotSemantic SMITHING_TABLE_TEMPLATE = SlotSemantics.register("ET_SMITHING_TABLE_TEMPLATE", true);

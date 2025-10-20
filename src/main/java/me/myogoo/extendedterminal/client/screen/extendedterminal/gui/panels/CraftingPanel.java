@@ -22,6 +22,8 @@ public class CraftingPanel extends ETTerminalModePanel {
         super(screen, widgets);
         this.clearToStorage = clearToStorage;
         this.clearToInv = clearToInv;
+
+        setVisible(false);
     }
 
     @Override

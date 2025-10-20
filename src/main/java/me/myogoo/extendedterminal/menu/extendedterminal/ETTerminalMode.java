@@ -3,6 +3,7 @@ package me.myogoo.extendedterminal.menu.extendedterminal;
 import appeng.api.inventories.InternalInventory;
 import appeng.menu.SlotSemantic;
 import me.myogoo.extendedterminal.ExtendedTerminal;
+import me.myogoo.extendedterminal.config.ExtendedTerminalConfig;
 import me.myogoo.extendedterminal.menu.ETMenuType;
 import me.myogoo.extendedterminal.menu.ETSlotSemantics;
 import me.myogoo.extendedterminal.part.extendedterminal.ETTerminalPart;
@@ -15,20 +16,26 @@ import java.util.Arrays;
 import java.util.List;
 
 public enum ETTerminalMode {
-    CRAFTING,
-    STONECUTTING,
-    SMITHING,
-    ANVIL;
+    CRAFTING(ExtendedTerminalConfig.INSTANCE.getExtendedTerminalConfig().enableCraftingPanel()),
+    STONECUTTING(ExtendedTerminalConfig.INSTANCE.getExtendedTerminalConfig().enableStonecutterPanel()),
+    SMITHING(ExtendedTerminalConfig.INSTANCE.getExtendedTerminalConfig().enableSmithingPanel()),
+    ANVIL(ExtendedTerminalConfig.INSTANCE.getExtendedTerminalConfig().enableAnvilPanel());
+
+    private final boolean enabled;
+
+    ETTerminalMode(boolean enabled) {
+        this.enabled = enabled;
+    }
 
     public boolean canLoad() {
         try {
             Field field = ETTerminalMode.class.getField(this.name());
-            if(field.getDeclaredAnnotations().length == 0) {
-                return true;
+            if (field.getDeclaredAnnotations().length == 0) {
+                return this.enabled;
             }
             return Arrays.stream(field.getDeclaredAnnotations())
                     .map(Annotation::annotationType)
-                    .allMatch(ModIntegrationManager::isLoaded);
+                    .allMatch(ModIntegrationManager::isLoaded) && this.enabled;
 
         } catch (NoSuchFieldException e) {
             ExtendedTerminal.LOGGER.error("Terminal Mode {} is not loaded due to missing field in ETTerminalMode", this.name());
@@ -49,12 +56,18 @@ public enum ETTerminalMode {
         return switch (this) {
             case CRAFTING -> List.of(ETMenuType.ET_TERMINAL.getSlotSemanticGrid());
             case STONECUTTING -> List.of(ETSlotSemantics.STONECUTTING_INPUT);
-            case SMITHING -> List.of(ETSlotSemantics.SMITHING_TABLE_BASE, ETSlotSemantics.SMITHING_TABLE_TEMPLATE, ETSlotSemantics.SMITHING_TABLE_ADDITION);
+            case SMITHING ->
+                    List.of(ETSlotSemantics.SMITHING_TABLE_BASE, ETSlotSemantics.SMITHING_TABLE_TEMPLATE, ETSlotSemantics.SMITHING_TABLE_ADDITION);
             case ANVIL -> List.of(ETSlotSemantics.ANVIL_LEFT_INPUT, ETSlotSemantics.ANVIL_RIGHT_INPUT);
         };
     }
 
     public static List<ETTerminalMode> loadableValues() {
-        return Arrays.stream(values()).filter(ETTerminalMode::canLoad).toList();
+        var list = Arrays.stream(values()).filter(ETTerminalMode::canLoad).toList();
+        if(list.isEmpty()) {
+            throw new IllegalArgumentException("No ETTerminalModes are loadable!");
+        } else {
+            return list;
+        }
     }
 }

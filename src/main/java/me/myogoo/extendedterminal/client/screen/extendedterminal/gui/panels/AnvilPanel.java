@@ -6,7 +6,7 @@ import appeng.client.gui.style.Blitter;
 import appeng.client.gui.widgets.AETextField;
 import me.myogoo.extendedterminal.client.screen.extendedterminal.ETTerminalScreen;
 import me.myogoo.extendedterminal.client.screen.extendedterminal.gui.ETTerminalModePanel;
-import me.myogoo.extendedterminal.client.screen.extendedterminal.gui.LabelWidget;
+import me.myogoo.extendedterminal.client.screen.extendedterminal.gui.XPLabelWidget;
 import me.myogoo.extendedterminal.menu.ETSlotSemantics;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.Rect2i;
@@ -21,7 +21,7 @@ public class AnvilPanel extends ETTerminalModePanel {
     private static final Blitter BG = Blitter.texture("guis/et_terminal_panel.png",512,512).src(0, 201, 159, 65);
 
     private final AETextField textField;
-    private final LabelWidget enchantCostLabel;
+    private final XPLabelWidget enchantCostLabel;
     private Component anvilInfoText;
     public AnvilPanel(ETTerminalScreen<?> screen, WidgetContainer widgets) {
         super(screen, widgets);
@@ -29,8 +29,10 @@ public class AnvilPanel extends ETTerminalModePanel {
         this.textField = widgets.addTextField("ET_ANVIL_NAME_FIELD");
         this.textField.setMaxLength(50);
         this.textField.setResponder(this::onNameChanged);
-        this.enchantCostLabel = new LabelWidget();
-         widgets.add("ET_ANVIL_COST_LABEL", this.enchantCostLabel);
+        this.enchantCostLabel = new XPLabelWidget();
+        widgets.add("ET_ANVIL_COST_LABEL", this.enchantCostLabel);
+
+        setVisible(false);
     }
 
     @Override

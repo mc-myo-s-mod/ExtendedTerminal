@@ -11,12 +11,12 @@ import mezz.jei.api.registration.IRecipeCatalystRegistration;
 public class ETRecipeCatalyst {
     @SubscribeLoadEvent
     public static void init(IRecipeCatalystRegistration registration) {
-        var etconfig = ExtendedTerminalConfig.INSTANCE.getExtendedTerminalConfig();
-        if (etconfig.enableTerminal()) {
-            if(etconfig.enableCraftingPanel()) registration.addRecipeCatalyst(ETParts.ET_TERMINAL_PART, RecipeTypes.CRAFTING);
-            if(etconfig.enableSmithingPanel()) registration.addRecipeCatalyst(ETParts.ET_TERMINAL_PART, RecipeTypes.SMITHING);
-            if(etconfig.enableStonecutterPanel()) registration.addRecipeCatalyst(ETParts.ET_TERMINAL_PART, RecipeTypes.STONECUTTING);
-            if(etconfig.enableAnvilPanel()) registration.addRecipeCatalyst(ETParts.ET_TERMINAL_PART, RecipeTypes.ANVIL);
+        var config = ExtendedTerminalConfig.INSTANCE.getExtendedTerminalConfig();
+        if (config.enableTerminal()) {
+            if(config.enableCraftingPanel()) registration.addRecipeCatalyst(ETParts.ET_TERMINAL_PART, RecipeTypes.CRAFTING);
+            if(config.enableSmithingPanel()) registration.addRecipeCatalyst(ETParts.ET_TERMINAL_PART, RecipeTypes.SMITHING);
+            if(config.enableStonecutterPanel()) registration.addRecipeCatalyst(ETParts.ET_TERMINAL_PART, RecipeTypes.STONECUTTING);
+            if(config.enableAnvilPanel()) registration.addRecipeCatalyst(ETParts.ET_TERMINAL_PART, RecipeTypes.ANVIL);
         }
     }
 }

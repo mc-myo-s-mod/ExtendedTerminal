@@ -18,6 +18,9 @@
 
   "item.extendedterminal.compat_processor": "Compat Processor",
   "item.extendedterminal.printed_compat_processor": "Printed Compat Circuit",
+  "item.extendedterminal.compat_press": "Inscriber Compat Press",
+
+  "item.extendedterminal.charged_ender_pearl": "Charged Ender Pearl",
 
   "item.extendedterminal.item.tooltip.unregistered_terminal": "unregistered Terminal",
 
@@ -38,7 +41,5 @@
   "gui.extendedterminal.anvilpanel": "Anvil",
   "gui.extendedterminal.anvilpanel.xpcost": "XP Cost: %d",
 
-
-  "extendedterminal.jei.notsupportederror": "This Recipe Currently Not Supported",
-  "gui.extendedterminal.et_terminal.anvil.cost": "30Lv"
+  "extendedterminal.jei.notsupportederror": "This Recipe Currently Not Supported"
 }

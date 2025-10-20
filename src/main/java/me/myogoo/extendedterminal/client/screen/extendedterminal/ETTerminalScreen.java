@@ -16,6 +16,7 @@ import net.minecraft.world.item.crafting.CraftingRecipe;
 
 import java.util.EnumMap;
 import java.util.Map;
+import java.util.Objects;
 
 public class ETTerminalScreen<T extends ETTerminalMenu> extends ETTerminalBaseScreen<CraftingRecipe, T> {
     private final Map<ETTerminalMode, ETTerminalModePanel> modePanels = new EnumMap<>(ETTerminalMode.class);
@@ -23,29 +24,28 @@ public class ETTerminalScreen<T extends ETTerminalMenu> extends ETTerminalBaseSc
 
     public ETTerminalScreen(T menu, Inventory playerInventory, Component title, ScreenStyle style) {
         super(menu, playerInventory, title, style);
-        for(var mode : ETTerminalMode.loadableValues()) {
+        for (var mode : ETTerminalMode.values()) {
             var panel = switch (mode) {
                 case CRAFTING -> new CraftingPanel(this, widgets, clearBtn, clearToPlayerInvBtn);
                 case SMITHING -> new SmithingTablePanel(this, this.widgets);
                 case STONECUTTING -> new StoneCutterPanel(this, widgets);
                 case ANVIL -> new AnvilPanel(this, widgets);
-                case null, default -> null;
             };
 
             var tabButton = new TabButton(
                     panel.getIcon(),
                     panel.getTabTooltip(),
-                    btn ->  {
+                    btn -> {
                         getMenu().setMode(mode);
                     });
             tabButton.setStyle(TabButton.Style.HORIZONTAL);
 
-            var modeIndex = modeTabButtons.size();
-            widgets.add(panel.getWidgetId(), panel);
-            widgets.add(panel.getModeTabButtonId(), tabButton);
-            modeTabButtons.put(mode, tabButton);
-
-            modePanels.put(mode, panel);
+            if (mode.canLoad()) {
+                widgets.add(panel.getWidgetId(), panel);
+                widgets.add(panel.getModeTabButtonId(), tabButton);
+                modeTabButtons.put(mode, tabButton);
+                modePanels.put(mode, panel);
+            }
         }
     }
 
@@ -53,7 +53,7 @@ public class ETTerminalScreen<T extends ETTerminalMenu> extends ETTerminalBaseSc
     protected void updateBeforeRender() {
         super.updateBeforeRender();
 
-        for(var mode : ETTerminalMode.loadableValues()) {
+        for (var mode : ETTerminalMode.loadableValues()) {
             var selected = menu.getMode() == mode;
             modeTabButtons.get(mode).setSelected(selected);
             modePanels.get(mode).setVisible(selected);

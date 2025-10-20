@@ -7,7 +7,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.network.chat.Component;
 
-public class LabelWidget implements ICompositeWidget {
+public class XPLabelWidget implements ICompositeWidget {
     private Component text;
     private boolean visible;
     private int x;
@@ -18,7 +18,7 @@ public class LabelWidget implements ICompositeWidget {
     private static final int RED_COLOR = 0xFF6060;
     private static final int GREEN_COLOR = 0x80FF20;
 
-    public LabelWidget() {
+    public XPLabelWidget() {
         this.cost = 0;
         this.text = Component.translatable("gui.extendedterminal.anvilpanel.xpcost", cost);
         this.color = RED_COLOR;

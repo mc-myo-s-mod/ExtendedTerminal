@@ -9,6 +9,7 @@ import appeng.me.storage.LinkStatusRespectingInventory;
 import appeng.menu.SlotSemantics;
 import appeng.menu.guisync.GuiSync;
 import appeng.menu.implementations.MenuTypeBuilder;
+import appeng.menu.slot.AppEngSlot;
 import appeng.menu.slot.CraftingMatrixSlot;
 import appeng.menu.slot.CraftingTermSlot;
 import com.google.common.base.Preconditions;
@@ -74,6 +75,9 @@ public class ETTerminalMenu extends ETTerminalBaseMenu<CraftingRecipe> {
     private final CraftingMatrixSlot anvilRightSlot;
     private final ETAnvilSlot anvilOutputSlot;
     private final FakeAnvilMenu anvilDelegate;
+    @GuiSync(2)
+    private int anvilCost = 0;
+
     private final IETTerminalHost host;
     public ETTerminalMenu(MenuType<?> menuType, int id, Inventory ip, IETTerminalHost host) {
         super(menuType, id, ip, host, ETMenuType.ET_TERMINAL, ExtendedTerminalConfig.INSTANCE.getExtendedTerminalConfig());
@@ -156,27 +160,32 @@ public class ETTerminalMenu extends ETTerminalBaseMenu<CraftingRecipe> {
 
     @Override
     public void clearCraftingGrid() {
+        clearInventory(craftingSlots[0]);
+    }
+
+    public void clearSmithingGrid() {
+        clearInventory(smithingTemplateSlot);
+        clearInventory(smithingAdditionSlot);
+        clearInventory(smithingBaseSlot);
+    }
+
+    public void clearInventory(AppEngSlot slot) {
         Preconditions.checkState(isClientSide());
-        CraftingMatrixSlot slot = craftingSlots[0];
         var p = new InventoryActionPacket(InventoryAction.MOVE_REGION, slot.index, 0);
         PacketDistributor.sendToServer(p);
     }
 
     @Override
     public InternalInventory getCraftingMatrix() {
-        return this.craftingInventoryHost.getSubInventory(menuType.getCraftingInventory());
+        return getInventory(menuType.getCraftingInventory());
     }
 
     public InternalInventory getSmithingInventory() {
-        return this.craftingInventoryHost.getSubInventory(SmithingInventory);
+        return getInventory(SmithingInventory);
     }
 
     public InternalInventory getStoneCutterInventory() {
-        return this.craftingInventoryHost.getSubInventory(StoneCutterInventory);
-    }
-
-    public InternalInventory getAnvilInventory() {
-        return this.craftingInventoryHost.getSubInventory(AnvilInventory);
+        return getInventory(StoneCutterInventory);
     }
 
     public InternalInventory getInventory(ResourceLocation id) {
@@ -317,9 +326,6 @@ public class ETTerminalMenu extends ETTerminalBaseMenu<CraftingRecipe> {
         return anvilDelegate;
     }
 
-    @GuiSync(2)
-    private int anvilCost = 0;
-
     public int getanvilCost() {
         return anvilCost;
     }
@@ -329,7 +335,6 @@ public class ETTerminalMenu extends ETTerminalBaseMenu<CraftingRecipe> {
         this.anvilDelegate.slots.get(1).set(this.anvilRightSlot.getItem());
         this.anvilOutputSlot.set(anvilDelegate.getResultItem());
         this.anvilCost = anvilDelegate.getCost();
-
     }
 
     public void setAnvilItemName(String name) {

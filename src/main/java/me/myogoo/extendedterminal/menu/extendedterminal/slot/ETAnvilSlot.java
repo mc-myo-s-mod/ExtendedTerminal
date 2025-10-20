@@ -5,12 +5,16 @@ import appeng.api.networking.energy.IEnergySource;
 import appeng.api.networking.security.IActionSource;
 import appeng.api.storage.MEStorage;
 import appeng.menu.slot.AppEngCraftingSlot;
+import me.myogoo.extendedterminal.api.ModAccessor;
 import me.myogoo.extendedterminal.menu.ETSlotSemantics;
 import me.myogoo.extendedterminal.menu.extendedterminal.ETTerminalMenu;
 import me.myogoo.extendedterminal.menu.extendedterminal.FakeAnvilMenu;
+import me.myogoo.extendedterminal.util.mod.ModIntegrationManager;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.common.CommonHooks;
+import dev.shadowsoffire.placebo.util.EnchantmentUtils;
+
 
 public class ETAnvilSlot extends AppEngCraftingSlot {
     private final FakeAnvilMenu anvilDelegate;
@@ -22,7 +26,12 @@ public class ETAnvilSlot extends AppEngCraftingSlot {
     @Override
     public void onTake(Player player, ItemStack stack) {
         if (!player.getAbilities().instabuild) {
-            player.giveExperienceLevels(-this.anvilDelegate.cost.get());
+            int cost = -this.anvilDelegate.getCost();
+            if(ModIntegrationManager.isLoaded(ModAccessor.ApothicEnchant.class)) {
+                EnchantmentUtils.chargeExperience(player, EnchantmentUtils.getTotalExperienceForLevel(cost))    ;
+            } else {
+                player.giveExperienceLevels(cost);
+            }
         }
 
         var leftSlot = this.getMenu().getSlots(ETSlotSemantics.ANVIL_LEFT_INPUT).getFirst();
