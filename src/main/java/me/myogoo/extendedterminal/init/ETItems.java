@@ -1,6 +1,7 @@
 package me.myogoo.extendedterminal.init;
 
 import appeng.core.definitions.ItemDefinition;
+import appeng.menu.locator.ItemMenuHostLocator;
 import de.mari_023.ae2wtlib.api.terminal.ItemWT;
 import me.myogoo.extendedterminal.ExtendedTerminal;
 import me.myogoo.extendedterminal.item.ChargedEnderPearlItem;
@@ -8,7 +9,10 @@ import me.myogoo.extendedterminal.item.wtitem.ETWTItem;
 import me.myogoo.extendedterminal.util.mod.ModIntegrationManager;
 import me.myogoo.extendedterminal.util.mod.SupportedMod;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.Item;
+import net.neoforged.neoforge.registries.DeferredItem;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
 import java.util.ArrayList;
@@ -54,7 +58,10 @@ public class ETItems {
     }
 
     private static <T extends ItemWT> ItemDefinition<T> createWTItem(String name, ResourceLocation id, Function<Item.Properties, T> itemFactory) {
-        var item = REGISTER.registerItem(id.getPath(), p -> ModIntegrationManager.isLoaded(SupportedMod.AE2WTLib) ? itemFactory.apply(p) : (T) new Item(p));
+        if(!ModIntegrationManager.isLoaded(SupportedMod.AE2WTLib)) {
+            return null;
+        }
+        var item = REGISTER.registerItem(id.getPath(), itemFactory);
         var definition = new ItemDefinition<>(name, item);
         WT_ITEMS.add(definition);
         return definition;

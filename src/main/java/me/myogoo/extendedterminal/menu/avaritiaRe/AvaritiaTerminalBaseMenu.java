@@ -21,6 +21,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.neoforged.neoforge.network.PacketDistributor;
 
 import javax.annotation.Nullable;

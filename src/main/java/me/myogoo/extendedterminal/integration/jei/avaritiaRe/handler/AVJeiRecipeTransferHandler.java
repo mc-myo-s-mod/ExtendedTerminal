@@ -5,6 +5,7 @@ import committee.nova.mods.avaritia.api.common.crafting.ITierCraftingRecipe;
 import committee.nova.mods.avaritia.init.registry.ModRecipeTypes;
 import me.myogoo.extendedterminal.api.adapter.recipe.table.IShapedTableRecipeAdapter;
 import me.myogoo.extendedterminal.api.adapter.recipe.table.ITableRecipeAdapter;
+import me.myogoo.extendedterminal.integration.jei.handler.AbstractTableHolderRecipeHandler;
 import me.myogoo.extendedterminal.integration.jei.handler.AbstractTableRecipeHandler;
 import me.myogoo.extendedterminal.menu.avaritiaRe.AvaritiaTerminalBaseMenu;
 import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
@@ -16,6 +17,7 @@ import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
@@ -27,16 +29,17 @@ import static appeng.integration.modules.itemlists.TransferHelper.BLUE_PLUS_BUTT
 import static appeng.integration.modules.itemlists.TransferHelper.ORANGE_PLUS_BUTTON_COLOR;
 import static me.myogoo.extendedterminal.integration.ItemListTermCraftingHelper.*;
 
-public class AVJeiRecipeTransferHandler<T extends AvaritiaTerminalBaseMenu> extends AbstractTableRecipeHandler<T, ITierCraftingRecipe> {
+public class AVJeiRecipeTransferHandler<T extends AvaritiaTerminalBaseMenu> extends AbstractTableHolderRecipeHandler<T, ITierCraftingRecipe, RecipeHolder<ITierCraftingRecipe>> {
     private final IRecipeTransferHandlerHelper helper;
 
-    public AVJeiRecipeTransferHandler(Class<T> containerClass, MenuType<T> menuType, RecipeType<ITierCraftingRecipe> recipeType, IRecipeTransferHandlerHelper helper) {
+    public AVJeiRecipeTransferHandler(Class<T> containerClass, MenuType<T> menuType, RecipeType<RecipeHolder<ITierCraftingRecipe>> recipeType, IRecipeTransferHandlerHelper helper) {
         super(containerClass, menuType, recipeType);
         this.helper = helper;
     }
 
     @Override
-    public @Nullable IRecipeTransferError transferRecipe(T menu, ITierCraftingRecipe recipe, IRecipeSlotsView recipeSlots, Player player, boolean maxTransfer, boolean doTransfer) {
+    public @Nullable IRecipeTransferError transferRecipe(T menu, RecipeHolder<ITierCraftingRecipe> recipeHolder, IRecipeSlotsView recipeSlots, Player player, boolean maxTransfer, boolean doTransfer) {
+        var recipe = recipeHolder.value();
         if (recipe.getIngredients().isEmpty()) {
             return Result.createInCompatibleError(helper);
         }
@@ -67,12 +70,7 @@ public class AVJeiRecipeTransferHandler<T extends AvaritiaTerminalBaseMenu> exte
                 return new Result.PartiallyCraftable(missingSlots, color, craftMissing);
             }
         } else {
-            performTransfer(menu, adapterRecipe, craftMissing, () -> {
-                        var level = menu.getPlayer().level();
-                        var recipeManager = level.getRecipeManager();
-                        var findRecipe = recipeManager.getAllRecipesFor(ModRecipeTypes.CRAFTING_TABLE_RECIPE.get()).stream().filter(x -> x.value().equals(recipe)).toList();
-                        return !findRecipe.isEmpty() ? findRecipe.getFirst() : null;
-            });
+            performTransfer(menu, adapterRecipe, craftMissing, recipeHolder.id());
         }
 
         return Result.createSuccessful();

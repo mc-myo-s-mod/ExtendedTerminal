@@ -9,24 +9,24 @@ import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.recipe.transfer.IRecipeTransferHandler;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.MenuType;
-import net.minecraft.world.item.crafting.*;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
 import java.util.Optional;
-import java.util.function.Supplier;
 
 import static me.myogoo.extendedterminal.integration.ItemListTermCraftingHelper.findGoodTemplateItems;
 import static me.myogoo.extendedterminal.network.serverbound.FillTableCraftingGridFromRecipePacket.NOT_SET_RECIPE_SIZE;
 
-public abstract class AbstractTableRecipeHandler<T extends ETTerminalBaseMenu<R>, R extends Recipe<?>>
-        implements IRecipeTransferHandler<T, R>, IAbstractRecipeHandler {
+public abstract class AbstractTableHolderRecipeHandler<T extends ETTerminalBaseMenu<R>, R extends Recipe<?>, H extends RecipeHolder<R>> implements IRecipeTransferHandler<T, H>, IAbstractRecipeHandler {
     private final Class<T> containerClass;
     private final MenuType<T> menuType;
-    private final RecipeType<R> recipeType;
+    private final RecipeType<H> recipeType;
 
-    public AbstractTableRecipeHandler(Class<T> containerClass, MenuType<T> menuType, RecipeType<R> recipeType) {
+    public AbstractTableHolderRecipeHandler(Class<T> containerClass, MenuType<T> menuType, RecipeType<H> recipeType) {
         this.containerClass = containerClass;
         this.menuType = menuType;
         this.recipeType = recipeType;
@@ -43,16 +43,11 @@ public abstract class AbstractTableRecipeHandler<T extends ETTerminalBaseMenu<R>
     }
 
     @Override
-    public @NotNull RecipeType<R> getRecipeType() {
+    public @NotNull RecipeType<H> getRecipeType() {
         return recipeType;
     }
 
     protected abstract Map<Integer, Ingredient> getGuiSlotToIngredientMap(T menu, ITableRecipeAdapter recipe);
-
-    protected void performTransfer(T menu, ITableRecipeAdapter recipe, boolean craftMissing, Supplier<RecipeHolder<R>> supplier) {
-        var recipeHolder = supplier.get();
-        performTransfer(menu, recipe, craftMissing, recipeHolder.id());
-    }
 
     protected void performTransfer(T menu, ITableRecipeAdapter recipe, boolean craftMissing, ResourceLocation recipeId) {
         var templateItems = findGoodTemplateItems(recipe, menu);
@@ -67,7 +62,5 @@ public abstract class AbstractTableRecipeHandler<T extends ETTerminalBaseMenu<R>
                 recipeWidth, recipeHeight);
         PacketDistributor.sendToServer(message);
     }
-
-
 
 }
