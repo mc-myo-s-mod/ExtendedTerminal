@@ -17,8 +17,9 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
-public abstract class FillRecipeBasePacket {
+public abstract class FillRecipeBasePacket implements IETFillRecipeBasePacket{
     protected abstract NonNullList<Ingredient> getDesiredIngredients(Player player);
+
     protected ItemStack takeIngredientFromPlayer(ICraftingGridMenu cct, ServerPlayer player, Ingredient ingredient) {
         var playerInv = player.getInventory();
         for (int i = 0; i < playerInv.items.size(); i++) {
@@ -39,7 +40,7 @@ public abstract class FillRecipeBasePacket {
     }
 
     protected List<AEItemKey> findBestMatchingItemStack(Ingredient ingredient, IPartitionList filter,
-                                                      KeyCounter storage) {
+                                                        KeyCounter storage) {
         return Arrays.stream(ingredient.getItems())
                 .map(AEItemKey::of)
                 .filter(r -> r != null && (filter == null || filter.isListed(r)))
@@ -63,4 +64,6 @@ public abstract class FillRecipeBasePacket {
                 .filter(Objects::nonNull)
                 .findAny();
     }
+
+
 }

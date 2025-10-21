@@ -7,7 +7,7 @@ import appeng.core.definitions.ItemDefinition;
 import appeng.items.parts.PartItem;
 import appeng.items.parts.PartModelsHelper;
 import me.myogoo.extendedterminal.ExtendedTerminal;
-import me.myogoo.extendedterminal.item.EmptyPartItem;
+import me.myogoo.extendedterminal.item.partitem.EmptyPartItem;
 import me.myogoo.extendedterminal.item.ExtendedCraftingPartItem;
 import me.myogoo.extendedterminal.menu.ETMenuType;
 import me.myogoo.extendedterminal.part.EmptyPart;
@@ -20,6 +20,7 @@ import me.myogoo.extendedterminal.part.extendedcrafting.AdvancedTerminalPart;
 import me.myogoo.extendedterminal.part.extendedcrafting.BasicExtendedTerminalPart;
 import me.myogoo.extendedterminal.part.extendedcrafting.EliteTerminalPart;
 import me.myogoo.extendedterminal.part.extendedcrafting.UltimateTerminalPart;
+import me.myogoo.extendedterminal.part.extendedterminal.ETTerminalPart;
 import net.minecraft.world.item.Item;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
@@ -33,6 +34,9 @@ public class ETParts {
 
     public static final List<ItemDefinition<? extends PartItem<?>>> PARTS = new ArrayList<>();
     public static final List<ItemDefinition<? extends PartItem<?>>> TERMINAL_PARTS = new ArrayList<>();
+
+    // extended terminal parts
+    public static final ItemDefinition<PartItem<ETTerminalPart>> ET_TERMINAL_PART = createTerminalPart(ETMenuType.ET_TERMINAL, ETTerminalPart.class, ETTerminalPart::new);
 
     // extended crafting parts
     public static final ItemDefinition<PartItem<BasicExtendedTerminalPart>> BASIC_TERMINAL_PART = createExtendedCraftingPart(ETMenuType.BASIC_TERMINAL, BasicExtendedTerminalPart.class, BasicExtendedTerminalPart::new);

@@ -1,8 +1,8 @@
 package me.myogoo.extendedterminal.integration.jei.avaritiaNeo.handler;
 
 import appeng.core.localization.ItemModText;
-import me.myogoo.extendedterminal.api.adapter.recipe.IShapedTableRecipeAdapter;
-import me.myogoo.extendedterminal.api.adapter.recipe.ITableRecipeAdapter;
+import me.myogoo.extendedterminal.api.adapter.recipe.table.IShapedTableRecipeAdapter;
+import me.myogoo.extendedterminal.api.adapter.recipe.table.ITableRecipeAdapter;
 import me.myogoo.extendedterminal.integration.jei.handler.AbstractTableRecipeHandler;
 import me.myogoo.extendedterminal.menu.avaritiaNeo.NeoExtremeTerminalMenu;
 import mezz.jei.api.gui.ingredient.IRecipeSlotsView;

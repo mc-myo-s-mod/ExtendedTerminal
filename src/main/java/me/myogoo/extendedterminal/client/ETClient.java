@@ -3,6 +3,7 @@ package me.myogoo.extendedterminal.client;
 import appeng.api.util.AEColor;
 import appeng.client.render.StaticItemColor;
 import appeng.init.client.InitScreens;
+import appeng.menu.AEBaseMenu;
 import me.myogoo.extendedterminal.ExtendedTerminal;
 import me.myogoo.extendedterminal.client.screen.avaritiaNeo.NeoExtremeTerminalScreen;
 import me.myogoo.extendedterminal.client.screen.avaritiaRe.EndTerminalScreen;
@@ -13,6 +14,8 @@ import me.myogoo.extendedterminal.client.screen.extendedcrafting.AdvancedTermina
 import me.myogoo.extendedterminal.client.screen.extendedcrafting.BasicTerminalScreen;
 import me.myogoo.extendedterminal.client.screen.extendedcrafting.EliteTerminalScreen;
 import me.myogoo.extendedterminal.client.screen.extendedcrafting.UltimateTerminalScreen;
+import me.myogoo.extendedterminal.client.screen.extendedterminal.ETTerminalScreen;
+import me.myogoo.extendedterminal.client.screen.extendedterminal.wt.ETWTScreen;
 import me.myogoo.extendedterminal.init.ETParts;
 import me.myogoo.extendedterminal.menu.avaritiaNeo.NeoExtremeTerminalMenu;
 import me.myogoo.extendedterminal.menu.avaritiaRe.EndTerminalMenu;
@@ -23,6 +26,8 @@ import me.myogoo.extendedterminal.menu.extendedcrafting.AdvancedTerminalMenu;
 import me.myogoo.extendedterminal.menu.extendedcrafting.BasicTerminalMenu;
 import me.myogoo.extendedterminal.menu.extendedcrafting.EliteTerminalMenu;
 import me.myogoo.extendedterminal.menu.extendedcrafting.UltimateTerminalMenu;
+import me.myogoo.extendedterminal.menu.extendedterminal.ETTerminalMenu;
+import me.myogoo.extendedterminal.menu.extendedterminal.wt.ETWTMenu;
 import net.minecraft.world.level.ItemLike;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
@@ -38,6 +43,10 @@ public class ETClient {
     }
 
     public static void initScreens(RegisterMenuScreensEvent event) {
+        // extended terminal
+        InitScreens.register(event, ETTerminalMenu.TYPE, ETTerminalScreen<ETTerminalMenu>::new, "/screens/et_terminal.json");
+        InitScreens.register(event, ETWTMenu.TYPE, ETWTScreen::new, "/screens/wireless_et_terminal.json");
+
         // extended crafting terminals
         InitScreens.register(event, BasicTerminalMenu.TYPE, BasicTerminalScreen::new, "/screens/extended_terminal/basic_terminal.json");
         InitScreens.register(event, AdvancedTerminalMenu.TYPE, AdvancedTerminalScreen::new, "/screens/extended_terminal/advanced_terminal.json");

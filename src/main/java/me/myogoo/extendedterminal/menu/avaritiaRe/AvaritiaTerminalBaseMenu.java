@@ -21,6 +21,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.neoforged.neoforge.network.PacketDistributor;
 
 import javax.annotation.Nullable;
@@ -82,31 +83,6 @@ public class AvaritiaTerminalBaseMenu extends ETTerminalBaseMenu<ITierCraftingRe
         } else {
             this.outputSlot.set(this.currentRecipe.value().assemble(testInput,registryAccess()));
         }
-    }
-
-    @Override
-    public SlotSemantic getCraftingGridSlotSemantic() {
-        return this.menuType.getSlotSemanticGrid();
-    }
-
-    @Override
-    public SlotSemantic getOutputSlotSemantic() {
-        return this.menuType.getSlotSemanticResult();
-    }
-
-    @Override
-    public int getCraftingGridSize() {
-        return this.menuType.getGridSize();
-    }
-
-    @Override
-    public int getCraftingGridWidth() {
-        return this.menuType.getGridSideLength();
-    }
-
-    @Override
-    public int getCraftingGridHeight() {
-        return this.menuType.getGridSideLength();
     }
 
     @Override

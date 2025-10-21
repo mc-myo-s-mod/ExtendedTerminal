@@ -12,6 +12,7 @@ import me.myogoo.extendedterminal.client.screen.avaritiaRe.ExtremeTerminalScreen
 import me.myogoo.extendedterminal.client.screen.avaritiaRe.NetherTerminalScreen;
 import me.myogoo.extendedterminal.client.screen.avaritiaRe.SculkTerminalScreen;
 import me.myogoo.extendedterminal.integration.jei.handler.JeiTableGuiHandler;
+import me.myogoo.extendedterminal.integration.jei.handler.JeiTableHolderGuiHandler;
 import mezz.jei.api.registration.IGuiHandlerRegistration;
 
 @ModAccessor.ReAvaritia
@@ -19,9 +20,9 @@ import mezz.jei.api.registration.IGuiHandlerRegistration;
 public class AVGuiHandler {
     @SubscribeLoadEvent
     public static void init(IGuiHandlerRegistration registration) {
-        registration.addGuiContainerHandler(SculkTerminalScreen.class, new JeiTableGuiHandler<>(SculkCraftingTableCategory.RECIPE_TYPE));
-        registration.addGuiContainerHandler(NetherTerminalScreen.class, new JeiTableGuiHandler<>(NetherCraftingTableCategory.RECIPE_TYPE));
-        registration.addGuiContainerHandler(EndTerminalScreen.class, new JeiTableGuiHandler<>(EndCraftingTableCategory.RECIPE_TYPE));
-        registration.addGuiContainerHandler(ExtremeTerminalScreen.class, new JeiTableGuiHandler<>(ExtremeCraftingTableCategory.RECIPE_TYPE));
+        registration.addGuiContainerHandler(SculkTerminalScreen.class, new JeiTableHolderGuiHandler<>(SculkCraftingTableCategory.RECIPE_TYPE));
+        registration.addGuiContainerHandler(NetherTerminalScreen.class, new JeiTableHolderGuiHandler<>(NetherCraftingTableCategory.RECIPE_TYPE));
+        registration.addGuiContainerHandler(EndTerminalScreen.class, new JeiTableHolderGuiHandler<>(EndCraftingTableCategory.RECIPE_TYPE));
+        registration.addGuiContainerHandler(ExtremeTerminalScreen.class, new JeiTableHolderGuiHandler<>(ExtremeCraftingTableCategory.RECIPE_TYPE));
     }
 }

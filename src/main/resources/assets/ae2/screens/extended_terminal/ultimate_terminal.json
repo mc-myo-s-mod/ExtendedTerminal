@@ -20,11 +20,6 @@
       "left": 8,
       "bottom": 26,
       "grid": "HORIZONTAL"
-    },
-    "PLAYER_ARMOR": {
-      "left": -16,
-      "bottom": 82,
-      "grid": "VERTICAL"
     }
   },
   "text": {
@@ -99,7 +94,7 @@
       "srcRect": [
         0,
         71,
-        235,
+        195,
         308
       ]
     }

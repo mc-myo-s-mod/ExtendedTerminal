@@ -5,7 +5,7 @@ import appeng.api.parts.IPartModel;
 import appeng.items.parts.PartModels;
 import appeng.parts.PartModel;
 import me.myogoo.extendedterminal.ExtendedTerminal;
-import me.myogoo.extendedterminal.config.ETConfig;
+import me.myogoo.extendedterminal.config.extendedcrafting.ExtendedCraftingConfig;
 import me.myogoo.extendedterminal.menu.ETMenuType;
 import me.myogoo.extendedterminal.menu.extendedcrafting.EliteTerminalMenu;
 import me.myogoo.extendedterminal.part.ETTerminalBasePart;
@@ -23,7 +23,7 @@ public class EliteTerminalPart extends ETTerminalBasePart {
 
     public EliteTerminalPart(IPartItem<?> partItem) {
         super(partItem, ETMenuType.ELITE_TERMINAL);
-        this.getMainNode().setIdlePowerUsage(ETConfig.ELITE_TERMINAL_CONFIG.passiveDrainAE());
+        this.getMainNode().setIdlePowerUsage(ExtendedCraftingConfig.INSTANCE.getEliteConfig().passiveDrainAE());
     }
 
     @Override

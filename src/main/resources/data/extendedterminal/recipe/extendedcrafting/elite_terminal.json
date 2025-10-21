@@ -1,0 +1,30 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "extendedterminal:et_mod",
+      "et_mod": "ExtendedCrafting"
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "I": {
+      "item": "extendedcrafting:elite_table"
+    },
+    "P": {
+      "item": "extendedterminal:compat_processor"
+    },
+    "T": {
+      "item": "ae2:crafting_terminal"
+    }
+  },
+  "pattern": [
+    "IT",
+    "P "
+  ],
+  "result": {
+    "count": 1,
+    "id": "extendedterminal:elite_terminal"
+  },
+  "show_notification": false
+}

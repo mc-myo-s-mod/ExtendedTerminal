@@ -2,7 +2,7 @@ package me.myogoo.extendedterminal.menu.extendedcrafting;
 
 import appeng.api.storage.ITerminalHost;
 import appeng.menu.implementations.MenuTypeBuilder;
-import me.myogoo.extendedterminal.config.ETConfig;
+import me.myogoo.extendedterminal.config.extendedcrafting.ExtendedCraftingConfig;
 import me.myogoo.extendedterminal.menu.ETMenuType;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.MenuType;
@@ -13,6 +13,6 @@ public class UltimateTerminalMenu extends ExtendedTerminalBaseMenu {
             .buildUnregistered(ETMenuType.ULTIMATE_TERMINAL.getId());
 
     public UltimateTerminalMenu(MenuType<?> menuType, int id, Inventory ip, ITerminalHost host) {
-        super(menuType, id, ip, host, ETMenuType.ULTIMATE_TERMINAL, ETConfig.ULTIMATE_TERMINAL_CONFIG);
+        super(menuType, id, ip, host, ETMenuType.ULTIMATE_TERMINAL, ExtendedCraftingConfig.INSTANCE.getUltimateConfig());
     }
 }

@@ -5,9 +5,11 @@
   "compatibilityLevel": "JAVA_8",
   "refmap": "extendedterminal.refmap.json",
   "mixins": [
+    "FillCraftingGridFromRecipePacketMixin",
     "RecipeManagerMixin"
   ],
   "client": [
+    "GuideMeAddonMixin"
   ],
   "injectors": {
     "defaultRequire": 1

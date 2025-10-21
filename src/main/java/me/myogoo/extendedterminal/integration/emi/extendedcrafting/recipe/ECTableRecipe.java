@@ -2,15 +2,14 @@ package me.myogoo.extendedterminal.integration.emi.extendedcrafting.recipe;
 
 import com.blakebr0.extendedcrafting.api.crafting.ITableRecipe;
 import com.blakebr0.extendedcrafting.crafting.recipe.ShapelessTableRecipe;
-import com.blakebr0.extendedcrafting.init.ModBlocks;
 import dev.emi.emi.api.recipe.BasicEmiRecipe;
 import dev.emi.emi.api.recipe.EmiRecipeCategory;
 import dev.emi.emi.api.render.EmiTexture;
 import dev.emi.emi.api.stack.EmiIngredient;
 import dev.emi.emi.api.stack.EmiStack;
 import dev.emi.emi.api.widget.WidgetHolder;
-import me.myogoo.extendedterminal.api.adapter.recipe.IShapedTableRecipeAdapter;
-import me.myogoo.extendedterminal.api.adapter.recipe.ITableRecipeAdapter;
+import me.myogoo.extendedterminal.api.adapter.recipe.table.IShapedTableRecipeAdapter;
+import me.myogoo.extendedterminal.api.adapter.recipe.table.ITableRecipeAdapter;
 import me.myogoo.extendedterminal.integration.emi.extendedcrafting.ECRecipeCategory;
 import me.myogoo.extendedterminal.util.TableCraftingHelper;
 import net.minecraft.client.Minecraft;

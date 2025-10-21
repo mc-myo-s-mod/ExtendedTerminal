@@ -4,8 +4,24 @@ import appeng.menu.SlotSemantic;
 import appeng.menu.SlotSemantics;
 
 public final class ETSlotSemantics {
-    public static final SlotSemantic PLAYER_ARMOR = SlotSemantics.register("PLAYER_ARMOR", true, 1500);
+    public static final SlotSemantic PLAYER_HELMET = SlotSemantics.register("ET_HELMET", true, 39);
+    public static final SlotSemantic PLAYER_CHESTPLATE = SlotSemantics.register("ET_CHESTPLATE", true, 38);
+    public static final SlotSemantic PLAYER_LEGGINGS = SlotSemantics.register("ET_LEGGINGS", true, 37);
+    public static final SlotSemantic PLAYER_BOOTS = SlotSemantics.register("ET_BOOTS", true, 36);
+    public static final SlotSemantic PLAYER_OFFHAND = SlotSemantics.register("ET_OFFHAND", true, 40);
+
     public static final SlotSemantic PLAYER_CURIOS = SlotSemantics.register("PLAYER_CURIOS", true, -1);
+
+    public static final SlotSemantic SMITHING_TABLE_TEMPLATE = SlotSemantics.register("ET_SMITHING_TABLE_TEMPLATE", true);
+    public static final SlotSemantic SMITHING_TABLE_BASE = SlotSemantics.register("ET_SMITHING_TABLE_BASE", true);
+    public static final SlotSemantic SMITHING_TABLE_ADDITION = SlotSemantics.register("ET_SMITHING_TABLE_ADDITION", true);
+
+    public static final SlotSemantic STONECUTTING_INPUT = SlotSemantics.register("ET_STONECUTTING_INPUT", true);
+    public static final SlotSemantic STONECUTTING_RESULT = SlotSemantics.register("STONECUTTING_RESULT", false);
+
+    public static final SlotSemantic ANVIL_LEFT_INPUT = SlotSemantics.register("ET_ANVIL_LEFT_INPUT", true);
+    public static final SlotSemantic ANVIL_RIGHT_INPUT = SlotSemantics.register("ET_ANVIL_RIGHT_INPUT", true);
+    public static final SlotSemantic ANVIL_RESULT = SlotSemantics.register("ANVIL_RESULT", false);
 
     public static final SlotSemantic BASIC_CRAFTING_GRID = SlotSemantics.register("BASIC_CRAFTING_GRID", true);
     public static final SlotSemantic BASIC_CRAFTING_RESULT = SlotSemantics.register("BASIC_CRAFTING_RESULT", false);

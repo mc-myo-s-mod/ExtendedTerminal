@@ -2,7 +2,7 @@ package me.myogoo.extendedterminal.menu.avaritiaRe;
 
 import appeng.api.storage.ITerminalHost;
 import appeng.menu.implementations.MenuTypeBuilder;
-import me.myogoo.extendedterminal.config.ETConfig;
+import me.myogoo.extendedterminal.config.avaritiaRe.AvaritiaReConfig;
 import me.myogoo.extendedterminal.menu.ETMenuType;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.MenuType;
@@ -13,6 +13,6 @@ public class NetherTerminalMenu extends AvaritiaTerminalBaseMenu {
             .buildUnregistered(ETMenuType.NETHER_TERMINAL.getId());
 
     public NetherTerminalMenu(MenuType<?> menuType, int id, Inventory ip, ITerminalHost host) {
-        super(menuType, id, ip, host, ETMenuType.NETHER_TERMINAL, ETConfig.NETHER_TERMINAL_CONFIG);
+        super(menuType, id, ip, host, ETMenuType.NETHER_TERMINAL, AvaritiaReConfig.INSTANCE.getNetherConfig());
     }
 }
