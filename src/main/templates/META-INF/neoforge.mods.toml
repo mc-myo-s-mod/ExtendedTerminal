@@ -24,7 +24,7 @@ modId = "ae2"
 type = "REQUIRED"
 ordering="AFTER"
 side="BOTH"
-versionRange = "[19,)"
+versionRange = "[19.2.16,)"
 
 [[dependencies."${mod_id}"]]
 modId = "ae2wtlib"
