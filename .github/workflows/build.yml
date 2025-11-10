@@ -1,22 +1,12 @@
 name: build mod
 
 on:
-    push:
-        branches-ignore:
-            - '*-dev'
-            - '*-fix'
-            - '*/*'
-        paths-ignore:
-            - "readme/**"
-            - ".github/**"
-    pull_request:
-        branches-ignore:
-            - '*-dev'
-            - '*-fix'
-            - '*/*'
-        paths-ignore:
-            - "readme/**"
-            - ".github/**"
+  push:
+    branches:
+      - '**'
+  pull_request:
+    branches:
+      - '*'
 
 jobs:
     build:
@@ -34,17 +24,20 @@ jobs:
           - name: Setup Java
             uses: actions/setup-java@v4
             with:
-                java-version: ${{ steps.read_java_version.outputs.version }}
-                distribution: 'temurin'
+                distribution: 'microsoft'
+                java-version: '21'
 
           - name: Make gradlew executable
             run: chmod +x ./gradlew
 
+          - name: Make Assets
+            run: ./gradlew runData
+         
           - name: Build with Gradle
             run: ./gradlew build
 
           - name: Upload build artifacts
             uses: actions/upload-artifact@v4
             with:
-                name: build-artifacts
+                name: build
                 path: build/libs/
