@@ -12,9 +12,11 @@ public class ETEmiPlugin implements EmiPlugin {
         if(ModList.get().isLoaded("jei")) {
             return;
         }
+        /*
         EmiRegisterHelper.registerCategories(registry);
         EmiRegisterHelper.registerWorkStations(registry);
         EmiRegisterHelper.registerRecipeHandlers(registry);
         EmiRegisterHelper.addRecipes(registry);
+         */
     }
 }
