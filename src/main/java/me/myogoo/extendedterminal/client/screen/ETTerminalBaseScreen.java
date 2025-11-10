@@ -23,15 +23,18 @@ import org.lwjgl.glfw.GLFW;
 import java.util.List;
 
 public class ETTerminalBaseScreen<R extends Recipe<?>,T extends ETTerminalBaseMenu<R>> extends MEStorageScreen<T> {
+    protected final ActionButton clearBtn;
+    protected final ActionButton clearToPlayerInvBtn;
+
     public ETTerminalBaseScreen(T menu, Inventory playerInventory, Component title, ScreenStyle style) {
         super(menu, playerInventory, title, style);
 
-        ActionButton clearBtn = new ActionButton(ActionItems.S_STASH, btn -> menu.clearCraftingGrid());
+        this.clearBtn = new ActionButton(ActionItems.S_STASH, btn -> menu.clearCraftingGrid());
         clearBtn.setHalfSize(true);
         clearBtn.setDisableBackground(true);
         widgets.add("clearCraftingGrid", clearBtn);
 
-        ActionButton clearToPlayerInvBtn = new ActionButton(ActionItems.S_STASH_TO_PLAYER_INV,
+        this.clearToPlayerInvBtn = new ActionButton(ActionItems.S_STASH_TO_PLAYER_INV,
                 btn -> menu.clearToPlayerInventory());
         clearToPlayerInvBtn.setHalfSize(true);
         clearToPlayerInvBtn.setDisableBackground(true);
@@ -69,6 +72,9 @@ public class ETTerminalBaseScreen<R extends Recipe<?>,T extends ETTerminalBaseMe
     @Override
     public void init() {
         super.init();
+        if(this.getMenu().getETMenuType().equals(ETMenuType.ET_TERMINAL)) {
+            return;
+        }
         ETMenuType menuType = this.getMenu().getETMenuType();
         drawCraftingSlot(menuType.getSlotSemanticGrid(),menuType.getGridSideLength());
     }

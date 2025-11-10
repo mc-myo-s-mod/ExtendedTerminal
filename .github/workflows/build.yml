@@ -1,0 +1,44 @@
+name: build mod
+
+on:
+  push:
+    branches:
+      - '**'
+  pull_request:
+    branches:
+      - '*'
+
+jobs:
+    build:
+        runs-on: ubuntu-latest
+        steps:
+          - name: Checkout code
+            uses: actions/checkout@v4
+
+          - name: Read Java version from gradle.properties
+            id: read_java_version
+            run: |
+              version=$(grep '^java_version=' gradle.properties | cut -d'=' -f2 | tr -d ' \r')
+              echo "Found Java version: $version"
+              echo "version=$version" >> $GITHUB_OUTPUT
+
+          - name: Setup Java
+            uses: actions/setup-java@v4
+            with:
+              distribution: 'microsoft'
+              java-version: ${{ steps.read_java_version.outputs.version }}
+              
+          - name: Setup Gradle
+            uses: gradle/actions/setup-gradle@v3
+
+          - name: Make Assets
+            run: ./gradlew runData
+         
+          - name: Build with Gradle
+            run: ./gradlew build
+
+          - name: Upload build artifacts
+            uses: actions/upload-artifact@v4
+            with:
+                name: build
+                path: build/libs/

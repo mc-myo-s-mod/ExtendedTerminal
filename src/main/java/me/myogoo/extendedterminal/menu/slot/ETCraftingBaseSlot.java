@@ -25,14 +25,14 @@ import net.minecraft.world.level.Level;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class ETCraftingBaseSlot<R extends Recipe<?>, I extends CraftingInput> extends AppEngCraftingSlot {
+public abstract class ETCraftingBaseSlot<R extends Recipe<?>, I extends RecipeInput> extends AppEngCraftingSlot {
     protected final InternalInventory craftInv;
     private final InternalInventory pattern;
 
     protected final IActionSource mySrc;
     protected final IEnergySource energySrc;
-    private final MEStorage storage;
     protected final ICraftingGridMenu menu;
+    private final MEStorage storage;
 
     protected final ETMenuType menuType;
 

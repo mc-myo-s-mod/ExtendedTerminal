@@ -1,9 +1,10 @@
 package me.myogoo.extendedterminal.menu;
 
 import appeng.menu.SlotSemantic;
+import appeng.menu.SlotSemantics;
 import me.myogoo.extendedterminal.ExtendedTerminal;
 import me.myogoo.extendedterminal.api.ModAccessor;
-import me.myogoo.extendedterminal.util.mod.ModLoadHelper;
+import me.myogoo.extendedterminal.util.mod.ModIntegrationManager;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.fml.common.asm.enumextension.ExtensionInfo;
 import net.neoforged.fml.common.asm.enumextension.IExtensibleEnum;
@@ -14,8 +15,8 @@ import java.util.Arrays;
 
 
 public enum ETMenuType implements IExtensibleEnum {
-    ET_TERMINAL(3,-1, ETSlotSemantics.BASIC_CRAFTING_GRID, ETSlotSemantics.BASIC_CRAFTING_RESULT),
-
+    ET_TERMINAL(3,-1, SlotSemantics.CRAFTING_GRID, SlotSemantics.CRAFTING_RESULT),
+    EX_PATTERN_TERMINAL(9,-1 , ETSlotSemantics.BASIC_CRAFTING_GRID, ETSlotSemantics.BASIC_CRAFTING_RESULT),
     @ModAccessor.ExtendedCrafting
     BASIC_TERMINAL(3,1, ETSlotSemantics.BASIC_CRAFTING_GRID, ETSlotSemantics.BASIC_CRAFTING_RESULT),
 
@@ -41,7 +42,10 @@ public enum ETMenuType implements IExtensibleEnum {
     END_TERMINAL(7, 3, ETSlotSemantics.END_CRAFTING_GRID, ETSlotSemantics.END_CRAFTING_RESULT),
 
     @ModAccessor.ReAvaritia
-    EXTREME_TERMINAL(9, 4, ETSlotSemantics.EXTREME_CRAFTING_GRID, ETSlotSemantics.EXTREME_CRAFTING_RESULT),;
+    EXTREME_TERMINAL(9, 4, ETSlotSemantics.EXTREME_CRAFTING_GRID, ETSlotSemantics.EXTREME_CRAFTING_RESULT),
+
+    @ModAccessor.AvaritiaNeo
+    NEO_EXTREME_TERMINAL(9, 4, ETSlotSemantics.EXTREME_CRAFTING_GRID, ETSlotSemantics.EXTREME_CRAFTING_RESULT);
 
     private final SlotSemantic slotSemantic_GRID;
     private final SlotSemantic slotSemantic_RESULT;
@@ -86,6 +90,10 @@ public enum ETMenuType implements IExtensibleEnum {
         return this.name().toLowerCase();
     }
 
+    public String getWTIdAsString() {
+        return  "wireless_" + this.name().toLowerCase();
+    }
+
     public String getEnglishName() {
         return this.name().toLowerCase().replace("_", " ");
     }
@@ -98,7 +106,7 @@ public enum ETMenuType implements IExtensibleEnum {
             }
             return Arrays.stream(field.getDeclaredAnnotations())
                     .map(Annotation::annotationType)
-                    .allMatch(ModLoadHelper::get);
+                    .allMatch(ModIntegrationManager::isLoaded);
         } catch (NoSuchFieldException e) {
             ExtendedTerminal.LOGGER.error("Menu type {} is not loaded due to missing field in ETMenuType", this.name());
         }

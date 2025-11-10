@@ -1,7 +1,6 @@
 <p align="center">
     <img width="200" src="readme/extended_terminal.png" alt="logo">  
 </p>
-<hr>
 <h1 align="center">Extended Terminal</h1>
 <p align="center">
     <a href="https://www.curseforge.com/minecraft/mc-mods/extended-terminal" target="_blank">
@@ -22,3 +21,7 @@
 - code: LGPL 3.0
 - Assets
   - AE2: [See Details ![Badge](https://img.shields.io/badge/License-CC%20BY--NC--SA%203.0-green?style=flat-square)](readme/ae2-license.md)
+
+### Badges
+[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/mc-myo-s-mod/ExtendedTerminal)
+[![wakatime](https://wakatime.com/badge/user/ca36a468-38ff-45c1-9525-449c220435e1/project/88df062b-d528-4d07-8bf1-f613c88da7a4.svg)](https://wakatime.com/badge/user/ca36a468-38ff-45c1-9525-449c220435e1/project/88df062b-d528-4d07-8bf1-f613c88da7a4)

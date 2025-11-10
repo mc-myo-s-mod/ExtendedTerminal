@@ -1,0 +1,38 @@
+{
+  "slots" : {
+    "ET_ANVIL_LEFT_INPUT": {
+      "left": 15,
+      "bottom": 140
+    },
+    "ET_ANVIL_RIGHT_INPUT": {
+      "left": 67,
+      "bottom": 140
+    },
+    "ANVIL_RESULT": {
+      "left": 134,
+      "bottom": 140
+    }
+  },
+  "widgets" : {
+    "ET_ANVIL_NAME_FIELD": {
+      "left": 70,
+      "bottom": 159,
+      "width": 89,
+      "height": 12
+    },
+    "modeTabButtonAnvilPanel": {
+      "left": 173,
+      "bottom": 112,
+      "width": 22,
+      "height": 22
+    },
+    "modePanelAnvilPanel": {
+      "left": 9,
+      "bottom": 166
+    },
+    "ET_ANVIL_COST_LABEL" : {
+      "left": 10,
+      "bottom": 110
+    }
+  }
+}

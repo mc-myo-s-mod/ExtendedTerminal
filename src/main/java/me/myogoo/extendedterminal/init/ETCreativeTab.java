@@ -1,9 +1,12 @@
 package me.myogoo.extendedterminal.init;
 
+import appeng.api.config.Actionable;
 import appeng.core.definitions.AEParts;
 import appeng.core.definitions.ItemDefinition;
+import de.mari_023.ae2wtlib.api.terminal.ItemWT;
 import me.myogoo.extendedterminal.ExtendedTerminal;
-import me.myogoo.extendedterminal.config.ETConfig;
+import me.myogoo.extendedterminal.util.mod.ModIntegrationManager;
+import me.myogoo.extendedterminal.util.mod.SupportedMod;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.CreativeModeTab;
@@ -19,6 +22,15 @@ public class ETCreativeTab {
             .displayItems((params, output) -> {
                 for (ItemDefinition<?> item : ETItems.ITEMS) {
                     output.accept(item);
+                }
+                if(ModIntegrationManager.isLoaded(SupportedMod.AE2WTLib)) {
+                    for(var wt : ETItems.WT_ITEMS) {
+                        var stack = wt.stack();
+                        output.accept(stack.copy());
+                        ItemWT item = wt.get();
+                        item.injectAEPower(stack, item.getAEMaxPower(stack), Actionable.MODULATE);
+                        output.accept(stack);
+                    }
                 }
             })
             .build());
