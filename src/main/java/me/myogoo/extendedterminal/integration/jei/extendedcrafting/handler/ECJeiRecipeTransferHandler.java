@@ -5,7 +5,7 @@ import com.blakebr0.extendedcrafting.api.crafting.ITableRecipe;
 import com.blakebr0.extendedcrafting.init.ModRecipeTypes;
 import me.myogoo.extendedterminal.api.adapter.recipe.table.IShapedTableRecipeAdapter;
 import me.myogoo.extendedterminal.api.adapter.recipe.table.ITableRecipeAdapter;
-import me.myogoo.extendedterminal.integration.jei.handler.AbstractTableRecipeHandler;
+import me.myogoo.extendedterminal.integration.jei.handler.AbstractTableHolderRecipeHandler;
 import me.myogoo.extendedterminal.menu.extendedcrafting.ExtendedTerminalBaseMenu;
 import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.recipe.RecipeIngredientRole;
@@ -14,8 +14,10 @@ import mezz.jei.api.recipe.transfer.IRecipeTransferError;
 import mezz.jei.api.recipe.transfer.IRecipeTransferHandlerHelper;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
@@ -27,16 +29,17 @@ import static appeng.integration.modules.itemlists.TransferHelper.BLUE_PLUS_BUTT
 import static appeng.integration.modules.itemlists.TransferHelper.ORANGE_PLUS_BUTTON_COLOR;
 import static me.myogoo.extendedterminal.integration.ItemListTermCraftingHelper.ensureFittedCraftingGrid;
 
-public class ECJeiRecipeTransferHandler<T extends ExtendedTerminalBaseMenu> extends AbstractTableRecipeHandler<T, ITableRecipe> {
+public class ECJeiRecipeTransferHandler<T extends ExtendedTerminalBaseMenu> extends AbstractTableHolderRecipeHandler<T, ITableRecipe, RecipeHolder<ITableRecipe>> {
     private final IRecipeTransferHandlerHelper helper;
 
-    public ECJeiRecipeTransferHandler(Class<T> containerClass, MenuType<T> container, RecipeType<ITableRecipe> recipeType, IRecipeTransferHandlerHelper helper) {
+    public ECJeiRecipeTransferHandler(Class<T> containerClass, MenuType<T> container, RecipeType<RecipeHolder<ITableRecipe>> recipeType, IRecipeTransferHandlerHelper helper) {
         super(containerClass, container, recipeType);
         this.helper = helper;
     }
 
     @Override
-    public @Nullable IRecipeTransferError transferRecipe(T menu, ITableRecipe recipe, IRecipeSlotsView recipeSlots, Player player, boolean maxTransfer, boolean doTransfer) {
+    public @Nullable IRecipeTransferError transferRecipe(T menu, RecipeHolder<ITableRecipe> recipeHolder, IRecipeSlotsView recipeSlots, Player player, boolean maxTransfer, boolean doTransfer) {
+        var recipe = recipeHolder.value();
         if (recipe.getIngredients().isEmpty()) {
             return Result.createInCompatibleError(helper);
         }
@@ -67,12 +70,7 @@ public class ECJeiRecipeTransferHandler<T extends ExtendedTerminalBaseMenu> exte
                 return new Result.PartiallyCraftable(missingSlots, color, craftMissing);
             }
         } else {
-            performTransfer(menu, adapterRecipe, craftMissing, () -> {
-                var level = menu.getPlayer().level();
-                var recipeManager = level.getRecipeManager();
-                var findRecipe = recipeManager.getAllRecipesFor(ModRecipeTypes.TABLE.get()).stream().filter(x -> x.value().equals(recipe)).toList();
-                return !findRecipe.isEmpty() ? findRecipe.getFirst() : null;
-            });
+            performTransfer(menu, adapterRecipe, craftMissing, recipeHolder.id());
         }
         return Result.createSuccessful();
     }
@@ -113,4 +111,5 @@ public class ECJeiRecipeTransferHandler<T extends ExtendedTerminalBaseMenu> exte
         return result;
 
     }
+
 }
