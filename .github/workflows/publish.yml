@@ -75,12 +75,20 @@ jobs:
 
                 changelog-file: 'CHANGELOG.md' 
                 game-versions: ${{ needs.build.outputs.mc_version }}
-                loaders: ${{ needs.build.outputs.mc_loader }}
+                loaders: ${{ needs.build.outputs.mod_loader }}
                 version-type: ${{ needs.build.outputs.version_type }}
 
                 files: 'build/libs/*.jar'
                 name: ${{ needs.build.outputs.artifact_name }}
                 version: ${{ needs.build.outputs.mc_version }}-${{ needs.build.outputs.mod_version }} 
+
+                dependencies: |
+                    ae2(required){modrinth:XxWD5pD3}{curseforge:223794}
+                    ae2wtlib(optional){modrinth:pNabrMMw}{curseforge:459929}
+                    extendedcrafting(optional){modrinth:5JMG1gql}{curseforge:1083158}
+                    avaritianeo(optional){modrinth:j5gjLUvf}{curseforge:268387}
+                    re-avaritia(optional){modrinth:QeB3NRC5}{curseforge:623969}
+                    
     publish-to-modrinth:
         if: github.event.workflow_run.event == 'push'
         runs-on: ubuntu-latest
@@ -93,14 +101,21 @@ jobs:
           - name: Publish to Modrinth & CurseForge
             uses: Kir-Antipov/mc-publish@v3.3
             with:
-                modrinth-id: extended-terminal
+                modrinth-id: SwdQUhgJ
                 modrinth-token: ${{ secrets.MODRINTH_TOKEN }}
                 
                 changelog-file: 'CHANGELOG.md' 
                 game-versions: ${{ needs.build.outputs.mc_version }}
-                loaders: ${{ needs.build.outputs.mc_loader }}
+                loaders: ${{ needs.build.outputs.mod_loader }}
                 version-type: ${{ needs.build.outputs.version_type }}
 
                 files: 'build/libs/*.jar'
                 name: ${{ needs.build.outputs.artifact_name }}
                 version: ${{ needs.build.outputs.mc_version }}-${{ needs.build.outputs.mod_version }}
+
+                dependencies: |
+                    ae2(required){modrinth:XxWD5pD3}{curseforge:223794}
+                    ae2wtlib(optional){modrinth:pNabrMMw}{curseforge:459929}
+                    extendedcrafting(optional){modrinth:5JMG1gql}{curseforge:1083158}
+                    avaritianeo(optional){modrinth:j5gjLUvf}{curseforge:268387}
+                    re-avaritia(optional){modrinth:QeB3NRC5}{curseforge:623969}
