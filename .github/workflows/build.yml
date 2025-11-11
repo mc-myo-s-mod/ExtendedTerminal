@@ -1,0 +1,47 @@
+name: build mod
+
+on:
+  push:
+    branches:
+      - '**'
+  pull_request:
+    branches:
+      - '*'
+
+jobs:
+    build:
+        runs-on: ubuntu-latest
+        outputs:
+          artifact_name: ${{ steps.vars.outputs.artifact_name }}
+          artifact_path: ${{ steps.vars.outputs.artifact_path }}
+          mc_version: ${{ steps.vars.outputs.mc_version }}
+          mod_version: ${{ steps.vars.outputs.mod_version }}
+        steps:
+          - name: Checkout code
+            uses: actions/checkout@v4
+
+          - name: Read Variables from gradle.properties
+            id: vars
+            run: |
+              java_version=$(grep '^java_version=' gradle.properties | cut -d'=' -f2 | tr -d ' \r')
+              echo "java_version=$java_version" >> $GITHUB_OUTPUT
+              mc_version=$(grep '^minecraft_version=' gradle.properties | cut -d'=' -f2 | tr -d ' \r')
+              echo "mc_version=$mc_version" >> $GITHUB_OUTPUT
+              mod_version=$(grep '^mod_version=' gradle.properties | cut -d'=' -f2 | tr -d ' \r')
+              echo "mod_version=$mod_version" >> $GITHUB_OUTPUT
+              echo artifact_path=build/libs/ExtendedTerminal-$mc_version-$mod_version.jar >> $GITHUB_OUTPUT
+              echo artifact_name=ExtendedTerminal-$mc_version-$mod_version >> $GITHUB_OUTPUT
+          - name: Setup Java
+            uses: actions/setup-java@v4
+            with:
+              distribution: 'microsoft'
+              java-version: ${{ steps.vars.outputs.java_version }}
+                      
+          - name: Setup Gradle
+            uses: gradle/actions/setup-gradle@v3
+
+          - name: Make gradlew executable
+            run: chmod +x ./gradlew
+
+          - name: Build with Gradle
+            run: ./gradlew build
