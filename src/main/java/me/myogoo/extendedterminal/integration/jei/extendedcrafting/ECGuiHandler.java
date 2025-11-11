@@ -11,7 +11,7 @@ import me.myogoo.extendedterminal.client.screen.extendedcrafting.AdvancedTermina
 import me.myogoo.extendedterminal.client.screen.extendedcrafting.BasicTerminalScreen;
 import me.myogoo.extendedterminal.client.screen.extendedcrafting.EliteTerminalScreen;
 import me.myogoo.extendedterminal.client.screen.extendedcrafting.UltimateTerminalScreen;
-import me.myogoo.extendedterminal.integration.jei.handler.JeiTableGuiHandler;
+import me.myogoo.extendedterminal.integration.jei.handler.JeiTableHolderGuiHandler;
 import mezz.jei.api.registration.IGuiHandlerRegistration;
 
 @ModAccessor.ExtendedCrafting
@@ -19,9 +19,9 @@ import mezz.jei.api.registration.IGuiHandlerRegistration;
 public class ECGuiHandler {
     @SubscribeLoadEvent
     public static void init(IGuiHandlerRegistration registration) {
-        registration.addGuiContainerHandler(BasicTerminalScreen.class, new JeiTableGuiHandler<>(BasicTableCategory.RECIPE_TYPE));
-        registration.addGuiContainerHandler(AdvancedTerminalScreen.class, new JeiTableGuiHandler<>(AdvancedTableCategory.RECIPE_TYPE));
-        registration.addGuiContainerHandler(EliteTerminalScreen.class, new JeiTableGuiHandler<>(EliteTableCategory.RECIPE_TYPE));
-        registration.addGuiContainerHandler(UltimateTerminalScreen.class, new JeiTableGuiHandler<>(UltimateTableCategory.RECIPE_TYPE));
+        registration.addGuiContainerHandler(BasicTerminalScreen.class, new JeiTableHolderGuiHandler<>(BasicTableCategory.RECIPE_TYPE));
+        registration.addGuiContainerHandler(AdvancedTerminalScreen.class, new JeiTableHolderGuiHandler<>(AdvancedTableCategory.RECIPE_TYPE));
+        registration.addGuiContainerHandler(EliteTerminalScreen.class, new JeiTableHolderGuiHandler<>(EliteTableCategory.RECIPE_TYPE));
+        registration.addGuiContainerHandler(UltimateTerminalScreen.class, new JeiTableHolderGuiHandler<>(UltimateTableCategory.RECIPE_TYPE));
     }
 }
