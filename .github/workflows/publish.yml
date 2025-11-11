@@ -78,7 +78,7 @@ jobs:
                 loaders: ${{ needs.build.outputs.mc_loader }}
                 version-type: ${{ needs.build.outputs.version_type }}
 
-                files: '*.jar'
+                files: 'build/libs/*.jar'
                 name: ${{ needs.build.outputs.artifact_name }}
                 version: ${{ needs.build.outputs.mc_version }}-${{ needs.build.outputs.mod_version }} 
     publish-to-modrinth:
@@ -101,6 +101,6 @@ jobs:
                 loaders: ${{ needs.build.outputs.mc_loader }}
                 version-type: ${{ needs.build.outputs.version_type }}
 
-                files: '*.jar'
+                files: 'build/libs/*.jar'
                 name: ${{ needs.build.outputs.artifact_name }}
                 version: ${{ needs.build.outputs.mc_version }}-${{ needs.build.outputs.mod_version }}
