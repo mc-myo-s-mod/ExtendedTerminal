@@ -64,7 +64,7 @@ jobs:
         needs: build
         steps:
           - name: Download build-artifact
-            uses: actions/download-artifact@v6.0.0
+            uses: actions/download-artifact@v4
             with:
                 name: ${{ needs.build.outputs.artifact_name }}
           - name: Publish to Modrinth & CurseForge
@@ -87,7 +87,7 @@ jobs:
         needs: build
         steps:
           - name: Download build-artifact
-            uses: actions/download-artifact@v6.0.0
+            uses: actions/download-artifact@v4
             with:
                 name: built-artifact
           - name: Publish to Modrinth & CurseForge
