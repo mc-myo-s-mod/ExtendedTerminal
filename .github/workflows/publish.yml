@@ -89,7 +89,7 @@ jobs:
           - name: Download build-artifact
             uses: actions/download-artifact@v4
             with:
-                name: built-artifact
+                name: ${{ needs.build.outputs.artifact_name }}
           - name: Publish to Modrinth & CurseForge
             uses: Kir-Antipov/mc-publish@v3.3
             with:
