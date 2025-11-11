@@ -49,5 +49,5 @@ jobs:
           - name: Upload build artifacts
             uses: actions/upload-artifact@v4
             with:
-                name: ${{ steps.vars.outputs.artifact_name }} 
+                name: built-artifact
                 path: ${{ steps.vars.outputs.artifact_path }}
