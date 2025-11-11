@@ -45,9 +45,3 @@ jobs:
 
           - name: Build with Gradle
             run: ./gradlew build
-
-          - name: Upload build artifacts
-            uses: actions/upload-artifact@v4
-            with:
-                name: built-artifact
-                path: ${{ steps.vars.outputs.artifact_path }}
