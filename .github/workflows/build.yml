@@ -11,23 +11,32 @@ on:
 jobs:
     build:
         runs-on: ubuntu-latest
+        outputs:
+          artifact_name: ${{ steps.vars.outputs.artifact_name }}
+          artifact_path: ${{ steps.vars.outputs.artifact_path }}
+          mc_version: ${{ steps.vars.outputs.mc_version }}
+          mod_version: ${{ steps.vars.outputs.mod_version }}
         steps:
           - name: Checkout code
             uses: actions/checkout@v4
 
-          - name: Read Java version from gradle.properties
-            id: read_java_version
+          - name: Read Variables from gradle.properties
+            id: vars
             run: |
-              version=$(grep '^java_version=' gradle.properties | cut -d'=' -f2 | tr -d ' \r')
-              echo "Found Java version: $version"
-              echo "version=$version" >> $GITHUB_OUTPUT
-
+              java_version=$(grep '^java_version=' gradle.properties | cut -d'=' -f2 | tr -d ' \r')
+              echo "java_version=$java_version" >> $GITHUB_OUTPUT
+              mc_version=$(grep '^minecraft_version=' gradle.properties | cut -d'=' -f2 | tr -d ' \r')
+              echo "mc_version=$mc_version" >> $GITHUB_OUTPUT
+              mod_version=$(grep '^mod_version=' gradle.properties | cut -d'=' -f2 | tr -d ' \r')
+              echo "mod_version=$mod_version" >> $GITHUB_OUTPUT
+              echo artifact_path=build/libs/ExtendedTerminal-$mc_version-$mod_version.jar >> $GITHUB_OUTPUT
+              echo artifact_name=ExtendedTerminal-$mc_version-$mod_version >> $GITHUB_OUTPUT
           - name: Setup Java
             uses: actions/setup-java@v4
             with:
               distribution: 'microsoft'
-              java-version: ${{ steps.read_java_version.outputs.version }}
-              
+              java-version: ${{ steps.vars.outputs.java_version }}
+                      
           - name: Setup Gradle
             uses: gradle/actions/setup-gradle@v3
 
@@ -40,5 +49,5 @@ jobs:
           - name: Upload build artifacts
             uses: actions/upload-artifact@v4
             with:
-                name: build
-                path: build/libs/
+                name: ${{ steps.vars.outputs.artifact_name }} 
+                path: ${{ steps.vars.outputs.artifact_path }}
