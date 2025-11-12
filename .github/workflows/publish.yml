@@ -2,13 +2,15 @@
 name: 'Publish to Modrinth & CurseForge'
 
 on:
-    workflow_run:
-        workflows: ['build mod']
-        types: [completed]
-        branches: [ '1.20.1', '1.21.1' ]
-
+	pull_request:
+		types: [closed]
+		branches:
+			- '1.20.1'
+			- '1.21.1'
+		path: 'CHANGELOG.md'
 jobs:
     build:
+		if: github.event.pull_request.merged == true
         runs-on: ubuntu-latest
         outputs:
           artifact_name: ${{ steps.vars.outputs.artifact_name }}
@@ -59,7 +61,7 @@ jobs:
                     ${{ steps.vars.outputs.artifact_path }}
                     CHANGELOG.md
     publish-to-curseforge:
-        if: github.event.workflow_run.event == 'push'
+		if: github.event.pull_request.merged == true
         runs-on: ubuntu-latest
         needs: build
         steps:
@@ -90,7 +92,7 @@ jobs:
                     re-avaritia(optional){modrinth:QeB3NRC5}{curseforge:623969}
                     
     publish-to-modrinth:
-        if: github.event.workflow_run.event == 'push'
+		if: github.event.pull_request.merged == true
         runs-on: ubuntu-latest
         needs: build
         steps:
