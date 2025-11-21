@@ -8,6 +8,7 @@ on:
     branches:
       - '1.20.1'
     path: 'CHANGELOG.md'
+
 jobs:
   build:
     if: github.event.pull_request.merged == true
