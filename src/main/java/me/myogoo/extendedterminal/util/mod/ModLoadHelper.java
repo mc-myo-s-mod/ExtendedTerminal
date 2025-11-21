@@ -16,7 +16,7 @@ public class ModLoadHelper {
 
     private static final Map<Class<? extends Annotation>, Boolean> loadedAnnotations = new HashMap<>();
     private static final Logger logger = ExtendedTerminal.LOGGER;
-    private final static String ReAvaritia = "Re-Avaritia-forged";
+    private final static String ReAvaritia = "Re-Avaritia";
     private final static String AvaritiaNeo = "Avaritia";
 
     private final static ModFileScanData ScanData = ModList.get()
