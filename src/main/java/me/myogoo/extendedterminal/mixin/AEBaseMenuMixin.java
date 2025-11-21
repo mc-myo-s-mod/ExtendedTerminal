@@ -2,6 +2,7 @@ package me.myogoo.extendedterminal.mixin;
 
 import appeng.menu.AEBaseMenu;
 import appeng.menu.SlotSemantic;
+import appeng.menu.SlotSemantics;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.Slot;
 import org.spongepowered.asm.mixin.Final;
@@ -25,8 +26,7 @@ public class AEBaseMenuMixin {
         if(slot.container == playerInventory) {
             cir.setReturnValue(true);
         }
-
         SlotSemantic slotSemantic = semanticBySlot.get(slot);
-        cir.setReturnValue(slotSemantic.playerSide());
+        cir.setReturnValue((slotSemantic.playerSide() || slotSemantic == SlotSemantics.CRAFTING_GRID));
     }
 }

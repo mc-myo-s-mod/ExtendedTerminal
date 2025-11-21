@@ -26,6 +26,5 @@ public class ETDataGen {
         pack.addProvider(InscriberRecipeProvider::new);
         pack.addProvider(ExtendedCraftingRecipeProvider::new);
         pack.addProvider(ReAvaritiaCraftingRecipeProvider::new);
-
     }
 }
