@@ -7,7 +7,8 @@ on:
     types: [closed]
     branches:
       - '1.20.1'
-    path: 'CHANGELOG.md'
+    paths:
+    - 'CHANGELOG.md'
 jobs:
   build:
     if: github.event.pull_request.merged == true
@@ -34,7 +35,7 @@ jobs:
           echo "mod_version=$mod_version" >> $GITHUB_OUTPUT
           mod_loader=$(grep '^mod_loader=' gradle.properties | cut -d'=' -f2 | tr -d ' \r')
           echo "mod_loader=$mod_loader" >> $GITHUB_OUTPUT
-          version_type=$(grep '^version_type=' gradle.properties | cut -d'=' -f2 | tr -d ' \r')
+          version_type=$(grep '^mod_version_type=' gradle.properties | cut -d'=' -f2 | tr -d ' \r')
           echo "version_type=$version_type" >> $GITHUB_OUTPUT
           echo artifact_path=build/libs/ExtendedTerminal-$mc_version-$mod_version.jar >> $GITHUB_OUTPUT
           echo artifact_name=ExtendedTerminal-$mc_version-$mod_version >> $GITHUB_OUTPUT
