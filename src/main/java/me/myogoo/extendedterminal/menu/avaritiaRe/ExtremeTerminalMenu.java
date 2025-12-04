@@ -2,7 +2,7 @@ package me.myogoo.extendedterminal.menu.avaritiaRe;
 
 import appeng.api.storage.ITerminalHost;
 import appeng.menu.implementations.MenuTypeBuilder;
-import me.myogoo.extendedterminal.config.ETConfig;
+import me.myogoo.extendedterminal.config.avaritiaRe.AvaritiaReConfig;
 import me.myogoo.extendedterminal.menu.ETMenuType;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.MenuType;
@@ -13,7 +13,7 @@ public class ExtremeTerminalMenu extends AvaritiaTerminalBaseMenu {
             .build(ETMenuType.EXTREME_TERMINAL.getIdAsString());
 
     public ExtremeTerminalMenu(MenuType<?> menuType, int id, Inventory ip, ITerminalHost host) {
-        super(menuType, id, ip, host,ETMenuType.EXTREME_TERMINAL, ETConfig.EXTREME_TERMINAL_CONFIG);
+        super(menuType, id, ip, host,ETMenuType.EXTREME_TERMINAL, AvaritiaReConfig.INSTANCE.getExtremeConfig());
 
     }
 }

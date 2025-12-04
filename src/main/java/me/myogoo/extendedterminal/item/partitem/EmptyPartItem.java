@@ -1,9 +1,10 @@
-package me.myogoo.extendedterminal.item;
+package me.myogoo.extendedterminal.item.partitem;
 
 import appeng.api.parts.IPart;
 import appeng.api.parts.IPartItem;
 import appeng.items.parts.PartItem;
-import me.myogoo.extendedterminal.part.EmptyPart;
+import com.blakebr0.extendedcrafting.lib.ModTooltips;
+import me.myogoo.extendedterminal.menu.ETMenuType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;

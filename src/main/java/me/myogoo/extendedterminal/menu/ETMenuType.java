@@ -2,8 +2,8 @@ package me.myogoo.extendedterminal.menu;
 
 import appeng.menu.SlotSemantic;
 import me.myogoo.extendedterminal.ExtendedTerminal;
-import me.myogoo.extendedterminal.api.ModAccessor;
-import me.myogoo.extendedterminal.util.mod.ModLoadHelper;
+import me.myogoo.extendedterminal.api.ModAccessor.*;
+import me.myogoo.extendedterminal.util.mod.ModIntegrationManager;
 import net.minecraft.resources.ResourceLocation;
 
 import java.lang.annotation.Annotation;
@@ -14,29 +14,35 @@ import java.util.Arrays;
 public enum ETMenuType {
     ET_TERMINAL(3,-1, ETSlotSemantics.BASIC_CRAFTING_GRID, ETSlotSemantics.BASIC_CRAFTING_RESULT),
 
-    @ModAccessor.ExtendedCrafting
+    @ExtendedCrafting
     BASIC_TERMINAL(3,1, ETSlotSemantics.BASIC_CRAFTING_GRID, ETSlotSemantics.BASIC_CRAFTING_RESULT),
 
-    @ModAccessor.ExtendedCrafting
+    @ExtendedCrafting
     ADVANCED_TERMINAL(5,2, ETSlotSemantics.ADVANCED_CRAFTING_GRID, ETSlotSemantics.ADVANCED_CRAFTING_RESULT),
 
-    @ModAccessor.ExtendedCrafting
+    @ExtendedCrafting
     ELITE_TERMINAL(7,3, ETSlotSemantics.ELITE_CRAFTING_GRID, ETSlotSemantics.ELITE_CRAFTING_RESULT),
 
-    @ModAccessor.ExtendedCrafting
+    @ExtendedCrafting
     ULTIMATE_TERMINAL(9,4, ETSlotSemantics.ULTIMATE_CRAFTING_GRID, ETSlotSemantics.ULTIMATE_CRAFTING_RESULT),
+    
+    @ExtendedCrafting
+    ExEx_Terminal(11,5, ETSlotSemantics.EXEX_CRAFTING_GRID, ETSlotSemantics.EXEX_CRAFTING_RESULT),
 
-    @ModAccessor.ReAvaritia
+    @ReAvaritia
     SCULK_TERMINAL(3, 1, ETSlotSemantics.SCULK_CRAFTING_GRID, ETSlotSemantics.SCULK_CRAFTING_RESULT),
 
-    @ModAccessor.ReAvaritia
+    @ReAvaritia
     NETHER_TERMINAL(5, 2, ETSlotSemantics.NETHER_CRAFTING_GRID, ETSlotSemantics.NETHER_CRAFTING_RESULT),
 
-    @ModAccessor.ReAvaritia
+    @ReAvaritia
     END_TERMINAL(7, 3, ETSlotSemantics.END_CRAFTING_GRID, ETSlotSemantics.END_CRAFTING_RESULT),
 
-    @ModAccessor.ReAvaritia
-    EXTREME_TERMINAL(9, 4, ETSlotSemantics.EXTREME_CRAFTING_GRID, ETSlotSemantics.EXTREME_CRAFTING_RESULT);
+    @ReAvaritia
+    EXTREME_TERMINAL(9, 4, ETSlotSemantics.EXTREME_CRAFTING_GRID, ETSlotSemantics.EXTREME_CRAFTING_RESULT),
+
+    @AvaritiaNeo
+    NEO_EXTREME_TERMINAL(9, 4, ETSlotSemantics.EXTREME_CRAFTING_GRID, ETSlotSemantics.EXTREME_CRAFTING_RESULT);
 
     private final SlotSemantic slotSemantic_GRID;
     private final SlotSemantic slotSemantic_RESULT;
@@ -93,7 +99,7 @@ public enum ETMenuType {
             }
             return Arrays.stream(field.getDeclaredAnnotations())
                     .map(Annotation::annotationType)
-                    .allMatch(ModLoadHelper::get);
+                    .allMatch(ModIntegrationManager::isLoaded);
         } catch (NoSuchFieldException e) {
             ExtendedTerminal.LOGGER.error("Menu type {} is not loaded due to missing field in ETMenuType", this.name());
         }

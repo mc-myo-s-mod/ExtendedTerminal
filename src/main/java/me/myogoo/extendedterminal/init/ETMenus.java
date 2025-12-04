@@ -30,4 +30,5 @@ public final class ETMenus {
     public static final Supplier<MenuType<EndTerminalMenu>> END_TERMINAL = REGISTER.register(ETMenuType.END_TERMINAL.getIdAsString(), () -> EndTerminalMenu.TYPE);
     public static final Supplier<MenuType<ExtremeTerminalMenu>> EXTREME_TERMINAL = REGISTER.register(ETMenuType.EXTREME_TERMINAL.getIdAsString(), () -> ExtremeTerminalMenu.TYPE);
 
+    //public static final Supplier<MenuType<NeoExtremeTerminalMenu>> NEO_EXTREME_TERMINAL = REGISTER.register(ETMenuType.NEO_EXTREME_TERMINAL.getIdAsString(), () -> NeoExtremeTerminalMenu.TYPE);
 }

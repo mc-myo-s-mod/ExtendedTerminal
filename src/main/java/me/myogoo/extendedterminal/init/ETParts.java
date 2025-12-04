@@ -7,8 +7,8 @@ import appeng.core.definitions.ItemDefinition;
 import appeng.items.parts.PartItem;
 import appeng.items.parts.PartModelsHelper;
 import me.myogoo.extendedterminal.ExtendedTerminal;
-import me.myogoo.extendedterminal.item.EmptyPartItem;
-import me.myogoo.extendedterminal.item.ExtendedCraftingPartItem;
+import me.myogoo.extendedterminal.item.partitem.EmptyPartItem;
+import me.myogoo.extendedterminal.item.partitem.ExtendedCraftingPartItem;
 import me.myogoo.extendedterminal.menu.ETMenuType;
 import me.myogoo.extendedterminal.part.EmptyPart;
 import me.myogoo.extendedterminal.part.avaritiaRe.EndTerminalPart;
@@ -44,6 +44,7 @@ public class ETParts {
     public static final ItemDefinition<PartItem<NetherTerminalPart>> NETHER_TERMINAL_PART = createTerminalPart(ETMenuType.NETHER_TERMINAL, NetherTerminalPart.class, NetherTerminalPart::new);
     public static final ItemDefinition<PartItem<EndTerminalPart>> END_TERMINAL_PART = createTerminalPart(ETMenuType.END_TERMINAL, EndTerminalPart.class, EndTerminalPart::new);
     public static final ItemDefinition<PartItem<ExtremeTerminalPart>> EXTREME_TERMINAL_PART = createTerminalPart(ETMenuType.EXTREME_TERMINAL, ExtremeTerminalPart.class, ExtremeTerminalPart::new);
+    // AvaritiaNeo parts
 
     @SuppressWarnings("unchecked")
     private static <T extends IPart, I extends PartItem<T>> ItemDefinition<I> createPart(ETMenuType menuType, Class<T> partClass, Function<Item.Properties, I> propertiesFactory, boolean terminalPart) {
