@@ -25,6 +25,5 @@ public class ECRecipeCatalyst{
             registration.addRecipeCatalyst(ETParts.ELITE_TERMINAL_PART, EliteTableCategory.RECIPE_TYPE);
         if (instance.getUltimateConfig().enableTerminal())
             registration.addRecipeCatalyst(ETParts.ULTIMATE_TERMINAL_PART, UltimateTableCategory.RECIPE_TYPE);
-
     }
 }
