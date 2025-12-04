@@ -1,6 +1,6 @@
 package me.myogoo.extendedterminal.util.mod;
 
-import me.myogoo.extendedterminal.api.ModAccessor;
+import me.myogoo.extendedterminal.api.ModAccessor.*;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.forgespi.language.IModInfo;
 
@@ -11,9 +11,10 @@ public enum SupportedMod {
 
     //AE2WTLib("ae2wtlib", ModAccessor.AE2WTLib.class),
 
-    ExtendedCrafting("extendedcrafting", ModAccessor.ExtendedCrafting.class),
-    ReAvaritia("avaritia", ModAccessor.ReAvaritia.class, "Re-Avaritia"),
-    AvaritiaNeo("avaritia", ModAccessor.AvaritiaNeo.class, "Avaritia");
+    ExtendedCrafting("extendedcrafting", ExtendedCrafting.class),
+    EpicExCrafting("extendedcrafting", EpicExCrafting.class, "Extended Crafting: Expanded"),
+    ReAvaritia("avaritia", ReAvaritia.class, "Re-Avaritia"),
+    AvaritiaNeo("avaritia", AvaritiaNeo.class, "Avaritia");
 
     private final String modId;
     private final Class<? extends Annotation> annotationClass;

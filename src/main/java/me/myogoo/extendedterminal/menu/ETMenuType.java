@@ -26,8 +26,8 @@ public enum ETMenuType {
     @ExtendedCrafting
     ULTIMATE_TERMINAL(9,4, ETSlotSemantics.ULTIMATE_CRAFTING_GRID, ETSlotSemantics.ULTIMATE_CRAFTING_RESULT),
     
-    @ExtendedCrafting
-    ExEx_Terminal(11,5, ETSlotSemantics.EXEX_CRAFTING_GRID, ETSlotSemantics.EXEX_CRAFTING_RESULT),
+    @EpicExCrafting
+    EPIC_TERMINAL(11,5, ETSlotSemantics.EPIC_CRAFTING_GRID, ETSlotSemantics.EPIC_CRAFTING_RESULT),
 
     @ReAvaritia
     SCULK_TERMINAL(3, 1, ETSlotSemantics.SCULK_CRAFTING_GRID, ETSlotSemantics.SCULK_CRAFTING_RESULT),

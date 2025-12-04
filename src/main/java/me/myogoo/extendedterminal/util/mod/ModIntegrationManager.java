@@ -18,7 +18,7 @@ public final class ModIntegrationManager { // final 클래스로 변경하여 �
 
     public static void initialize() {
         LOGGER.info("Checking for mod integrations...");
-        activeIntegrations.clear(); // 초기화 시 항상 비움
+        activeIntegrations.clear();
 
         for (SupportedMod mod : SupportedMod.values()) {
             if (mod.isLoaded()) {
