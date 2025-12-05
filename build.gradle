@@ -187,11 +187,8 @@ dependencies {
     runtimeOnly fg.deobf("appeng:appliedenergistics2-forge:${AE2_version}")
 
     implementation fg.deobf("com.blakebr0.cucumber:Cucumber:${minecraft_version}-${Cucumber_version}")
-    if(project.enable_excrafting == "exex"){
-        compileOnly fg.deobf("curse.maven:extended-crafting-expanded-1017786:5613251")
-    } else {
-        compileOnly fg.deobf("com.blakebr0.extendedcrafting:ExtendedCrafting:${minecraft_version}-${ExtendedCrafting_version}")
-    }
+    compileOnly fg.deobf("curse.maven:extended-crafting-expanded-1017786:5613251")
+
 
     //compileOnly "top.theillusivec4.curios:curios-forge:${curios_version}:api"
     //runtimeOnly "top.theillusivec4.curios:curios-forge:${curios_version}"
