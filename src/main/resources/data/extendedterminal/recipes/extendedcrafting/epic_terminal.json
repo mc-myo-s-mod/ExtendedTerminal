@@ -1,0 +1,30 @@
+{
+  "forge:conditions": [
+    {
+      "type": "extendedterminal:et_mod",
+      "et_mod": "EpicExCrafting"
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "I": {
+      "item": "extendedcrafting:epic_table"
+    },
+    "P": {
+      "item": "extendedterminal:compat_processor"
+    },
+    "T": {
+      "item": "ae2:crafting_terminal"
+    }
+  },
+  "pattern": [
+    "IT",
+    "P "
+  ],
+  "result": {
+    "count": 1,
+    "item": "extendedterminal:epic_terminal"
+  },
+  "show_notification": false
+}
