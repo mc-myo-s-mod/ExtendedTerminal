@@ -95,7 +95,7 @@ public enum ETMenuType {
         try {
             Field field = ETMenuType.class.getField(this.name());
             if(field.getDeclaredAnnotations().length == 0) {
-                return true; // No annotations means it can be loaded by default
+                return true;
             }
             return Arrays.stream(field.getDeclaredAnnotations())
                     .map(Annotation::annotationType)

@@ -2,6 +2,7 @@ package me.myogoo.extendedterminal.init;
 
 import appeng.core.definitions.ItemDefinition;
 import me.myogoo.extendedterminal.ExtendedTerminal;
+import me.myogoo.extendedterminal.item.ChargedEnderPearlItem;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraftforge.registries.DeferredRegister;
@@ -16,6 +17,10 @@ public class ETItems {
 
     public static final List<ItemDefinition<?>> ITEMS = new ArrayList<>();
 
+    public static final ItemDefinition<Item> COMPAT_PRESS = createItem("compat_press",
+            ExtendedTerminal.makeId("compat_press"),
+            Item::new);
+
     public static final ItemDefinition<Item> COMPAT_PROCESSOR = createItem("compat_processor",
             ExtendedTerminal.makeId("compat_processor"),
             Item::new);
@@ -23,6 +28,10 @@ public class ETItems {
     public static final ItemDefinition<Item> PRINTED_COMPAT_PROCESSOR = createItem("printed_compat_processor",
             ExtendedTerminal.makeId("printed_compat_processor"),
             Item::new);
+
+    public static final ItemDefinition<ChargedEnderPearlItem> CHARGED_ENDER_PEARL = createItem("charged_ender_pearl",
+            ExtendedTerminal.makeId("charged_ender_pearl"),
+            ChargedEnderPearlItem::new);
 
     public static <T extends Item> ItemDefinition<T> createItem(String name, ResourceLocation id, Function<Item.Properties, T> factory) {
         var item = factory.apply(new Item.Properties());
