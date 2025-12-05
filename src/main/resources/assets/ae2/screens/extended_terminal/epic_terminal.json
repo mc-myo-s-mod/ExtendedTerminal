@@ -4,17 +4,27 @@
   ],
   "slots": {
     "EPIC_CRAFTING_GRID": {
-      "left": 2,
-      "bottom": 295
+      "left": 5,
+      "bottom": 315
     },
     "EPIC_CRAFTING_RESULT": {
-      "left": 82,
-      "bottom": 124
+      "left": 177,
+      "bottom": 109
     },
     "PLAYER_ARMOR": {
       "left": -16,
       "bottom": 82,
       "grid": "VERTICAL"
+    },
+    "PLAYER_INVENTORY": {
+      "left": 27,
+      "bottom": 82,
+      "grid": "BREAK_AFTER_9COLS"
+    },
+    "PLAYER_HOTBAR": {
+      "left": 27,
+      "bottom": 24,
+      "grid": "HORIZONTAL"
     }
   },
   "text": {
@@ -29,79 +39,88 @@
     },
     "crafting_grid_title": {
       "text": {
-        "translate": "gui.extendedterminal.ultimateTerminal"
+        "translate": "gui.extendedterminal.epicTerminal"
       },
       "position": {
         "left": 8,
-        "bottom": 305
+        "bottom": 326
+      }
+    },
+    "player_inventory_title": {
+      "text": {
+        "translate": "container.inventory"
+      },
+      "position": {
+        "left": 27,
+        "bottom": 93
       }
     }
   },
   "terminalStyle": {
     "header": {
-      "texture": "guis/ultimate_terminal.png",
+      "texture": "guis/epic_terminal.png",
       "textureWidth": 512,
       "textureHeight": 512,
       "srcRect": [
         0,
         0,
-        195,
+        212,
         17
       ]
     },
     "firstRow": {
-      "texture": "guis/ultimate_terminal.png",
+      "texture": "guis/epic_terminal.png",
       "textureWidth": 512,
       "textureHeight": 512,
       "srcRect": [
         0,
         17,
-        195,
+        212,
         18
       ]
     },
     "row": {
-      "texture": "guis/ultimate_terminal.png",
+      "texture": "guis/epic_terminal.png",
       "textureWidth": 512,
       "textureHeight": 512,
       "srcRect": [
         0,
         35,
-        195,
+        212,
         18
       ]
     },
     "lastRow": {
-      "texture": "guis/ultimate_terminal.png",
+      "texture": "guis/epic_terminal.png",
       "textureWidth": 512,
       "textureHeight": 512,
       "srcRect": [
         0,
         53,
-        195,
+        212,
         18
       ]
     },
     "bottom": {
-      "texture": "guis/ultimate_terminal.png",
+      "texture": "guis/epic_terminal.png",
       "textureWidth": 512,
       "textureHeight": 512,
       "srcRect": [
         0,
         71,
-        195,
-        308
+        212,
+        328
       ]
     }
   },
   "widgets": {
     "clearCraftingGrid": {
-      "left": 149,
-      "bottom": 132
+      "left": 18,
+      "bottom": 113
     },
     "clearToPlayerInv": {
-      "left": 159,
-      "bottom": 132
+      "left": 8,
+      "bottom": 113
     }
   }
 }

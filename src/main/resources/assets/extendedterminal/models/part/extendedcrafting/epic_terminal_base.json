@@ -1,0 +1,6 @@
+{
+  "parent": "ae2:part/display_base",
+  "textures": {
+    "front": "extendedterminal:part/extendedcrafting/epic_terminal_front"
+  }
+}

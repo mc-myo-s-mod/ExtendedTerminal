@@ -2,7 +2,6 @@
   "parent": "ae2:part/display_base",
   "textures": {
     "front": "extendedterminal:part/extendedcrafting/basic_terminal_front",
-    "back": "extendedterminal:part/extendedcrafting/basic_terminal_back",
     "sides": "extendedterminal:part/extendedcrafting/basic_terminal_side"
   }
 }

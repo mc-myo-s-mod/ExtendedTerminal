@@ -15,14 +15,14 @@ import net.minecraft.world.inventory.MenuType;
 
 public class EpicTerminalPart extends ETTerminalBasePart {
     @PartModels
-    public static final ResourceLocation ELITE_MODEL_BASE = ExtendedTerminal.makeId("part/extendedcrafting/elite_terminal_base");
+    public static final ResourceLocation MODEL_BASE = ExtendedTerminal.makeId("part/extendedcrafting/epic_terminal_base");
 
-    public static final IPartModel MODELS_OFF = new PartModel(ELITE_MODEL_BASE, MODEL_OFF, MODEL_STATUS_OFF);
-    public static final IPartModel MODELS_ON = new PartModel(ELITE_MODEL_BASE, MODEL_ON, MODEL_STATUS_ON);
-    public static final IPartModel MODELS_HAS_CHANNEL = new PartModel(ELITE_MODEL_BASE, MODEL_ON, MODEL_STATUS_HAS_CHANNEL);
+    public static final IPartModel MODELS_OFF = new PartModel(MODEL_BASE, MODEL_OFF, MODEL_STATUS_OFF);
+    public static final IPartModel MODELS_ON = new PartModel(MODEL_BASE, MODEL_ON, MODEL_STATUS_ON);
+    public static final IPartModel MODELS_HAS_CHANNEL = new PartModel(MODEL_BASE, MODEL_ON, MODEL_STATUS_HAS_CHANNEL);
 
     public EpicTerminalPart(IPartItem<?> partItem) {
-        super(partItem, ETMenuType.EPIC_TERMINAL, ExtendedCraftingConfig.INSTANCE.getEpicConfig()); //수정 필요
+        super(partItem, ETMenuType.EPIC_TERMINAL, ExtendedCraftingConfig.INSTANCE.getEpicConfig());
     }
 
     @Override
