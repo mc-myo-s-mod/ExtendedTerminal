@@ -2,6 +2,7 @@ package me.myogoo.extendedterminal.init;
 
 import appeng.core.AppEng;
 import me.myogoo.extendedterminal.menu.ETMenuType;
+import me.myogoo.extendedterminal.menu.avaritiaNeo.NeoExtremeTerminalMenu;
 import me.myogoo.extendedterminal.menu.avaritiaRe.*;
 import me.myogoo.extendedterminal.menu.extendedcrafting.*;
 import net.minecraft.core.registries.Registries;
@@ -25,6 +26,6 @@ public final class ETMenus {
     public static final Supplier<MenuType<EndTerminalMenu>> END_TERMINAL = REGISTER.register(ETMenuType.END_TERMINAL.getIdAsString(), () -> EndTerminalMenu.TYPE);
     public static final Supplier<MenuType<ExtremeTerminalMenu>> EXTREME_TERMINAL = REGISTER.register(ETMenuType.EXTREME_TERMINAL.getIdAsString(), () -> ExtremeTerminalMenu.TYPE);
 
-
-    //public static final Supplier<MenuType<NeoExtremeTerminalMenu>> NEO_EXTREME_TERMINAL = REGISTER.register(ETMenuType.NEO_EXTREME_TERMINAL.getIdAsString(), () -> NeoExtremeTerminalMenu.TYPE);
+    // Avaritia Neo
+    public static final Supplier<MenuType<NeoExtremeTerminalMenu>> NEO_EXTREME_TERMINAL = REGISTER.register(ETMenuType.NEO_EXTREME_TERMINAL.getIdAsString(), () -> NeoExtremeTerminalMenu.TYPE);
 }

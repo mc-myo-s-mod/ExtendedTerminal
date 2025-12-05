@@ -11,6 +11,7 @@ import me.myogoo.extendedterminal.item.partitem.EmptyPartItem;
 import me.myogoo.extendedterminal.item.partitem.ExtendedCraftingPartItem;
 import me.myogoo.extendedterminal.menu.ETMenuType;
 import me.myogoo.extendedterminal.part.EmptyPart;
+import me.myogoo.extendedterminal.part.avaritiaNeo.NeoExtremeTerminalPart;
 import me.myogoo.extendedterminal.part.avaritiaRe.EndTerminalPart;
 import me.myogoo.extendedterminal.part.avaritiaRe.ExtremeTerminalPart;
 import me.myogoo.extendedterminal.part.avaritiaRe.NetherTerminalPart;
@@ -43,7 +44,9 @@ public class ETParts {
     public static final ItemDefinition<PartItem<NetherTerminalPart>> NETHER_TERMINAL_PART = createTerminalPart(ETMenuType.NETHER_TERMINAL, NetherTerminalPart.class, NetherTerminalPart::new);
     public static final ItemDefinition<PartItem<EndTerminalPart>> END_TERMINAL_PART = createTerminalPart(ETMenuType.END_TERMINAL, EndTerminalPart.class, EndTerminalPart::new);
     public static final ItemDefinition<PartItem<ExtremeTerminalPart>> EXTREME_TERMINAL_PART = createTerminalPart(ETMenuType.EXTREME_TERMINAL, ExtremeTerminalPart.class, ExtremeTerminalPart::new);
+
     // AvaritiaNeo parts
+    public static final ItemDefinition<PartItem<NeoExtremeTerminalPart>> NEO_EXTREME_TERMINAL_PART = createTerminalPart(ETMenuType.NEO_EXTREME_TERMINAL, NeoExtremeTerminalPart.class, NeoExtremeTerminalPart::new);
 
     @SuppressWarnings("unchecked")
     private static <T extends IPart, I extends PartItem<T>> ItemDefinition<I> createPart(ETMenuType menuType, Class<T> partClass, Function<Item.Properties, I> propertiesFactory, boolean terminalPart) {
