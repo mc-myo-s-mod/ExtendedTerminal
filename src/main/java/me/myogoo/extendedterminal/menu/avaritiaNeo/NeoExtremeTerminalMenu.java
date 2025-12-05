@@ -26,7 +26,7 @@ import net.minecraft.world.item.ItemStack;
 public class NeoExtremeTerminalMenu extends ETTerminalBaseMenu<RecipeExtremeCrafting> {
     public static final MenuType<NeoExtremeTerminalMenu> TYPE = MenuTypeBuilder
             .create(NeoExtremeTerminalMenu::new, ITerminalHost.class)
-            .build(ETMenuType.EXTREME_TERMINAL.getIdAsString());
+            .build(ETMenuType.NEO_EXTREME_TERMINAL.getIdAsString());
 
     private final AvaritiaNeoCraftingTerminalSlot outputSlot;
     private final ISegmentedInventory craftingInventoryHost;

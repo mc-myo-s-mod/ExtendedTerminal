@@ -6,10 +6,15 @@ import com.blakebr0.extendedcrafting.crafting.recipe.ShapelessTableRecipe;
 import committee.nova.mods.avaritia.common.crafting.recipe.*;
 import me.myogoo.extendedterminal.adapter.recipe.ShapedTableRecipeAdapter;
 import me.myogoo.extendedterminal.adapter.recipe.ShapelessTableRecipeAdapter;
-import me.myogoo.extendedterminal.api.ModAccessor;
+import me.myogoo.extendedterminal.api.ModAccessor.*;
 
+import net.byAqua3.avaritia.recipe.RecipeExtremeCrafting;
+import net.byAqua3.avaritia.recipe.RecipeExtremeShaped;
+import net.byAqua3.avaritia.recipe.RecipeExtremeShapeless;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.ShapedRecipe;
+import net.minecraft.world.item.crafting.ShapelessRecipe;
 
 import java.util.Optional;
 
@@ -19,7 +24,7 @@ public interface ITableRecipeAdapter {
     ResourceLocation recipeId();
     int tier();
 
-    @ModAccessor.ExtendedCrafting
+    @ExtendedCrafting
     static ITableRecipeAdapter of(ITableRecipe recipe) {
         if (recipe instanceof ShapedTableRecipe shaped) {
             return new ShapedTableRecipeAdapter(shaped);
@@ -29,7 +34,7 @@ public interface ITableRecipeAdapter {
         throw new IllegalArgumentException("Unknown ITableRecipe implementation: " + recipe.getClass().getName());
     }
 
-    @ModAccessor.ReAvaritia
+    @ReAvaritia
     static ITableRecipeAdapter of(ITierCraftingRecipe recipe) {
         if (recipe instanceof ShapedTableCraftingRecipe shaped) {
             return new ShapedTableRecipeAdapter(shaped);
@@ -41,6 +46,16 @@ public interface ITableRecipeAdapter {
             return new ShapelessTableRecipeAdapter(infinityRecipe);
         }
         throw new IllegalArgumentException("Unknown BaseTableCraftingRecipe implementation: " + recipe.getClass().getName());
+    }
+
+    @AvaritiaNeo
+    static ITableRecipeAdapter of(RecipeExtremeCrafting recipe) {
+        if (recipe instanceof RecipeExtremeShaped shaped) {
+            return new ShapedTableRecipeAdapter(shaped);
+        } else if (recipe instanceof RecipeExtremeShapeless shapeless) {
+            return new ShapelessTableRecipeAdapter(shapeless);
+        }
+        throw new IllegalArgumentException("Unknown RecipeExtremeCrafting implementation: " + recipe.getClass().getName());
     }
 
 

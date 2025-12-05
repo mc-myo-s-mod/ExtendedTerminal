@@ -2,6 +2,7 @@ package me.myogoo.extendedterminal.part.avaritiaNeo;
 
 import appeng.api.parts.IPartItem;
 import appeng.api.parts.IPartModel;
+import appeng.items.parts.PartModels;
 import appeng.parts.PartModel;
 import me.myogoo.extendedterminal.ExtendedTerminal;
 import me.myogoo.extendedterminal.api.config.IETTerminalConfig;
@@ -18,6 +19,7 @@ public class NeoExtremeTerminalPart extends ETTerminalBasePart {
         super(partItem, ETMenuType.NEO_EXTREME_TERMINAL, AvaritiaNeoConfig.INSTANCE.getExtremeConfig());
     }
 
+    @PartModels
     public static final ResourceLocation BASIC_MODEL_BASE = ExtendedTerminal.makeId("part/avaritia/extreme_terminal_base");
 
     public static final IPartModel MODELS_OFF = new PartModel(BASIC_MODEL_BASE, MODEL_OFF, MODEL_STATUS_OFF);
