@@ -36,9 +36,4 @@ public class ExtendedTerminal {
     public static ResourceLocation makeId(String path) {
         return new ResourceLocation(MODID, path);
     }
-
-    @SubscribeEvent
-    public void onCommonSetupEvent(FMLCommonSetupEvent event) {
-        event.enqueueWork(ETCondition::register);
-    }
 }
