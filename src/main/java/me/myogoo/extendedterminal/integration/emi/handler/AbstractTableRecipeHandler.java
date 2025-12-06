@@ -322,13 +322,13 @@ public abstract class AbstractTableRecipeHandler<T extends ETTerminalBaseMenu<?>
             boolean missing = missingSlots.contains(entry.getKey());
             boolean craftable = craftableSlots.contains(entry.getKey());
             if (missing || craftable) {
-//                var poseStack = guiGraphics.pose();
-//                poseStack.pushPose();
-//                poseStack.translate(0, 0, 400);
-//                var innerBounds = getInnerBounds(entry.getValue());
-//                guiGraphics.fill(innerBounds.x(), innerBounds.y(), innerBounds.right(),
-//                        innerBounds.bottom(), missing ? RED_SLOT_HIGHLIGHT_COLOR : BLUE_SLOT_HIGHLIGHT_COLOR);
-//                poseStack.popPose();
+                var poseStack = guiGraphics.pose();
+                poseStack.pushPose();
+                poseStack.translate(0, 0, 400);
+                var innerBounds = getInnerBounds(entry.getValue());
+                guiGraphics.fill(innerBounds.x(), innerBounds.y(), innerBounds.right(),
+                        innerBounds.bottom(), missing ? RED_SLOT_HIGHLIGHT_COLOR : BLUE_SLOT_HIGHLIGHT_COLOR);
+                poseStack.popPose();
             }
         }
     }
