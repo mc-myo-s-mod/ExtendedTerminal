@@ -1,0 +1,26 @@
+{
+    DataVersion: 3955,
+    size: [2, 2, 7],
+    data: [
+        {pos: [0, 0, 4], state: "ae2:controller{state:online,type:block}", nbt: {id: "ae2:controller", internalCurrentPower: 381.125d, proxy: {p: 0}, visual: {}}},
+        {pos: [1, 0, 0], state: "avaritia:extreme_crafting_table", nbt: {Items: [], Size: 81, id: "avaritia:mod_craft_tile"}},
+        {pos: [1, 0, 1], state: "avaritia:end_crafting_table", nbt: {Items: [], Size: 49, id: "avaritia:mod_craft_tile"}},
+        {pos: [1, 0, 2], state: "avaritia:nether_crafting_table", nbt: {Items: [], Size: 25, id: "avaritia:mod_craft_tile"}},
+        {pos: [1, 0, 3], state: "avaritia:sculk_crafting_table", nbt: {Items: [], Size: 9, id: "avaritia:mod_craft_tile"}},
+        {pos: [0, 1, 0], state: "ae2:cable_bus{light_level:9,waterlogged:false}", nbt: {cable: {gn: {p: 0}, id: "ae2:fluix_glass_cable", visual: {channelsSouth: 1, connections: ["south"], missingChannel: 0b, powered: 1b}}, east: {enabledKeyTypes: ["ae2:i", "ae2:f"], gn: {p: 0}, id: "extendedterminal:extreme_terminal", sort_by: "NAME", sort_direction: "ASCENDING", spin: 0b, view_mode: "ALL", visual: {missingChannel: 0b, powered: 1b}}, hasRedstone: 2, id: "ae2:cable_bus", visual: {}}},
+        {pos: [0, 1, 1], state: "ae2:cable_bus{light_level:9,waterlogged:false}", nbt: {cable: {gn: {p: 0}, id: "ae2:fluix_glass_cable", visual: {channelsNorth: 1, channelsSouth: 2, connections: ["north", "south"], missingChannel: 0b, powered: 1b}}, east: {enabledKeyTypes: ["ae2:i", "ae2:f"], gn: {p: 0}, id: "extendedterminal:end_terminal", sort_by: "NAME", sort_direction: "ASCENDING", spin: 0b, view_mode: "ALL", visual: {missingChannel: 0b, powered: 1b}}, hasRedstone: 2, id: "ae2:cable_bus", visual: {}}},
+        {pos: [0, 1, 2], state: "ae2:cable_bus{light_level:9,waterlogged:false}", nbt: {cable: {gn: {p: 0}, id: "ae2:fluix_glass_cable", visual: {channelsNorth: 2, channelsSouth: 3, connections: ["north", "south"], missingChannel: 0b, powered: 1b}}, east: {enabledKeyTypes: ["ae2:i", "ae2:f"], gn: {p: 0}, id: "extendedterminal:nether_terminal", sort_by: "NAME", sort_direction: "ASCENDING", spin: 0b, view_mode: "ALL", visual: {missingChannel: 0b, powered: 1b}}, hasRedstone: 2, id: "ae2:cable_bus", visual: {}}},
+        {pos: [0, 1, 3], state: "ae2:cable_bus{light_level:9,waterlogged:false}", nbt: {cable: {gn: {p: 0}, id: "ae2:fluix_glass_cable", visual: {channelsNorth: 3, channelsSouth: 4, connections: ["north", "south"], missingChannel: 0b, powered: 1b}}, east: {enabledKeyTypes: ["ae2:i", "ae2:f"], gn: {p: 0}, id: "extendedterminal:sculk_terminal", sort_by: "NAME", sort_direction: "ASCENDING", spin: 0b, view_mode: "ALL", visual: {missingChannel: 0b, powered: 1b}}, hasRedstone: 2, id: "ae2:cable_bus", visual: {}}},
+        {pos: [0, 1, 4], state: "ae2:cable_bus{light_level:0,waterlogged:false}", nbt: {cable: {gn: {p: 0}, id: "ae2:fluix_smart_dense_cable", visual: {channelsDown: 4, channelsNorth: 4, connections: ["down", "north"], missingChannel: 0b, powered: 1b}}, hasRedstone: 2, id: "ae2:cable_bus", visual: {}}}
+    ],
+    entities: [],
+    palette: [
+        "ae2:controller{state:online,type:block}",
+        "avaritia:extreme_crafting_table",
+        "avaritia:end_crafting_table",
+        "avaritia:nether_crafting_table",
+        "avaritia:sculk_crafting_table",
+        "ae2:cable_bus{light_level:9,waterlogged:false}",
+        "ae2:cable_bus{light_level:0,waterlogged:false}"
+    ]
+}
