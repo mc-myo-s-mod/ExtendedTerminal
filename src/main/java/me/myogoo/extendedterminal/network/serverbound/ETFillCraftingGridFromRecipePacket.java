@@ -30,7 +30,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
-import static me.myogoo.extendedterminal.integration.ItemListTermCraftingHelper.ensureFittedCraftingGrid;
 
 
 public class ETFillCraftingGridFromRecipePacket extends FillRecipeBasePacket {
@@ -55,6 +54,7 @@ public class ETFillCraftingGridFromRecipePacket extends FillRecipeBasePacket {
         recipeWidth = stream.readInt();
         recipeHeight = stream.readInt();
     }
+
 
     public ETFillCraftingGridFromRecipePacket(
             @Nullable ResourceLocation recipeId,

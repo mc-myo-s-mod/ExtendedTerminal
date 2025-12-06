@@ -6,7 +6,6 @@ import appeng.parts.reporting.AbstractTerminalPart;
 import appeng.parts.reporting.CraftingTerminalPart;
 import appeng.util.inv.AppEngInternalInventory;
 import me.myogoo.extendedterminal.api.config.IETTerminalConfig;
-import me.myogoo.extendedterminal.config.ETConfig;
 import me.myogoo.extendedterminal.menu.ETMenuType;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;

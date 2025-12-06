@@ -5,11 +5,11 @@
   "slots": {
     "EXTREME_CRAFTING_GRID": {
       "left": 8,
-      "bottom": 295
+      "bottom": 287
     },
     "EXTREME_CRAFTING_RESULT": {
       "left": 82,
-      "bottom": 124
+      "bottom": 116
     },
     "PLAYER_ARMOR": {
       "left": -16,
@@ -33,7 +33,7 @@
       },
       "position": {
         "left": 8,
-        "bottom": 305
+        "bottom": 297
       }
     }
   },
@@ -90,18 +90,18 @@
         0,
         71,
         195,
-        308
+        300
       ]
     }
   },
   "widgets": {
     "clearCraftingGrid": {
       "left": 149,
-      "bottom": 132
+      "bottom": 124
     },
     "clearToPlayerInv": {
       "left": 159,
-      "bottom": 132
+      "bottom": 124
     }
   }
 }

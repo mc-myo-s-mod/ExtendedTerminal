@@ -1,15 +1,15 @@
 package me.myogoo.extendedterminal;
 
 import com.mojang.logging.LogUtils;
-import me.myogoo.extendedterminal.config.ETConfig;
+
 import me.myogoo.extendedterminal.init.*;
-import me.myogoo.extendedterminal.util.mod.ModLoadHelper;
+import me.myogoo.extendedterminal.util.mod.ModIntegrationManager;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.fml.ModLoadingContext;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.config.ModConfig;
+import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.slf4j.Logger;
 
@@ -20,8 +20,8 @@ public class ExtendedTerminal {
     public static final Logger LOGGER = LogUtils.getLogger();
 
     public ExtendedTerminal() {
-        ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, ETConfig.COMMON);
-        ModLoadHelper.init();
+        ETConfig.init();
+        ModIntegrationManager.initialize();
 
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
         ETBlocks.REGISTER.register(modEventBus);

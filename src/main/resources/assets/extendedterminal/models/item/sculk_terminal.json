@@ -1,8 +1,6 @@
 {
   "parent": "extendedterminal:item/base/avaritia_terminal_base",
   "textures": {
-    "front": "extendedterminal:part/extendedcrafting/basic_terminal_front",
-    "back": "extendedterminal:part/extendedcrafting/basic_terminal_back",
-    "sides": "extendedterminal:part/extendedcrafting/basic_terminal_side"
+    "front": "extendedterminal:part/avaritia/sculk_terminal_front"
   }
 }

@@ -7,7 +7,7 @@ import com.blakebr0.extendedcrafting.compat.jei.category.table.UltimateTableCate
 import me.myogoo.extendedterminal.api.ModAccessor;
 import me.myogoo.extendedterminal.api.SubscribeLoadEvent;
 import me.myogoo.extendedterminal.api.integration.jei.ETJeiRecipeCatalyst;
-import me.myogoo.extendedterminal.config.ETConfig;
+import me.myogoo.extendedterminal.config.extendedcrafting.ExtendedCraftingConfig;
 import me.myogoo.extendedterminal.init.ETParts;
 import mezz.jei.api.registration.IRecipeCatalystRegistration;
 
@@ -16,14 +16,14 @@ import mezz.jei.api.registration.IRecipeCatalystRegistration;
 public class ECRecipeCatalyst{
     @SubscribeLoadEvent
     public static void init(IRecipeCatalystRegistration registration) {
-        if (ETConfig.BASIC_TERMINAL_CONFIG.enableTerminal())
+        var instance = ExtendedCraftingConfig.INSTANCE;
+        if (instance.getBasicConfig().enableTerminal())
             registration.addRecipeCatalyst(ETParts.BASIC_TERMINAL_PART, BasicTableCategory.RECIPE_TYPE);
-        if (ETConfig.ADVANCED_TERMINAL_CONFIG.enableTerminal())
+        if (instance.getAdvancedConfig().enableTerminal())
             registration.addRecipeCatalyst(ETParts.ADVANCED_TERMINAL_PART, AdvancedTableCategory.RECIPE_TYPE);
-        if (ETConfig.ELITE_TERMINAL_CONFIG.enableTerminal())
+        if (instance.getEliteConfig().enableTerminal())
             registration.addRecipeCatalyst(ETParts.ELITE_TERMINAL_PART, EliteTableCategory.RECIPE_TYPE);
-        if (ETConfig.ULTIMATE_TERMINAL_CONFIG.enableTerminal())
+        if (instance.getUltimateConfig().enableTerminal())
             registration.addRecipeCatalyst(ETParts.ULTIMATE_TERMINAL_PART, UltimateTableCategory.RECIPE_TYPE);
-
     }
 }

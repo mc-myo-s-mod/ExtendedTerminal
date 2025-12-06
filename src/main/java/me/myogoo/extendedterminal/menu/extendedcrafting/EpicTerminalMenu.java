@@ -1,0 +1,18 @@
+package me.myogoo.extendedterminal.menu.extendedcrafting;
+
+import appeng.api.storage.ITerminalHost;
+import appeng.menu.implementations.MenuTypeBuilder;
+import me.myogoo.extendedterminal.config.extendedcrafting.ExtendedCraftingConfig;
+import me.myogoo.extendedterminal.menu.ETMenuType;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.MenuType;
+
+public class EpicTerminalMenu extends ExtendedTerminalBaseMenu {
+    public static final MenuType<EpicTerminalMenu> TYPE = MenuTypeBuilder
+            .create(EpicTerminalMenu::new, ITerminalHost.class)
+            .build(ETMenuType.EPIC_TERMINAL.getIdAsString());
+
+    public EpicTerminalMenu(MenuType<?> menuType, int id, Inventory ip, ITerminalHost host) {
+        super(menuType, id, ip, host, ETMenuType.EPIC_TERMINAL, ExtendedCraftingConfig.INSTANCE.getEpicConfig());
+    }
+}

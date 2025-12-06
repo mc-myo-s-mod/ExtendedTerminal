@@ -1,0 +1,126 @@
+{
+  "includes": [
+    "../terminals/terminal.json"
+  ],
+  "slots": {
+    "EPIC_CRAFTING_GRID": {
+      "left": 5,
+      "bottom": 315
+    },
+    "EPIC_CRAFTING_RESULT": {
+      "left": 177,
+      "bottom": 109
+    },
+    "PLAYER_ARMOR": {
+      "left": -16,
+      "bottom": 82,
+      "grid": "VERTICAL"
+    },
+    "PLAYER_INVENTORY": {
+      "left": 27,
+      "bottom": 82,
+      "grid": "BREAK_AFTER_9COLS"
+    },
+    "PLAYER_HOTBAR": {
+      "left": 27,
+      "bottom": 24,
+      "grid": "HORIZONTAL"
+    }
+  },
+  "text": {
+    "dialog_title": {
+      "text": {
+        "translate": "gui.ae2.Terminal"
+      },
+      "position": {
+        "left": 8,
+        "top": 6
+      }
+    },
+    "crafting_grid_title": {
+      "text": {
+        "translate": "gui.extendedterminal.epicTerminal"
+      },
+      "position": {
+        "left": 8,
+        "bottom": 326
+      }
+    },
+    "player_inventory_title": {
+      "text": {
+        "translate": "container.inventory"
+      },
+      "position": {
+        "left": 27,
+        "bottom": 93
+      }
+    }
+  },
+  "terminalStyle": {
+    "header": {
+      "texture": "guis/epic_terminal.png",
+      "textureWidth": 512,
+      "textureHeight": 512,
+      "srcRect": [
+        0,
+        0,
+        195,
+        17
+      ]
+    },
+    "firstRow": {
+      "texture": "guis/epic_terminal.png",
+      "textureWidth": 512,
+      "textureHeight": 512,
+      "srcRect": [
+        0,
+        17,
+        195,
+        18
+      ]
+    },
+    "row": {
+      "texture": "guis/epic_terminal.png",
+      "textureWidth": 512,
+      "textureHeight": 512,
+      "srcRect": [
+        0,
+        35,
+        195,
+        18
+      ]
+    },
+    "lastRow": {
+      "texture": "guis/epic_terminal.png",
+      "textureWidth": 512,
+      "textureHeight": 512,
+      "srcRect": [
+        0,
+        53,
+        195,
+        18
+      ]
+    },
+    "bottom": {
+      "texture": "guis/epic_terminal.png",
+      "textureWidth": 512,
+      "textureHeight": 512,
+      "srcRect": [
+        0,
+        71,
+        207,
+        328
+      ]
+    }
+  },
+  "widgets": {
+    "clearCraftingGrid": {
+      "left": 15,
+      "bottom": 116
+    },
+    "clearToPlayerInv": {
+      "left": 5,
+      "bottom": 116
+    }
+  }
+}

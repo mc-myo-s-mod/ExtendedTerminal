@@ -7,8 +7,8 @@ on:
     types: [closed]
     branches:
       - '1.20.1'
-    paths: 'CHANGELOG.md'
-
+    paths:
+      - 'CHANGELOG.md'
 jobs:
   build:
     if: github.event.pull_request.merged == true
@@ -46,7 +46,7 @@ jobs:
           java-version: ${{ steps.vars.outputs.java_version }}
 
       - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v3
+        uses: gradle/actions/setup-gradle@v4
 
       - name: Make gradlew executable
         run: chmod +x ./gradlew
