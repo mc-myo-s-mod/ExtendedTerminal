@@ -14,7 +14,7 @@ public class ETModCondition implements ICondition {
 
     @Nullable
     private Class<? extends Annotation> modId = null;
-    private String modIdString;
+    private final String modIdString;
     public ETModCondition(String modId)
     {
         this.modIdString = modId;
