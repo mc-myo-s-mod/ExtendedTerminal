@@ -64,7 +64,7 @@
       "srcRect": [
         0,
         0,
-        212,
+        195,
         17
       ]
     },
@@ -75,7 +75,7 @@
       "srcRect": [
         0,
         17,
-        212,
+        195,
         18
       ]
     },
@@ -86,7 +86,7 @@
       "srcRect": [
         0,
         35,
-        212,
+        195,
         18
       ]
     },
@@ -97,7 +97,7 @@
       "srcRect": [
         0,
         53,
-        212,
+        195,
         18
       ]
     },
@@ -108,19 +108,19 @@
       "srcRect": [
         0,
         71,
-        212,
+        207,
         328
       ]
     }
   },
   "widgets": {
     "clearCraftingGrid": {
-      "left": 18,
-      "bottom": 113
+      "left": 15,
+      "bottom": 116
     },
     "clearToPlayerInv": {
-      "left": 8,
-      "bottom": 113
+      "left": 5,
+      "bottom": 116
     }
   }
 }
