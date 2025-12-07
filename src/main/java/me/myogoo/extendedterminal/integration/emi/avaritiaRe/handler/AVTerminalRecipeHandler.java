@@ -136,7 +136,7 @@ public class AVTerminalRecipeHandler<T extends AvaritiaTerminalBaseMenu> extends
         }
 
         var pattern = new ShapedRecipePattern(menuType.getGridSize(), menuType.getGridSize(), ingredients, Optional.empty());
-        return new ShapedTableCraftingRecipe(pattern, ItemStack.EMPTY, menuType.getTier());
+        return new ShapedTableCraftingRecipe(pattern, ItemStack.EMPTY);
     }
 
     private EmiRecipeCategory getCategory(int tier) {

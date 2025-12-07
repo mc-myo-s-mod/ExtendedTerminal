@@ -56,7 +56,7 @@ public class ShapedTableRecipeBuilder extends ShapedRecipeBuilder {
 
     public RecipeHolder<ITierCraftingRecipe> buildReAV(ResourceLocation id) {
         ShapedRecipePattern shapedrecipepattern = ShapedRecipePattern.of(this.key, this.rows);
-        return new RecipeHolder<>(id, new ShapedTableCraftingRecipe(shapedrecipepattern,getResult().getDefaultInstance(),tier));
+        return new RecipeHolder<>(id, new ShapedTableCraftingRecipe(shapedrecipepattern,getResult().getDefaultInstance()));
     }
 
     public RecipeHolder<RecipeExtremeCrafting> buildAVNeo(ResourceLocation id) {
