@@ -371,12 +371,13 @@ public abstract class AbstractTableRecipeHandler<T extends ETTerminalBaseMenu<?>
     }
 
     private static Map<Integer, SlotWidget> getRecipeInputSlots(EmiRecipe recipe, List<Widget> widgets) {
-        // Map ingredient indices to their respective slots
-        var inputSlots = new HashMap<Integer, SlotWidget>(recipe.getInputs().size());
-        for (int i = 0; i < recipe.getInputs().size(); i++) {
+        List<EmiIngredient> input = recipe.getInputs();
+
+        var inputSlots = new HashMap<Integer, SlotWidget>(input.size());
+        for (int i = 0; i < input.size(); i++) {
             for (var widget : widgets) {
                 if (widget instanceof SlotWidget slot && isInputSlot(slot)) {
-                    if (slot.getStack() == recipe.getInputs().get(i)) {
+                    if (slot.getStack() == input.get(i)) {
                         inputSlots.put(i, slot);
                     }
                 }
