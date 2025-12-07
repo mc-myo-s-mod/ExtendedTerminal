@@ -2,7 +2,6 @@ package me.myogoo.extendedterminal.menu.extendedterminal;
 
 import appeng.api.inventories.ISegmentedInventory;
 import appeng.api.inventories.InternalInventory;
-import appeng.api.storage.ITerminalHost;
 import appeng.core.network.serverbound.InventoryActionPacket;
 import appeng.helpers.InventoryAction;
 import appeng.me.storage.LinkStatusRespectingInventory;
@@ -117,7 +116,7 @@ public class ETTerminalMenu extends ETTerminalBaseMenu<CraftingRecipe> {
         this.anvilDelegate = new FakeAnvilMenu(0, player.getInventory());
         this.addSlot(this.anvilLeftSlot = new CraftingMatrixSlot(this, anvilInv, 0), ETSlotSemantics.ANVIL_LEFT_INPUT);
         this.addSlot(this.anvilRightSlot = new CraftingMatrixSlot(this, anvilInv, 1), ETSlotSemantics.ANVIL_RIGHT_INPUT);
-        this.addSlot(this.anvilOutputSlot = new ETAnvilSlot(player, this.getActionSource(), this.energySource, linkStatusInventory, anvilInv, anvilDelegate, this), ETSlotSemantics.ANVIL_RESULT);
+        this.addSlot(this.anvilOutputSlot = new ETAnvilSlot(player, anvilInv, anvilDelegate,this), ETSlotSemantics.ANVIL_RESULT);
 
         registerClientAction(ACTION_SET_STONECUTTING_RECIPE_ID, ResourceLocation.class, this::setStoneCutterRecipeId);
         registerClientAction(ACTION_SET_MODE, ETTerminalMode.class, this::setMode);
@@ -322,19 +321,21 @@ public class ETTerminalMenu extends ETTerminalBaseMenu<CraftingRecipe> {
     // ---------------------------------------------------------------------
     // Anvil Section
     // ---------------------------------------------------------------------
-    public FakeAnvilMenu getAnvilDelegate() {
-        return anvilDelegate;
-    }
-
-    public int getanvilCost() {
-        return anvilCost;
-    }
+    private boolean isHandlingOnTake = false;
 
     public void updateAnvilOutput(boolean forceUpdate) {
+        if (isHandlingOnTake) return;
+
         this.anvilDelegate.slots.get(0).set(this.anvilLeftSlot.getItem());
         this.anvilDelegate.slots.get(1).set(this.anvilRightSlot.getItem());
+        anvilDelegate.createResult();
         this.anvilOutputSlot.set(anvilDelegate.getResultItem());
         this.anvilCost = anvilDelegate.getCost();
+    }
+
+
+    public int getAnvilCost() {
+        return anvilCost;
     }
 
     public void setAnvilItemName(String name) {
@@ -345,6 +346,16 @@ public class ETTerminalMenu extends ETTerminalBaseMenu<CraftingRecipe> {
         } else {
             sendClientAction(ACTION_SET_ANVIL_ITEM_NAME, name);
         }
+    }
+
+    public void onAnvilTake(Runnable updateLogic) {
+        this.isHandlingOnTake = true;
+        try {
+            updateLogic.run();
+        } finally {
+            this.isHandlingOnTake = false;
+        }
+        updateAnvilOutput(true);
     }
 
     @Override
