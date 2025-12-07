@@ -8,7 +8,7 @@ import appeng.items.parts.PartItem;
 import appeng.items.parts.PartModelsHelper;
 import me.myogoo.extendedterminal.ExtendedTerminal;
 import me.myogoo.extendedterminal.item.partitem.EmptyPartItem;
-import me.myogoo.extendedterminal.item.ExtendedCraftingPartItem;
+import me.myogoo.extendedterminal.item.partitem.ExtendedCraftingPartItem;
 import me.myogoo.extendedterminal.menu.ETMenuType;
 import me.myogoo.extendedterminal.part.EmptyPart;
 import me.myogoo.extendedterminal.part.avaritiaNeo.NeoExtremeTerminalPart;

@@ -1,4 +1,4 @@
-package me.myogoo.extendedterminal.item;
+package me.myogoo.extendedterminal.item.partitem;
 
 import appeng.api.parts.IPart;
 import appeng.api.parts.IPartItem;
