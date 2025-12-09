@@ -22,7 +22,4 @@ public class ModAccessor {
     @Retention(RetentionPolicy.RUNTIME)
     public @interface AE2WTLib {}
 
-    @Target({ElementType.TYPE, ElementType.METHOD, ElementType.FIELD})
-    @Retention(RetentionPolicy.RUNTIME)
-    public @interface ApothicEnchant {}
 }

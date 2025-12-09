@@ -185,12 +185,6 @@ dependencies {
         runtimeOnly "de.mari_023:ae2wtlib:${project.AE2WTLib_version}"
     }
 
-    if(project.enable_apothic == "true") {
-        implementation "curse.maven:apothic-attributes-898963:6751650"
-        implementation "curse.maven:placebo-283644:6926281"
-        implementation "curse.maven:apothic-enchanting-1063926:6926290"
-    }
-
     if(project.enable_excrafting == "true") {
         runtimeOnly "com.blakebr0.extendedcrafting:ExtendedCrafting:${minecraft_version}-${ExtendedCrafting_version}"
     }

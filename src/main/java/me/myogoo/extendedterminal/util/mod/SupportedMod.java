@@ -13,9 +13,7 @@ public enum SupportedMod {
 
     ExtendedCrafting("extendedcrafting", ModAccessor.ExtendedCrafting.class),
     ReAvaritia("avaritia", ModAccessor.ReAvaritia.class, "Re-Avaritia"),
-    AvaritiaNeo("avaritia", ModAccessor.AvaritiaNeo.class, "Avaritia"),
-
-    ApothicEnchant("Apothic Enchanting", ModAccessor.ApothicEnchant.class);
+    AvaritiaNeo("avaritia", ModAccessor.AvaritiaNeo.class, "Avaritia");
 
     private final String modId;
     private final Class<? extends Annotation> annotationClass;
