@@ -9,14 +9,9 @@ import net.neoforged.fml.ModList;
 public class ETEmiPlugin implements EmiPlugin {
     @Override
     public void register(EmiRegistry registry) {
-        if(ModList.get().isLoaded("jei")) {
-            return;
-        }
-        /*
         EmiRegisterHelper.registerCategories(registry);
         EmiRegisterHelper.registerWorkStations(registry);
         EmiRegisterHelper.registerRecipeHandlers(registry);
         EmiRegisterHelper.addRecipes(registry);
-         */
     }
 }
