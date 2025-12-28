@@ -22,7 +22,7 @@ public class SmithingTransformRecipeAdapter extends SmithingRecipeBaseAdapter {
     }
 
     @Override
-    public <R extends Recipe<?>> R recipe() {
+    public <R extends Recipe<?>> R get() {
         return null;
     }
 }

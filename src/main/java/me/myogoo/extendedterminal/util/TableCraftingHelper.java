@@ -1,28 +1,7 @@
 package me.myogoo.extendedterminal.util;
 
-import me.myogoo.extendedterminal.api.adapter.recipe.table.ITableRecipeAdapter;
-import net.minecraft.core.NonNullList;
-import net.minecraft.world.item.crafting.Ingredient;
-
 public final class TableCraftingHelper {
-    public static int getCraftingGridWidth(ITableRecipeAdapter recipe) {
-        return recipe.tier() * 2 + 1;
-    }
-
-    public static int getCraftingGridHeight(ITableRecipeAdapter recipe) {
-        return recipe.tier() * 2 + 1;
-    }
-
-    public static int getCraftingGridSize(ITableRecipeAdapter recipe) {
-        int dim = getCraftingGridWidth(recipe);
-        return dim * dim;
-    }
-
-    public static NonNullList<Ingredient> makeNxNIngredients(ITableRecipeAdapter recipe) {
-        return NonNullList.withSize(getCraftingGridSize(recipe), Ingredient.EMPTY);
-    }
-
-    public static int getCraftingGridSideLength(int gridSize) {
+    private static int getCraftingGridSideLength(int gridSize) {
         int width = (int) Math.sqrt(gridSize);
         if (width * width < gridSize) {
             // may not invalid?

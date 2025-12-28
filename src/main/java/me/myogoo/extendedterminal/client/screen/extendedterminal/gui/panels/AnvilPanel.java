@@ -69,6 +69,6 @@ public class AnvilPanel extends ETTerminalModePanel {
 
     @Override
     public void updateBeforeRender() {
-        enchantCostLabel.setCost(menu.getanvilCost());
+        enchantCostLabel.setCost(menu.getAnvilCost());
     }
 }

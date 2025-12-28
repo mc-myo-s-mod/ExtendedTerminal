@@ -15,7 +15,7 @@ import com.google.common.primitives.Ints;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntList;
 import me.myogoo.extendedterminal.ExtendedTerminal;
-import me.myogoo.extendedterminal.integration.ItemListTermCraftingHelper;
+import me.myogoo.extendedterminal.integration.itemList.module.ItemListTermCraftingHelper;
 import me.myogoo.extendedterminal.util.TableCraftingHelper;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.RegistryFriendlyByteBuf;

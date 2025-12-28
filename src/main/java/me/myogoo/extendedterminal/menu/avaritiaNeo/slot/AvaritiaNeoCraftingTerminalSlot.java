@@ -37,18 +37,18 @@ public class AvaritiaNeoCraftingTerminalSlot extends ETCraftingBaseSlot<RecipeEx
 
     @Override
     protected RecipeHolder<RecipeExtremeCrafting> findRecipe(CraftingInput ic, Level level) {
-        if(this.menu instanceof NeoExtremeTerminalMenu terminalMenu) {
+        if (this.menu instanceof NeoExtremeTerminalMenu terminalMenu) {
             var recipe = terminalMenu.getCurrentRecipe();
             if (recipe != null && recipe.value().matches(ic, level)) {
                 return terminalMenu.getCurrentRecipe();
             }
         }
-        return level.getRecipeManager().getRecipeFor(AvaritiaRecipes.EXTREME_CRAFTING.get(), ic,level).orElse(null);
+        return level.getRecipeManager().getRecipeFor(AvaritiaRecipes.EXTREME_CRAFTING.get(), ic, level).orElse(null);
     }
 
     @Override
     protected NonNullList<ItemStack> getETRemainingItems(CraftingInput ic, Level level) {
-        if(this.menu instanceof NeoExtremeTerminalMenu terminalMenu) {
+        if (this.menu instanceof NeoExtremeTerminalMenu terminalMenu) {
             var recipe = terminalMenu.getCurrentRecipe();
 
             if (recipe != null && recipe.value().matches(ic, level)) {
@@ -63,18 +63,18 @@ public class AvaritiaNeoCraftingTerminalSlot extends ETCraftingBaseSlot<RecipeEx
         this.checkTakeAchievements(stack);
 
         var items = NonNullList.withSize(this.craftInv.size(), ItemStack.EMPTY);
-        for(int i = 0; i < this.craftInv.size(); i++) {
+        for (int i = 0; i < this.craftInv.size(); i++) {
             items.set(i, this.craftInv.getStackInSlot(i));
         }
         CraftingInput.Positioned positioned = CraftingInput.ofPositioned(
                 this.menuType.getGridSideLength(), this.menuType.getGridSideLength(), items);
         CraftingInput ic = CraftingInput.of(this.menuType.getGridSideLength(), this.menuType.getGridSideLength(), items);
         CommonHooks.setCraftingPlayer(player);
-        var remainingItems = this.getETRemainingItems(ic,player.level());
+        var remainingItems = this.getETRemainingItems(ic, player.level());
         CommonHooks.setCraftingPlayer(null);
 
-        for(int y = 0; y < menuType.getGridSideLength(); y++) {
-            for(int x = 0; x < menuType.getGridSideLength(); x++) {
+        for (int y = 0; y < menuType.getGridSideLength(); y++) {
+            for (int x = 0; x < menuType.getGridSideLength(); x++) {
                 var slotIdx = y * menuType.getGridSideLength() + x;
                 var remainderIdx = (y - positioned.top()) * 3 + (x - positioned.left());
 
@@ -101,7 +101,6 @@ public class AvaritiaNeoCraftingTerminalSlot extends ETCraftingBaseSlot<RecipeEx
         if (is.isEmpty()) {
             return ItemStack.EMPTY;
         }
-
         // Make sure the item in the slot is still the same item as before
         final var set = new ItemStack[this.getPattern().size()];
         // Safeguard for empty slots in the inventory for now
@@ -186,7 +185,7 @@ public class AvaritiaNeoCraftingTerminalSlot extends ETCraftingBaseSlot<RecipeEx
                         if (providedTemplate.getItem() == itemKey.getItem() && !itemKey.matches(output)) {
 
                             craftingInputItems.set(slot, itemKey.toStack());
-                            var adjustedCraftingInput = TierInput.of(gridWidth, gridHeight, craftingInputItems,menuType.getTier());
+                            var adjustedCraftingInput = TierInput.of(gridWidth, gridHeight, craftingInputItems, menuType.getTier());
                             if (r.matches(adjustedCraftingInput, level)
                                     && ItemStack.matches(r.assemble(adjustedCraftingInput, level.registryAccess()),
                                     output)) {

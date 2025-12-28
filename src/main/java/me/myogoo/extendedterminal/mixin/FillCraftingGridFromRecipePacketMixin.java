@@ -23,14 +23,13 @@ public abstract class FillCraftingGridFromRecipePacketMixin implements IETFillRe
 
     @Inject(method = "handleOnServer", at = @At("HEAD"), remap = false)
     private void et$onHandleOnServer(ServerPlayer player, CallbackInfo ci) {
-        if (!(player.containerMenu instanceof ETTerminalMenu menu)) {
-            return;
+        if (player.containerMenu instanceof ETTerminalMenu menu) {
+            menu.setMode(ETTerminalMode.CRAFTING);
         }
-        menu.setMode(ETTerminalMode.CRAFTING);
     }
 
     @Redirect(method = "handleOnServer", at = @At(value = "INVOKE", target = "Lappeng/core/network/serverbound/FillCraftingGridFromRecipePacket;takeIngredientFromPlayer(Lappeng/helpers/ICraftingGridMenu;Lnet/minecraft/server/level/ServerPlayer;Lnet/minecraft/world/item/crafting/Ingredient;)Lnet/minecraft/world/item/ItemStack;"), remap = false)
-    ItemStack a(FillCraftingGridFromRecipePacket instance, ICraftingGridMenu cct, ServerPlayer player, Ingredient ingredient) {
+    ItemStack et$handleOnServer(FillCraftingGridFromRecipePacket instance, ICraftingGridMenu cct, ServerPlayer player, Ingredient ingredient) {
         var invResult = takeIngredientFromPlayer(cct, player, ingredient);
         if (!invResult.isEmpty()) {
             return invResult;

@@ -10,18 +10,25 @@ import me.myogoo.extendedterminal.adapter.recipe.table.ShapedTableRecipeAdapter;
 import me.myogoo.extendedterminal.adapter.recipe.table.ShapelessTableRecipeAdapter;
 import me.myogoo.extendedterminal.api.ModAccessor;
 import me.myogoo.extendedterminal.api.adapter.recipe.IRecipeAdapter;
+import me.myogoo.extendedterminal.menu.ETTerminalBaseMenu;
 import net.byAqua3.avaritia.recipe.RecipeExtremeCrafting;
 import net.byAqua3.avaritia.recipe.RecipeExtremeShaped;
 import net.byAqua3.avaritia.recipe.RecipeExtremeShapeless;
+import net.minecraft.core.NonNullList;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingRecipe;
-import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.ShapedRecipe;
 import net.minecraft.world.item.crafting.ShapelessRecipe;
 
-import java.util.Optional;
-
 public interface ITableRecipeAdapter extends IRecipeAdapter {
     int tier();
+
+    int gridSize();
+    int sideLength();
+
+    NonNullList<Ingredient> ensureFittedCraftingGrid();
+    NonNullList<ItemStack> findGoodTemplateItems(ETTerminalBaseMenu<?> menu);
 
     static ITableRecipeAdapter of(CraftingRecipe recipe) {
         if (recipe instanceof ShapedRecipe shaped) {
