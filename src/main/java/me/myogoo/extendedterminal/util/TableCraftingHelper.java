@@ -1,6 +1,5 @@
 package me.myogoo.extendedterminal.util;
 
-//TODO: Refactor
 public final class TableCraftingHelper {
     private static int getCraftingGridSideLength(int gridSize) {
         int width = (int) Math.sqrt(gridSize);
