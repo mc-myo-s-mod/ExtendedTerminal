@@ -1,0 +1,43 @@
+package me.myogoo.extendedterminal.integration.itemList.module.avaritia;
+
+import me.myogoo.extendedterminal.api.adapter.recipe.table.IShapedTableRecipeAdapter;
+import me.myogoo.extendedterminal.api.adapter.recipe.table.ITableRecipeAdapter;
+import me.myogoo.extendedterminal.menu.ETTerminalBaseMenu;
+import net.minecraft.world.item.crafting.Ingredient;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+public class AVRecipeTransferHelper {
+    public static Map<Integer, Ingredient> getGuiSlotToIngredientMap(ETTerminalBaseMenu<?> menu, ITableRecipeAdapter recipe) {
+        int gridSideLength = menu.getCraftingGridWidth();
+        var raw = recipe.get().getIngredients();
+        List<Ingredient> ingredients;
+
+        int width = gridSideLength;
+        int height = gridSideLength;
+        if (recipe instanceof IShapedTableRecipeAdapter shapedRecipe) {
+            ingredients = shapedRecipe.ensureFittedCraftingGrid();
+            width = shapedRecipe.width();
+            height = shapedRecipe.height();
+        } else {
+            ingredients = raw;
+        }
+
+        int max = gridSideLength * gridSideLength;
+        int count = Math.min(ingredients.size(), max);
+        var result = new HashMap<Integer, Ingredient>(count);
+        for (int i = 0; i < count; i++) {
+            int x = i % width;
+            int y = i / width;
+
+            var guiSlot = y * width + x;
+            var ing = ingredients.get(i);
+            if (!ing.isEmpty()) {
+                result.put(guiSlot, ing);
+            }
+        }
+        return result;
+    }
+}

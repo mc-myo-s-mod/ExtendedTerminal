@@ -24,7 +24,7 @@ import net.minecraft.world.level.Level;
 
 import java.util.ArrayList;
 import java.util.List;
-
+//TODO: 추상화 진행 중복 코드 제거
 public abstract class ETCraftingBaseSlot<R extends Recipe<?>, I extends RecipeInput> extends AppEngCraftingSlot {
     protected final InternalInventory craftInv;
     private final InternalInventory pattern;
