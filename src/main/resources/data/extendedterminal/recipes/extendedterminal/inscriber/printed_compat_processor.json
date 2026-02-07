@@ -8,7 +8,7 @@
       "item": "extendedterminal:compat_press"
     }
   },
-  "mode": "press",
+  "mode": "inscribe",
   "result": {
     "count": 1,
     "item": "extendedterminal:printed_compat_processor"

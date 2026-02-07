@@ -20,9 +20,9 @@ public class InscriberRecipeProvider extends InscriberRecipes {
 
     @Override
     public void buildRecipes(Consumer<FinishedRecipe> recipeOutput) {
-        InscriberRecipeBuilder.inscribe(AEItems.CALCULATION_PROCESSOR_PRINT, ETItems.PRINTED_COMPAT_PROCESSOR,1)
-                .setTop(Ingredient.of(AEItems.ENGINEERING_PROCESSOR_PRINT))
-                .setMode(InscriberProcessType.PRESS)
+        InscriberRecipeBuilder.inscribe(ETItems.CHARGED_ENDER_PEARL, ETItems.PRINTED_COMPAT_PROCESSOR,1)
+                .setTop(Ingredient.of(ETItems.COMPAT_PRESS))
+                .setMode(InscriberProcessType.INSCRIBE)
                 .save(recipeOutput, ExtendedTerminal.makeId("inscriber/printed_compat_processor"));
 
         InscriberRecipeBuilder.inscribe(Items.REDSTONE, ETItems.COMPAT_PROCESSOR,1)
