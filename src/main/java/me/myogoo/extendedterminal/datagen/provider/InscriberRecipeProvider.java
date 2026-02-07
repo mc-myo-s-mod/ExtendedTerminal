@@ -23,7 +23,7 @@ public class InscriberRecipeProvider extends InscriberRecipes {
     public void buildRecipes(RecipeOutput recipeOutput) {
         InscriberRecipeBuilder.inscribe(ETItems.CHARGED_ENDER_PEARL, ETItems.PRINTED_COMPAT_PROCESSOR,1)
                 .setTop(Ingredient.of(ETItems.COMPAT_PRESS))
-                .setMode(InscriberProcessType.PRESS)
+                .setMode(InscriberProcessType.INSCRIBE)
                 .save(recipeOutput, ExtendedTerminal.makeId("inscriber/printed_compat_processor"));
 
         InscriberRecipeBuilder.inscribe(Items.REDSTONE, ETItems.COMPAT_PROCESSOR,1)

@@ -5,6 +5,7 @@ import appeng.core.network.serverbound.FillCraftingGridFromRecipePacket;
 import me.myogoo.extendedterminal.ExtendedTerminal;
 import me.myogoo.extendedterminal.api.adapter.recipe.table.ITableRecipeAdapter;
 import me.myogoo.extendedterminal.menu.extendedterminal.ETTerminalMenu;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeHolder;
@@ -35,16 +36,24 @@ public class ETCraftingRecipeTransferHelper {
         }
         return result;
     }
-    public static void performTransfer(ETTerminalMenu menu, RecipeHolder<CraftingRecipe> recipeHolder, boolean craftingMissing) {
-        var recipeId = recipeHolder.id();
-        var templateItems = ITableRecipeAdapter.of(recipeHolder.value()).findGoodTemplateItems(menu);
 
-        if (menu.getPlayer().level().getRecipeManager().byKey(recipeId).isEmpty()) {
-            ExtendedTerminal.LOGGER.warn("ETCraftingRecipeTransfer#performTransfer: recipe with id {} not found in recipe manager", recipeId);
+    public static void performTransfer(ETTerminalMenu menu, RecipeHolder<CraftingRecipe> recipeHolder,
+            boolean craftingMissing) {
+        performTransfer(menu, recipeHolder.value(), recipeHolder.id(), craftingMissing);
+    }
+
+    public static void performTransfer(ETTerminalMenu menu, CraftingRecipe recipe, ResourceLocation recipeId,
+            boolean craftingMissing) {
+        var templateItems = ITableRecipeAdapter.of(recipe).findGoodTemplateItems(menu);
+
+        if (recipeId != null && menu.getPlayer().level().getRecipeManager().byKey(recipeId).isEmpty()) {
+            ExtendedTerminal.LOGGER.warn(
+                    "ETCraftingRecipeTransfer#performTransfer: recipe with id {} not found in recipe manager",
+                    recipeId);
             recipeId = null;
         }
 
-        ServerboundPacket message = new FillCraftingGridFromRecipePacket(recipeHolder.id(), templateItems, craftingMissing);
+        ServerboundPacket message = new FillCraftingGridFromRecipePacket(recipeId, templateItems, craftingMissing);
         PacketDistributor.sendToServer(message);
     }
 }
