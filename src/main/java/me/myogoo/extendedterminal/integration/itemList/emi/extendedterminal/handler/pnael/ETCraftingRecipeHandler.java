@@ -52,7 +52,12 @@ public class ETCraftingRecipeHandler<T extends ETTerminalMenu> extends ETTermina
             }
         } else {
             boolean craftingMissing = AbstractContainerScreen.hasControlDown();
-            ETCraftingRecipeTransferHelper.performTransfer(menu, (RecipeHolder<CraftingRecipe>) holder, craftingMissing);
+            if (holder != null) {
+                ETCraftingRecipeTransferHelper.performTransfer(menu, (RecipeHolder<CraftingRecipe>) holder,
+                        craftingMissing);
+            } else {
+                ETCraftingRecipeTransferHelper.performTransfer(menu, cRecipe, null, craftingMissing);
+            }
         }
         return Result.createSuccessful();
     }
@@ -72,10 +77,8 @@ public class ETCraftingRecipeHandler<T extends ETTerminalMenu> extends ETTermina
         return ETCraftingRecipeTransferHelper.getGuiSlotToIngredientMap(menu, recipe.get());
     }
 
-
     private Recipe<?> createFakeRecipe(EmiRecipe recipe) {
-        var ingredients = NonNullList.withSize(9,
-                Ingredient.EMPTY);
+        var ingredients = NonNullList.withSize(9, Ingredient.EMPTY);
 
         for (int i = 0; i < Math.min(recipe.getInputs().size(), ingredients.size()); i++) {
             var ingredient = Ingredient.of(recipe.getInputs().get(i).getEmiStacks().stream()
