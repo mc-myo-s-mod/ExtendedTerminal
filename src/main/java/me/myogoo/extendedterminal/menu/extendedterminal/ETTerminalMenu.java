@@ -78,8 +78,10 @@ public class ETTerminalMenu extends ETTerminalBaseMenu<CraftingRecipe> {
     private int anvilCost = 0;
 
     private final IETTerminalHost host;
+
     public ETTerminalMenu(MenuType<?> menuType, int id, Inventory ip, IETTerminalHost host) {
-        super(menuType, id, ip, host, ETMenuType.ET_TERMINAL, ExtendedTerminalConfig.INSTANCE.getExtendedTerminalConfig());
+        super(menuType, id, ip, host, ETMenuType.ET_TERMINAL,
+                ExtendedTerminalConfig.INSTANCE.getExtendedTerminalConfig());
         this.host = host;
         this.currentMode = host.getMode();
         this.craftingInventoryHost = (ISegmentedInventory) host;
@@ -89,34 +91,42 @@ public class ETTerminalMenu extends ETTerminalBaseMenu<CraftingRecipe> {
         var craftingGridInv = this.craftingInventoryHost
                 .getSubInventory(this.menuType.getCraftingInventory());
         for (int i = 0; i < this.menuType.getGridSize(); i++) {
-            this.addSlot(this.craftingSlots[i] = new CraftingMatrixSlot(this, craftingGridInv, i), this.menuType.getSlotSemanticGrid());
+            this.addSlot(this.craftingSlots[i] = new CraftingMatrixSlot(this, craftingGridInv, i),
+                    this.menuType.getSlotSemanticGrid());
         }
 
         var linkStatusInventory = new LinkStatusRespectingInventory(host.getInventory(), this::getLinkStatus);
         this.addSlot(this.outputSlot = new CraftingTermSlot(player, this.getActionSource(),
-                        this.energySource, linkStatusInventory, craftingGridInv, craftingGridInv, this),
+                this.energySource, linkStatusInventory, craftingGridInv, craftingGridInv, this),
                 this.menuType.getSlotSemanticResult());
 
         // Smithing Table
         var smithingInv = this.craftingInventoryHost.getSubInventory(SmithingInventory);
-        this.addSlot(this.smithingTemplateSlot = new CraftingMatrixSlot(this, smithingInv, 0), ETSlotSemantics.SMITHING_TABLE_TEMPLATE);
-        this.addSlot(this.smithingBaseSlot = new CraftingMatrixSlot(this, smithingInv, 1), ETSlotSemantics.SMITHING_TABLE_BASE);
-        this.addSlot(this.smithingAdditionSlot = new CraftingMatrixSlot(this, smithingInv, 2), ETSlotSemantics.SMITHING_TABLE_ADDITION);
+        this.addSlot(this.smithingTemplateSlot = new CraftingMatrixSlot(this, smithingInv, 0),
+                ETSlotSemantics.SMITHING_TABLE_TEMPLATE);
+        this.addSlot(this.smithingBaseSlot = new CraftingMatrixSlot(this, smithingInv, 1),
+                ETSlotSemantics.SMITHING_TABLE_BASE);
+        this.addSlot(this.smithingAdditionSlot = new CraftingMatrixSlot(this, smithingInv, 2),
+                ETSlotSemantics.SMITHING_TABLE_ADDITION);
         this.addSlot(this.smithingOutputSlot = new ETSmithingSlot(player, this.getActionSource(),
-                this.energySource, linkStatusInventory, smithingInv, smithingInv, this), SlotSemantics.SMITHING_TABLE_RESULT);
+                this.energySource, linkStatusInventory, smithingInv, smithingInv, this),
+                SlotSemantics.SMITHING_TABLE_RESULT);
 
         // Stonecutting
         var stonecuttingInv = this.craftingInventoryHost.getSubInventory(StoneCutterInventory);
-        this.addSlot(this.stonecuttingSlot = new CraftingMatrixSlot(this, stonecuttingInv, 0), ETSlotSemantics.STONECUTTING_INPUT);
+        this.addSlot(this.stonecuttingSlot = new CraftingMatrixSlot(this, stonecuttingInv, 0),
+                ETSlotSemantics.STONECUTTING_INPUT);
         this.addSlot(this.stoneCutterOutputSlot = new ETStoneCutterSlot(player, this.getActionSource(),
-                this.energySource, linkStatusInventory, stonecuttingInv, stonecuttingInv, this), ETSlotSemantics.STONECUTTING_RESULT);
-
+                this.energySource, linkStatusInventory, stonecuttingInv, stonecuttingInv, this),
+                ETSlotSemantics.STONECUTTING_RESULT);
 
         var anvilInv = this.craftingInventoryHost.getSubInventory(AnvilInventory);
         this.anvilDelegate = new FakeAnvilMenu(0, player.getInventory());
         this.addSlot(this.anvilLeftSlot = new CraftingMatrixSlot(this, anvilInv, 0), ETSlotSemantics.ANVIL_LEFT_INPUT);
-        this.addSlot(this.anvilRightSlot = new CraftingMatrixSlot(this, anvilInv, 1), ETSlotSemantics.ANVIL_RIGHT_INPUT);
-        this.addSlot(this.anvilOutputSlot = new ETAnvilSlot(player, anvilInv, anvilDelegate,this), ETSlotSemantics.ANVIL_RESULT);
+        this.addSlot(this.anvilRightSlot = new CraftingMatrixSlot(this, anvilInv, 1),
+                ETSlotSemantics.ANVIL_RIGHT_INPUT);
+        this.addSlot(this.anvilOutputSlot = new ETAnvilSlot(player, anvilInv, anvilDelegate, this),
+                ETSlotSemantics.ANVIL_RESULT);
 
         registerClientAction(ACTION_SET_STONECUTTING_RECIPE_ID, ResourceLocation.class, this::setStoneCutterRecipeId);
         registerClientAction(ACTION_SET_MODE, ETTerminalMode.class, this::setMode);
@@ -133,7 +143,7 @@ public class ETTerminalMenu extends ETTerminalBaseMenu<CraftingRecipe> {
 
     public void setMode(ETTerminalMode mode) {
         if (isClientSide()) {
-            sendClientAction(ACTION_SET_MODE,mode);
+            sendClientAction(ACTION_SET_MODE, mode);
         } else {
             this.host.setMode(mode);
             this.currentMode = host.getMode();
@@ -199,6 +209,9 @@ public class ETTerminalMenu extends ETTerminalBaseMenu<CraftingRecipe> {
             }
             return;
         }
+        if (this.getSlot(slot) instanceof ETAnvilSlot) {
+            return;
+        }
         super.doAction(player, action, slot, id);
     }
 
@@ -236,7 +249,8 @@ public class ETTerminalMenu extends ETTerminalBaseMenu<CraftingRecipe> {
     // Smithing Section
     // ---------------------------------------------------------------------
     private void updateSmithingOutput(boolean forceUpdate) {
-        var smithingTestInput = new SmithingRecipeInput(smithingTemplateSlot.getItem().copy(), smithingBaseSlot.getItem().copy(), smithingAdditionSlot.getItem().copy());
+        var smithingTestInput = new SmithingRecipeInput(smithingTemplateSlot.getItem().copy(),
+                smithingBaseSlot.getItem().copy(), smithingAdditionSlot.getItem().copy());
 
         if (!forceUpdate && Objects.equals(lastTestedSmithingInput, smithingTestInput)) {
             return;
@@ -324,7 +338,8 @@ public class ETTerminalMenu extends ETTerminalBaseMenu<CraftingRecipe> {
     private boolean isHandlingOnTake = false;
 
     public void updateAnvilOutput(boolean forceUpdate) {
-        if (isHandlingOnTake) return;
+        if (isHandlingOnTake)
+            return;
 
         this.anvilDelegate.slots.get(0).set(this.anvilLeftSlot.getItem());
         this.anvilDelegate.slots.get(1).set(this.anvilRightSlot.getItem());
@@ -333,13 +348,14 @@ public class ETTerminalMenu extends ETTerminalBaseMenu<CraftingRecipe> {
         this.anvilCost = anvilDelegate.getCost();
     }
 
-
     public int getAnvilCost() {
         return anvilCost;
     }
 
     public void setAnvilItemName(String name) {
         if (isServerSide()) {
+            this.anvilDelegate.slots.get(0).set(this.anvilLeftSlot.getItem());
+            this.anvilDelegate.slots.get(1).set(this.anvilRightSlot.getItem());
             if (this.anvilDelegate.setItemName(name)) {
                 updateCurrentRecipeAndOutput(true);
             }

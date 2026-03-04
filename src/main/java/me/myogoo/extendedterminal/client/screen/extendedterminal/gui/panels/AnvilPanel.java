@@ -16,13 +16,12 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Blocks;
 
-
 public class AnvilPanel extends ETTerminalModePanel {
-    private static final Blitter BG = Blitter.texture("guis/et_terminal_panel.png",512,512).src(0, 201, 159, 65);
+    private static final Blitter BG = Blitter.texture("guis/et_terminal_panel.png", 512, 512).src(0, 201, 159, 65);
 
     private final AETextField textField;
     private final XPLabelWidget enchantCostLabel;
-    private Component anvilInfoText;
+
     public AnvilPanel(ETTerminalScreen<?> screen, WidgetContainer widgets) {
         super(screen, widgets);
 
@@ -37,7 +36,7 @@ public class AnvilPanel extends ETTerminalModePanel {
 
     @Override
     public ItemStack getIcon() {
-        return Blocks.ANVIL.asItem().getDefaultInstance() ;
+        return Blocks.ANVIL.asItem().getDefaultInstance();
     }
 
     @Override
@@ -60,7 +59,8 @@ public class AnvilPanel extends ETTerminalModePanel {
         var slot = menu.getSlots(ETSlotSemantics.ANVIL_LEFT_INPUT).getFirst();
         if (slot.hasItem()) {
             String name = input;
-            if (!slot.getItem().has(DataComponents.CUSTOM_NAME) && input.equals(slot.getItem().getHoverName().getString())) {
+            if (!slot.getItem().has(DataComponents.CUSTOM_NAME)
+                    && input.equals(slot.getItem().getHoverName().getString())) {
                 name = "";
             }
             this.menu.setAnvilItemName(name);
@@ -69,6 +69,11 @@ public class AnvilPanel extends ETTerminalModePanel {
 
     @Override
     public void updateBeforeRender() {
-        enchantCostLabel.setCost(menu.getAnvilCost());
+        var resultSlot = menu.getSlots(ETSlotSemantics.ANVIL_RESULT).getFirst();
+        if (resultSlot.hasItem()) {
+            enchantCostLabel.setCost(menu.getAnvilCost());
+        } else {
+            enchantCostLabel.setCost(0);
+        }
     }
 }
