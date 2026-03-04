@@ -5,6 +5,7 @@ import dev.emi.emi.api.recipe.EmiRecipe;
 import dev.emi.emi.api.recipe.EmiRecipeCategory;
 import me.myogoo.extendedterminal.api.adapter.recipe.table.ITableRecipeAdapter;
 import me.myogoo.extendedterminal.integration.itemList.emi.handler.AbstractEmiTableRecipeHandler;
+import me.myogoo.extendedterminal.integration.itemList.module.avaritia.AVNeoRecipeTransferHelper;
 import me.myogoo.extendedterminal.integration.itemList.module.avaritia.AVRecipeTransferHelper;
 import me.myogoo.extendedterminal.menu.ETMenuType;
 import me.myogoo.extendedterminal.menu.avaritiaNeo.NeoExtremeTerminalMenu;
@@ -50,6 +51,6 @@ public class AVNeoTerminalRecipeHandler extends AbstractEmiTableRecipeHandler<Ne
 
     @Override
     protected Map<Integer, Ingredient> getGuiSlotToIngredientMap(NeoExtremeTerminalMenu menu, ITableRecipeAdapter recipe) {
-        return AVRecipeTransferHelper.getGuiSlotToIngredientMap(menu, recipe);
+        return AVNeoRecipeTransferHelper.GuiSlotToIngredientMap.emi(menu, recipe);
     }
 }

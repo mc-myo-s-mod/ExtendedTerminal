@@ -52,7 +52,7 @@ public class AVTerminalRecipeHandler<T extends AvaritiaTerminalBaseMenu> extends
 
     @Override
     protected Map<Integer, Ingredient> getGuiSlotToIngredientMap(T menu, ITableRecipeAdapter recipe) {
-        return AVRecipeTransferHelper.getGuiSlotToIngredientMap(menu, recipe);
+        return AVRecipeTransferHelper.GuiSlotToIngredientMap.emi(menu, recipe);
     }
 
     private EmiRecipeCategory getCategory(int tier) {

@@ -4,7 +4,7 @@ import appeng.core.localization.ItemModText;
 import me.myogoo.extendedterminal.api.adapter.recipe.table.ITableRecipeAdapter;
 import me.myogoo.extendedterminal.integration.itemList.jei.handler.AbstractJeiTableRecipeHandler;
 import me.myogoo.extendedterminal.integration.itemList.jei.handler.IJeiAbstractRecipeHandler;
-import me.myogoo.extendedterminal.integration.itemList.module.avaritia.AVRecipeTransferHelper;
+import me.myogoo.extendedterminal.integration.itemList.module.avaritia.AVNeoRecipeTransferHelper;
 import me.myogoo.extendedterminal.menu.avaritiaNeo.NeoExtremeTerminalMenu;
 import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.recipe.RecipeIngredientRole;
@@ -85,7 +85,7 @@ public class AVNeoJeiRecipeTransferHandler<T extends NeoExtremeTerminalMenu>
 
     @Override
     protected Map<Integer, Ingredient> getGuiSlotToIngredientMap(T menu, ITableRecipeAdapter recipe) {
-        return AVRecipeTransferHelper.getGuiSlotToIngredientMap(menu, recipe);
+        return AVNeoRecipeTransferHelper.GuiSlotToIngredientMap.jei(menu, recipe);
     }
 
     private <R extends Recipe<?>> void performTransfer(T menu, ITableRecipeAdapter recipe, boolean craftMissing, Supplier<RecipeHolder<R>> supplier) {

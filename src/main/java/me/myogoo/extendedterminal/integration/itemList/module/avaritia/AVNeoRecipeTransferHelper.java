@@ -10,44 +10,39 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class AVRecipeTransferHelper {
+public class AVNeoRecipeTransferHelper {
     public static IGuiSlotToIngredientMap GuiSlotToIngredientMap = new IGuiSlotToIngredientMap() {
         public Map<Integer, Ingredient> jei(ETTerminalBaseMenu<?> menu, ITableRecipeAdapter recipe) {
             int gridSideLength = menu.getCraftingGridWidth();
             var raw = recipe.get().getIngredients();
             List<Ingredient> ingredients;
 
-            int offsetX = 0;
-            int offsetY = 0;
             int width = gridSideLength;
             int height = gridSideLength;
             if (recipe instanceof IShapedTableRecipeAdapter shapedRecipe) {
                 ingredients = shapedRecipe.ensureFittedCraftingGrid();
-            width = shapedRecipe.width();
-            height = shapedRecipe.height();
-            offsetX = Math.floorDiv(gridSideLength - shapedRecipe.width(), 2);
-            offsetY = Math.floorDiv(gridSideLength - shapedRecipe.height(), 2);
+                width = shapedRecipe.width();
+                height = shapedRecipe.height();
+            } else {
+                ingredients = raw;
+            }
 
-        } else {
-            ingredients = raw;
-        }
-
-        int max = gridSideLength * gridSideLength;
+            int max = gridSideLength * gridSideLength;
             int count = Math.min(ingredients.size(), max);
             var result = new HashMap<Integer, Ingredient>(count);
             for (int i = 0; i < count; i++) {
                 int x = i % width;
                 int y = i / width;
 
-                var guiSlot = (y + offsetY) * gridSideLength + (x + offsetX);
+                var guiSlot = y * gridSideLength + x;
                 var ing = ingredients.get(i);
                 if (!ing.isEmpty()) {
                     result.put(guiSlot, ing);
                 }
             }
             return result;
-
         }
+
 
         public Map<Integer, Ingredient> emi(ETTerminalBaseMenu<?> menu, ITableRecipeAdapter recipe) {
             int gridSideLength = menu.getCraftingGridWidth();

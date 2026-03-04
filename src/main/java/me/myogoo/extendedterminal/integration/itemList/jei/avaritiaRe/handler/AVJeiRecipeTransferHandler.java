@@ -73,6 +73,6 @@ public class AVJeiRecipeTransferHandler<T extends AvaritiaTerminalBaseMenu> exte
 
     @Override
     public Map<Integer, Ingredient> getGuiSlotToIngredientMap(T menu, ITableRecipeAdapter recipe) {
-        return AVRecipeTransferHelper.getGuiSlotToIngredientMap(menu, recipe);
+        return AVRecipeTransferHelper.GuiSlotToIngredientMap.jei(menu, recipe);
     }
 }
