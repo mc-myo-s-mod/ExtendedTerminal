@@ -21,24 +21,27 @@
 
 ## Support Terminal
 
-| Mod                                                                                                    | Version        | Wireless Terminal Support |
-|--------------------------------------------------------------------------------------------------------|----------------|---------------------------|
-| Extended Terminal                                                                                      | 1.21.1         | ✔️                        |
-| [Re:Avaritia](https://www.curseforge.com/minecraft/mc-mods/re-avaritia)                                | 1.21.1, 1.20.1 | ❌                         |
-| [AvaritiaNeo](https://www.curseforge.com/minecraft/mc-mods/avaritianeo)                                | 1.21.1, 1.20.1 | ❌                         |
-| [Extended Crafting](https://www.curseforge.com/minecraft/mc-mods/extended-crafting)                    | 1.21.1, 1.20.1 | ❌                         |
-| [Extended Crafting: Expanded](https://www.curseforge.com/minecraft/mc-mods/extended-crafting-expanded) | 1.20.1 | ❌                         |
+| Mod                                                                     | Version        | Wireless Terminal Support | Link                                                                                                                                         |
+|-------------------------------------------------------------------------|----------------|---------------------------|----------------------------------------------------------------------------------------------------------------------------------------------|
+| Extended Terminal                                                       | 1.21.1         | ✔️                        | [CurseForge](https://www.curseforge.com/minecraft/mc-mods/extended-terminal), [Modrinth](https://modrinth.com/mod/extended-terminal)         |
+| [Re:Avaritia](https://modrinth.com/mod/re-avaritia)                     | 1.21.1, 1.20.1 | ❌                         | [CurseForge](https://www.curseforge.com/minecraft/mc-mods/re-avaritia), [Modrinth](https://modrinth.com/mod/re-avaritia)                     |
+| [AvaritiaNeo](https://www.curseforge.com/minecraft/mc-mods/avaritianeo) | 1.21.1, 1.20.1 | ❌                         | [CurseForge](https://www.curseforge.com/minecraft/mc-mods/avaritianeo), [Modrinth](https://www.curseforge.com/minecraft/mc-mods/avaritianeo) |                    
+| [Extended Crafting](https://modrinth.com/mod/extended-crafting)         | 1.21.1, 1.20.1 | ❌                         | [CurseForge](https://www.curseforge.com/minecraft/mc-mods/extended-crafting), [Modrinth](https://modrinth.com/mod/extended-crafting)         |
+| Extended Crafting: Expanded                                             | 1.20.1         | ❌                         | [CurseForge](https://www.curseforge.com/minecraft/mc-mods/extended-crafting-expanded)                                                        |
 
 ## Integrated My Mod:
-| Mod                                                                                                    | Version      | fully support |
-|--------------------------------------------------------------------------------------------------------|--------------|---------------|
-|[AE2 Tangible Bookmarks](https://www.curseforge.com/minecraft/mc-mods/ae2-tangible-bookmarks) | 1.21.1, 1.20.1 | ✔️            |
-|[AE2 Fluid Crafting Terminal](https://www.curseforge.com/minecraft/mc-mods/ae2-fluid-crafting-terminal) | 1.21.1 | ❌(WIP)        |
+
+| Mod | Version | fully support | Link |
+|--------------------------------------------------------------------------------------------------------|--------------|--------------|----------------------------|
+|[AE2 Tangible Bookmarks](https://modrinth.com/mod/ae2-tangible-bookmarks) | 1.21.1, 1.20.1 |✔️ | [CurseForge](), [Modrinth](https://modrinth.com/mod/ae2-tangible-bookmarks)|
+|[AE2 Fluid Crafting Terminal](https://modrinth.com/mod/ae2-fluid-crafting-terminal) | 1.21.1 | ❌(WIP)       |[CurseForge](), [Modrinth](https://modrinth.com/mod/ae2-fluid-crafting-terminal)|
+
 ## License
 
 - code: LGPL 3.0
 - Assets
-    - AE2: [See Details ![Badge](https://img.shields.io/badge/License-CC%20BY--NC--SA%203.0-green?style=flat-square)](readme/ae2-license.md)
+    -
+    AE2: [See Details ![Badge](https://img.shields.io/badge/License-CC%20BY--NC--SA%203.0-green?style=flat-square)](readme/ae2-license.md)
 
 ### Badges
 
