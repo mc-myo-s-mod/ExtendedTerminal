@@ -21,7 +21,7 @@
 
 ## Support Terminal
 
-| Mod                                                                     | Version        | Wireless Terminal Support | Link                                                                                                                                         |
+| Mod                                                                     | Version        | Wireless Terminal | Link                                                                                                                                         |
 |-------------------------------------------------------------------------|----------------|---------------------------|----------------------------------------------------------------------------------------------------------------------------------------------|
 | Extended Terminal                                                       | 1.21.1         | ✔️                        | [CurseForge](https://www.curseforge.com/minecraft/mc-mods/extended-terminal), [Modrinth](https://modrinth.com/mod/extended-terminal)         |
 | [Re:Avaritia](https://modrinth.com/mod/re-avaritia)                     | 1.21.1, 1.20.1 | ❌                         | [CurseForge](https://www.curseforge.com/minecraft/mc-mods/re-avaritia), [Modrinth](https://modrinth.com/mod/re-avaritia)                     |
