@@ -13,15 +13,34 @@
 </p>
 
 ## Feature
+
+- EMI/JEI support for experiences like the AE2's Crafting Terminal
+- The Ultimate All-in-One: Crafting, Smithing, Stonecutting, and Anvil—All in a single terminal
+- Go Beyond 3x3: Integrated support for extended crafting and custom grid sizes.
 - You can add **Extended Terminal** to your modpack.
-- support [Extended Crafting](https://www.curseforge.com/minecraft/mc-mods/extended-crafting) Terminals
-- supoort [Re:Avaritia](https://www.curseforge.com/minecraft/mc-mods/re-avaritia) Crafting Terminals
-- Jei Recipe Transfer Support
+
+## Support Terminal
+
+| Mod                                                                                                    | Version        | Wireless Terminal Support |
+|--------------------------------------------------------------------------------------------------------|----------------|---------------------------|
+| Extended Terminal                                                                                      | 1.21.1         | ✔️                        |
+| [Re:Avaritia](https://www.curseforge.com/minecraft/mc-mods/re-avaritia)                                | 1.21.1, 1.20.1 | ❌                         |
+| [AvaritiaNeo](https://www.curseforge.com/minecraft/mc-mods/avaritianeo)                                | 1.21.1, 1.20.1 | ❌                         |
+| [Extended Crafting](https://www.curseforge.com/minecraft/mc-mods/extended-crafting)                    | 1.21.1, 1.20.1 | ❌                         |
+| [Extended Crafting: Expanded](https://www.curseforge.com/minecraft/mc-mods/extended-crafting-expanded) | 1.20.1 | ❌                         |
+
+## Integrated My Mod:
+| Mod                                                                                                    | Version      | fully support |
+|--------------------------------------------------------------------------------------------------------|--------------|---------------|
+|[AE2 Tangible Bookmarks](https://www.curseforge.com/minecraft/mc-mods/ae2-tangible-bookmarks) | 1.21.1, 1.20.1 | ✔️            |
+|[AE2 Fluid Crafting Terminal](https://www.curseforge.com/minecraft/mc-mods/ae2-fluid-crafting-terminal) | 1.21.1 | ❌(WIP)        |
 ## License
+
 - code: LGPL 3.0
 - Assets
-  - AE2: [See Details ![Badge](https://img.shields.io/badge/License-CC%20BY--NC--SA%203.0-green?style=flat-square)](readme/ae2-license.md)
+    - AE2: [See Details ![Badge](https://img.shields.io/badge/License-CC%20BY--NC--SA%203.0-green?style=flat-square)](readme/ae2-license.md)
 
 ### Badges
+
 [![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/mc-myo-s-mod/ExtendedTerminal)
 [![wakatime](https://wakatime.com/badge/user/ca36a468-38ff-45c1-9525-449c220435e1/project/88df062b-d528-4d07-8bf1-f613c88da7a4.svg)](https://wakatime.com/badge/user/ca36a468-38ff-45c1-9525-449c220435e1/project/88df062b-d528-4d07-8bf1-f613c88da7a4)
