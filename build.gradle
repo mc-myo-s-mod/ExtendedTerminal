@@ -3,6 +3,7 @@ plugins {
     id 'maven-publish'
     id 'idea'
     id 'net.neoforged.moddev' version '2.0.82'
+    id 'org.jetbrains.kotlin.jvm'
 }
 
 version = mod_version
@@ -142,8 +143,9 @@ sourceSets.main.resources { srcDir 'src/generated/resources' }
 
 
 dependencies {
-    compileOnly "org.appliedenergistics:appliedenergistics2:${AE2_version}"
-    runtimeOnly "org.appliedenergistics:appliedenergistics2:${AE2_version}"
+    implementation "me.myogoo:MyoCertus_1_21_1:${myotus_version}"
+
+    implementation "org.appliedenergistics:appliedenergistics2:${AE2_version}"
 
     implementation "com.blakebr0.cucumber:Cucumber:${minecraft_version}-${Cucumber_version}"
     compileOnly "com.blakebr0.extendedcrafting:ExtendedCrafting:${minecraft_version}-${ExtendedCrafting_version}"
@@ -206,6 +208,7 @@ dependencies {
         default:
             throw new GradleException("Invalid value for enable_avaritia: ${project.enable_avaritia}")
     }
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
 }
 
 // This block of code expands all declared replace properties in the specified resource targets.
@@ -254,4 +257,7 @@ idea {
         downloadSources = true
         downloadJavadoc = true
     }
+}
+kotlin {
+    jvmToolchain(21)
 }

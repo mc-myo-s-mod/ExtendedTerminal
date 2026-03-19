@@ -4,17 +4,17 @@ import committee.nova.mods.avaritia.init.compat.jei.category.tables.EndCraftingT
 import committee.nova.mods.avaritia.init.compat.jei.category.tables.ExtremeCraftingTableCategory;
 import committee.nova.mods.avaritia.init.compat.jei.category.tables.NetherCraftingTableCategory;
 import committee.nova.mods.avaritia.init.compat.jei.category.tables.SculkCraftingTableCategory;
-import me.myogoo.extendedterminal.api.ETSubscribeEvent;
 import me.myogoo.extendedterminal.api.integration.jei.ETJeiRecipeCatalyst;
 import me.myogoo.extendedterminal.api.ModAccessor;
 import me.myogoo.extendedterminal.config.avaritiaRe.AvaritiaReConfig;
 import me.myogoo.extendedterminal.init.ETParts;
+import me.myogoo.myotus.api.annotation.MyotusSubscriber;
 import mezz.jei.api.registration.IRecipeCatalystRegistration;
 
 @ETJeiRecipeCatalyst
 @ModAccessor.ReAvaritia
 public class AVRecipeCatalyst {
-    @ETSubscribeEvent
+    @MyotusSubscriber
     public static void init(IRecipeCatalystRegistration registration) {
         if(AvaritiaReConfig.INSTANCE.getSculkConfig().enableTerminal()) registration.addRecipeCatalyst(ETParts.SCULK_TERMINAL_PART, SculkCraftingTableCategory.RECIPE_TYPE);
         if(AvaritiaReConfig.INSTANCE.getNetherConfig().enableTerminal()) registration.addRecipeCatalyst(ETParts.NETHER_TERMINAL_PART, NetherCraftingTableCategory.RECIPE_TYPE);

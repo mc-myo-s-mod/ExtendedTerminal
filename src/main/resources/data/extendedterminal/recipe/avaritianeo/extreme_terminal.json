@@ -1,8 +1,8 @@
 {
   "neoforge:conditions": [
     {
-      "type": "extendedterminal:et_mod",
-      "et_mod": "AvaritiaNeo"
+      "type": "myotus:mod_condition",
+      "active_mod": "AvaritiaNeo"
     }
   ],
   "type": "minecraft:crafting_shaped",

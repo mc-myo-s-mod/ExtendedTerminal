@@ -1,18 +1,18 @@
 package me.myogoo.extendedterminal.integration.itemList.jei.extendedterminal;
 
-import me.myogoo.extendedterminal.api.ETSubscribeEvent;
 import me.myogoo.extendedterminal.api.integration.jei.ETJeiRecipeTransfer;
 import me.myogoo.extendedterminal.config.ExtendedTerminalConfig;
 import me.myogoo.extendedterminal.integration.itemList.jei.extendedterminal.handler.panel.ETCraftingRecipeTransfer;
 import me.myogoo.extendedterminal.integration.itemList.jei.extendedterminal.handler.panel.ETSmithingRecipeTransfer;
 import me.myogoo.extendedterminal.integration.itemList.jei.extendedterminal.handler.panel.ETStonecutterRecipeTransfer;
 import me.myogoo.extendedterminal.menu.extendedterminal.ETTerminalMenu;
+import me.myogoo.myotus.api.annotation.MyotusSubscriber;
 import mezz.jei.api.constants.RecipeTypes;
 import mezz.jei.api.registration.IRecipeTransferRegistration;
 
 @ETJeiRecipeTransfer
 public class ETRecipeTransferHandler {
-    @ETSubscribeEvent
+    @MyotusSubscriber
     public static void init(IRecipeTransferRegistration registration) {
         var config = ExtendedTerminalConfig.INSTANCE.getExtendedTerminalConfig();
         var helper = registration.getTransferHelper();

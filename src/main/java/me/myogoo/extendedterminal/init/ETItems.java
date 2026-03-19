@@ -1,25 +1,20 @@
 package me.myogoo.extendedterminal.init;
 
 import appeng.core.definitions.ItemDefinition;
-import appeng.menu.locator.ItemMenuHostLocator;
 import de.mari_023.ae2wtlib.api.terminal.ItemWT;
 import me.myogoo.extendedterminal.ExtendedTerminal;
 import me.myogoo.extendedterminal.item.ChargedEnderPearlItem;
 import me.myogoo.extendedterminal.item.wtitem.ETWTItem;
-import me.myogoo.extendedterminal.util.mod.ModIntegrationManager;
-import me.myogoo.extendedterminal.util.mod.SupportedMod;
+import me.myogoo.myotus.api.annotation.wt.AE2WTLib;
+import me.myogoo.myotus.api.MyotusAPI;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.Item;
-import net.neoforged.neoforge.registries.DeferredItem;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 import java.util.function.Supplier;
-
 
 public class ETItems {
     public static final DeferredRegister.Items REGISTER = DeferredRegister.createItems(ExtendedTerminal.MODID);
@@ -47,18 +42,21 @@ public class ETItems {
             ExtendedTerminal.makeId("charged_ender_pearl"),
             ChargedEnderPearlItem::new);
 
-    public static <T extends Item> ItemDefinition<T> createItem(String name, ResourceLocation id, Function<Item.Properties, T> itemFactory) {
+    public static <T extends Item> ItemDefinition<T> createItem(String name, ResourceLocation id,
+            Function<Item.Properties, T> itemFactory) {
         var item = new ItemDefinition<>(name, REGISTER.registerItem(id.getPath(), itemFactory));
         ITEMS.add(item);
         return item;
     }
 
-    private static <T extends ItemWT> ItemDefinition<T> createWTItem(String name, ResourceLocation id, Supplier<T> supplier) {
+    private static <T extends ItemWT> ItemDefinition<T> createWTItem(String name, ResourceLocation id,
+            Supplier<T> supplier) {
         return createWTItem(name, id, p -> supplier.get());
     }
 
-    private static <T extends ItemWT> ItemDefinition<T> createWTItem(String name, ResourceLocation id, Function<Item.Properties, T> itemFactory) {
-        if(!ModIntegrationManager.isLoaded(SupportedMod.AE2WTLib)) {
+    private static <T extends ItemWT> ItemDefinition<T> createWTItem(String name, ResourceLocation id,
+            Function<Item.Properties, T> itemFactory) {
+        if (!MyotusAPI.get().modIntegrationManager().isLoaded(AE2WTLib.class)) {
             return null;
         }
         var item = REGISTER.registerItem(id.getPath(), itemFactory);
