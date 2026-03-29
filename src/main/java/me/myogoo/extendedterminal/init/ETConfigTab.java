@@ -7,6 +7,7 @@ import net.minecraft.network.chat.Component;
 
 public class ETConfigTab {
     public static void initialize() {
+        /*
         MyotusAPI.get()
                 .configRegistrar()
                 .terminalConfigTab(new MyoConfigTab(
@@ -15,5 +16,6 @@ public class ETConfigTab {
                         "et_config.json",
                         new ETTerminalConfigScreen()
                 ));
+         */
     }
 }
