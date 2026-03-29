@@ -20,7 +20,6 @@ public class ETItems {
     public static final DeferredRegister.Items REGISTER = DeferredRegister.createItems(ExtendedTerminal.MODID);
 
     public static final List<ItemDefinition<?>> ITEMS = new ArrayList<>();
-    public static final List<ItemDefinition<? extends ItemWT>> WT_ITEMS = new ArrayList<>();
 
     public static final ItemDefinition<Item> COMPAT_PROCESSOR = createItem("compat processor",
             ExtendedTerminal.makeId("compat_processor"),
@@ -34,10 +33,6 @@ public class ETItems {
             ExtendedTerminal.makeId("printed_compat_processor"),
             Item::new);
 
-    public static final ItemDefinition<ETWTItem> WIRELESS_ET_TERMINAL = createWTItem("Extended Wireless Terminal",
-            ExtendedTerminal.makeId("wireless_et_terminal"),
-            ETWTItem::new);
-
     public static final ItemDefinition<ChargedEnderPearlItem> CHARGED_ENDER_PEARL = createItem("charged ender pearl",
             ExtendedTerminal.makeId("charged_ender_pearl"),
             ChargedEnderPearlItem::new);
@@ -49,19 +44,4 @@ public class ETItems {
         return item;
     }
 
-    private static <T extends ItemWT> ItemDefinition<T> createWTItem(String name, ResourceLocation id,
-            Supplier<T> supplier) {
-        return createWTItem(name, id, p -> supplier.get());
-    }
-
-    private static <T extends ItemWT> ItemDefinition<T> createWTItem(String name, ResourceLocation id,
-            Function<Item.Properties, T> itemFactory) {
-        if (!MyotusAPI.get().modIntegrationManager().isLoaded(AE2WTLib.class)) {
-            return null;
-        }
-        var item = REGISTER.registerItem(id.getPath(), itemFactory);
-        var definition = new ItemDefinition<>(name, item);
-        WT_ITEMS.add(definition);
-        return definition;
-    }
 }

@@ -17,10 +17,13 @@ import me.myogoo.myotus.api.MyotusAPI;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.level.ItemLike;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.registries.RegisterEvent;
+
+import static me.myogoo.extendedterminal.init.wt.WTItems.WT_ITEMS;
 
 public class WTInit {
     private final static ResourceLocation ICON_SRC = ExtendedTerminal.makeId("textures/guis/icons.png");
@@ -29,7 +32,7 @@ public class WTInit {
     public static void init(RegisterEvent event) {
         if (event.getRegistryKey().equals(Registries.ITEM)
                 && MyotusAPI.get().modIntegrationManager().isLoaded(AE2WTLib.class)) {
-            register(ETItems.WIRELESS_ET_TERMINAL, ETMenuType.ET_TERMINAL, ETWTHost::new, ETWTMenu.TYPE,
+            register(WTItems.WIRELESS_ET_TERMINAL, ETMenuType.ET_TERMINAL, ETWTHost::new, ETWTMenu.TYPE,
                     new Icon(0, 0, 16, 16, TEXTURE));
         }
     }
@@ -44,15 +47,10 @@ public class WTInit {
     }
 
     public static void initCapabilities(RegisterCapabilitiesEvent event) {
-        if (!MyotusAPI.get().modIntegrationManager().isLoaded(AE2WTLib.class)) {
-            return;
-        }
-
-        for (var def : ETItems.WT_ITEMS) {
-            ItemWT item = def.asItem();
+        for (var def : WT_ITEMS) {
+            ItemWT item = (ItemWT) def.asItem();
             event.registerItem(Capabilities.EnergyStorage.ITEM,
                     (object, index) -> new PoweredItemCapabilities(object, item), item);
         }
-
     }
 }

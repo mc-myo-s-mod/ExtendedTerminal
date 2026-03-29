@@ -3,6 +3,10 @@ package me.myogoo.extendedterminal;
 import com.mojang.logging.LogUtils;
 import me.myogoo.extendedterminal.init.*;
 import me.myogoo.extendedterminal.init.wt.WTInit;
+import me.myogoo.extendedterminal.init.wt.WTItems;
+import me.myogoo.extendedterminal.init.wt.WTMenus;
+import me.myogoo.myotus.api.MyotusAPI;
+import me.myogoo.myotus.api.annotation.wt.AE2WTLib;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
@@ -22,6 +26,13 @@ public class ExtendedTerminal {
 
         ETItems.REGISTER.register(modEventBus);
         ETCreativeTab.REGISTER.register(modEventBus);
+        if(MyotusAPI.modIntegrationManager().isLoaded(AE2WTLib.class)) {
+            WTItems.register();
+            WTMenus.register();
+            modEventBus.addListener(WTInit::init);
+            modEventBus.addListener(WTInit::initCapabilities);
+        }
+
         ETParts.REGISTER.register(modEventBus);
         ETMenus.REGISTER.register(modEventBus);
         ETDataComponent.REGISTER.register(modEventBus);
@@ -29,8 +40,7 @@ public class ExtendedTerminal {
         NeoForge.EVENT_BUS.register(ETRecipeGen.class);
         modEventBus.addListener(ETNetwork::init);
 
-        modEventBus.addListener(WTInit::init);
-        modEventBus.addListener(WTInit::initCapabilities);
+
         modEventBus.addListener(this::commonSetup);
     }
 

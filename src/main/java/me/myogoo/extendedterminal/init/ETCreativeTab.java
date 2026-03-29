@@ -5,6 +5,7 @@ import appeng.core.definitions.AEParts;
 import appeng.core.definitions.ItemDefinition;
 import de.mari_023.ae2wtlib.api.terminal.ItemWT;
 import me.myogoo.extendedterminal.ExtendedTerminal;
+import me.myogoo.extendedterminal.init.wt.WTItems;
 import me.myogoo.myotus.api.annotation.wt.AE2WTLib;
 import me.myogoo.myotus.api.MyotusAPI;
 import net.minecraft.core.registries.Registries;
@@ -26,10 +27,10 @@ public class ETCreativeTab {
                             output.accept(item);
                         }
                         if (MyotusAPI.get().modIntegrationManager().isLoaded(AE2WTLib.class)) {
-                            for (var wt : ETItems.WT_ITEMS) {
+                            for (var wt : WTItems.WT_ITEMS) {
                                 var stack = wt.stack();
                                 output.accept(stack.copy());
-                                ItemWT item = wt.get();
+                                ItemWT item = (ItemWT) wt.get();
                                 item.injectAEPower(stack, item.getAEMaxPower(stack), Actionable.MODULATE);
                                 output.accept(stack);
                             }

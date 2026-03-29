@@ -28,6 +28,8 @@ import me.myogoo.extendedterminal.menu.extendedcrafting.EliteTerminalMenu;
 import me.myogoo.extendedterminal.menu.extendedcrafting.UltimateTerminalMenu;
 import me.myogoo.extendedterminal.menu.extendedterminal.ETTerminalMenu;
 import me.myogoo.extendedterminal.menu.extendedterminal.wt.ETWTMenu;
+import me.myogoo.myotus.api.MyotusAPI;
+import me.myogoo.myotus.api.annotation.wt.AE2WTLib;
 import net.minecraft.world.level.ItemLike;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
@@ -40,12 +42,14 @@ public class ETClient {
     public ETClient(IEventBus eventBus) {
         eventBus.addListener(RegisterColorHandlersEvent.Item.class, ETClient::initColorParts);
         eventBus.addListener(ETClient::initScreens);
+        if(MyotusAPI.modIntegrationManager().isLoaded(AE2WTLib.class)) {
+            eventBus.addListener(ETClient::InitWTScreen);
+        }
     }
 
     public static void initScreens(RegisterMenuScreensEvent event) {
         // extended terminal
         InitScreens.register(event, ETTerminalMenu.TYPE, ETTerminalScreen<ETTerminalMenu>::new, "/screens/et_terminal.json");
-        InitScreens.register(event, ETWTMenu.TYPE, ETWTScreen::new, "/screens/wireless_et_terminal.json");
 
         // extended crafting terminals
         InitScreens.register(event, BasicTerminalMenu.TYPE, BasicTerminalScreen::new, "/screens/extended_terminal/basic_terminal.json");
@@ -60,6 +64,10 @@ public class ETClient {
         InitScreens.register(event, ExtremeTerminalMenu.TYPE, ExtremeTerminalScreen::new, "/screens/avaritia/extreme_terminal.json");
 
         InitScreens.register(event, NeoExtremeTerminalMenu.TYPE, NeoExtremeTerminalScreen::new, "/screens/avaritia/extreme_terminal.json");
+    }
+
+    public static void InitWTScreen(RegisterMenuScreensEvent event) {
+        InitScreens.register(event, ETWTMenu.TYPE, ETWTScreen::new, "/screens/wireless_et_terminal.json");
     }
 
     public static void initColorParts(RegisterColorHandlersEvent.Item event) {

@@ -23,7 +23,7 @@ public class ItemListModLoadHelper {
                 .filter(a -> a.annotationType().equals(markerAnnotation))
                 .map(a -> SafeClass.forType(a.clazz()))
                 .filter(c -> c.getDeclaredAnnotations().length == 0 || Arrays.stream(c.getDeclaredAnnotations())
-                        .anyMatch(a -> MyotusAPI.get().modIntegrationManager().isLoaded(a.annotationType())))
+                        .allMatch(a -> MyotusAPI.get().modIntegrationManager().isLoaded(a.annotationType())))
                 .forEach(clazz -> invokeMethod(clazz, parameterType, parameter));
     }
 
