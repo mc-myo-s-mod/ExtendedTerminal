@@ -26,16 +26,16 @@ public class ExtendedTerminal {
 
         ETItems.REGISTER.register(modEventBus);
         ETCreativeTab.REGISTER.register(modEventBus);
+        ETParts.REGISTER.register(modEventBus);
+        ETMenus.REGISTER.register(modEventBus);
+        ETDataComponent.REGISTER.register(modEventBus);
+
         if(MyotusAPI.modIntegrationManager().isLoaded(AE2WTLib.class)) {
             WTItems.register();
             WTMenus.register();
             modEventBus.addListener(WTInit::init);
             modEventBus.addListener(WTInit::initCapabilities);
         }
-
-        ETParts.REGISTER.register(modEventBus);
-        ETMenus.REGISTER.register(modEventBus);
-        ETDataComponent.REGISTER.register(modEventBus);
 
         NeoForge.EVENT_BUS.register(ETRecipeGen.class);
         modEventBus.addListener(ETNetwork::init);
