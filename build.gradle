@@ -241,6 +241,9 @@ neoForge.ideSyncTask generateModMetadata
 publishing {
     publications {
         register('mavenJava', MavenPublication) {
+            groupId = project.mod_group_id
+            artifactId = project.mod_id
+            version = project.mod_version
             from components.java
         }
     }
