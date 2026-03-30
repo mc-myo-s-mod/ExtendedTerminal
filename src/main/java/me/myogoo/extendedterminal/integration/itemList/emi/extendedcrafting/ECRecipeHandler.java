@@ -3,7 +3,6 @@ package me.myogoo.extendedterminal.integration.itemList.emi.extendedcrafting;
 import com.blakebr0.extendedcrafting.init.ModMenuTypes;
 import dev.emi.emi.api.EmiRegistry;
 import me.myogoo.extendedterminal.api.ModAccessor;
-import me.myogoo.extendedterminal.api.ETSubscribeEvent;
 import me.myogoo.extendedterminal.api.integration.emi.ETEmiRecipeHandler;
 import me.myogoo.extendedterminal.integration.itemList.emi.extendedcrafting.handler.ECTableRecipeHandler;
 import me.myogoo.extendedterminal.integration.itemList.emi.extendedcrafting.handler.ECTerminalRecipeHandler;
@@ -12,11 +11,12 @@ import me.myogoo.extendedterminal.menu.extendedcrafting.AdvancedTerminalMenu;
 import me.myogoo.extendedterminal.menu.extendedcrafting.BasicTerminalMenu;
 import me.myogoo.extendedterminal.menu.extendedcrafting.EliteTerminalMenu;
 import me.myogoo.extendedterminal.menu.extendedcrafting.UltimateTerminalMenu;
+import me.myogoo.myotus.api.annotation.MyotusSubscriber;
 
 @ModAccessor.ExtendedCrafting
 @ETEmiRecipeHandler
 public class ECRecipeHandler {
-    @ETSubscribeEvent
+    @MyotusSubscriber
     public static void register(EmiRegistry registry) {
         registry.addRecipeHandler(ModMenuTypes.BASIC_TABLE.get(), new ECTableRecipeHandler<>(ECRecipeCategory.BASIC_TABLE_CRAFTING_CATEGORY, ETMenuType.BASIC_TERMINAL.getGridSize()));
         registry.addRecipeHandler(ModMenuTypes.ADVANCED_TABLE.get(), new ECTableRecipeHandler<>(ECRecipeCategory.ADVANCED_TABLE_CRAFTING_CATEGORY, ETMenuType.ADVANCED_TERMINAL.getGridSize()));

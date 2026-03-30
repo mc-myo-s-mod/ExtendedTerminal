@@ -3,14 +3,14 @@ package me.myogoo.extendedterminal.integration.itemList.emi.extendedcrafting;
 import com.blakebr0.extendedcrafting.init.ModRecipeTypes;
 import dev.emi.emi.api.EmiRegistry;
 import me.myogoo.extendedterminal.api.ModAccessor;
-import me.myogoo.extendedterminal.api.ETSubscribeEvent;
 import me.myogoo.extendedterminal.api.integration.emi.ETEmiAddRecipe;
 import me.myogoo.extendedterminal.integration.itemList.emi.extendedcrafting.recipe.ECTableRecipe;
+import me.myogoo.myotus.api.annotation.MyotusSubscriber;
 
 @ModAccessor.ExtendedCrafting
 @ETEmiAddRecipe
 public class ECAddRecipe {
-    @ETSubscribeEvent
+    @MyotusSubscriber
     public static void register(EmiRegistry registry) {
         registry.getRecipeManager().getAllRecipesFor(ModRecipeTypes.TABLE.get())
                 .stream()

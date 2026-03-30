@@ -9,7 +9,6 @@
     "RecipeManagerMixin"
   ],
   "client": [
-    "GuideMeAddonMixin"
   ],
   "injectors": {
     "defaultRequire": 1

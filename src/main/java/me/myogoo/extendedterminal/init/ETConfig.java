@@ -17,7 +17,7 @@ import java.util.Map;
 
 @EventBusSubscriber(modid = ExtendedTerminal.MODID, bus = EventBusSubscriber.Bus.MOD)
 public class ETConfig {
-    public static void init(ModContainer container) {
+    public static void initialize(ModContainer container) {
         container.registerConfig(ModConfig.Type.COMMON, ExtendedTerminalConfig.COMMON, "extendedterminal/ExtendedTerminal-common.toml");
         container.registerConfig(ModConfig.Type.COMMON, AvaritiaReConfig.COMMON, "extendedterminal/addons/ReAvaritia.toml");
         container.registerConfig(ModConfig.Type.COMMON, AvaritiaNeoConfig.COMMON, "extendedterminal/addons/AvaritiaNeo.toml");

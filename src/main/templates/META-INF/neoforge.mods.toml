@@ -27,6 +27,13 @@ side="BOTH"
 versionRange = "[19.2.16,)"
 
 [[dependencies."${mod_id}"]]
+modId = "myotus"
+type = "REQUIRED"
+ordering="AFTER"
+side="BOTH"
+versionRange = "[19.0.3,)"
+
+[[dependencies."${mod_id}"]]
 modId = "ae2wtlib"
 type = "OPTIONAL"
 ordering = "BEFORE"
