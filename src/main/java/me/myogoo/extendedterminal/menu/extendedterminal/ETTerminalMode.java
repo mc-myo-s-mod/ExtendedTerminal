@@ -1,13 +1,12 @@
 package me.myogoo.extendedterminal.menu.extendedterminal;
 
-import appeng.api.inventories.InternalInventory;
 import appeng.menu.SlotSemantic;
 import me.myogoo.extendedterminal.ExtendedTerminal;
 import me.myogoo.extendedterminal.config.ExtendedTerminalConfig;
 import me.myogoo.extendedterminal.menu.ETMenuType;
 import me.myogoo.extendedterminal.menu.ETSlotSemantics;
 import me.myogoo.extendedterminal.part.extendedterminal.ETTerminalPart;
-import me.myogoo.extendedterminal.util.mod.ModIntegrationManager;
+import me.myogoo.myotus.api.MyotusAPI;
 import net.minecraft.resources.ResourceLocation;
 
 import java.lang.annotation.Annotation;
@@ -35,10 +34,11 @@ public enum ETTerminalMode {
             }
             return Arrays.stream(field.getDeclaredAnnotations())
                     .map(Annotation::annotationType)
-                    .allMatch(ModIntegrationManager::isLoaded) && this.enabled;
+                    .allMatch(a -> MyotusAPI.get().modIntegrationManager().isLoaded(a)) && this.enabled;
 
         } catch (NoSuchFieldException e) {
-            ExtendedTerminal.LOGGER.error("Terminal Mode {} is not loaded due to missing field in ETTerminalMode", this.name());
+            ExtendedTerminal.LOGGER.error("Terminal Mode {} is not loaded due to missing field in ETTerminalMode",
+                    this.name());
         }
         return false;
     }
@@ -57,14 +57,15 @@ public enum ETTerminalMode {
             case CRAFTING -> List.of(ETMenuType.ET_TERMINAL.getSlotSemanticGrid());
             case STONECUTTING -> List.of(ETSlotSemantics.STONECUTTING_INPUT);
             case SMITHING ->
-                    List.of(ETSlotSemantics.SMITHING_TABLE_BASE, ETSlotSemantics.SMITHING_TABLE_TEMPLATE, ETSlotSemantics.SMITHING_TABLE_ADDITION);
+                List.of(ETSlotSemantics.SMITHING_TABLE_BASE, ETSlotSemantics.SMITHING_TABLE_TEMPLATE,
+                        ETSlotSemantics.SMITHING_TABLE_ADDITION);
             case ANVIL -> List.of(ETSlotSemantics.ANVIL_LEFT_INPUT, ETSlotSemantics.ANVIL_RIGHT_INPUT);
         };
     }
 
     public static List<ETTerminalMode> loadableValues() {
         var list = Arrays.stream(values()).filter(ETTerminalMode::canLoad).toList();
-        if(list.isEmpty()) {
+        if (list.isEmpty()) {
             throw new IllegalArgumentException("No ETTerminalModes are loadable!");
         } else {
             return list;

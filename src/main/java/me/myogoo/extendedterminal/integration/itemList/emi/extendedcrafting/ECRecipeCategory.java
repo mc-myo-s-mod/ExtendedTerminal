@@ -6,8 +6,8 @@ import dev.emi.emi.api.recipe.EmiRecipeCategory;
 import dev.emi.emi.api.stack.EmiStack;
 import me.myogoo.extendedterminal.ExtendedTerminal;
 import me.myogoo.extendedterminal.api.ModAccessor;
-import me.myogoo.extendedterminal.api.ETSubscribeEvent;
 import me.myogoo.extendedterminal.api.integration.emi.ETEmiCategory;
+import me.myogoo.myotus.api.annotation.MyotusSubscriber;
 
 @ModAccessor.ExtendedCrafting
 @ETEmiCategory
@@ -28,7 +28,7 @@ public class ECRecipeCategory {
             ExtendedTerminal.makeId("ultimate_crafting_table"),
             EmiStack.of(ModBlocks.ULTIMATE_TABLE.get().asItem().getDefaultInstance()));
 
-    @ETSubscribeEvent
+    @MyotusSubscriber
     public static void register(EmiRegistry registry) {
         registry.addCategory(BASIC_TABLE_CRAFTING_CATEGORY);
         registry.addCategory(ADVANCED_TABLE_CRAFTING_CATEGORY);

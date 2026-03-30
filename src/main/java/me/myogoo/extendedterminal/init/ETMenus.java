@@ -24,7 +24,6 @@ public final class ETMenus {
 
     // Extended Terminal terminal
     public static final Supplier<MenuType<ETTerminalMenu>> ET_TERMINAL = REGISTER.register(ETMenuType.ET_TERMINAL.getIdAsString(), () -> ETTerminalMenu.TYPE);
-    public static final Supplier<MenuType<ETWTMenu>> ET_WT = REGISTER.register(ETMenuType.ET_TERMINAL.getWTIdAsString(), () -> ETWTMenu.TYPE);
     // Extended Crafting terminals
     public static final Supplier<MenuType<BasicTerminalMenu>> BASIC_TERMINAL = REGISTER.register(ETMenuType.BASIC_TERMINAL.getIdAsString(), () -> BasicTerminalMenu.TYPE);
     public static final Supplier<MenuType<AdvancedTerminalMenu>> ADVANCED_TERMINAL = REGISTER.register(ETMenuType.ADVANCED_TERMINAL.getIdAsString(), () -> AdvancedTerminalMenu.TYPE);
@@ -39,4 +38,6 @@ public final class ETMenus {
 
     // AvaritiaNeo terminal
     public static final Supplier<MenuType<NeoExtremeTerminalMenu>> NEO_EXTREME_TERMINAL = REGISTER.register(ETMenuType.NEO_EXTREME_TERMINAL.getIdAsString(), () -> NeoExtremeTerminalMenu.TYPE);
+
+
 }

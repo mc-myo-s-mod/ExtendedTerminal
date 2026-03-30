@@ -4,7 +4,6 @@ import committee.nova.mods.avaritia.init.compat.jei.category.tables.EndCraftingT
 import committee.nova.mods.avaritia.init.compat.jei.category.tables.ExtremeCraftingTableCategory;
 import committee.nova.mods.avaritia.init.compat.jei.category.tables.NetherCraftingTableCategory;
 import committee.nova.mods.avaritia.init.compat.jei.category.tables.SculkCraftingTableCategory;
-import me.myogoo.extendedterminal.api.ETSubscribeEvent;
 import me.myogoo.extendedterminal.api.integration.jei.ETJeiRecipeTransfer;
 import me.myogoo.extendedterminal.api.ModAccessor;
 import me.myogoo.extendedterminal.integration.itemList.jei.avaritiaRe.handler.AVJeiRecipeTransferHandler;
@@ -12,12 +11,13 @@ import me.myogoo.extendedterminal.menu.avaritiaRe.EndTerminalMenu;
 import me.myogoo.extendedterminal.menu.avaritiaRe.ExtremeTerminalMenu;
 import me.myogoo.extendedterminal.menu.avaritiaRe.NetherTerminalMenu;
 import me.myogoo.extendedterminal.menu.avaritiaRe.SculkTerminalMenu;
+import me.myogoo.myotus.api.annotation.MyotusSubscriber;
 import mezz.jei.api.registration.IRecipeTransferRegistration;
 
 @ETJeiRecipeTransfer
 @ModAccessor.ReAvaritia
 public class AVRecipeTransferHandler {
-    @ETSubscribeEvent
+    @MyotusSubscriber
     public static void init(IRecipeTransferRegistration registration) {
         var helper = registration.getTransferHelper();
 

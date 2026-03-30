@@ -4,7 +4,8 @@ import appeng.menu.SlotSemantic;
 import appeng.menu.SlotSemantics;
 import me.myogoo.extendedterminal.ExtendedTerminal;
 import me.myogoo.extendedterminal.api.ModAccessor;
-import me.myogoo.extendedterminal.util.mod.ModIntegrationManager;
+import me.myogoo.extendedterminal.init.ETModIntegration;
+import me.myogoo.myotus.api.MyotusAPI;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.fml.common.asm.enumextension.ExtensionInfo;
 import net.neoforged.fml.common.asm.enumextension.IExtensibleEnum;
@@ -13,24 +14,24 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.util.Arrays;
 
-
 public enum ETMenuType implements IExtensibleEnum {
-    ET_TERMINAL(3,-1, SlotSemantics.CRAFTING_GRID, SlotSemantics.CRAFTING_RESULT),
-    EX_PATTERN_TERMINAL(9,-1 , ETSlotSemantics.BASIC_CRAFTING_GRID, ETSlotSemantics.BASIC_CRAFTING_RESULT),
+    ET_TERMINAL(3, -1, SlotSemantics.CRAFTING_GRID, SlotSemantics.CRAFTING_RESULT),
+    EX_PATTERN_TERMINAL(9, -1, ETSlotSemantics.BASIC_CRAFTING_GRID, ETSlotSemantics.BASIC_CRAFTING_RESULT),
     @ModAccessor.ExtendedCrafting
-    BASIC_TERMINAL(3,1, ETSlotSemantics.BASIC_CRAFTING_GRID, ETSlotSemantics.BASIC_CRAFTING_RESULT),
+    BASIC_TERMINAL(3, 1, ETSlotSemantics.BASIC_CRAFTING_GRID, ETSlotSemantics.BASIC_CRAFTING_RESULT),
 
     @ModAccessor.ExtendedCrafting
-    ADVANCED_TERMINAL(5,2, ETSlotSemantics.ADVANCED_CRAFTING_GRID, ETSlotSemantics.ADVANCED_CRAFTING_RESULT),
+    ADVANCED_TERMINAL(5, 2, ETSlotSemantics.ADVANCED_CRAFTING_GRID, ETSlotSemantics.ADVANCED_CRAFTING_RESULT),
 
     @ModAccessor.ExtendedCrafting
-    ELITE_TERMINAL(7,3, ETSlotSemantics.ELITE_CRAFTING_GRID, ETSlotSemantics.ELITE_CRAFTING_RESULT),
+    ELITE_TERMINAL(7, 3, ETSlotSemantics.ELITE_CRAFTING_GRID, ETSlotSemantics.ELITE_CRAFTING_RESULT),
 
     @ModAccessor.ExtendedCrafting
-    ULTIMATE_TERMINAL(9,4, ETSlotSemantics.ULTIMATE_CRAFTING_GRID, ETSlotSemantics.ULTIMATE_CRAFTING_RESULT),
+    ULTIMATE_TERMINAL(9, 4, ETSlotSemantics.ULTIMATE_CRAFTING_GRID, ETSlotSemantics.ULTIMATE_CRAFTING_RESULT),
 
     @ModAccessor.ExtendedCrafting
-    EXTENDED_CRAFTING_UNIVERSAL_TERMINAL(9,0, ETSlotSemantics.EXTENDED_CRAFTING_UNIVERSAL_GRID, ETSlotSemantics.EXTENDED_CRAFTING_UNIVERSAL_RESULT),
+    EXTENDED_CRAFTING_UNIVERSAL_TERMINAL(9, 0, ETSlotSemantics.EXTENDED_CRAFTING_UNIVERSAL_GRID,
+            ETSlotSemantics.EXTENDED_CRAFTING_UNIVERSAL_RESULT),
 
     @ModAccessor.ReAvaritia
     SCULK_TERMINAL(3, 1, ETSlotSemantics.SCULK_CRAFTING_GRID, ETSlotSemantics.SCULK_CRAFTING_RESULT),
@@ -51,9 +52,10 @@ public enum ETMenuType implements IExtensibleEnum {
     private final SlotSemantic slotSemantic_RESULT;
     private final int sideLength;
     private final int tier;
+
     ETMenuType(int sideLength, int tier, SlotSemantic slotSemantic_GRID, SlotSemantic slotSemantic_RESULT) {
         this.slotSemantic_GRID = slotSemantic_GRID;
-        this.slotSemantic_RESULT =  slotSemantic_RESULT;
+        this.slotSemantic_RESULT = slotSemantic_RESULT;
         this.sideLength = sideLength;
         this.tier = tier;
     }
@@ -91,7 +93,7 @@ public enum ETMenuType implements IExtensibleEnum {
     }
 
     public String getWTIdAsString() {
-        return  "wireless_" + this.name().toLowerCase();
+        return "wireless_" + this.name().toLowerCase();
     }
 
     public String getEnglishName() {
@@ -101,12 +103,12 @@ public enum ETMenuType implements IExtensibleEnum {
     public boolean canLoad() {
         try {
             Field field = ETMenuType.class.getField(this.name());
-            if(field.getDeclaredAnnotations().length == 0) {
+            if (field.getDeclaredAnnotations().length == 0) {
                 return true; // No annotations means it can be loaded by default
             }
             return Arrays.stream(field.getDeclaredAnnotations())
                     .map(Annotation::annotationType)
-                    .allMatch(ModIntegrationManager::isLoaded);
+                    .allMatch(a -> MyotusAPI.get().modIntegrationManager().isLoaded(a));
         } catch (NoSuchFieldException e) {
             ExtendedTerminal.LOGGER.error("Menu type {} is not loaded due to missing field in ETMenuType", this.name());
         }
