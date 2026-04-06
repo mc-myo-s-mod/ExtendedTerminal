@@ -34,7 +34,7 @@
 | Mod | Version | fully support | Link |
 |--------------------------------------------------------------------------------------------------------|--------------|--------------|----------------------------|
 |[AE2 Tangible Bookmarks](https://modrinth.com/mod/ae2-tangible-bookmarks) | 1.21.1, 1.20.1 |✔️ | [CurseForge](), [Modrinth](https://modrinth.com/mod/ae2-tangible-bookmarks)|
-|[AE2 Fluid Crafting Terminal](https://modrinth.com/mod/ae2-fluid-crafting-terminal) | 1.21.1 | ❌(WIP)       |[CurseForge](), [Modrinth](https://modrinth.com/mod/ae2-fluid-crafting-terminal)|
+|[AE2 Fluid Crafting Terminal](https://modrinth.com/mod/ae2-fluid-crafting-terminal) | 1.21.1 | ✔️       |[CurseForge](), [Modrinth](https://modrinth.com/mod/ae2-fluid-crafting-terminal)|
 
 ## License
 
