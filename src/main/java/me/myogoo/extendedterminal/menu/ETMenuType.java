@@ -1,9 +1,10 @@
 package me.myogoo.extendedterminal.menu;
 
 import appeng.menu.SlotSemantic;
+import appeng.menu.SlotSemantics;
 import me.myogoo.extendedterminal.ExtendedTerminal;
 import me.myogoo.extendedterminal.api.ModAccessor.*;
-import me.myogoo.extendedterminal.util.mod.ModIntegrationManager;
+import me.myogoo.myotus.util.mod.ModIntegrationManager;
 import net.minecraft.resources.ResourceLocation;
 
 import java.lang.annotation.Annotation;
@@ -12,7 +13,7 @@ import java.util.Arrays;
 
 
 public enum ETMenuType {
-    ET_TERMINAL(3,-1, ETSlotSemantics.BASIC_CRAFTING_GRID, ETSlotSemantics.BASIC_CRAFTING_RESULT),
+    ET_TERMINAL(3, -1, SlotSemantics.CRAFTING_GRID, SlotSemantics.CRAFTING_RESULT),
 
     @ExtendedCrafting
     BASIC_TERMINAL(3,1, ETSlotSemantics.BASIC_CRAFTING_GRID, ETSlotSemantics.BASIC_CRAFTING_RESULT),
@@ -85,6 +86,10 @@ public enum ETMenuType {
 
     public String getIdAsString() {
         return this.name().toLowerCase();
+    }
+
+    public String getWTIdAsString() {
+        return "wireless_" + this.name().toLowerCase();
     }
 
     public String getEnglishName() {

@@ -3,7 +3,6 @@ package me.myogoo.extendedterminal.integration.emi.handler;
 import appeng.api.stacks.AEKey;
 import appeng.api.stacks.GenericStack;
 import appeng.core.AEConfig;
-import appeng.core.sync.network.NetworkHandler;
 import appeng.integration.modules.emi.EmiStackHelper;
 import appeng.integration.modules.jeirei.TransferHelper;
 import appeng.menu.AEBaseMenu;
@@ -22,6 +21,7 @@ import me.myogoo.extendedterminal.api.adapter.recipe.IShapedTableRecipeAdapter;
 import me.myogoo.extendedterminal.api.adapter.recipe.ITableRecipeAdapter;
 import me.myogoo.extendedterminal.menu.ETTerminalBaseMenu;
 import me.myogoo.extendedterminal.network.serverbound.ETFillCraftingGridFromRecipePacket;
+import me.myogoo.myotus.api.MyotusAPI;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
@@ -375,7 +375,7 @@ public abstract class AbstractTableRecipeHandler<T extends ETTerminalBaseMenu<?>
         }
 
         var message = new ETFillCraftingGridFromRecipePacket(recipe.recipeId(), templateItems, craftMissing, recipeWidth, recipeHeight);
-        NetworkHandler.instance().sendToServer(message);
+        MyotusAPI.network().sendToServer(message);
     }
 
 }

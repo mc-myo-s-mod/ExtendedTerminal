@@ -1,26 +1,38 @@
 package me.myogoo.extendedterminal.init;
 
-import me.myogoo.extendedterminal.ExtendedTerminal;
 import me.myogoo.extendedterminal.network.serverbound.ETFillCraftingGridFromRecipePacket;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.network.NetworkRegistry;
-import net.minecraftforge.network.simple.SimpleChannel;
+import me.myogoo.extendedterminal.network.serverbound.ETFillSmithingGridFromRecipePacket;
+import me.myogoo.extendedterminal.network.serverbound.ETFillStonecutterGridFromRecipePacket;
+import me.myogoo.myotus.api.MyotusAPI;
 
-public class ETNetwork {
-    private static final String PROTOCOL_VERSION = "1";
-    public static final SimpleChannel INSTANCE = NetworkRegistry.newSimpleChannel(
-            new ResourceLocation(ExtendedTerminal.MODID, "main"),
-            () -> PROTOCOL_VERSION,
-            PROTOCOL_VERSION::equals,
-            PROTOCOL_VERSION::equals
-    );
+public final class ETNetwork {
+    public static final int TABLE_FILL_CRAFTING_GRID_PACKET_ID = 10000;
+    public static final int SMITHING_FILL_CRAFTING_GRID_PACKET_ID = 10001;
+    public static final int STONECUTTER_FILL_CRAFTING_GRID_PACKET_ID = 10002;
 
-    private static int packetId = 0;
-    private static int id() {
-        return packetId++;
+    private static boolean registered;
+
+    private ETNetwork() {
     }
 
-    public static void register() {
+    public static synchronized void register() {
+        if (registered) {
+            return;
+        }
 
+        registered = true;
+        var network = MyotusAPI.network();
+        network.registerServerbound(TABLE_FILL_CRAFTING_GRID_PACKET_ID,
+                ETFillCraftingGridFromRecipePacket.class,
+                ETFillCraftingGridFromRecipePacket::new,
+                ETFillCraftingGridFromRecipePacket::handle);
+        network.registerServerbound(SMITHING_FILL_CRAFTING_GRID_PACKET_ID,
+                ETFillSmithingGridFromRecipePacket.class,
+                ETFillSmithingGridFromRecipePacket::new,
+                ETFillSmithingGridFromRecipePacket::handle);
+        network.registerServerbound(STONECUTTER_FILL_CRAFTING_GRID_PACKET_ID,
+                ETFillStonecutterGridFromRecipePacket.class,
+                ETFillStonecutterGridFromRecipePacket::new,
+                ETFillStonecutterGridFromRecipePacket::handle);
     }
 }

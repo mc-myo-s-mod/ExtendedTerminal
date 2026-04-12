@@ -19,7 +19,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.inventory.TransientCraftingContainer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Recipe;
@@ -29,7 +28,7 @@ import net.minecraftforge.common.ForgeHooks;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class ETCraftingBaseSlot<R extends Recipe<?>,I extends CraftingContainer> extends AppEngCraftingSlot {
+public abstract class ETCraftingBaseSlot<R extends Recipe<?>, I> extends AppEngCraftingSlot {
     protected final InternalInventory craftInv;
     private final InternalInventory pattern;
 

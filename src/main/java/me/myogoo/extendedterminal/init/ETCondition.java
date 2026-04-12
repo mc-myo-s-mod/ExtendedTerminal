@@ -9,6 +9,7 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 
 @Mod.EventBusSubscriber(modid = ExtendedTerminal.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class ETCondition {
+    private static boolean registered;
 
     @SubscribeEvent
     public static void onCommonFMLSetupEvent(FMLCommonSetupEvent event) {
@@ -16,6 +17,10 @@ public class ETCondition {
     }
 
     public static void register() {
+        if (registered) {
+            return;
+        }
+        registered = true;
         CraftingHelper.register(ETModConditionSerializer.INSTANCE);
     }
 }

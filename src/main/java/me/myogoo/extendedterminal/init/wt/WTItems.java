@@ -1,0 +1,41 @@
+package me.myogoo.extendedterminal.init.wt;
+
+import appeng.core.definitions.ItemDefinition;
+import me.myogoo.extendedterminal.ExtendedTerminal;
+import me.myogoo.extendedterminal.init.ETItems;
+import me.myogoo.extendedterminal.item.wtitem.ETWTItem;
+import me.myogoo.myotus.api.annotation.wt.AE2WTLib;
+import me.myogoo.myotus.util.mod.ModIntegrationManager;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Item;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Function;
+
+public final class WTItems {
+    public static final List<ItemDefinition<? extends Item>> WT_ITEMS = new ArrayList<>();
+
+    public static final ItemDefinition<Item> WIRELESS_ET_TERMINAL = createWTItem(
+            "Extended Wireless Terminal",
+            ExtendedTerminal.makeId("wireless_et_terminal"),
+            ETWTItem::new
+    );
+
+    private WTItems() {
+    }
+
+    private static <T extends Item> ItemDefinition<T> createWTItem(String name, ResourceLocation id,
+                                                                    Function<Item.Properties, T> itemFactory) {
+        if (!ModIntegrationManager.isLoaded(AE2WTLib.class)) {
+            return null;
+        }
+
+        var definition = ETItems.createItem(name, id, itemFactory);
+        WT_ITEMS.add(definition);
+        return definition;
+    }
+
+    public static void register() {
+    }
+}

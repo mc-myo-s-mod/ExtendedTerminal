@@ -4,8 +4,8 @@
     {
       "conditions": [
         {
-          "type": "extendedterminal:et_mod",
-          "et_mod": "ReAvaritia"
+          "type": "myotus:mod_condition",
+          "active_mod": "avaritia"
         }
       ],
       "recipe": {

@@ -1,7 +1,6 @@
 package me.myogoo.extendedterminal.integration.jei.handler;
 
 import appeng.core.localization.ItemModText;
-import appeng.core.sync.network.NetworkHandler;
 import appeng.integration.modules.jeirei.TransferHelper;
 import appeng.menu.me.items.CraftingTermMenu;
 import com.blakebr0.extendedcrafting.api.crafting.ITableRecipe;
@@ -10,6 +9,7 @@ import me.myogoo.extendedterminal.api.adapter.recipe.ITableRecipeAdapter;
 import me.myogoo.extendedterminal.menu.ETTerminalBaseMenu;
 import me.myogoo.extendedterminal.menu.extendedcrafting.ExtendedTerminalBaseMenu;
 import me.myogoo.extendedterminal.network.serverbound.ETFillCraftingGridFromRecipePacket;
+import me.myogoo.myotus.api.MyotusAPI;
 import mezz.jei.api.gui.builder.ITooltipBuilder;
 import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.recipe.RecipeIngredientRole;
@@ -68,7 +68,7 @@ public abstract class AbstractTableRecipeHandler<T extends ETTerminalBaseMenu<R>
             recipeHeight = shapedRecipe.height();
         }
         var message = new ETFillCraftingGridFromRecipePacket(recipe.recipeId(), templateItems, craftMissing, recipeWidth, recipeHeight);
-        NetworkHandler.instance().sendToServer(message);
+        MyotusAPI.network().sendToServer(message);
     }
 
     protected static abstract class Result implements IRecipeTransferError {

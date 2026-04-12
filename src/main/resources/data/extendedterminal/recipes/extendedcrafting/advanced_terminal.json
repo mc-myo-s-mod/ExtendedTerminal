@@ -4,8 +4,8 @@
     {
       "conditions": [
         {
-          "type": "extendedterminal:et_mod",
-          "et_mod": "ExtendedCrafting"
+          "type": "myotus:mod_condition",
+          "active_mod": "extendedcrafting"
         }
       ],
       "recipe": {

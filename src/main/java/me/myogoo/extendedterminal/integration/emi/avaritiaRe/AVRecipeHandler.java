@@ -6,7 +6,7 @@ import committee.nova.mods.avaritia.init.compat.emi.category.tables.NetherCrafti
 import committee.nova.mods.avaritia.init.compat.emi.category.tables.SculkCraftingTableCategory;
 import dev.emi.emi.api.EmiRegistry;
 import me.myogoo.extendedterminal.api.ModAccessor;
-import me.myogoo.extendedterminal.api.SubscribeLoadEvent;
+import me.myogoo.myotus.api.annotation.MyotusSubscriber;
 import me.myogoo.extendedterminal.api.integration.emi.ETEmiRecipeHandler;
 import me.myogoo.extendedterminal.integration.emi.avaritiaRe.handler.AVTerminalRecipeHandler;
 import me.myogoo.extendedterminal.menu.ETMenuType;
@@ -19,7 +19,7 @@ import net.minecraftforge.fml.ModList;
 @ModAccessor.ReAvaritia
 @ETEmiRecipeHandler
 public class AVRecipeHandler {
-    @SubscribeLoadEvent
+    @MyotusSubscriber
     public static void init(EmiRegistry registry) {
         if(!ModList.get().isLoaded("jei")) {
             registry.addRecipeHandler(SculkTerminalMenu.TYPE, new AVTerminalRecipeHandler<>(SculkCraftingTableCategory.CATEGORY, SculkTerminalMenu.class, ETMenuType.SCULK_TERMINAL));

@@ -16,6 +16,7 @@ import me.myogoo.extendedterminal.part.avaritiaRe.EndTerminalPart;
 import me.myogoo.extendedterminal.part.avaritiaRe.ExtremeTerminalPart;
 import me.myogoo.extendedterminal.part.avaritiaRe.NetherTerminalPart;
 import me.myogoo.extendedterminal.part.avaritiaRe.SculkTerminalPart;
+import me.myogoo.extendedterminal.part.extendedterminal.ETTerminalPart;
 import me.myogoo.extendedterminal.part.extendedcrafting.*;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.item.Item;
@@ -33,6 +34,7 @@ public class ETParts {
     public static final List<ItemDefinition<? extends PartItem<?>>> PARTS = new ArrayList<>();
     public static final List<ItemDefinition<? extends PartItem<?>>> TERMINAL_PARTS = new ArrayList<>();
 
+    public static final ItemDefinition<PartItem<ETTerminalPart>> ET_TERMINAL_PART = createTerminalPart(ETMenuType.ET_TERMINAL, ETTerminalPart.class, ETTerminalPart::new);
     public static final ItemDefinition<PartItem<BasicExtendedTerminalPart>> BASIC_TERMINAL_PART = createExtendedCraftingPart(ETMenuType.BASIC_TERMINAL, BasicExtendedTerminalPart.class, BasicExtendedTerminalPart::new);
     public static final ItemDefinition<PartItem<AdvancedTerminalPart>> ADVANCED_TERMINAL_PART = createExtendedCraftingPart(ETMenuType.ADVANCED_TERMINAL, AdvancedTerminalPart.class, AdvancedTerminalPart::new);
     public static final ItemDefinition<PartItem<EliteTerminalPart>> ELITE_TERMINAL_PART = createExtendedCraftingPart(ETMenuType.ELITE_TERMINAL, EliteTerminalPart.class, EliteTerminalPart::new);

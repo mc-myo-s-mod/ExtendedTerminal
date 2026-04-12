@@ -3,6 +3,9 @@ package me.myogoo.extendedterminal.init;
 import appeng.core.definitions.AEParts;
 import appeng.core.definitions.ItemDefinition;
 import me.myogoo.extendedterminal.ExtendedTerminal;
+import me.myogoo.extendedterminal.init.wt.WTItems;
+import me.myogoo.myotus.api.annotation.wt.AE2WTLib;
+import me.myogoo.myotus.util.mod.ModIntegrationManager;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.CreativeModeTab;
@@ -18,6 +21,11 @@ public class ETCreativeTab {
                 .displayItems((params, output) -> {
                     for (ItemDefinition<?> item : ETItems.ITEMS) {
                         output.accept(item.stack());
+                    }
+                    if (ModIntegrationManager.isLoaded(AE2WTLib.class)) {
+                        for (ItemDefinition<?> item : WTItems.WT_ITEMS) {
+                            output.accept(item.stack());
+                        }
                     }
                 })
                 .build());

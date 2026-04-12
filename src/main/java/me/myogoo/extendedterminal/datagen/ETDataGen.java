@@ -3,7 +3,7 @@ package me.myogoo.extendedterminal.datagen;
 import appeng.datagen.providers.localization.LocalizationProvider;
 import me.myogoo.extendedterminal.ExtendedTerminal;
 import me.myogoo.extendedterminal.datagen.provider.InscriberRecipeProvider;
-import me.myogoo.extendedterminal.util.mod.ModIntegrationManager;
+import me.myogoo.extendedterminal.init.ETModIntegration;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraftforge.data.event.GatherDataEvent;
@@ -15,7 +15,7 @@ public class ETDataGen {
 
     @SubscribeEvent
     public static void onGatherData(GatherDataEvent event) {
-        ModIntegrationManager.initialize();
+        ETModIntegration.initialize();
         var registryAccess = RegistryAccess.fromRegistryOfRegistries(BuiltInRegistries.REGISTRY);
         var registries = new LocalizationProvider(event.getGenerator());
 

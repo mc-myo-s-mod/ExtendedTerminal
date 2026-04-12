@@ -5,7 +5,7 @@ import committee.nova.mods.avaritia.init.compat.jei.category.tables.ExtremeCraft
 import committee.nova.mods.avaritia.init.compat.jei.category.tables.NetherCraftingTableCategory;
 import committee.nova.mods.avaritia.init.compat.jei.category.tables.SculkCraftingTableCategory;
 import me.myogoo.extendedterminal.api.ModAccessor;
-import me.myogoo.extendedterminal.api.SubscribeLoadEvent;
+import me.myogoo.myotus.api.annotation.MyotusSubscriber;
 import me.myogoo.extendedterminal.api.integration.jei.ETJeiGuiHandler;
 import me.myogoo.extendedterminal.client.screen.avaritiaRe.EndTerminalScreen;
 import me.myogoo.extendedterminal.client.screen.avaritiaRe.ExtremeTerminalScreen;
@@ -17,7 +17,7 @@ import mezz.jei.api.registration.IGuiHandlerRegistration;
 @ModAccessor.ReAvaritia
 @ETJeiGuiHandler
 public class AVGuiHandler {
-    @SubscribeLoadEvent
+    @MyotusSubscriber
     public static void init(IGuiHandlerRegistration registration) {
         registration.addGuiContainerHandler(SculkTerminalScreen.class, new JeiTableGuiHandler<>(SculkCraftingTableCategory.RECIPE_TYPE));
         registration.addGuiContainerHandler(NetherTerminalScreen.class, new JeiTableGuiHandler<>(NetherCraftingTableCategory.RECIPE_TYPE));

@@ -7,7 +7,7 @@ import guideme.document.block.LytHeading;
 import guideme.document.flow.LytFlowText;
 import guideme.libs.mdast.mdx.model.MdxJsxFlowElement;
 import guideme.style.TextStyle;
-import me.myogoo.extendedterminal.util.mod.SupportedMod;
+import me.myogoo.myotus.util.mod.ModIntegrationManager;
 
 import java.util.Set;
 
@@ -19,31 +19,34 @@ public class ConditionTag implements TagCompiler {
         if (condition.isEmpty()) {
             compiler.compileBlockContext(el, parent);
         } else {
-            try {
-                var mod = SupportedMod.valueOf(condition);
-                if (mod.isLoaded()) {
-                    compiler.compileBlockContext(el, parent);
-                } else {
-                    if (silently.equals("true")) {
-                        return;
-                    }
-                    var heading = new LytHeading();
-                    var frontText = new LytFlowText();
-                    frontText.setText("This content is hidden because the mod ");
-                    var boldText = new LytFlowText();
-                    boldText.setStyle(TextStyle.builder().bold(true).build());
-                    boldText.setText(mod.name());
-                    var endText = new LytFlowText();
-                    endText.setText(" is not loaded.");
-                    heading.setDepth(2);
-                    heading.append(frontText);
-                    heading.append(boldText);
-                    heading.append(endText);
-                    parent.append(heading);
-                }
-            } catch (IllegalArgumentException e) {
+            var annotationClass = ModIntegrationManager.getClass(condition);
+            if (annotationClass == null) {
                 parent.appendError(compiler, condition + "is not loaded", el);
+                return;
             }
+
+            if (ModIntegrationManager.isLoaded(annotationClass)) {
+                compiler.compileBlockContext(el, parent);
+                return;
+            }
+
+            if (silently.equals("true")) {
+                return;
+            }
+
+            var heading = new LytHeading();
+            var frontText = new LytFlowText();
+            frontText.setText("This content is hidden because the mod ");
+            var boldText = new LytFlowText();
+            boldText.setStyle(TextStyle.builder().bold(true).build());
+            boldText.setText(condition);
+            var endText = new LytFlowText();
+            endText.setText(" is not loaded.");
+            heading.setDepth(2);
+            heading.append(frontText);
+            heading.append(boldText);
+            heading.append(endText);
+            parent.append(heading);
         }
     }
 

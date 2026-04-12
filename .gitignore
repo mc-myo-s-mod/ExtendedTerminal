@@ -119,3 +119,6 @@ run-data/
 !gradle-wrapper.jar
 
 *.pdn
+
+.codex
+.idea

@@ -63,6 +63,13 @@ ordering = "NONE"
 side = "BOTH"
 
 [[dependencies."${mod_id}"]]
+modId = "myotus"
+mandatory = true
+versionRange = "${myotus_version_range}"
+ordering = "AFTER"
+side = "BOTH"
+
+[[dependencies."${mod_id}"]]
 modId="ae2"
 mandatory = true
 side="BOTH"

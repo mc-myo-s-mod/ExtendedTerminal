@@ -1,0 +1,29 @@
+{
+  "slots": {
+    "ET_STONECUTTING_INPUT": {
+      "left": 15,
+      "bottom": 140
+    },
+    "STONECUTTING_RESULT": {
+      "left": 134,
+      "bottom": 140
+    }
+  },
+  "widgets": {
+    "stonecuttingPatternModeScrollbar": {
+      "left": 117,
+      "bottom": 156,
+      "height": 50
+    },
+    "modeTabButtonStoneCutterPanel": {
+      "left": 173,
+      "bottom": 132,
+      "width": 22,
+      "height": 22
+    },
+    "modePanelStoneCutterPanel": {
+      "left": 9,
+      "bottom": 166
+    }
+  }
+}
