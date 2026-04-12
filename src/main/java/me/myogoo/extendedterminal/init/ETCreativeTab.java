@@ -1,7 +1,9 @@
 package me.myogoo.extendedterminal.init;
 
+import appeng.api.config.Actionable;
 import appeng.core.definitions.AEParts;
 import appeng.core.definitions.ItemDefinition;
+import appeng.items.tools.powered.WirelessTerminalItem;
 import me.myogoo.extendedterminal.ExtendedTerminal;
 import me.myogoo.extendedterminal.init.wt.WTItems;
 import me.myogoo.myotus.api.annotation.wt.AE2WTLib;
@@ -25,6 +27,11 @@ public class ETCreativeTab {
                     if (ModIntegrationManager.isLoaded(AE2WTLib.class)) {
                         for (ItemDefinition<?> item : WTItems.WT_ITEMS) {
                             output.accept(item.stack());
+                            var chargedStack = item.stack().copy();
+                            if(item.asItem() instanceof WirelessTerminalItem terminal) {
+                                terminal.injectAEPower(chargedStack, terminal.getAEMaxPower(chargedStack), Actionable.MODULATE);
+                                output.accept(chargedStack);
+                            }
                         }
                     }
                 })
