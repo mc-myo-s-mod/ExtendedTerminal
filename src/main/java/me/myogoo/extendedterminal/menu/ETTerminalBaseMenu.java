@@ -35,7 +35,7 @@ public abstract class ETTerminalBaseMenu<R extends Recipe<?>> extends MEStorageM
         super(menuType, id, ip, host);
         this.menuType = etMenuType;
         this.config = config;
-        registerClientAction(ACTION_CLEAR_TO_PLAYER, this::clearToPlayerInventory);
+        registerClientAction(ACTION_CLEAR_TO_PLAYER, ResourceLocation.class, this::clearToPlayerInventory);
     }
 
     public R getCurrentRecipe() {
