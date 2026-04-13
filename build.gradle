@@ -1,3 +1,6 @@
+import org.gradle.api.publish.maven.tasks.AbstractPublishToMaven
+import org.gradle.api.publish.tasks.GenerateModuleMetadata
+
 buildscript {
     repositories {
         // These repositories are only for Gradle plugins, put any other repositories in the repository block further below
@@ -12,6 +15,7 @@ buildscript {
 plugins {
     id 'eclipse'
     id 'idea'
+    id 'maven-publish'
     id 'net.minecraftforge.gradle' version '[6.0.16,6.2)'
 }
 
@@ -304,4 +308,56 @@ tasks.named('jar', Jar).configure {
 
 tasks.withType(JavaCompile).configureEach {
     options.encoding = 'UTF-8' // Use the UTF-8 charset for Java compilation
+}
+
+def mappedVersionSuffixPattern = java.util.regex.Pattern.compile(
+        "_mapped_${java.util.regex.Pattern.quote(mapping_channel)}_${java.util.regex.Pattern.quote(mapping_version)}(?:_at_[A-Za-z0-9]+)?\$"
+)
+
+publishing {
+    publications {
+        register('mavenJava', MavenPublication) {
+            groupId = project.mod_group_id
+            artifactId = project.mod_id
+            version = project.mod_version
+            from components.java
+        }
+    }
+
+    publications.withType(MavenPublication).configureEach {
+        pom.withXml {
+            def dependenciesNode = asNode().get('dependencies')?.getAt(0)
+            dependenciesNode?.get('dependency')?.each { dependencyNode ->
+                def versionNode = dependencyNode.get('version')?.getAt(0)
+                if (versionNode != null) {
+                    versionNode.setValue(versionNode.text().replaceFirst(mappedVersionSuffixPattern, ''))
+                }
+            }
+        }
+    }
+}
+
+tasks.withType(AbstractPublishToMaven).configureEach {
+    dependsOn tasks.named('reobfJar')
+}
+
+tasks.withType(GenerateModuleMetadata).configureEach {
+    enabled = false
+}
+
+def localMavenModulePath = providers.provider {
+    file("${System.getProperty('user.home')}/.m2/repository/${project.group.toString().replace('.', '/')}/${project.mod_id}/${project.version}/${project.mod_id}-${project.version}.module")
+}
+
+tasks.register('removeLocalMavenModuleMetadata') {
+    group = 'publishing'
+    description = 'Removes Gradle module metadata from the local Maven publication so consumers fall back to the POM.'
+
+    doLast {
+        delete(localMavenModulePath.get())
+    }
+}
+
+tasks.named('publishToMavenLocal').configure {
+    finalizedBy tasks.named('removeLocalMavenModuleMetadata')
 }

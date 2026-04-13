@@ -2,6 +2,7 @@
   "parent": "ae2:part/crafting_terminal_on",
   "textures": {
     "lightsBright": "extendedterminal:part/extendedterminal/et_bright",
+    "lightsMedium": "extendedterminal:part/extendedterminal/et_medium",
     "lightsDark": "extendedterminal:part/extendedterminal/et_dark"
   }
 }
