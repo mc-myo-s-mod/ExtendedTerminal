@@ -35,4 +35,4 @@
 | Mod                                                                                                    | Version      | fully support |
 |--------------------------------------------------------------------------------------------------------|--------------|---------------|
 |[AE2 Tangible Bookmarks](https://www.curseforge.com/minecraft/mc-mods/ae2-tangible-bookmarks) | 1.21.1, 1.20.1 | ✔️            |
-|[AE2 Fluid Crafting Terminal](https://www.curseforge.com/minecraft/mc-mods/ae2-fluid-crafting-terminal) | 1.21.1 | ❌(WIP)        |
+|[AE2 Fluid Crafting Terminal](https://www.curseforge.com/minecraft/mc-mods/ae2-fluid-crafting-terminal) | 1.21.1 | ✔️        |

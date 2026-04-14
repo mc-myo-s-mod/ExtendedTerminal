@@ -12,7 +12,7 @@ item_ids:
 
 # AvaritiaNeo Crafting Terminal
 
-<et:condition load="AvaritiaNeo">
+<et:condition load="Avaritia">
 <Row>
 <ItemImage id="extendedterminal:neo_extreme_terminal" scale={3}/>
 <ItemImage id="avaritia:extreme_crafting_table" scale={3}/>
