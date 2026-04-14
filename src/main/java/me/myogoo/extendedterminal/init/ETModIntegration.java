@@ -23,6 +23,5 @@ public final class ETModIntegration {
                 "Extended Crafting: Expanded", "*");
         registrar.registerLoadableMod(ModAccessor.ReAvaritia.class, "avaritia", "Re-Avaritia", "*");
         registrar.registerLoadableMod(ModAccessor.AvaritiaNeo.class, "avaritia", "Avaritia", "*");
-        registrar.registerLoadableMod(AE2WTLib.class, "ae2wtlib", "*");
     }
 }

@@ -1,10 +1,12 @@
 package me.myogoo.extendedterminal.integration.emi.extendedterminal.handler;
 
+import appeng.menu.SlotSemantics;
 import dev.emi.emi.api.recipe.EmiRecipe;
 import dev.emi.emi.api.recipe.VanillaEmiRecipeCategories;
 import me.myogoo.extendedterminal.integration.module.extendedterminal.ETSmithingRecipeTransferHelper;
 import me.myogoo.extendedterminal.menu.ETSlotSemantics;
 import me.myogoo.extendedterminal.menu.extendedterminal.ETTerminalMenu;
+import me.myogoo.extendedterminal.menu.extendedterminal.ETTerminalMode;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
@@ -31,7 +33,7 @@ public class ETSmithingRecipeHandler<T extends ETTerminalMenu> extends AbstractE
 
     @Override
     public Slot getOutputSlot(T menu) {
-        return menu.getSlots(ETSlotSemantics.SMITHING_TABLE_RESULT).get(0);
+        return menu.getSlots(SlotSemantics.SMITHING_TABLE_RESULT).get(0);
     }
 
     @Override
@@ -42,6 +44,11 @@ public class ETSmithingRecipeHandler<T extends ETTerminalMenu> extends AbstractE
     @Override
     protected Map<Integer, Ingredient> getGuiSlotToIngredientMap(T menu, Recipe<?> recipe) {
         return ETSmithingRecipeTransferHelper.getGuiSlotToIngredientMap((SmithingRecipe) recipe);
+    }
+
+    @Override
+    protected void prepareTransfer(T menu, Recipe<?> recipe) {
+        menu.setMode(ETTerminalMode.SMITHING);
     }
 
     @Override

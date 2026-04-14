@@ -3,6 +3,7 @@ package me.myogoo.extendedterminal.integration.module.extendedterminal;
 import appeng.api.stacks.AEItemKey;
 import appeng.integration.modules.jeirei.EncodingHelper;
 import appeng.menu.me.common.GridInventoryEntry;
+import me.myogoo.extendedterminal.api.adapter.recipe.smithing.ISmithingRecipeAdapter;
 import me.myogoo.extendedterminal.menu.extendedterminal.ETTerminalMenu;
 import me.myogoo.extendedterminal.network.serverbound.ETFillSmithingGridFromRecipePacket;
 import me.myogoo.myotus.api.MyotusAPI;
@@ -23,7 +24,7 @@ public final class ETSmithingRecipeTransferHelper {
     }
 
     public static Map<Integer, Ingredient> getGuiSlotToIngredientMap(SmithingRecipe recipe) {
-        var ingredients = recipe.getIngredients();
+        var ingredients = ISmithingRecipeAdapter.of(recipe).getIngredients();
         var result = new HashMap<Integer, Ingredient>(ingredients.size());
         for (int i = 0; i < ingredients.size(); i++) {
             var ingredient = ingredients.get(i);

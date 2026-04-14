@@ -4,6 +4,7 @@ import dev.emi.emi.api.recipe.EmiRecipe;
 import dev.emi.emi.api.recipe.VanillaEmiRecipeCategories;
 import me.myogoo.extendedterminal.integration.module.extendedterminal.ETCraftingRecipeTransferHelper;
 import me.myogoo.extendedterminal.menu.extendedterminal.ETTerminalMenu;
+import me.myogoo.extendedterminal.menu.extendedterminal.ETTerminalMode;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -36,6 +37,11 @@ public class ETCraftingRecipeHandler<T extends ETTerminalMenu> extends AbstractE
     @Override
     protected Map<Integer, Ingredient> getGuiSlotToIngredientMap(T menu, Recipe<?> recipe) {
         return ETCraftingRecipeTransferHelper.getGuiSlotToIngredientMap(menu, (CraftingRecipe) recipe);
+    }
+
+    @Override
+    protected void prepareTransfer(T menu, Recipe<?> recipe) {
+        menu.setMode(ETTerminalMode.CRAFTING);
     }
 
     @Override

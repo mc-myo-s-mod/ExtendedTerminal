@@ -5,6 +5,7 @@ import dev.emi.emi.api.recipe.VanillaEmiRecipeCategories;
 import me.myogoo.extendedterminal.integration.module.extendedterminal.ETStoneCutterRecipeTransferHelper;
 import me.myogoo.extendedterminal.menu.ETSlotSemantics;
 import me.myogoo.extendedterminal.menu.extendedterminal.ETTerminalMenu;
+import me.myogoo.extendedterminal.menu.extendedterminal.ETTerminalMode;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
@@ -38,6 +39,13 @@ public class ETStonecutterRecipeHandler<T extends ETTerminalMenu> extends Abstra
     @Override
     protected Map<Integer, Ingredient> getGuiSlotToIngredientMap(T menu, Recipe<?> recipe) {
         return ETStoneCutterRecipeTransferHelper.getGuiSlotToIngredientMap((StonecutterRecipe) recipe);
+    }
+
+    @Override
+    protected void prepareTransfer(T menu, Recipe<?> recipe) {
+        var stonecutterRecipe = (StonecutterRecipe) recipe;
+        menu.setMode(ETTerminalMode.STONECUTTING);
+        menu.setStoneCutterRecipeId(stonecutterRecipe.getId());
     }
 
     @Override

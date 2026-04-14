@@ -11,6 +11,7 @@ import appeng.items.storage.ViewCellItem;
 import com.google.common.primitives.Ints;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntList;
+import me.myogoo.extendedterminal.api.adapter.recipe.smithing.ISmithingRecipeAdapter;
 import me.myogoo.extendedterminal.menu.extendedterminal.ETTerminalMenu;
 import me.myogoo.extendedterminal.menu.extendedterminal.ETTerminalMode;
 import me.myogoo.myotus.api.network.IMyotusPacket;
@@ -191,7 +192,7 @@ public class ETFillSmithingGridFromRecipePacket extends FillRecipeBasePacket imp
         if (this.recipeId != null) {
             var optionalRecipe = player.level().getRecipeManager().byKey(this.recipeId);
             if (optionalRecipe.isPresent() && optionalRecipe.get() instanceof SmithingRecipe recipe) {
-                return recipe.getIngredients();
+                return ISmithingRecipeAdapter.of(recipe).getIngredients();
             }
         }
 

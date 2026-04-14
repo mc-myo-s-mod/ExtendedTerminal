@@ -1,2 +1,5 @@
-## Bug Fix
-- Like the circuit in ae2, the insulator no longer consumes the press. [@CynSolveroftheAbsolute](https://github.com/CynSolveroftheAbsolute) ([#24](https://github.com/mc-myo-s-mod/ExtendedTerminal/issues/24#issue-3909100480))
+# CHANGELOG
+
+## Feature
+- Extended Terminal Arrived Now!
+- Change to new Texture

@@ -5,6 +5,7 @@ import appeng.client.Point;
 import appeng.client.gui.WidgetContainer;
 import appeng.client.gui.style.Blitter;
 import appeng.client.gui.widgets.ActionButton;
+import appeng.menu.SlotSemantics;
 import me.myogoo.extendedterminal.client.screen.extendedterminal.ETTerminalScreen;
 import me.myogoo.extendedterminal.client.screen.extendedterminal.gui.ETTerminalModePanel;
 import me.myogoo.extendedterminal.menu.ETSlotSemantics;
@@ -47,7 +48,7 @@ public class SmithingTablePanel extends ETTerminalModePanel {
         screen.setSlotsHidden(ETSlotSemantics.SMITHING_TABLE_TEMPLATE, !visible);
         screen.setSlotsHidden(ETSlotSemantics.SMITHING_TABLE_BASE, !visible);
         screen.setSlotsHidden(ETSlotSemantics.SMITHING_TABLE_ADDITION, !visible);
-        screen.setSlotsHidden(ETSlotSemantics.SMITHING_TABLE_RESULT, !visible);
+        screen.setSlotsHidden(SlotSemantics.SMITHING_TABLE_RESULT, !visible);
         this.clearBtn.setVisibility(visible);
         this.clearToPlayerInvBtn.setVisibility(visible);
     }

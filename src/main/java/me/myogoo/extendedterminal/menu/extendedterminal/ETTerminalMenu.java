@@ -6,6 +6,7 @@ import appeng.api.storage.ITerminalHost;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.InventoryActionPacket;
 import appeng.helpers.InventoryAction;
+import appeng.menu.SlotSemantics;
 import appeng.menu.implementations.MenuTypeBuilder;
 import appeng.menu.slot.AppEngSlot;
 import appeng.menu.slot.CraftingMatrixSlot;
@@ -25,6 +26,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.CraftingContainer;
+import net.minecraft.world.inventory.DataSlot;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.inventory.TransientCraftingContainer;
@@ -114,7 +116,7 @@ public class ETTerminalMenu extends ETTerminalBaseMenu<CraftingRecipe> {
                 ETSlotSemantics.SMITHING_TABLE_ADDITION);
         this.addSlot(this.smithingOutputSlot = new ETSmithingSlot(this.getPlayerInventory().player,
                         this.getActionSource(), this.powerSource, host.getInventory(), smithingInv, smithingInv, this),
-                ETSlotSemantics.SMITHING_TABLE_RESULT);
+                SlotSemantics.SMITHING_TABLE_RESULT);
 
         var stonecuttingInv = this.craftingInventoryHost.getSubInventory(STONECUTTER_INVENTORY);
         this.addSlot(this.stonecuttingSlot = new CraftingMatrixSlot(this, stonecuttingInv, 0),
@@ -129,6 +131,17 @@ public class ETTerminalMenu extends ETTerminalBaseMenu<CraftingRecipe> {
         this.addSlot(this.anvilRightSlot = new CraftingMatrixSlot(this, anvilInv, 1), ETSlotSemantics.ANVIL_RIGHT_INPUT);
         this.addSlot(this.anvilOutputSlot = new ETAnvilSlot(this.getPlayerInventory().player, anvilInv, this.anvilDelegate, this),
                 ETSlotSemantics.ANVIL_RESULT);
+        this.addDataSlot(new DataSlot() {
+            @Override
+            public int get() {
+                return ETTerminalMenu.this.anvilCost;
+            }
+
+            @Override
+            public void set(int value) {
+                ETTerminalMenu.this.anvilCost = value;
+            }
+        });
 
         this.stoneCutterRecipeId = host.getStoneCutterRecipeId();
         registerClientAction(ACTION_SET_STONECUTTING_RECIPE_ID, ResourceLocation.class, this::setStoneCutterRecipeId);
