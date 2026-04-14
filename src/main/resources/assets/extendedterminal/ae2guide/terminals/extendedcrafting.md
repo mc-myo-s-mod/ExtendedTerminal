@@ -61,4 +61,14 @@ item_ids:
             <RecipeFor id="extendedterminal:ultimate_terminal" />
         </Row>
     </Column>
+    <et:condition load="Extended Crafting: Expanded">
+# Extended Crafting Terminal: Expanded
+        ## Epic Extended Crafting Terminal
+        <Row>
+        <ItemImage id="extendedterminal:epic_terminal" scale={3}/>
+        <ItemImage id="extendedcrafting:epic_table" scale={3}/>
+        </Row>
+        <RecipeFor id="extendedterminal:epic_terminal" />
+
+    </et:condition>
 </et:condition>
