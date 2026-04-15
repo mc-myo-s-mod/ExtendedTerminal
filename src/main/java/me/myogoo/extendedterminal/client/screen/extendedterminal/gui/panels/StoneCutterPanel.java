@@ -22,11 +22,11 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Objects;
 
 public class StoneCutterPanel extends ETTerminalModePanel {
-    private static final Blitter BG = Blitter.texture("guis/et_terminal_panel.png", 512, 512).src(0, 134, 159, 65);
-    private static final Blitter AE_BG = Blitter.texture("guis/pattern_modes.png").src(0, 140, 124, 66);
-    private static final Blitter BG_SLOT = AE_BG.copy().src(124, 140, 20, 22);
-    private static final Blitter BG_SLOT_SELECTED = AE_BG.copy().src(124, 162, 20, 22);
-    private static final Blitter BG_SLOT_HOVER = AE_BG.copy().src(124, 184, 20, 22);
+    private static final Blitter TEXTURE = Blitter.texture("guis/et_terminal_panel.png", 512, 512);
+    private static final Blitter BG = TEXTURE.copy().src(0, 134, 159, 65);
+    private static final Blitter BG_SLOT = TEXTURE.copy().src(160, 0, 20, 22);
+    private static final Blitter BG_SLOT_SELECTED = TEXTURE.copy().src(160, 23, 20, 22);
+    private static final Blitter BG_SLOT_HOVER = TEXTURE.copy().src(160, 45, 20, 22);
 
     private static final int COLS = 4;
     private static final int ROWS = 2;
@@ -117,13 +117,13 @@ public class StoneCutterPanel extends ETTerminalModePanel {
             }
 
             int renderX = bounds.getX() + slotBounds.getX();
-            int renderY = bounds.getY() + slotBounds.getY();
+            int renderY = bounds.getY() + slotBounds.getY() + 1;
             blitter.dest(renderX, renderY).blit(guiGraphics);
 
             var resultItem = recipe.getResultItem(getRegistryAccess());
             if (selected || mouse.isIn(slotBounds)) {
-                guiGraphics.renderItem(resultItem, renderX + 2, renderY + 3);
-                guiGraphics.renderItemDecorations(Minecraft.getInstance().font, resultItem, renderX + 2, renderY + 3);
+                guiGraphics.renderItem(resultItem, renderX + 2, renderY + 2);
+                guiGraphics.renderItemDecorations(Minecraft.getInstance().font, resultItem, renderX + 2, renderY + 2);
             } else {
                 guiGraphics.renderItem(resultItem, renderX + 2, renderY + 2);
                 guiGraphics.renderItemDecorations(Minecraft.getInstance().font, resultItem, renderX + 2, renderY + 2);

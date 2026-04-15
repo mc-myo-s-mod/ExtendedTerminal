@@ -1,0 +1,1 @@
+1. et terminal에서 stonecutter 조합법 button 이미지 조정 필요

@@ -5,7 +5,7 @@
       "conditions": [
         {
           "type": "myotus:mod_condition",
-          "active_mod": "avaritia"
+          "active_mod": "Re-Avaritia"
         }
       ],
       "recipe": {
