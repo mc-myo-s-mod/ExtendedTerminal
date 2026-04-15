@@ -20,8 +20,8 @@ import me.myogoo.extendedterminal.menu.avaritiaRe.SculkTerminalMenu;
 import me.myogoo.extendedterminal.menu.extendedcrafting.*;
 import me.myogoo.extendedterminal.menu.extendedterminal.ETTerminalMenu;
 import me.myogoo.extendedterminal.menu.extendedterminal.wt.ETWTMenu;
+import me.myogoo.myotus.api.MyotusAPI;
 import me.myogoo.myotus.api.annotation.wt.AE2WTLib;
-import me.myogoo.myotus.util.mod.ModIntegrationManager;
 import net.minecraft.world.level.ItemLike;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.RegisterColorHandlersEvent;
@@ -44,7 +44,7 @@ public class ETClient {
         event.enqueueWork(ETClient::initScreens);
 
         event.enqueueWork(() -> {
-            if (ModIntegrationManager.isLoaded(AE2WTLib.class)) {
+            if (MyotusAPI.get().modIntegrationManager().isLoaded(AE2WTLib.class)) {
                 initWTScreen();
             }
         });

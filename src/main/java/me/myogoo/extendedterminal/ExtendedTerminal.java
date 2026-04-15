@@ -3,12 +3,14 @@ package me.myogoo.extendedterminal;
 import com.mojang.logging.LogUtils;
 
 import me.myogoo.extendedterminal.init.*;
+import me.myogoo.extendedterminal.init.wt.WTInits;
 import me.myogoo.extendedterminal.init.wt.WTItems;
 import me.myogoo.extendedterminal.init.wt.WTMenus;
+import me.myogoo.myotus.api.MyotusAPI;
 import me.myogoo.myotus.api.annotation.wt.AE2WTLib;
-import me.myogoo.myotus.util.mod.ModIntegrationManager;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
@@ -31,9 +33,10 @@ public class ExtendedTerminal {
         ETParts.REGISTER.register(modEventBus);
         ETMenus.REGISTER.register(modEventBus);
         ETCreativeTab.REGISTER.register(modEventBus);
-        if (ModIntegrationManager.isLoaded(AE2WTLib.class)) {
+        if (MyotusAPI.get().modIntegrationManager().isLoaded(AE2WTLib.class)) {
             WTItems.register();
             WTMenus.register();
+            modEventBus.addListener(EventPriority.LOWEST,WTInits::init);
         }
 
         MinecraftForge.EVENT_BUS.register(this);

@@ -76,6 +76,13 @@ side="BOTH"
 versionRange = "[15.4.0,)"
 
 [[dependencies."${mod_id}"]]
+modId="ae2wtlib"
+mandatory=false
+versionRange="[15,)"
+ordering="AFTER"
+side="BOTH"
+
+[[dependencies."${mod_id}"]]
 modId = "extendedcrafting"
 mandatory = false
 side = "BOTH"

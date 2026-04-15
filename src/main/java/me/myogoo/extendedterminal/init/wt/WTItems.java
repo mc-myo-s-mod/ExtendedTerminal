@@ -1,6 +1,7 @@
 package me.myogoo.extendedterminal.init.wt;
 
 import appeng.core.definitions.ItemDefinition;
+import de.mari_023.ae2wtlib.terminal.ItemWT;
 import me.myogoo.extendedterminal.ExtendedTerminal;
 import me.myogoo.extendedterminal.init.ETItems;
 import me.myogoo.extendedterminal.item.wtitem.ETWTItem;
@@ -16,21 +17,14 @@ import java.util.function.Function;
 public final class WTItems {
     public static final List<ItemDefinition<? extends Item>> WT_ITEMS = new ArrayList<>();
 
-    public static final ItemDefinition<Item> WIRELESS_ET_TERMINAL = createWTItem(
+    public static final ItemDefinition<ItemWT> WIRELESS_ET_TERMINAL = createWTItem(
             "Extended Wireless Terminal",
             ExtendedTerminal.makeId("wireless_et_terminal"),
             ETWTItem::new
     );
 
-    private WTItems() {
-    }
-
     private static <T extends Item> ItemDefinition<T> createWTItem(String name, ResourceLocation id,
                                                                     Function<Item.Properties, T> itemFactory) {
-        if (!ModIntegrationManager.isLoaded(AE2WTLib.class)) {
-            return null;
-        }
-
         var definition = ETItems.createItem(name, id, itemFactory);
         WT_ITEMS.add(definition);
         return definition;
