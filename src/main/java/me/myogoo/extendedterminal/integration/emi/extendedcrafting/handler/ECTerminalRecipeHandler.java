@@ -7,7 +7,7 @@ import dev.emi.emi.api.recipe.EmiRecipeCategory;
 import me.myogoo.extendedterminal.api.adapter.recipe.IShapedTableRecipeAdapter;
 import me.myogoo.extendedterminal.api.adapter.recipe.ITableRecipeAdapter;
 import me.myogoo.extendedterminal.integration.emi.extendedcrafting.ECRecipeCategory;
-import me.myogoo.extendedterminal.integration.emi.handler.AbstractTableRecipeHandler;
+import me.myogoo.extendedterminal.integration.emi.handler.AbstractEmiTableRecipeHandler;
 import me.myogoo.extendedterminal.menu.ETMenuType;
 import me.myogoo.extendedterminal.menu.extendedcrafting.ExtendedTerminalBaseMenu;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
@@ -20,7 +20,7 @@ import java.util.Map;
 
 import static me.myogoo.extendedterminal.integration.ItemListTermCraftingHelper.ensureFittedCraftingGrid;
 
-public class ECTerminalRecipeHandler<T extends ExtendedTerminalBaseMenu> extends AbstractTableRecipeHandler<T> {
+public class ECTerminalRecipeHandler<T extends ExtendedTerminalBaseMenu> extends AbstractEmiTableRecipeHandler<T> {
     private final ETMenuType menuType;
     private final EmiRecipeCategory category;
 

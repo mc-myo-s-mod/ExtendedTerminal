@@ -41,7 +41,7 @@ public final class ETCraftingRecipeTransferHelper {
         return result;
     }
 
-    public static void performTransfer(ETTerminalMenu menu, CraftingRecipe recipe, @Nullable ResourceLocation recipeId,
+    public static void performTransfer(ETTerminalMenu menu, CraftingRecipe recipe,
             boolean craftMissing) {
         var ingredientPriorities = EncodingHelper.getIngredientPriorities(menu, ENTRY_COMPARATOR);
         var templateItems = NonNullList.withSize(menu.getCraftingGridSize(), ItemStack.EMPTY);
@@ -55,6 +55,6 @@ public final class ETCraftingRecipeTransferHelper {
             templateItems.set(entry.getKey(), stack);
         }
 
-        NetworkHandler.instance().sendToServer(new FillCraftingGridFromRecipePacket(recipeId, templateItems, craftMissing));
+        NetworkHandler.instance().sendToServer(new FillCraftingGridFromRecipePacket(recipe.getId(), templateItems, craftMissing));
     }
 }

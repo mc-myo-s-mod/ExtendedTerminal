@@ -115,7 +115,6 @@ public class ETFillCraftingGridFromRecipePacket extends FillRecipeBasePacket imp
 
         @Nullable
         var node = cct.getNetworkNode();
-
         if (node == null) {
             return;
         }

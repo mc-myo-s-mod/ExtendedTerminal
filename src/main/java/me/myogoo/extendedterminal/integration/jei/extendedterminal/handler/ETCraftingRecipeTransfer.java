@@ -80,7 +80,7 @@ public class ETCraftingRecipeTransfer<T extends ETTerminalMenu>
             }
         } else {
             menu.setMode(ETTerminalMode.CRAFTING);
-            ETCraftingRecipeTransferHelper.performTransfer(menu, recipe, null, craftMissing);
+            ETCraftingRecipeTransferHelper.performTransfer(menu, recipe, craftMissing);
         }
         return Result.createSuccessful();
     }

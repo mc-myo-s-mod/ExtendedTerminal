@@ -41,10 +41,10 @@ import static me.myogoo.extendedterminal.integration.ItemListTermCraftingHelper.
 import static me.myogoo.extendedterminal.network.serverbound.ETFillCraftingGridFromRecipePacket.NOT_SET_RECIPE_SIZE;
 
 //mess up so dirty
-public abstract class AbstractTableRecipeHandler<T extends ETTerminalBaseMenu<?>> implements StandardRecipeHandler<T> {
+public abstract class AbstractEmiTableRecipeHandler<T extends ETTerminalBaseMenu<?>> implements StandardRecipeHandler<T> {
     private final Class<T> containerClass;
 
-    public AbstractTableRecipeHandler(Class<T> containerClass) {
+    public AbstractEmiTableRecipeHandler(Class<T> containerClass) {
         this.containerClass = containerClass;
     }
 

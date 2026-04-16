@@ -1,5 +1,7 @@
 package me.myogoo.extendedterminal.init.wt;
 
+import appeng.api.features.GridLinkables;
+import appeng.items.tools.powered.WirelessTerminalItem;
 import de.mari_023.ae2wtlib.wut.WUTHandler;
 import me.myogoo.extendedterminal.me.host.ETWTHost;
 import me.myogoo.extendedterminal.menu.extendedterminal.wt.ETWTMenu;

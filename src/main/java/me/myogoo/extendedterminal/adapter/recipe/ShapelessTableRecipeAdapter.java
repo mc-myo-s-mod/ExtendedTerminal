@@ -7,7 +7,9 @@ import committee.nova.mods.avaritia.common.crafting.recipe.ShapelessTableCraftin
 import me.myogoo.extendedterminal.api.adapter.recipe.IShapelessTableRecipeAdapter;
 import net.byAqua3.avaritia.recipe.RecipeExtremeShapeless;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.ShapelessRecipe;
 
 import java.util.Optional;
 
@@ -18,6 +20,12 @@ public class ShapelessTableRecipeAdapter implements IShapelessTableRecipeAdapter
     public ShapelessTableRecipeAdapter(Recipe<?> recipe, int tier) {
         this.recipe = recipe;
         this.recipeTier = tier;
+    }
+    public ShapelessTableRecipeAdapter(ShapelessRecipe recipe) {
+        this(recipe, 1);
+    }
+    public ShapelessTableRecipeAdapter(CraftingRecipe recipe) {
+        this(recipe, 1);
     }
 
     //Extended Crafting

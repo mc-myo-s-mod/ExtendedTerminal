@@ -6,6 +6,7 @@ import me.myogoo.extendedterminal.api.adapter.recipe.IShapedTableRecipeAdapter;
 import net.byAqua3.avaritia.recipe.RecipeExtremeShaped;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.ShapedRecipe;
 
 
 import java.util.Optional;
@@ -21,6 +22,10 @@ public class ShapedTableRecipeAdapter implements IShapedTableRecipeAdapter {
         this.recipeTier = tier;
         this.recipeWidth = width;
         this.recipeHeight = height;
+    }
+
+    public ShapedTableRecipeAdapter(ShapedRecipe recipe) {
+        this(recipe, 1, recipe.getWidth(), recipe.getHeight());
     }
 
     public ShapedTableRecipeAdapter(ShapedTableRecipe recipe) {

@@ -2,11 +2,11 @@ package me.myogoo.extendedterminal.menu.extendedterminal;
 
 import appeng.api.inventories.ISegmentedInventory;
 import appeng.api.inventories.InternalInventory;
-import appeng.api.storage.ITerminalHost;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.InventoryActionPacket;
 import appeng.helpers.InventoryAction;
 import appeng.menu.SlotSemantics;
+import appeng.menu.guisync.GuiSync;
 import appeng.menu.implementations.MenuTypeBuilder;
 import appeng.menu.slot.AppEngSlot;
 import appeng.menu.slot.CraftingMatrixSlot;
@@ -61,6 +61,7 @@ public class ETTerminalMenu extends ETTerminalBaseMenu<CraftingRecipe> {
     private final ISegmentedInventory craftingInventoryHost;
     private final IETTerminalHost host;
 
+    @GuiSync(0)
     private ETTerminalMode currentMode;
 
     private final CraftingMatrixSlot[] craftingSlots;
@@ -77,13 +78,14 @@ public class ETTerminalMenu extends ETTerminalBaseMenu<CraftingRecipe> {
     private final CraftingMatrixSlot stonecuttingSlot;
     private final ETStoneCutterSlot stoneCutterOutputSlot;
     private final List<StonecutterRecipe> stoneCutterRecipes = new ArrayList<>();
-    @Nullable
-    private ResourceLocation stoneCutterRecipeId;
+    @GuiSync(1)
+    private ResourceLocation stoneCutterRecipeId = null;
 
     private final CraftingMatrixSlot anvilLeftSlot;
     private final CraftingMatrixSlot anvilRightSlot;
     private final ETAnvilSlot anvilOutputSlot;
     private final FakeAnvilMenu anvilDelegate;
+    @GuiSync(2)
     private int anvilCost;
     private boolean handlingAnvilTake;
 

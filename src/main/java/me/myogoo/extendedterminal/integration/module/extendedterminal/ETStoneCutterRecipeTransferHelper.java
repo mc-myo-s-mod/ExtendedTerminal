@@ -6,7 +6,6 @@ import appeng.menu.me.common.GridInventoryEntry;
 import me.myogoo.extendedterminal.menu.extendedterminal.ETTerminalMenu;
 import me.myogoo.extendedterminal.network.serverbound.ETFillStonecutterGridFromRecipePacket;
 import me.myogoo.myotus.api.MyotusAPI;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.StonecutterRecipe;
 
