@@ -1,10 +1,10 @@
 package me.myogoo.extendedterminal.integration;
 
 import me.myogoo.extendedterminal.ExtendedTerminal;
-import me.myogoo.extendedterminal.api.SubscribeLoadEvent;
 import me.myogoo.extendedterminal.util.SafeClass;
 import me.myogoo.extendedterminal.util.mod.AnnotationScanner;
-import me.myogoo.extendedterminal.util.mod.ModIntegrationManager;
+import me.myogoo.myotus.api.annotation.MyotusSubscriber;
+import me.myogoo.myotus.util.mod.ModIntegrationManager;
 import org.objectweb.asm.Type;
 
 import java.lang.reflect.InvocationTargetException;
@@ -23,7 +23,10 @@ public class ItemListModLoadHelper {
                 .stream()
                 .filter(a -> a.annotationType().equals(markerAnnotation))
                 .map(a -> SafeClass.forType(a.clazz()))
-                .filter(c -> c.getDeclaredAnnotations().length == 0 || Arrays.stream(c.getDeclaredAnnotations()).anyMatch(a -> ModIntegrationManager.isLoaded(a.annotationType())))
+                .filter(c -> c != null
+                        && (c.getDeclaredAnnotations().length == 0
+                        || Arrays.stream(c.getDeclaredAnnotations())
+                                .allMatch(a -> ModIntegrationManager.isLoaded(a.annotationType()))))
                 .forEach(clazz -> invokeMethod(clazz,parameterType, parameter));
     }
 
@@ -43,16 +46,16 @@ public class ItemListModLoadHelper {
         try {
             Method[] methods = clazz.getDeclaredMethods();
             for(var method: methods) {
-                if(method.isAnnotationPresent(SubscribeLoadEvent.class)) {
+                if(method.isAnnotationPresent(MyotusSubscriber.class)) {
                     if(!Modifier.isStatic(method.getModifiers())) {
-                        ExtendedTerminal.LOGGER.warn("Method {} in class {} is annotated with @SubscribeLoadEvent but is not static.", method.getName(), clazz.getName());
+                        ExtendedTerminal.LOGGER.warn("Method {} in class {} is annotated as a subscriber but is not static.", method.getName(), clazz.getName());
                         continue;
                     }
                     if(method.getParameterCount() == 1 && method.getParameterTypes()[0] == parameterType) {
                         method.setAccessible(true);
                         method.invoke(null, registration);
                     } else {
-                        ExtendedTerminal.LOGGER.warn("Method {} in class {} is annotated with @SubscribeLoadEvent but does not have the correct parameters.", method.getName(), clazz.getName());
+                        ExtendedTerminal.LOGGER.warn("Method {} in class {} is annotated as a subscriber but does not have the correct parameters.", method.getName(), clazz.getName());
                     }
                 }
             }

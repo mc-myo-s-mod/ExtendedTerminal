@@ -8,7 +8,7 @@ public class SafeClass {
     public static Class<?> forName(String name) {
         try {
             return Class.forName(name);
-        } catch (ClassNotFoundException e) {
+        } catch (ClassNotFoundException | LinkageError e) {
             ExtendedTerminal.LOGGER.error("Can't find Class for : {}", String.valueOf(e));
             return null;
         }

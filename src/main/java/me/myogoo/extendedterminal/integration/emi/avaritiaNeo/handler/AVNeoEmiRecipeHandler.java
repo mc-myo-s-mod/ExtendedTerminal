@@ -5,7 +5,7 @@ import dev.emi.emi.api.recipe.EmiRecipe;
 import dev.emi.emi.api.recipe.EmiRecipeCategory;
 import me.myogoo.extendedterminal.api.adapter.recipe.IShapedTableRecipeAdapter;
 import me.myogoo.extendedterminal.api.adapter.recipe.ITableRecipeAdapter;
-import me.myogoo.extendedterminal.integration.emi.handler.AbstractTableRecipeHandler;
+import me.myogoo.extendedterminal.integration.emi.handler.AbstractEmiTableRecipeHandler;
 import me.myogoo.extendedterminal.menu.ETMenuType;
 import me.myogoo.extendedterminal.menu.avaritiaNeo.NeoExtremeTerminalMenu;
 import net.byAqua3.avaritia.recipe.RecipeExtremeCrafting;
@@ -19,7 +19,7 @@ import java.util.Map;
 
 import static me.myogoo.extendedterminal.integration.ItemListTermCraftingHelper.ensureFittedCraftingGrid;
 
-public class AVNeoEmiRecipeHandler extends AbstractTableRecipeHandler<NeoExtremeTerminalMenu> {
+public class AVNeoEmiRecipeHandler extends AbstractEmiTableRecipeHandler<NeoExtremeTerminalMenu> {
     private final ETMenuType menuType;
     private final EmiRecipeCategory category;
 

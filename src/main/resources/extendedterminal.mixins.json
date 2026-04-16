@@ -2,19 +2,17 @@
   "required": true,
   "minVersion": "0.8",
   "package": "me.myogoo.extendedterminal.mixin",
-  "compatibilityLevel": "JAVA_8",
+  "compatibilityLevel": "JAVA_17",
   "refmap": "extendedterminal.refmap.json",
   "mixins": [
     "AEBaseMenuMixin",
-    "NetworkHandlerMixin"
+    "SmithingTransformRecipeAccessor",
+    "SmithingTrimRecipeAccessor"
   ],
   "injectors": {
     "defaultRequire": 1
   },
   "overwrites": {
     "requireAnnotations": true
-  },
-  "client": [
-    "GuideMeAddonMixin"
-  ]
+  }
 }

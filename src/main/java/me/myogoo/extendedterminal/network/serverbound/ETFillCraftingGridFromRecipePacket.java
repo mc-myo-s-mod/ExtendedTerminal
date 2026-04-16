@@ -7,17 +7,16 @@ import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.KeyCounter;
 import appeng.api.storage.MEStorage;
 import appeng.api.storage.StorageHelper;
-import appeng.core.sync.BasePacket;
 import appeng.helpers.IMenuCraftingPacket;
 import appeng.items.storage.ViewCellItem;
 import appeng.util.prioritylist.IPartitionList;
 import com.google.common.base.Preconditions;
 import com.google.common.primitives.Ints;
-import io.netty.buffer.Unpooled;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntList;
 import me.myogoo.extendedterminal.integration.ItemListTermCraftingHelper;
-import me.myogoo.extendedterminal.network.NetworkPacketType;
+import me.myogoo.myotus.api.network.IMyotusPacket;
+import me.myogoo.myotus.api.network.MyoPacketContext;
 import me.myogoo.extendedterminal.util.extendedcrafting.TableCraftingHelper;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.FriendlyByteBuf;
@@ -32,20 +31,22 @@ import java.util.*;
 
 
 
-public class ETFillCraftingGridFromRecipePacket extends FillRecipeBasePacket {
+public class ETFillCraftingGridFromRecipePacket extends FillRecipeBasePacket implements IMyotusPacket {
     public static final int NOT_SET_RECIPE_SIZE = -1;
 
-    private @Nullable ResourceLocation recipeId = null;
-    private List<ItemStack> ingredientTemplates;
-    private boolean craftMissing;
-    private int recipeWidth;
-    private int recipeHeight;
+    private final @Nullable ResourceLocation recipeId;
+    private final List<ItemStack> ingredientTemplates;
+    private final boolean craftMissing;
+    private final int recipeWidth;
+    private final int recipeHeight;
 
 
     public ETFillCraftingGridFromRecipePacket(FriendlyByteBuf stream) {
+        ResourceLocation decodedRecipeId = null;
         if (stream.readBoolean()) {
-            recipeId = stream.readResourceLocation();
+            decodedRecipeId = stream.readResourceLocation();
         }
+        this.recipeId = decodedRecipeId;
         ingredientTemplates = NonNullList.withSize(stream.readInt(), ItemStack.EMPTY);
         for (int i = 0; i < ingredientTemplates.size(); i++) {
             ingredientTemplates.set(i, stream.readItem());
@@ -63,29 +64,41 @@ public class ETFillCraftingGridFromRecipePacket extends FillRecipeBasePacket {
             int recipeWidth,
             int recipeHeight
     ) {
-        var stream = new FriendlyByteBuf(Unpooled.buffer());
-        // set packetID
-        stream.writeInt(NetworkPacketType.PacketIDs.TABLE_FILL_CRAFTING_GRID.getValue());
-        if (recipeId != null) {
+        this.recipeId = recipeId;
+        this.ingredientTemplates = List.copyOf(ingredientTemplates);
+        this.craftMissing = craftMissing;
+        this.recipeWidth = recipeWidth;
+        this.recipeHeight = recipeHeight;
+    }
+
+    @Override
+    public void write(FriendlyByteBuf stream) {
+        if (this.recipeId != null) {
             stream.writeBoolean(true);
-            stream.writeResourceLocation(recipeId);
+            stream.writeResourceLocation(this.recipeId);
         } else {
             stream.writeBoolean(false);
         }
 
-        stream.writeInt(ingredientTemplates.size());
-        for (var ingredientTemplate : ingredientTemplates) {
+        stream.writeInt(this.ingredientTemplates.size());
+        for (var ingredientTemplate : this.ingredientTemplates) {
             stream.writeItem(ingredientTemplate);
         }
-        stream.writeBoolean(craftMissing);
-        stream.writeInt(recipeWidth);
-        stream.writeInt(recipeHeight);
-
-        configureWrite(stream);
+        stream.writeBoolean(this.craftMissing);
+        stream.writeInt(this.recipeWidth);
+        stream.writeInt(this.recipeHeight);
     }
 
-    @Override
-    public void serverPacketData(ServerPlayer player) {
+    public static void handle(ETFillCraftingGridFromRecipePacket packet, MyoPacketContext context) {
+        var player = context.sender();
+        if (player == null) {
+            return;
+        }
+
+        packet.handleOnServer(player);
+    }
+
+    private void handleOnServer(ServerPlayer player) {
         // Setup and verification
         var menu = player.containerMenu;
         if (!(menu instanceof IMenuCraftingPacket cct)) {
@@ -102,7 +115,6 @@ public class ETFillCraftingGridFromRecipePacket extends FillRecipeBasePacket {
 
         @Nullable
         var node = cct.getNetworkNode();
-
         if (node == null) {
             return;
         }

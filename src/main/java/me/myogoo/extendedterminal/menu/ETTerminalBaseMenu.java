@@ -7,9 +7,11 @@ import appeng.menu.SlotSemantic;
 import appeng.menu.me.common.MEStorageMenu;
 import appeng.menu.me.crafting.CraftConfirmMenu;
 import appeng.menu.me.items.CraftingTermMenu;
+import appeng.api.inventories.ISegmentedInventory;
 import appeng.util.inv.PlayerInternalInventory;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import me.myogoo.extendedterminal.api.config.IETTerminalConfig;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Inventory;
@@ -33,7 +35,7 @@ public abstract class ETTerminalBaseMenu<R extends Recipe<?>> extends MEStorageM
         super(menuType, id, ip, host);
         this.menuType = etMenuType;
         this.config = config;
-        registerClientAction(ACTION_CLEAR_TO_PLAYER, this::clearToPlayerInventory);
+        registerClientAction(ACTION_CLEAR_TO_PLAYER, ResourceLocation.class, this::clearToPlayerInventory);
     }
 
     public R getCurrentRecipe() {
@@ -161,15 +163,19 @@ public abstract class ETTerminalBaseMenu<R extends Recipe<?>> extends MEStorageM
     }
 
     public void clearToPlayerInventory() {
+        clearToPlayerInventory(getETMenuType().getCraftingInventory());
+    }
+
+    public void clearToPlayerInventory(ResourceLocation invId) {
         if (isClientSide()) {
-            sendClientAction(ACTION_CLEAR_TO_PLAYER);
+            sendClientAction(ACTION_CLEAR_TO_PLAYER, invId);
             return;
         }
 
-        var craftingGridInv = this.getCraftingMatrix();
         var playerInv = new PlayerInternalInventory(getPlayerInventory());
+        var inv = ((ISegmentedInventory) getHost()).getSubInventory(invId);
 
-        for (int i = 0; i < craftingGridInv.size(); ++i) {
+        for (int i = 0; i < inv.size(); ++i) {
             for (int emptyLoop = 0; emptyLoop < 2; ++emptyLoop) {
                 boolean allowEmpty = emptyLoop == 1;
 
@@ -177,13 +183,13 @@ public abstract class ETTerminalBaseMenu<R extends Recipe<?>> extends MEStorageM
                 final int HOTBAR_SIZE = 9;
                 for (int j = HOTBAR_SIZE; j-- > 0; ) {
                     if (playerInv.getStackInSlot(j).isEmpty() == allowEmpty) {
-                        craftingGridInv.setItemDirect(i, playerInv.getSlotInv(j).addItems(craftingGridInv.getStackInSlot(i)));
+                        inv.setItemDirect(i, playerInv.getSlotInv(j).addItems(inv.getStackInSlot(i)));
                     }
                 }
                 // Rest of inventory
                 for (int j = HOTBAR_SIZE; j < Inventory.INVENTORY_SIZE; ++j) {
                     if (playerInv.getStackInSlot(j).isEmpty() == allowEmpty) {
-                        craftingGridInv.setItemDirect(i, playerInv.getSlotInv(j).addItems(craftingGridInv.getStackInSlot(i)));
+                        inv.setItemDirect(i, playerInv.getSlotInv(j).addItems(inv.getStackInSlot(i)));
                     }
                 }
             }

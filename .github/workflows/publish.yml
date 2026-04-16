@@ -81,12 +81,13 @@ jobs:
           loaders: ${{ needs.build.outputs.mod_loader }}
           version-type: ${{ needs.build.outputs.version_type }}
 
-          files: 'build/libs/*.jar'
+          files: ${{ needs.build.outputs.artifact_path }}
           name: ${{ needs.build.outputs.artifact_name }}
           version: ${{ needs.build.outputs.mc_version }}-${{ needs.build.outputs.mod_version }}
 
           dependencies: |
             ae2(required){modrinth:XxWD5pD3}{curseforge:223794}
+            myotus(required){modrinth:32YA23Pp}{curseforge:1496024}
             ae2wtlib(optional){modrinth:pNabrMMw}{curseforge:459929}
             extendedcrafting(optional){modrinth:5JMG1gql}{curseforge:1083158}
             avaritianeo(optional){modrinth:j5gjLUvf}{curseforge:268387}
@@ -112,12 +113,13 @@ jobs:
           loaders: ${{ needs.build.outputs.mod_loader }}
           version-type: ${{ needs.build.outputs.version_type }}
 
-          files: 'build/libs/*.jar'
+          files: ${{ needs.build.outputs.artifact_path }}
           name: ${{ needs.build.outputs.artifact_name }}
           version: ${{ needs.build.outputs.mc_version }}-${{ needs.build.outputs.mod_version }}
 
           dependencies: |
             ae2(required){modrinth:XxWD5pD3}{curseforge:223794}
+            myotus(required){modrinth:32YA23Pp}{curseforge:1496024}
             ae2wtlib(optional){modrinth:pNabrMMw}{curseforge:459929}
             extendedcrafting(optional){modrinth:5JMG1gql}{curseforge:1083158}
             avaritianeo(optional){modrinth:j5gjLUvf}{curseforge:268387}

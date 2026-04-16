@@ -12,6 +12,7 @@ import net.byAqua3.avaritia.recipe.RecipeExtremeCrafting;
 import net.byAqua3.avaritia.recipe.RecipeExtremeShaped;
 import net.byAqua3.avaritia.recipe.RecipeExtremeShapeless;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.ShapedRecipe;
 import net.minecraft.world.item.crafting.ShapelessRecipe;
@@ -23,6 +24,16 @@ public interface ITableRecipeAdapter {
     <R extends Recipe<?>> R recipe();
     ResourceLocation recipeId();
     int tier();
+
+    static ITableRecipeAdapter of(CraftingRecipe recipe) {
+        if (recipe instanceof ShapedRecipe shaped) {
+            return new ShapedTableRecipeAdapter(shaped);
+        } else if (recipe instanceof ShapelessRecipe shapeless) {
+            return new ShapelessTableRecipeAdapter(shapeless);
+        } else {
+            return new ShapelessTableRecipeAdapter(recipe);
+        }
+    }
 
     @ExtendedCrafting
     static ITableRecipeAdapter of(ITableRecipe recipe) {

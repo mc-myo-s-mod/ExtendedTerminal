@@ -1,2 +1,9 @@
-## Bug Fix
-- Like the circuit in ae2, the insulator no longer consumes the press. [@CynSolveroftheAbsolute](https://github.com/CynSolveroftheAbsolute) ([#24](https://github.com/mc-myo-s-mod/ExtendedTerminal/issues/24#issue-3909100480))
+# CHANGELOG
+
+## Feature
+- Implemented Myotus
+- Update Terminal's textures
+## Extended Terminal
+> Now 1.20.1 arrived
+Extended Terminal can crafting, smithing, stonecutting, anvil in one terminal
+Support wireless terminal

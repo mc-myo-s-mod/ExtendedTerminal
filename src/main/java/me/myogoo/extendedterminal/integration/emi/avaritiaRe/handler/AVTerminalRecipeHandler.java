@@ -2,33 +2,28 @@ package me.myogoo.extendedterminal.integration.emi.avaritiaRe.handler;
 
 import appeng.core.localization.ItemModText;
 import committee.nova.mods.avaritia.common.crafting.recipe.ITierCraftingRecipe;
-import committee.nova.mods.avaritia.common.crafting.recipe.ShapedTableCraftingRecipe;
 import committee.nova.mods.avaritia.init.compat.emi.category.tables.EndCraftingTableCategory;
 import committee.nova.mods.avaritia.init.compat.emi.category.tables.ExtremeCraftingTableCategory;
 import committee.nova.mods.avaritia.init.compat.emi.category.tables.NetherCraftingTableCategory;
 import committee.nova.mods.avaritia.init.compat.emi.category.tables.SculkCraftingTableCategory;
 import dev.emi.emi.api.recipe.EmiRecipe;
 import dev.emi.emi.api.recipe.EmiRecipeCategory;
-import dev.emi.emi.api.stack.EmiStack;
 import me.myogoo.extendedterminal.api.adapter.recipe.IShapedTableRecipeAdapter;
 import me.myogoo.extendedterminal.api.adapter.recipe.ITableRecipeAdapter;
-import me.myogoo.extendedterminal.integration.emi.handler.AbstractTableRecipeHandler;
+import me.myogoo.extendedterminal.integration.emi.handler.AbstractEmiTableRecipeHandler;
 import me.myogoo.extendedterminal.menu.ETMenuType;
 import me.myogoo.extendedterminal.menu.avaritiaRe.AvaritiaTerminalBaseMenu;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
-import net.minecraft.core.NonNullList;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 import static me.myogoo.extendedterminal.integration.ItemListTermCraftingHelper.ensureFittedCraftingGrid;
 
-public class AVTerminalRecipeHandler<T extends AvaritiaTerminalBaseMenu> extends AbstractTableRecipeHandler<T> {
+public class AVTerminalRecipeHandler<T extends AvaritiaTerminalBaseMenu> extends AbstractEmiTableRecipeHandler<T> {
     private final ETMenuType menuType;
     private final EmiRecipeCategory category;
     public AVTerminalRecipeHandler(EmiRecipeCategory category, Class<T> containerClass, ETMenuType menuType) {

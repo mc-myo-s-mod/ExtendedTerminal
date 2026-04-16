@@ -1,0 +1,23 @@
+package me.myogoo.extendedterminal.integration.jei.extendedterminal.wt;
+
+import me.myogoo.extendedterminal.api.integration.jei.ETJeiRecipeTransfer;
+import me.myogoo.extendedterminal.integration.jei.extendedterminal.handler.ETCraftingRecipeTransfer;
+import me.myogoo.extendedterminal.integration.jei.extendedterminal.handler.ETSmithingRecipeTransfer;
+import me.myogoo.extendedterminal.integration.jei.extendedterminal.handler.ETStonecutterRecipeTransfer;
+import me.myogoo.extendedterminal.menu.extendedterminal.wt.ETWTMenu;
+import me.myogoo.myotus.api.annotation.MyotusSubscriber;
+import me.myogoo.myotus.api.annotation.wt.AE2WTLib;
+import mezz.jei.api.constants.RecipeTypes;
+import mezz.jei.api.registration.IRecipeTransferRegistration;
+
+@AE2WTLib
+@ETJeiRecipeTransfer
+public class ETWTRecipeTransferHandler {
+    @MyotusSubscriber
+    public static void init(IRecipeTransferRegistration registration) {
+        var helper = registration.getTransferHelper();
+        registration.addRecipeTransferHandler(new ETCraftingRecipeTransfer<>(ETWTMenu.TYPE, ETWTMenu.class, helper), RecipeTypes.CRAFTING);
+        registration.addRecipeTransferHandler(new ETSmithingRecipeTransfer<>(ETWTMenu.TYPE, ETWTMenu.class, helper), RecipeTypes.SMITHING);
+        registration.addRecipeTransferHandler(new ETStonecutterRecipeTransfer<>(ETWTMenu.TYPE, ETWTMenu.class, helper), RecipeTypes.STONECUTTING);
+    }
+}

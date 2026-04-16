@@ -5,7 +5,7 @@ import committee.nova.mods.avaritia.init.compat.jei.category.tables.ExtremeCraft
 import committee.nova.mods.avaritia.init.compat.jei.category.tables.NetherCraftingTableCategory;
 import committee.nova.mods.avaritia.init.compat.jei.category.tables.SculkCraftingTableCategory;
 import me.myogoo.extendedterminal.api.ModAccessor;
-import me.myogoo.extendedterminal.api.SubscribeLoadEvent;
+import me.myogoo.myotus.api.annotation.MyotusSubscriber;
 import me.myogoo.extendedterminal.api.integration.jei.ETJeiRecipeCatalyst;
 import me.myogoo.extendedterminal.config.avaritiaRe.AvaritiaReConfig;
 import me.myogoo.extendedterminal.init.ETParts;
@@ -14,7 +14,7 @@ import mezz.jei.api.registration.IRecipeCatalystRegistration;
 @ETJeiRecipeCatalyst
 @ModAccessor.ReAvaritia
 public class AVRecipeCatalyst {
-    @SubscribeLoadEvent
+    @MyotusSubscriber
     public static void init(IRecipeCatalystRegistration registration) {
         var instance = AvaritiaReConfig.INSTANCE;
         if(instance.getSculkConfig().enableTerminal()) registration.addRecipeCatalyst(ETParts.SCULK_TERMINAL_PART, SculkCraftingTableCategory.RECIPE_TYPE);

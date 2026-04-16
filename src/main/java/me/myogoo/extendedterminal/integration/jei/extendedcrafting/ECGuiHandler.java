@@ -5,7 +5,7 @@ import com.blakebr0.extendedcrafting.compat.jei.category.table.BasicTableCategor
 import com.blakebr0.extendedcrafting.compat.jei.category.table.EliteTableCategory;
 import com.blakebr0.extendedcrafting.compat.jei.category.table.UltimateTableCategory;
 import me.myogoo.extendedterminal.api.ModAccessor;
-import me.myogoo.extendedterminal.api.SubscribeLoadEvent;
+import me.myogoo.myotus.api.annotation.MyotusSubscriber;
 import me.myogoo.extendedterminal.api.integration.jei.ETJeiGuiHandler;
 import me.myogoo.extendedterminal.client.screen.extendedcrafting.AdvancedTerminalScreen;
 import me.myogoo.extendedterminal.client.screen.extendedcrafting.BasicTerminalScreen;
@@ -17,7 +17,7 @@ import mezz.jei.api.registration.IGuiHandlerRegistration;
 @ModAccessor.ExtendedCrafting
 @ETJeiGuiHandler
 public class ECGuiHandler {
-    @SubscribeLoadEvent
+    @MyotusSubscriber
     public static void init(IGuiHandlerRegistration registration) {
         registration.addGuiContainerHandler(BasicTerminalScreen.class, new JeiTableGuiHandler<>(BasicTableCategory.RECIPE_TYPE));
         registration.addGuiContainerHandler(AdvancedTerminalScreen.class, new JeiTableGuiHandler<>(AdvancedTableCategory.RECIPE_TYPE));

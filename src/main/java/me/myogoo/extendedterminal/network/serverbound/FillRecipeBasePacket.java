@@ -4,7 +4,6 @@ import appeng.api.config.FuzzyMode;
 import appeng.api.networking.crafting.ICraftingService;
 import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.KeyCounter;
-import appeng.core.sync.BasePacket;
 import appeng.helpers.IMenuCraftingPacket;
 import appeng.util.prioritylist.IPartitionList;
 import net.minecraft.core.NonNullList;
@@ -18,7 +17,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
-public abstract class FillRecipeBasePacket extends BasePacket {
+public abstract class FillRecipeBasePacket implements IETFillRecipeBasePacket {
     protected abstract NonNullList<Ingredient> getDesiredIngredients(Player player);
 
     protected ItemStack takeIngredientFromPlayer(IMenuCraftingPacket cct, ServerPlayer player, Ingredient ingredient) {

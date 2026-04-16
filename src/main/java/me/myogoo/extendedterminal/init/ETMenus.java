@@ -5,6 +5,7 @@ import me.myogoo.extendedterminal.menu.ETMenuType;
 import me.myogoo.extendedterminal.menu.avaritiaNeo.NeoExtremeTerminalMenu;
 import me.myogoo.extendedterminal.menu.avaritiaRe.*;
 import me.myogoo.extendedterminal.menu.extendedcrafting.*;
+import me.myogoo.extendedterminal.menu.extendedterminal.ETTerminalMenu;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraftforge.registries.DeferredRegister;
@@ -14,6 +15,7 @@ import java.util.function.Supplier;
 public final class ETMenus {
     public static final DeferredRegister<MenuType<?>> REGISTER = DeferredRegister.create(Registries.MENU, AppEng.MOD_ID);
 
+    public static final Supplier<MenuType<ETTerminalMenu>> ET_TERMINAL = REGISTER.register(ETMenuType.ET_TERMINAL.getIdAsString(), () -> ETTerminalMenu.TYPE);
     public static final Supplier<MenuType<BasicTerminalMenu>> BASIC_TERMINAL = REGISTER.register(ETMenuType.BASIC_TERMINAL.getIdAsString(), () -> BasicTerminalMenu.TYPE);
     public static final Supplier<MenuType<AdvancedTerminalMenu>> ADVANCED_TERMINAL = REGISTER.register(ETMenuType.ADVANCED_TERMINAL.getIdAsString(), () -> AdvancedTerminalMenu.TYPE);
     public static final Supplier<MenuType<EliteTerminalMenu>> ELITE_TERMINAL = REGISTER.register(ETMenuType.ELITE_TERMINAL.getIdAsString(), () -> EliteTerminalMenu.TYPE);

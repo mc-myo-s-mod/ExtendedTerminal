@@ -1,0 +1,17 @@
+{
+  "forge:conditions": [
+    {
+      "type": "myotus:mod_condition",
+      "active_mod": "ae2wtlib"
+    }
+  ],
+  "type": "ae2wtlib:combine",
+  "terminalA": {
+    "item": "extendedterminal:wireless_et_terminal"
+  },
+  "terminalB": {
+    "item": "ae2:wireless_crafting_terminal"
+  },
+  "terminalAName": "wireless_et_terminal",
+  "terminalBName": "crafting"
+}

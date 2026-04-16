@@ -1,8 +1,8 @@
 {
   "forge:conditions": [
     {
-      "type": "extendedterminal:et_mod",
-      "et_mod": "AE2WTLib"
+      "type": "myotus:mod_condition",
+      "active_mod": "ae2wtlib"
     }
   ],
   "type": "minecraft:crafting_shaped",

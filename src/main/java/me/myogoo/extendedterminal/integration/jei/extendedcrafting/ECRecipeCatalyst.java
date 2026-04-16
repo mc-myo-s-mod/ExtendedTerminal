@@ -5,7 +5,7 @@ import com.blakebr0.extendedcrafting.compat.jei.category.table.BasicTableCategor
 import com.blakebr0.extendedcrafting.compat.jei.category.table.EliteTableCategory;
 import com.blakebr0.extendedcrafting.compat.jei.category.table.UltimateTableCategory;
 import me.myogoo.extendedterminal.api.ModAccessor;
-import me.myogoo.extendedterminal.api.SubscribeLoadEvent;
+import me.myogoo.myotus.api.annotation.MyotusSubscriber;
 import me.myogoo.extendedterminal.api.integration.jei.ETJeiRecipeCatalyst;
 import me.myogoo.extendedterminal.config.extendedcrafting.ExtendedCraftingConfig;
 import me.myogoo.extendedterminal.init.ETParts;
@@ -14,7 +14,7 @@ import mezz.jei.api.registration.IRecipeCatalystRegistration;
 @ModAccessor.ExtendedCrafting
 @ETJeiRecipeCatalyst
 public class ECRecipeCatalyst{
-    @SubscribeLoadEvent
+    @MyotusSubscriber
     public static void init(IRecipeCatalystRegistration registration) {
         var instance = ExtendedCraftingConfig.INSTANCE;
         if (instance.getBasicConfig().enableTerminal())
