@@ -21,7 +21,7 @@ public final class ETModIntegration {
         registrar.registerLoadableMod(ModAccessor.ExtendedCrafting.class, "extendedcrafting", "*");
         registrar.registerLoadableMod(ModAccessor.EpicExCrafting.class, "extendedcrafting",
                 "Extended Crafting: Expanded", "*");
-        registrar.registerLoadableMod(ModAccessor.ReAvaritia.class, "avaritia", "Re-Avaritia", "*");
-        registrar.registerLoadableMod(ModAccessor.AvaritiaNeo.class, "avaritia", "Avaritia", "*");
+        registrar.registerLoadableMod(ModAccessor.ReAvaritia.class, "avaritia", "Re-Avaritia", "[1.3.9.8,)");
+        registrar.registerLoadableMod(ModAccessor.AvaritiaNeo.class, "avaritia", "Avaritia", "[1.1.3,)");
     }
 }
