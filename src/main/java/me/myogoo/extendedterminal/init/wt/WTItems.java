@@ -31,8 +31,6 @@ public final class WTItems {
         GridLinkables.register(definition.asItem(), WirelessTerminalItem.LINKABLE_HANDLER);
         WT_ITEMS.add(definition);
         return definition;
-
-
     }
 
     public static void register() {
