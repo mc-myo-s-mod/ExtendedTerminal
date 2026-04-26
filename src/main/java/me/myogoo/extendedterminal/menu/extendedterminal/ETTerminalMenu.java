@@ -24,6 +24,7 @@ import me.myogoo.extendedterminal.menu.extendedterminal.slot.ETStoneCutterSlot;
 import me.myogoo.extendedterminal.menu.slot.ETCraftingBaseSlot;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.inventory.DataSlot;
@@ -251,6 +252,27 @@ public class ETTerminalMenu extends ETTerminalBaseMenu<CraftingRecipe> {
             return;
         }
         super.doAction(player, action, slot, id);
+    }
+
+    @Override
+    public ItemStack quickMoveStack(Player player, int idx) {
+        if (isServerSide() && idx >= 0 && idx < this.slots.size() && this.getSlot(idx) == this.anvilOutputSlot) {
+            ItemStack before = this.anvilOutputSlot.getItem().copy();
+            if (!before.isEmpty() && this.anvilOutputSlot.mayPickup(player)) {
+                int beforeCount = before.getCount();
+                super.quickMoveStack(player, idx);
+
+                ItemStack after = this.anvilOutputSlot.getItem();
+                int afterCount = after.isEmpty() ? 0 : after.getCount();
+                if (afterCount < beforeCount) {
+                    ItemStack taken = before.copy();
+                    taken.setCount(beforeCount - afterCount);
+                    this.anvilOutputSlot.onTake(player, taken);
+                }
+                return ItemStack.EMPTY;
+            }
+        }
+        return super.quickMoveStack(player, idx);
     }
 
     private void updateCraftingOutput(boolean forceUpdate) {

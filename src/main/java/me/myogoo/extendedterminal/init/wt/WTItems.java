@@ -7,8 +7,6 @@ import de.mari_023.ae2wtlib.terminal.ItemWT;
 import me.myogoo.extendedterminal.ExtendedTerminal;
 import me.myogoo.extendedterminal.init.ETItems;
 import me.myogoo.extendedterminal.item.wtitem.ETWTItem;
-import me.myogoo.myotus.api.annotation.wt.AE2WTLib;
-import me.myogoo.myotus.util.mod.ModIntegrationManager;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 
