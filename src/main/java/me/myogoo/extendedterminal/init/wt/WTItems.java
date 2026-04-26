@@ -28,9 +28,6 @@ public class WTItems {
 
     private static <T extends Item> ItemDefinition<T> createWTItem(String name, ResourceLocation id,
                                                                    Function<Item.Properties, T> itemFactory) {
-        if (!MyotusAPI.get().modIntegrationManager().isLoaded(AE2WTLib.class)) {
-            return null;
-        }
         var item = ETItems.REGISTER.registerItem(id.getPath(), itemFactory);
         var definition = new ItemDefinition<>(name, item);
         WT_ITEMS.add(definition);

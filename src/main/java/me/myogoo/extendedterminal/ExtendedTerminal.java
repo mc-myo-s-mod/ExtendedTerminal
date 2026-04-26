@@ -8,6 +8,7 @@ import me.myogoo.extendedterminal.init.wt.WTMenus;
 import me.myogoo.myotus.api.MyotusAPI;
 import me.myogoo.myotus.api.annotation.wt.AE2WTLib;
 import net.minecraft.resources.ResourceLocation;
+import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
@@ -33,7 +34,8 @@ public class ExtendedTerminal {
         if(MyotusAPI.modIntegrationManager().isLoaded(AE2WTLib.class)) {
             WTItems.register();
             WTMenus.register();
-            modEventBus.addListener(WTInit::init);
+            WTInit.registerTerminal();
+            modEventBus.addListener(EventPriority.LOWEST, WTInit::registerUpgradeTooltips);
             modEventBus.addListener(WTInit::initCapabilities);
         }
 
