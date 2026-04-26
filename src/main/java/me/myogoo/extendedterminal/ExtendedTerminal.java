@@ -10,7 +10,6 @@ import me.myogoo.myotus.api.MyotusAPI;
 import me.myogoo.myotus.api.annotation.wt.AE2WTLib;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
@@ -36,7 +35,7 @@ public class ExtendedTerminal {
         if (MyotusAPI.get().modIntegrationManager().isLoaded(AE2WTLib.class)) {
             WTItems.register();
             WTMenus.register();
-            modEventBus.addListener(EventPriority.LOWEST,WTInits::init);
+            WTInits.registerTerminal();
         }
 
         MinecraftForge.EVENT_BUS.register(this);

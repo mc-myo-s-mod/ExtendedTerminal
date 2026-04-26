@@ -63,7 +63,7 @@ public class ETCraftingRecipeTransfer<T extends ETTerminalMenu>
 
         boolean craftMissing = AbstractContainerScreen.hasControlDown();
         List<IRecipeSlotView> inputSlots = recipeSlots.getSlotViews(RecipeIngredientRole.INPUT);
-        var slotToIngredientMap = ETCraftingRecipeTransferHelper.getGuiSlotToIngredientMap(menu, recipe);
+        var slotToIngredientMap = ETCraftingRecipeTransferHelper.getJeiDisplaySlotToIngredientMap(recipe);
         var missingSlots = menu.findMissingIngredients(slotToIngredientMap);
         if (!slotToIngredientMap.isEmpty() && missingSlots.missingSlots().size() == slotToIngredientMap.size()) {
             var missingSlotViews = missingSlots.missingSlots().stream()
