@@ -79,7 +79,7 @@ jobs:
           loaders: ${{ needs.build.outputs.mod_loader }}
           version-type: ${{ needs.build.outputs.version_type }}
 
-          files: 'build/libs/*.jar'
+          files: ${{ needs.build.outputs.artifact_path }}
           name: ${{ needs.build.outputs.artifact_name }}
           version: ${{ needs.build.outputs.mc_version }}-${{ needs.build.outputs.mod_version }}
 
@@ -111,7 +111,7 @@ jobs:
           loaders: ${{ needs.build.outputs.mod_loader }}
           version-type: ${{ needs.build.outputs.version_type }}
 
-          files: 'build/libs/*.jar'
+          files: ${{ needs.build.outputs.artifact_path }}
           name: ${{ needs.build.outputs.artifact_name }}
           version: ${{ needs.build.outputs.mc_version }}-${{ needs.build.outputs.mod_version }}
 
