@@ -1,7 +1,7 @@
 # Changelog
 
-## Bug fixes
-- Fix: Unable to load AvaritiaNeo terminal.
+## Features
+- Register the Wireless Extended Terminal as compatible with AE2WTLib's Quantum Bridge Card upgrade.
 
 ## Dependency updates
-- update required Myotus version to 19.0.5
+- Update required Myotus version to 19.0.9.
