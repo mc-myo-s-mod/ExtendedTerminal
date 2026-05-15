@@ -11,6 +11,5 @@ public class ETEmiPlugin implements EmiPlugin {
         EmiRegisterHelper.registerCategories(registry);
         EmiRegisterHelper.registerWorkStations(registry);
         EmiRegisterHelper.registerRecipeHandlers(registry);
-        EmiRegisterHelper.addRecipes(registry);
     }
 }

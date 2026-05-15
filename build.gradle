@@ -169,9 +169,11 @@ dependencies {
     //placebo
     implementation "curse.maven:placebo-283644:6926281"
 
+    compileOnly "maven.modrinth:inventory-tweaks-refoxed:${project.InvTweaks_version}"
+
     compileOnly "mezz.jei:jei-${minecraft_version}-neoforge-api:${JEI_version}"
     compileOnly "me.shedaniel:RoughlyEnoughItems-neoforge:${REI_version}"
-    compileOnly "dev.emi:emi-neoforge:${EMI_version}:api"
+    compileOnly "dev.emi:emi-neoforge:${EMI_version}"
     switch (project.itemListMod) {
         case "jei":
             runtimeOnly "mezz.jei:jei-${minecraft_version}-neoforge:${JEI_version}"
@@ -183,7 +185,7 @@ dependencies {
         case "emi":
             runtimeOnly "dev.emi:emi-neoforge:${EMI_version}"
             break;
-        case "emjei":
+        case "jemi":
             runtimeOnly "mezz.jei:jei-${minecraft_version}-neoforge:${JEI_version}"
             runtimeOnly "dev.emi:emi-neoforge:${EMI_version}"
             break;
@@ -202,6 +204,10 @@ dependencies {
 
     if(project.enable_excrafting == "true") {
         runtimeOnly "com.blakebr0.extendedcrafting:ExtendedCrafting:${minecraft_version}-${ExtendedCrafting_version}"
+    }
+
+    if(project.enable_invtweak == "true") {
+        runtimeOnly "maven.modrinth:inventory-tweaks-refoxed:${project.InvTweaks_version}"
     }
 
     switch(project.enable_avaritia) {

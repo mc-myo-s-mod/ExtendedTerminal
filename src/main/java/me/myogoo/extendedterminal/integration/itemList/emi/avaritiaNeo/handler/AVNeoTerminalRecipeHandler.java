@@ -34,11 +34,11 @@ public class AVNeoTerminalRecipeHandler extends AbstractEmiTableRecipeHandler<Ne
     @Override
     protected Result transferRecipe(NeoExtremeTerminalMenu menu, RecipeHolder<?> holder, EmiRecipe emiRecipe, boolean doTransfer) {
         Result setup;
-        if ((setup = transferSetup(emiRecipe, menuType.getGridSize())) != null) {
+        if ((setup = transferSetup(holder, emiRecipe, menuType.getGridSize())) != null) {
             return setup;
         }
 
-        if (!(holder.value() instanceof RecipeExtremeCrafting tableRecipe)) {
+        if (holder == null || !(holder.value() instanceof RecipeExtremeCrafting tableRecipe)) {
             return Result.createFailed(ItemModText.INCOMPATIBLE_RECIPE.text());
         }
         return doTransfer(menu, ITableRecipeAdapter.of(tableRecipe), holder.id(), doTransfer);
