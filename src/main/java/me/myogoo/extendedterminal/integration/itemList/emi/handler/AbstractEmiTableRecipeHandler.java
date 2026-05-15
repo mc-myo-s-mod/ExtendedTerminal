@@ -186,13 +186,14 @@ public abstract class AbstractEmiTableRecipeHandler<T extends ETTerminalBaseMenu
 
         if (missingSlots.missingSlots().size() == slotToIngredientMap.size()) {
             // All missing, can't do much...
-            return Result.createFailed(ItemModText.NO_ITEMS.text(), missingSlots.missingSlots());
+            return Result.createFailed(ItemModText.NO_ITEMS.text(), missingSlots.missingSlots(),
+                    slotToIngredientMap.keySet());
         }
 
         if (!doTransfer) {
             if (missingSlots.anyMissingOrCraftable()) {
                 // Highlight the slots with missing ingredients
-                return new Result.PartiallyCraftable(missingSlots);
+                return new Result.PartiallyCraftable(missingSlots, slotToIngredientMap.keySet());
             }
         } else {
             // Thank you RS for pioneering this amazing feature! :)
