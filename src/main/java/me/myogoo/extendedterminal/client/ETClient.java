@@ -5,6 +5,7 @@ import appeng.client.render.StaticItemColor;
 import appeng.init.client.InitScreens;
 import appeng.menu.AEBaseMenu;
 import me.myogoo.extendedterminal.ExtendedTerminal;
+import me.myogoo.extendedterminal.api.ModAccessor;
 import me.myogoo.extendedterminal.client.screen.avaritiaNeo.NeoExtremeTerminalScreen;
 import me.myogoo.extendedterminal.client.screen.avaritiaRe.EndTerminalScreen;
 import me.myogoo.extendedterminal.client.screen.avaritiaRe.ExtremeTerminalScreen;
@@ -17,6 +18,7 @@ import me.myogoo.extendedterminal.client.screen.extendedcrafting.UltimateTermina
 import me.myogoo.extendedterminal.client.screen.extendedterminal.ETTerminalScreen;
 import me.myogoo.extendedterminal.client.screen.extendedterminal.wt.ETWTScreen;
 import me.myogoo.extendedterminal.init.ETParts;
+import me.myogoo.extendedterminal.integration.polymorph.ETPolymorph;
 import me.myogoo.extendedterminal.menu.avaritiaNeo.NeoExtremeTerminalMenu;
 import me.myogoo.extendedterminal.menu.avaritiaRe.EndTerminalMenu;
 import me.myogoo.extendedterminal.menu.avaritiaRe.ExtremeTerminalMenu;
@@ -33,7 +35,9 @@ import me.myogoo.myotus.api.annotation.wt.AE2WTLib;
 import net.minecraft.world.level.ItemLike;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
+import net.neoforged.fml.ModList;
 import net.neoforged.fml.common.Mod;
+import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.neoforge.client.event.RegisterColorHandlersEvent;
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 
@@ -44,6 +48,9 @@ public class ETClient {
         eventBus.addListener(ETClient::initScreens);
         if(MyotusAPI.modIntegrationManager().isLoaded(AE2WTLib.class)) {
             eventBus.addListener(ETClient::InitWTScreen);
+        }
+        if(MyotusAPI.modIntegrationManager().isLoaded(ModAccessor.Polymorph.class)) {
+            ETPolymorph.init();
         }
     }
 

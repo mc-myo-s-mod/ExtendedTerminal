@@ -40,6 +40,18 @@ ordering = "BEFORE"
 side = "BOTH"
 
 [[dependencies."${mod_id}"]]
+modId = "polymorph"
+type = "OPTIONAL"
+ordering="AFTER"
+side="BOTH"
+
+[[dependencies."${mod_id}"]]
+modId = "polyeng"
+type = "OPTIONAL"
+ordering="AFTER"
+side="BOTH"
+
+[[dependencies."${mod_id}"]]
 modId = "extendedcrafting"
 type = "OPTIONAL"
 ordering="AFTER"

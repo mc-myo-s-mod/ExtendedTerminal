@@ -155,6 +155,9 @@ dependencies {
 
     compileOnly "de.mari_023:ae2wtlib_api:${project.AE2WTLib_version}"
 
+    compileOnly "maven.modrinth:polymorphic-energistics:${project.AE_Polymorph_version}"
+    compileOnly "maven.modrinth:polymorph:${project.Polymorph_version}-neoforge"
+
     //Re Avaritia 1.21.1-1.3.9.4
     compileOnly "curse.maven:re-avaritia-623969:7695278"
     //Avaritia Neo 1.21.1-1.2.8
@@ -184,6 +187,12 @@ dependencies {
             runtimeOnly "mezz.jei:jei-${minecraft_version}-neoforge:${JEI_version}"
             runtimeOnly "dev.emi:emi-neoforge:${EMI_version}"
             break;
+
+    }
+
+    if(project.enalbe_ae_polymoph == "true") {
+        runtimeOnly "maven.modrinth:polymorphic-energistics:${project.AE_Polymorph_version}"
+        runtimeOnly "maven.modrinth:polymorph:${project.Polymorph_version}-neoforge"
 
     }
 
