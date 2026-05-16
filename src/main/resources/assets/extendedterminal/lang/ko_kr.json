@@ -26,5 +26,7 @@
   "gui.extendedterminal.sculkTerminal": "스컬크 조합 터미널",
   "gui.extendedterminal.netherTerminal": "네더 조합 터미널",
   "gui.extendedterminal.endTerminal": "엔드 조합 터미널",
-  "gui.extendedterminal.extremeTerminal": "익스트림 조합 터미널"
+  "gui.extendedterminal.extremeTerminal": "익스트림 조합 터미널",
+
+  "gui.ae2wtlib.pick_block.text": "블록 선택 활성화"
 }

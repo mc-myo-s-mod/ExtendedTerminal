@@ -1,5 +1,7 @@
 package me.myogoo.extendedterminal.init.wt;
 
+import appeng.api.upgrades.Upgrades;
+import de.mari_023.ae2wtlib.AE2wtlib;
 import me.myogoo.extendedterminal.me.host.ETWTHost;
 import me.myogoo.extendedterminal.menu.ETMenuType;
 import me.myogoo.extendedterminal.menu.extendedterminal.wt.ETWTMenu;
@@ -19,6 +21,7 @@ public final class WTInits {
                     WTItems.WIRELESS_ET_TERMINAL.asItem(),
                     terminalName,
                     "item.extendedterminal.wireless_et_terminal");
+            Upgrades.add(AE2wtlib.MAGNET_CARD, WTItems.WIRELESS_ET_TERMINAL.asItem(), 1);
         });
     }
 }

@@ -2,6 +2,7 @@ package me.myogoo.extendedterminal;
 
 import com.mojang.logging.LogUtils;
 
+import me.myogoo.extendedterminal.api.ModAccessor;
 import me.myogoo.extendedterminal.init.*;
 import me.myogoo.extendedterminal.init.wt.WTInits;
 import me.myogoo.extendedterminal.init.wt.WTItems;
@@ -11,6 +12,7 @@ import me.myogoo.myotus.api.annotation.wt.AE2WTLib;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.fml.InterModComms;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.slf4j.Logger;
@@ -32,10 +34,17 @@ public class ExtendedTerminal {
         ETParts.REGISTER.register(modEventBus);
         ETMenus.REGISTER.register(modEventBus);
         ETCreativeTab.REGISTER.register(modEventBus);
-        if (MyotusAPI.get().modIntegrationManager().isLoaded(AE2WTLib.class)) {
+        if (MyotusAPI.modIntegrationManager().isLoaded(AE2WTLib.class)) {
+            ETNetwork.registerAE2WTLibPackets();
             WTItems.register();
             WTMenus.register();
             WTInits.registerTerminal();
+        }
+        if (MyotusAPI.modIntegrationManager().isLoaded(ModAccessor.InvTweaks.class)) {
+            InterModComms.sendTo("invtweaks", "blacklist-screen",
+                    () -> "me.myogoo.extendedterminal.client.screen.*");
+            InterModComms.sendTo("invtweaks", "blacklist-screen",
+                    () -> "me.myogoo.extendedterminal.menu.*");
         }
 
         MinecraftForge.EVENT_BUS.register(this);

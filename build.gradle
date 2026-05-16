@@ -150,6 +150,7 @@ dependencies {
     compileOnly fg.deobf("curse.maven:extended-crafting-expanded-1017786:5613251")
 
     compileOnly fg.deobf("maven.modrinth:applied-energistics-2-wireless-terminals:${AE2WTLib_version}")
+    compileOnly fg.deobf("maven.modrinth:polymorph:${Polymorph_version}")
     runtimeOnly fg.deobf("top.theillusivec4.curios:curios-forge:${curios_version}")
     runtimeOnly fg.deobf("dev.architectury:architectury-forge:${architectury_version}")
     runtimeOnly fg.deobf("me.shedaniel.cloth:cloth-config-forge:${cloth_config_version}")
@@ -171,6 +172,14 @@ dependencies {
 
     if(project.enable_wtlib.toString().trim() == "true") {
         runtimeOnly fg.deobf("maven.modrinth:applied-energistics-2-wireless-terminals:${AE2WTLib_version}")
+    }
+
+    if(project.enable_polymorph.toString().trim() == "true") {
+        runtimeOnly fg.deobf("maven.modrinth:polymorph:${Polymorph_version}")
+    }
+
+    if(project.enable_invtweak.toString().trim() == "true") {
+        runtimeOnly fg.deobf("maven.modrinth:inventory-tweaks-refoxed:${InvTweaks_version}")
     }
 
     switch (project.itemListMod) {
