@@ -1,12 +1,13 @@
 package me.myogoo.extendedterminal.integration.emi.extendedcrafting.handler;
 
+import me.myogoo.extendedterminal.adapter.recipe.TableRecipeAdapters;
+
 import appeng.core.localization.ItemModText;
 import com.blakebr0.extendedcrafting.api.crafting.ITableRecipe;
 import dev.emi.emi.api.recipe.EmiRecipe;
 import dev.emi.emi.api.recipe.EmiRecipeCategory;
-import me.myogoo.extendedterminal.api.adapter.recipe.IShapedTableRecipeAdapter;
 import me.myogoo.extendedterminal.api.adapter.recipe.ITableRecipeAdapter;
-import me.myogoo.extendedterminal.integration.emi.extendedcrafting.ECRecipeCategory;
+import me.myogoo.extendedterminal.api.adapter.recipe.IShapedTableRecipeAdapter;
 import me.myogoo.extendedterminal.integration.emi.handler.AbstractEmiTableRecipeHandler;
 import me.myogoo.extendedterminal.menu.ETMenuType;
 import me.myogoo.extendedterminal.menu.extendedcrafting.ExtendedTerminalBaseMenu;
@@ -32,7 +33,7 @@ public class ECTerminalRecipeHandler<T extends ExtendedTerminalBaseMenu> extends
 
     @Override
     public boolean supportsRecipe(EmiRecipe recipe) {
-        return recipe.getCategory().equals(this.category);
+        return recipe.getCategory().getId().equals(this.category.getId());
     }
 
     @Override
@@ -50,17 +51,18 @@ public class ECTerminalRecipeHandler<T extends ExtendedTerminalBaseMenu> extends
         if (!(recipe instanceof ITableRecipe tableRecipe)) {
             return Result.createFailed(ItemModText.INCOMPATIBLE_RECIPE.text());
         }
-        var adapterRecipe = ITableRecipeAdapter.of(tableRecipe);
+        var adapterRecipe = TableRecipeAdapters.of(tableRecipe);
         var slotToIngredientMap = getGuiSlotToIngredientMap(menu, adapterRecipe);
         var missingSlots = menu.findMissingIngredients(slotToIngredientMap);
 
         if (missingSlots.missingSlots().size() == slotToIngredientMap.size()) {
-            return Result.createFailed(ItemModText.NO_ITEMS.text(), missingSlots.missingSlots());
+            return Result.createFailed(ItemModText.NO_ITEMS.text(), missingSlots.missingSlots(),
+                    slotToIngredientMap.keySet());
         }
 
         if (!doTransfer) {
             if (missingSlots.anyMissingOrCraftable()) {
-                return new Result.PartiallyCraftable(missingSlots);
+                return new Result.PartiallyCraftable(missingSlots, slotToIngredientMap.keySet());
             }
         } else {
             boolean craftMissing = AbstractContainerScreen.hasControlDown();
@@ -72,14 +74,14 @@ public class ECTerminalRecipeHandler<T extends ExtendedTerminalBaseMenu> extends
 
     @Override
     protected boolean isCraftingRecipe(Recipe<?> recipe, EmiRecipe emiRecipe) {
-        if (recipe instanceof ITableRecipe tableRecipe) {
-            return emiRecipe.getCategory().equals(getCategory(tableRecipe.getTier()));
+        if (recipe instanceof ITableRecipe) {
+            return emiRecipe.getCategory().getId().equals(this.category.getId());
         }
         return false;
     }
 
     @Override
-    protected Map<Integer, Ingredient> getGuiSlotToIngredientMap(T menu, ITableRecipeAdapter recipe) {
+    protected Map<Integer, Ingredient> getGuiSlotToIngredientMap(T menu, ITableRecipeAdapter<?> recipe) {
         int gridSideLength = menu.getCraftingGridWidth();
         var raw = recipe.recipe().getIngredients();
         List<Ingredient> ingredients;
@@ -88,7 +90,7 @@ public class ECTerminalRecipeHandler<T extends ExtendedTerminalBaseMenu> extends
         int offsetY = 0;
         int width = gridSideLength;
         int height = gridSideLength;
-        if (recipe instanceof IShapedTableRecipeAdapter shapedRecipe) {
+        if (recipe instanceof IShapedTableRecipeAdapter<?> shapedRecipe) {
             ingredients = ensureFittedCraftingGrid(shapedRecipe);
             width = shapedRecipe.width();
             height = shapedRecipe.height();
@@ -111,15 +113,5 @@ public class ECTerminalRecipeHandler<T extends ExtendedTerminalBaseMenu> extends
             }
         }
         return result;
-    }
-
-    private EmiRecipeCategory getCategory(int tier) {
-        return switch (tier) {
-            case 1 -> ECRecipeCategory.BASIC_TABLE_CRAFTING_CATEGORY;
-            case 2 -> ECRecipeCategory.ADVANCED_TABLE_CRAFTING_CATEGORY;
-            case 3 -> ECRecipeCategory.ELITE_TABLE_CRAFTING_CATEGORY;
-            case 4 -> ECRecipeCategory.ULTIMATE_TABLE_CRAFTING_CATEGORY;
-            default -> throw new IllegalArgumentException("Invalid tier: " + tier);
-        };
     }
 }

@@ -4,8 +4,8 @@ import appeng.core.localization.ItemModText;
 import appeng.integration.modules.jeirei.TransferHelper;
 import appeng.menu.me.items.CraftingTermMenu;
 import com.blakebr0.extendedcrafting.api.crafting.ITableRecipe;
-import me.myogoo.extendedterminal.api.adapter.recipe.IShapedTableRecipeAdapter;
 import me.myogoo.extendedterminal.api.adapter.recipe.ITableRecipeAdapter;
+import me.myogoo.extendedterminal.api.adapter.recipe.IShapedTableRecipeAdapter;
 import me.myogoo.extendedterminal.menu.ETTerminalBaseMenu;
 import me.myogoo.extendedterminal.menu.extendedcrafting.ExtendedTerminalBaseMenu;
 import me.myogoo.extendedterminal.network.serverbound.ETFillCraftingGridFromRecipePacket;
@@ -57,13 +57,13 @@ public abstract class AbstractTableRecipeHandler<T extends ETTerminalBaseMenu<R>
         return recipeType;
     }
 
-    protected abstract Map<Integer, Ingredient> getGuiSlotToIngredientMap(T menu, ITableRecipeAdapter recipe);
+    protected abstract Map<Integer, Ingredient> getGuiSlotToIngredientMap(T menu, ITableRecipeAdapter<?> recipe);
 
-    protected static void performTransfer(ETTerminalBaseMenu<?> menu, @Nullable ITableRecipeAdapter recipe, boolean craftMissing) {
+    protected static void performTransfer(ETTerminalBaseMenu<?> menu, @Nullable ITableRecipeAdapter<?> recipe, boolean craftMissing) {
         var templateItems = findGoodTemplateItems(recipe, menu);
         int recipeWidth = NOT_SET_RECIPE_SIZE;
         int recipeHeight = NOT_SET_RECIPE_SIZE;
-        if (recipe instanceof IShapedTableRecipeAdapter shapedRecipe) {
+        if (recipe instanceof IShapedTableRecipeAdapter<?> shapedRecipe) {
             recipeWidth = shapedRecipe.width();
             recipeHeight = shapedRecipe.height();
         }

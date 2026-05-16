@@ -168,7 +168,8 @@ dependencies {
     compileOnly fg.deobf("mezz.jei:jei-${minecraft_version}-common-api:${JEI_version}")
     compileOnly fg.deobf("mezz.jei:jei-${minecraft_version}-forge-api:${JEI_version}")
     compileOnly fg.deobf("me.shedaniel:RoughlyEnoughItems-forge:${REI_version}")
-    compileOnly fg.deobf("dev.emi:emi-forge:${EMI_version}:api")
+    compileOnly fg.deobf("dev.emi:emi-forge:${EMI_version}")
+    compileOnly fg.deobf("maven.modrinth:inventory-tweaks-refoxed:${InvTweaks_version}")
 
     if(project.enable_wtlib.toString().trim() == "true") {
         runtimeOnly fg.deobf("maven.modrinth:applied-energistics-2-wireless-terminals:${AE2WTLib_version}")
@@ -192,7 +193,7 @@ dependencies {
         case "emi":
             runtimeOnly fg.deobf("dev.emi:emi-forge:${EMI_version}")
             break;
-        case "emjei":
+        case "jemi":
             runtimeOnly fg.deobf("mezz.jei:jei-${minecraft_version}-forge:${JEI_version}")
             runtimeOnly fg.deobf("dev.emi:emi-forge:${EMI_version}")
             break;

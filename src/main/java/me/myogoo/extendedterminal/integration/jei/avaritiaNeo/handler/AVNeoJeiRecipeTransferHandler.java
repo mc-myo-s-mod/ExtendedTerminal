@@ -1,8 +1,10 @@
 package me.myogoo.extendedterminal.integration.jei.avaritiaNeo.handler;
 
+import me.myogoo.extendedterminal.adapter.recipe.TableRecipeAdapters;
+
 import appeng.core.localization.ItemModText;
-import me.myogoo.extendedterminal.api.adapter.recipe.IShapedTableRecipeAdapter;
 import me.myogoo.extendedterminal.api.adapter.recipe.ITableRecipeAdapter;
+import me.myogoo.extendedterminal.api.adapter.recipe.IShapedTableRecipeAdapter;
 import me.myogoo.extendedterminal.integration.jei.handler.AbstractTableRecipeHandler;
 import me.myogoo.extendedterminal.menu.avaritiaNeo.NeoExtremeTerminalMenu;
 import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
@@ -47,7 +49,7 @@ public class AVNeoJeiRecipeTransferHandler<T extends NeoExtremeTerminalMenu> ext
 
         boolean craftMissing = AbstractContainerScreen.hasControlDown();
         var inputSlots = recipeSlots.getSlotViews(RecipeIngredientRole.INPUT);
-        var adapterRecipe = ITableRecipeAdapter.of(recipe);
+        var adapterRecipe = TableRecipeAdapters.of(recipe);
 
         var slotToIngredientMap = getGuiSlotToIngredientMap(menu,adapterRecipe);
         var missingSlots = menu.findMissingIngredients(slotToIngredientMap);
@@ -74,14 +76,14 @@ public class AVNeoJeiRecipeTransferHandler<T extends NeoExtremeTerminalMenu> ext
     }
 
     @Override
-    public Map<Integer, Ingredient> getGuiSlotToIngredientMap(T menu, ITableRecipeAdapter recipe) {
+    public Map<Integer, Ingredient> getGuiSlotToIngredientMap(T menu, ITableRecipeAdapter<?> recipe) {
         int gridSideLength = menu.getCraftingGridWidth();
         var raw = recipe.recipe().getIngredients();
         List<Ingredient> ingredients;
 
         int width = gridSideLength;
         int height = gridSideLength;
-        if (recipe instanceof IShapedTableRecipeAdapter shapedRecipe) {
+        if (recipe instanceof IShapedTableRecipeAdapter<?> shapedRecipe) {
             ingredients = ensureFittedCraftingGrid(shapedRecipe);
             width = shapedRecipe.width();
             height = shapedRecipe.height();
