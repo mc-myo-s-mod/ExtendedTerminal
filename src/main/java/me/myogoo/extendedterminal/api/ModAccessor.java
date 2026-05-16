@@ -21,4 +21,12 @@ public class ModAccessor {
     @Target({ElementType.TYPE, ElementType.METHOD, ElementType.FIELD})
     @Retention(RetentionPolicy.RUNTIME)
     public @interface Curios {}
+
+    @Target({ElementType.TYPE, ElementType.METHOD, ElementType.FIELD})
+    @Retention(RetentionPolicy.RUNTIME)
+    public @interface Polymorph {}
+
+    @Target({ElementType.TYPE, ElementType.METHOD, ElementType.FIELD})
+    @Retention(RetentionPolicy.RUNTIME)
+    public @interface InvTweaks {}
 }

@@ -31,13 +31,25 @@ modId = "myotus"
 type = "REQUIRED"
 ordering="AFTER"
 side="BOTH"
-versionRange = "[19.0.9,)"
+versionRange = "[19.0.9]"
 
 [[dependencies."${mod_id}"]]
 modId = "ae2wtlib"
 type = "OPTIONAL"
 ordering = "BEFORE"
 side = "BOTH"
+
+[[dependencies."${mod_id}"]]
+modId = "polymorph"
+type = "OPTIONAL"
+ordering="AFTER"
+side="BOTH"
+
+[[dependencies."${mod_id}"]]
+modId = "polyeng"
+type = "OPTIONAL"
+ordering="AFTER"
+side="BOTH"
 
 [[dependencies."${mod_id}"]]
 modId = "extendedcrafting"

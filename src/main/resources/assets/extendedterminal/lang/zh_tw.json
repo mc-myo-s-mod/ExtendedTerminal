@@ -1,6 +1,8 @@
 {
   "itemGroup.extendedterminal": "合成拓展終端機",
 
+  "key.ae2.wireless_et_terminal": "開啟無線合成拓展終端機",
+
   "item.extendedterminal.basic_terminal": "基礎合成拓展終端機",
   "item.extendedterminal.advanced_terminal": "高級合成拓展終端機",
   "item.extendedterminal.elite_terminal": "精英合成拓展終端機",

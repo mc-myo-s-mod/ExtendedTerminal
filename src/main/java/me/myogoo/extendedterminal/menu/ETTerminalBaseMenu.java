@@ -12,7 +12,9 @@ import appeng.menu.me.crafting.CraftConfirmMenu;
 import appeng.menu.me.items.CraftingTermMenu;
 import appeng.util.inv.PlayerInternalInventory;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
+import me.myogoo.extendedterminal.api.ModAccessor;
 import me.myogoo.extendedterminal.api.config.IETTerminalConfig;
+import me.myogoo.myotus.api.MyotusAPI;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Container;
@@ -20,7 +22,6 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.*;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
@@ -35,6 +36,10 @@ public abstract class ETTerminalBaseMenu<R extends Recipe<?>> extends MEStorageM
         this.menuType = etMenuType;
         this.config = config;
         registerClientAction(ACTION_CLEAR_TO_PLAYER, ResourceLocation.class, this::clearToPlayerInventory);
+        if (MyotusAPI.modIntegrationManager().isLoaded(ModAccessor.Polymorph.class)) {
+            registerClientAction("polyeng$selectRecipe", () -> updateCurrentRecipeAndOutput(true));
+        }
+
     }
 
     public RecipeHolder<R> getCurrentRecipe() {
@@ -70,8 +75,6 @@ public abstract class ETTerminalBaseMenu<R extends Recipe<?>> extends MEStorageM
         return this.menuType;
     }
     //Override Methods
-
-
     @Override
     public void slotsChanged(Container container) {
         updateCurrentRecipeAndOutput(false);

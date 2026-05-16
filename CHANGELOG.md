@@ -1,7 +1,9 @@
 # Changelog
 
 ## Features
-- Register the Wireless Extended Terminal as compatible with AE2WTLib's Quantum Bridge Card upgrade.
-
-## Dependency updates
-- Update required Myotus version to 19.0.9.
+- `Extended Crafting` native EMI support (no more other categories!)
+- `Extended Terminal` Support `Polymorphic Energistics`(Polymorph)
+- `Wireless Extended Terminal` Support `Wireless Crafting Terminal` Features
+## Bug Fixes
+- fix mouse middle click conflict with `Inventory Tweaks - ReFoxed`
+- fix missing hotkey `Open Wireless Extended Terminal`

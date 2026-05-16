@@ -1,6 +1,8 @@
 {
   "itemGroup.extendedterminal": "拓展终端",
 
+  "key.ae2.wireless_et_terminal": "打开无线拓展终端",
+
   "item.extendedterminal.basic_terminal": "基础合成终端",
   "item.extendedterminal.advanced_terminal": "高级合成终端",
   "item.extendedterminal.elite_terminal": "精英合成终端",

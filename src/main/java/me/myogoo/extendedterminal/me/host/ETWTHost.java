@@ -8,7 +8,7 @@ import appeng.menu.ISubMenu;
 import appeng.menu.locator.ItemMenuHostLocator;
 import appeng.util.inv.SupplierInternalInventory;
 import de.mari_023.ae2wtlib.api.terminal.ItemWT;
-import de.mari_023.ae2wtlib.api.terminal.WTMenuHost;
+import de.mari_023.ae2wtlib.wct.WCTMenuHost;
 import me.myogoo.extendedterminal.api.host.IETTerminalHost;
 import me.myogoo.extendedterminal.menu.ETMenuType;
 import me.myogoo.extendedterminal.menu.extendedterminal.ETTerminalMode;
@@ -24,7 +24,7 @@ import java.util.function.BiConsumer;
 import static me.myogoo.extendedterminal.init.ETDataComponent.*;
 import static me.myogoo.extendedterminal.part.extendedterminal.ETTerminalPart.*;
 
-public class ETWTHost extends WTMenuHost implements IViewCellStorage, IETTerminalHost {
+public class ETWTHost extends WCTMenuHost implements IViewCellStorage, IETTerminalHost {
     private final SupplierInternalInventory<InternalInventory> craftingGrid;
     private final SupplierInternalInventory<InternalInventory> smithingGrid;
     private final SupplierInternalInventory<InternalInventory> stoneCutterGrid;

@@ -32,11 +32,11 @@ public class AVTerminalRecipeHandler<T extends AvaritiaTerminalBaseMenu> extends
     @Override
     protected Result transferRecipe(T menu, RecipeHolder<?> holder, EmiRecipe emiRecipe, boolean doTransfer) {
         Result setup;
-        if((setup = transferSetup(emiRecipe, menuType.getGridSize())) != null) {
+        if((setup = transferSetup(holder, emiRecipe, menuType.getGridSize())) != null) {
             return setup;
         }
 
-        if (!(holder.value() instanceof ITierCraftingRecipe tableRecipe)) {
+        if (holder == null || !(holder.value() instanceof ITierCraftingRecipe tableRecipe)) {
             return Result.createFailed(ItemModText.INCOMPATIBLE_RECIPE.text());
         }
         return doTransfer(menu, ITableRecipeAdapter.of(tableRecipe), holder.id(), doTransfer);

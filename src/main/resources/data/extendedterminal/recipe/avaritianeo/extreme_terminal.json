@@ -2,7 +2,7 @@
   "neoforge:conditions": [
     {
       "type": "myotus:mod_condition",
-      "active_mod": "AvaritiaNeo"
+      "active_mod": "Avaritia"
     }
   ],
   "type": "minecraft:crafting_shaped",

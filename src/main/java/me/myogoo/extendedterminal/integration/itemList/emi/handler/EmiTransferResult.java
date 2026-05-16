@@ -15,6 +15,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -51,9 +52,15 @@ public interface EmiTransferResult {
          */
         public static final class PartiallyCraftable extends Result {
             private final CraftingTermMenu.MissingIngredientSlots missingSlots;
+            private final Set<Integer> inputSlotKeys;
 
             public PartiallyCraftable(CraftingTermMenu.MissingIngredientSlots missingSlots) {
+                this(missingSlots, Set.of());
+            }
+
+            public PartiallyCraftable(CraftingTermMenu.MissingIngredientSlots missingSlots, Set<Integer> inputSlotKeys) {
                 this.missingSlots = missingSlots;
+                this.inputSlotKeys = Set.copyOf(inputSlotKeys);
             }
 
             @Override
@@ -70,7 +77,8 @@ public interface EmiTransferResult {
             @Override
             void render(EmiRecipe recipe, EmiCraftContext<? extends AEBaseMenu> context, List<Widget> widgets,
                         GuiGraphics guiGraphics) {
-                renderMissingAndCraftableSlotOverlays(getRecipeInputSlots(recipe, widgets), guiGraphics,
+                renderMissingAndCraftableSlotOverlays(
+                        getRecipeInputSlots(recipe, widgets, inputSlotKeys), guiGraphics,
                         missingSlots.missingSlots(),
                         missingSlots.craftableSlots());
             }
@@ -140,10 +148,16 @@ public interface EmiTransferResult {
         static final class Error extends Result {
             private final Component message;
             private final Set<Integer> missingSlots;
+            private final Set<Integer> inputSlotKeys;
 
             public Error(Component message, Set<Integer> missingSlots) {
+                this(message, missingSlots, Set.of());
+            }
+
+            public Error(Component message, Set<Integer> missingSlots, Set<Integer> inputSlotKeys) {
                 this.message = message;
                 this.missingSlots = missingSlots;
+                this.inputSlotKeys = Set.copyOf(inputSlotKeys);
             }
 
             public Component getMessage() {
@@ -159,7 +173,8 @@ public interface EmiTransferResult {
             void render(EmiRecipe recipe, EmiCraftContext<? extends AEBaseMenu> context, List<Widget> widgets,
                         GuiGraphics guiGraphics) {
 
-                renderMissingAndCraftableSlotOverlays(getRecipeInputSlots(recipe, widgets), guiGraphics, missingSlots,
+                renderMissingAndCraftableSlotOverlays(
+                        getRecipeInputSlots(recipe, widgets, inputSlotKeys), guiGraphics, missingSlots,
                         Set.of());
             }
         }
@@ -178,6 +193,11 @@ public interface EmiTransferResult {
 
         public static Result.Error createFailed(Component text, Set<Integer> missingSlots) {
             return new Result.Error(text, missingSlots);
+        }
+
+        public static Result.Error createFailed(Component text, Set<Integer> missingSlots,
+                                                Set<Integer> inputSlotKeys) {
+            return new Result.Error(text, missingSlots, inputSlotKeys);
         }
     }
 
@@ -221,10 +241,35 @@ public interface EmiTransferResult {
                 if (widget instanceof SlotWidget slot && isInputSlot(slot)) {
                     if (slot.getStack() == input.get(i)) {
                         inputSlots.put(i, slot);
+                        break;
                     }
                 }
             }
         }
+
+        return inputSlots;
+    }
+
+    private static Map<Integer, SlotWidget> getRecipeInputSlots(EmiRecipe recipe, List<Widget> widgets,
+                                                                Set<Integer> inputSlotKeys) {
+        if (inputSlotKeys.isEmpty()) {
+            return getRecipeInputSlots(recipe, widgets);
+        }
+
+        var sortedKeys = inputSlotKeys.stream().sorted().toList();
+        var sortedSlots = widgets.stream()
+                .filter(SlotWidget.class::isInstance)
+                .map(SlotWidget.class::cast)
+                .filter(slot -> isInputSlot(slot) && !slot.getStack().isEmpty())
+                .sorted(Comparator.comparingInt((SlotWidget slot) -> slot.getBounds().y())
+                        .thenComparingInt(slot -> slot.getBounds().x()))
+                .toList();
+
+        var inputSlots = new HashMap<Integer, SlotWidget>(sortedKeys.size());
+        for (int i = 0; i < sortedKeys.size() && i < sortedSlots.size(); i++) {
+            inputSlots.put(sortedKeys.get(i), sortedSlots.get(i));
+        }
+
         return inputSlots;
     }
 }

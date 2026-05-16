@@ -101,7 +101,7 @@ public abstract class AbstractEmiTableRecipeHandler<T extends ETTerminalBaseMenu
     }
 
     protected abstract Result transferRecipe(T menu,
-                                             RecipeHolder<?> holder,
+                                             @Nullable RecipeHolder<?> holder,
                                              EmiRecipe emiRecipe,
                                              boolean doTransfer);
 
@@ -162,8 +162,12 @@ public abstract class AbstractEmiTableRecipeHandler<T extends ETTerminalBaseMenu
 
 
     @Nullable
-    protected Result transferSetup(EmiRecipe emiRecipe, int gridSize) {
-        var recipe = Objects.requireNonNull(emiRecipe.getBackingRecipe()).value();
+    protected Result transferSetup(@Nullable RecipeHolder<?> holder, EmiRecipe emiRecipe, int gridSize) {
+        if (holder == null) {
+            return Result.createNotApplicable();
+        }
+
+        var recipe = holder.value();
         boolean craftingRecipe = isCraftingRecipe(recipe, emiRecipe);
         if (!craftingRecipe) {
             return Result.createNotApplicable();
@@ -182,13 +186,14 @@ public abstract class AbstractEmiTableRecipeHandler<T extends ETTerminalBaseMenu
 
         if (missingSlots.missingSlots().size() == slotToIngredientMap.size()) {
             // All missing, can't do much...
-            return Result.createFailed(ItemModText.NO_ITEMS.text(), missingSlots.missingSlots());
+            return Result.createFailed(ItemModText.NO_ITEMS.text(), missingSlots.missingSlots(),
+                    slotToIngredientMap.keySet());
         }
 
         if (!doTransfer) {
             if (missingSlots.anyMissingOrCraftable()) {
                 // Highlight the slots with missing ingredients
-                return new Result.PartiallyCraftable(missingSlots);
+                return new Result.PartiallyCraftable(missingSlots, slotToIngredientMap.keySet());
             }
         } else {
             // Thank you RS for pioneering this amazing feature! :)

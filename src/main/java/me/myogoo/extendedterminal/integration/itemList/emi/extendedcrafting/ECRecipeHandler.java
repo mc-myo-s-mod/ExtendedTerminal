@@ -13,24 +13,18 @@ import me.myogoo.extendedterminal.menu.extendedcrafting.EliteTerminalMenu;
 import me.myogoo.extendedterminal.menu.extendedcrafting.UltimateTerminalMenu;
 import me.myogoo.myotus.api.annotation.MyotusSubscriber;
 
+import static me.myogoo.extendedterminal.integration.itemList.emi.extendedcrafting.ECWorkStation.*;
+
 @ModAccessor.ExtendedCrafting
 @ETEmiRecipeHandler
 public class ECRecipeHandler {
     @MyotusSubscriber
     public static void register(EmiRegistry registry) {
-        registry.addRecipeHandler(ModMenuTypes.BASIC_TABLE.get(), new ECTableRecipeHandler<>(ECRecipeCategory.BASIC_TABLE_CRAFTING_CATEGORY, ETMenuType.BASIC_TERMINAL.getGridSize()));
-        registry.addRecipeHandler(ModMenuTypes.ADVANCED_TABLE.get(), new ECTableRecipeHandler<>(ECRecipeCategory.ADVANCED_TABLE_CRAFTING_CATEGORY, ETMenuType.ADVANCED_TERMINAL.getGridSize()));
-        registry.addRecipeHandler(ModMenuTypes.ELITE_TABLE.get(), new ECTableRecipeHandler<>(ECRecipeCategory.ELITE_TABLE_CRAFTING_CATEGORY, ETMenuType.ELITE_TERMINAL.getGridSize()));
-        registry.addRecipeHandler(ModMenuTypes.ULTIMATE_TABLE.get(), new ECTableRecipeHandler<>(ECRecipeCategory.ULTIMATE_TABLE_CRAFTING_CATEGORY, ETMenuType.ULTIMATE_TERMINAL.getGridSize()));
-
-        registry.addRecipeHandler(ModMenuTypes.BASIC_AUTO_TABLE.get(), new ECTableRecipeHandler<>(ECRecipeCategory.BASIC_TABLE_CRAFTING_CATEGORY, ETMenuType.BASIC_TERMINAL.getGridSize()));
-        registry.addRecipeHandler(ModMenuTypes.ADVANCED_AUTO_TABLE.get(), new ECTableRecipeHandler<>(ECRecipeCategory.ADVANCED_TABLE_CRAFTING_CATEGORY, ETMenuType.ADVANCED_TERMINAL.getGridSize()));
-        registry.addRecipeHandler(ModMenuTypes.ELITE_AUTO_TABLE.get(), new ECTableRecipeHandler<>(ECRecipeCategory.ELITE_TABLE_CRAFTING_CATEGORY, ETMenuType.ELITE_TERMINAL.getGridSize()));
-        registry.addRecipeHandler(ModMenuTypes.ULTIMATE_AUTO_TABLE.get(), new ECTableRecipeHandler<>(ECRecipeCategory.ULTIMATE_TABLE_CRAFTING_CATEGORY, ETMenuType.ULTIMATE_TERMINAL.getGridSize()));
-
-        registry.addRecipeHandler(BasicTerminalMenu.TYPE, new ECTerminalRecipeHandler<>(ECRecipeCategory.BASIC_TABLE_CRAFTING_CATEGORY, BasicTerminalMenu.class, ETMenuType.BASIC_TERMINAL));
-        registry.addRecipeHandler(AdvancedTerminalMenu.TYPE, new ECTerminalRecipeHandler<>(ECRecipeCategory.ADVANCED_TABLE_CRAFTING_CATEGORY, AdvancedTerminalMenu.class, ETMenuType.ADVANCED_TERMINAL));
-        registry.addRecipeHandler(EliteTerminalMenu.TYPE, new ECTerminalRecipeHandler<>(ECRecipeCategory.ELITE_TABLE_CRAFTING_CATEGORY, EliteTerminalMenu.class, ETMenuType.ELITE_TERMINAL));
-        registry.addRecipeHandler(UltimateTerminalMenu.TYPE, new ECTerminalRecipeHandler<>(ECRecipeCategory.ULTIMATE_TABLE_CRAFTING_CATEGORY, UltimateTerminalMenu.class, ETMenuType.ULTIMATE_TERMINAL));
+        registry.addDeferredRecipes(recipe -> {
+            registry.addRecipeHandler(BasicTerminalMenu.TYPE, new ECTerminalRecipeHandler<>(getEmiCategory(BASIC_TABLE_CATEGORY_ID), BasicTerminalMenu.class, ETMenuType.BASIC_TERMINAL));
+            registry.addRecipeHandler(AdvancedTerminalMenu.TYPE, new ECTerminalRecipeHandler<>(getEmiCategory(ADVANCED_TABLE_CATEGORY_ID), AdvancedTerminalMenu.class, ETMenuType.ADVANCED_TERMINAL));
+            registry.addRecipeHandler(EliteTerminalMenu.TYPE, new ECTerminalRecipeHandler<>(getEmiCategory(ELITE_TABLE_CATEGORY_ID), EliteTerminalMenu.class, ETMenuType.ELITE_TERMINAL));
+            registry.addRecipeHandler(UltimateTerminalMenu.TYPE, new ECTerminalRecipeHandler<>(getEmiCategory(ULTIMATE_TABLE_CATEGORY_ID), UltimateTerminalMenu.class, ETMenuType.ULTIMATE_TERMINAL));
+        });
     }
 }
