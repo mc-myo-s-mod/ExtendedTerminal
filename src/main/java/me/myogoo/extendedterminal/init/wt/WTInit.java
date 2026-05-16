@@ -1,6 +1,5 @@
 package me.myogoo.extendedterminal.init.wt;
 
-import appeng.api.features.HotkeyAction;
 import appeng.api.features.GridLinkables;
 import appeng.api.upgrades.Upgrades;
 import appeng.items.tools.powered.WirelessTerminalItem;
@@ -46,7 +45,7 @@ public class WTInit {
             MenuType<?> menuType, Icon icon) {
         AddTerminalEvent
                 .register(e -> e.builder(etMenuType.getWTIdAsString(), host, menuType, (ItemWT) terminal.asItem(), icon)
-                        .hotkeyName(HotkeyAction.WIRELESS_TERMINAL)
+                        .hotkeyName(etMenuType.getWTIdAsString())
                         .addTerminal());
     }
 

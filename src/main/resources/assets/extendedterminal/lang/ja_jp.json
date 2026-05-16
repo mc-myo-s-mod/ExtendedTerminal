@@ -1,6 +1,8 @@
 {
   "itemGroup.extendedterminal": "Extended Terminal",
 
+  "key.ae2.wireless_et_terminal": "無線拡張ターミナルを開く",
+
   "item.extendedterminal.basic_terminal": "Extended Crafting用基本型クラフトターミナル",
   "item.extendedterminal.advanced_terminal": "Extended Crafting用発展型クラフトターミナル",
   "item.extendedterminal.elite_terminal": "Extended Crafting用精鋭型クラフトターミナル",
