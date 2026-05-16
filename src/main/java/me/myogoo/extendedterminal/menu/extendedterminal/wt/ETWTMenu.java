@@ -3,6 +3,7 @@ package me.myogoo.extendedterminal.menu.extendedterminal.wt;
 import appeng.api.networking.IGridNode;
 import appeng.menu.MenuOpener;
 import appeng.menu.slot.RestrictedInputSlot;
+import de.mari_023.ae2wtlib.AE2wtlibTags;
 import de.mari_023.ae2wtlib.AE2wtlibSlotSemantics;
 import de.mari_023.ae2wtlib.terminal.ItemWT;
 import de.mari_023.ae2wtlib.terminal.WTMenuHost;
@@ -22,8 +23,8 @@ public class ETWTMenu extends ETTerminalMenu {
     public static final MenuType<ETWTMenu> TYPE = MenuTypeBuilder
             .create(ETWTMenu::new, ETWTHost.class)
             .build(ETMenuType.ET_TERMINAL.getWTIdAsString());
-    public static final String RESTOCK = "restock";
-    public static final String PICK_BLOCK = "pickBlock";
+    public static final String RESTOCK = AE2wtlibTags.RESTOCK;
+    public static final String PICK_BLOCK = AE2wtlibTags.PICK_BLOCK;
     public static final String MAGNET_MODE = "magnetMode";
     public static final String MAGNET_MENU = "magnetMenu";
     private final ETWTHost host;
