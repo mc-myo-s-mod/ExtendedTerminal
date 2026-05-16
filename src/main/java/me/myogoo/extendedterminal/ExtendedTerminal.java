@@ -14,7 +14,6 @@ import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.InterModComms;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
-import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import org.slf4j.Logger;
 
@@ -48,12 +47,6 @@ public class ExtendedTerminal {
         NeoForge.EVENT_BUS.register(ETRecipeGen.class);
         modEventBus.addListener(ETNetwork::init);
 
-
-        modEventBus.addListener(this::commonSetup);
-    }
-
-    public void commonSetup(FMLCommonSetupEvent event) {
-        event.enqueueWork(ETConfigTab::initialize);
     }
 
     public static ResourceLocation makeId(String path) {

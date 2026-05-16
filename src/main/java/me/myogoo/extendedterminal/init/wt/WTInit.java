@@ -1,9 +1,11 @@
 package me.myogoo.extendedterminal.init.wt;
 
+import appeng.api.features.HotkeyAction;
 import appeng.api.features.GridLinkables;
 import appeng.api.upgrades.Upgrades;
 import appeng.items.tools.powered.WirelessTerminalItem;
 import appeng.items.tools.powered.powersink.PoweredItemCapabilities;
+import de.mari_023.ae2wtlib.AE2wtlibItems;
 import de.mari_023.ae2wtlib.api.AE2wtlibAPI;
 import de.mari_023.ae2wtlib.api.gui.Icon;
 import de.mari_023.ae2wtlib.api.registration.AddTerminalEvent;
@@ -44,6 +46,7 @@ public class WTInit {
             MenuType<?> menuType, Icon icon) {
         AddTerminalEvent
                 .register(e -> e.builder(etMenuType.getWTIdAsString(), host, menuType, (ItemWT) terminal.asItem(), icon)
+                        .hotkeyName(HotkeyAction.WIRELESS_TERMINAL)
                         .addTerminal());
     }
 
@@ -52,8 +55,9 @@ public class WTInit {
             return;
         }
 
-        BuiltInRegistries.ITEM.getOptional(AE2wtlibAPI.id("quantum_bridge_card"))
-                .ifPresent(card -> Upgrades.add(card, WTItems.WIRELESS_ET_TERMINAL.asItem(), 1));
+        Upgrades.add(AE2wtlibItems.MAGNET_CARD, WTItems.WIRELESS_ET_TERMINAL.asItem(), 1);
+        Upgrades.add(AE2wtlibItems.QUANTUM_BRIDGE_CARD, WTItems.WIRELESS_ET_TERMINAL.asItem(), 1);
+
         GridLinkables.register(WTItems.WIRELESS_ET_TERMINAL.asItem(), WirelessTerminalItem.LINKABLE_HANDLER);
     }
 

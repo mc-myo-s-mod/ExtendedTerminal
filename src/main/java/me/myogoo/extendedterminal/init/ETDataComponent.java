@@ -40,7 +40,4 @@ public class ETDataComponent {
         REGISTER.register(name, () -> componentType);
         return componentType;
     }
-
-
 }
-

@@ -153,7 +153,7 @@ dependencies {
     compileOnly "top.theillusivec4.curios:curios-neoforge:${curios_version}:api"
     runtimeOnly "top.theillusivec4.curios:curios-neoforge:${curios_version}"
 
-    compileOnly "de.mari_023:ae2wtlib_api:${project.AE2WTLib_version}"
+    compileOnly "de.mari_023:ae2wtlib:${project.AE2WTLib_version}"
 
     compileOnly "maven.modrinth:polymorphic-energistics:${project.AE_Polymorph_version}"
     compileOnly "maven.modrinth:polymorph:${project.Polymorph_version}-neoforge"

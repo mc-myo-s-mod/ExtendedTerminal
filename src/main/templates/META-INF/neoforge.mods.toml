@@ -31,7 +31,7 @@ modId = "myotus"
 type = "REQUIRED"
 ordering="AFTER"
 side="BOTH"
-versionRange = "[19.0.9,)"
+versionRange = "[19.0.9]"
 
 [[dependencies."${mod_id}"]]
 modId = "ae2wtlib"
