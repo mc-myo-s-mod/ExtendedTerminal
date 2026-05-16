@@ -7,7 +7,7 @@ import guideme.document.block.LytHeading;
 import guideme.document.flow.LytFlowText;
 import guideme.libs.mdast.mdx.model.MdxJsxFlowElement;
 import guideme.style.TextStyle;
-import me.myogoo.myotus.util.mod.ModIntegrationManager;
+import me.myogoo.myotus.api.MyotusAPI;
 
 import java.util.Set;
 
@@ -19,13 +19,14 @@ public class ConditionTag implements TagCompiler {
         if (condition.isEmpty()) {
             compiler.compileBlockContext(el, parent);
         } else {
-            var annotationClass = ModIntegrationManager.getClass(condition);
+            var integrationManager = MyotusAPI.modIntegrationManager();
+            var annotationClass = integrationManager.getAnnotationClass(condition);
             if (annotationClass == null) {
                 parent.appendError(compiler, condition + "is not loaded", el);
                 return;
             }
 
-            if (ModIntegrationManager.isLoaded(annotationClass)) {
+            if (integrationManager.isLoaded(annotationClass)) {
                 compiler.compileBlockContext(el, parent);
                 return;
             }

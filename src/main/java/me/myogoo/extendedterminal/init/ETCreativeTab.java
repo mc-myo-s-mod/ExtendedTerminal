@@ -23,7 +23,7 @@ public class ETCreativeTab {
                     for (ItemDefinition<?> item : ETItems.ITEMS) {
                         output.accept(item.stack());
                     }
-                    if (MyotusAPI.get().modIntegrationManager().isLoaded(AE2WTLib.class)) {
+                    if (MyotusAPI.modIntegrationManager().isLoaded(AE2WTLib.class)) {
                         for (ItemDefinition<?> item : WTItems.WT_ITEMS) {
                             output.accept(item.stack());
                             var chargedStack = item.stack().copy();

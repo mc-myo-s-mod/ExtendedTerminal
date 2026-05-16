@@ -3,8 +3,8 @@ package me.myogoo.extendedterminal.integration;
 import me.myogoo.extendedterminal.ExtendedTerminal;
 import me.myogoo.extendedterminal.util.SafeClass;
 import me.myogoo.extendedterminal.util.mod.AnnotationScanner;
+import me.myogoo.myotus.api.MyotusAPI;
 import me.myogoo.myotus.api.annotation.MyotusSubscriber;
-import me.myogoo.myotus.util.mod.ModIntegrationManager;
 import org.objectweb.asm.Type;
 
 import java.lang.reflect.InvocationTargetException;
@@ -26,7 +26,7 @@ public class ItemListModLoadHelper {
                 .filter(c -> c != null
                         && (c.getDeclaredAnnotations().length == 0
                         || Arrays.stream(c.getDeclaredAnnotations())
-                                .allMatch(a -> ModIntegrationManager.isLoaded(a.annotationType()))))
+                                .allMatch(a -> MyotusAPI.modIntegrationManager().isLoaded(a.annotationType()))))
                 .forEach(clazz -> invokeMethod(clazz,parameterType, parameter));
     }
 

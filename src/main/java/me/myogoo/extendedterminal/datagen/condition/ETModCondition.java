@@ -1,7 +1,7 @@
 package me.myogoo.extendedterminal.datagen.condition;
 
 import me.myogoo.extendedterminal.ExtendedTerminal;
-import me.myogoo.myotus.util.mod.ModIntegrationManager;
+import me.myogoo.myotus.api.MyotusAPI;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.common.crafting.conditions.ICondition;
 
@@ -22,8 +22,7 @@ public class ETModCondition implements ICondition {
 
     @Override
     public boolean test(IContext context) {
-        var annotationClass = ModIntegrationManager.getClass(this.modIdString);
-        return annotationClass != null && ModIntegrationManager.isLoaded(annotationClass);
+        return MyotusAPI.modIntegrationManager().isLoaded(this.modIdString);
     }
 
     public String getModId() {
