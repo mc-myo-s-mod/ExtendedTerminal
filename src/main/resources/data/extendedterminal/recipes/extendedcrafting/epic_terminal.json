@@ -5,7 +5,7 @@
       "conditions": [
         {
           "type": "myotus:mod_condition",
-          "active_mod": "extendedcrafting"
+          "active_mod": "Extended Crafting: Expanded"
         }
       ],
       "recipe": {
