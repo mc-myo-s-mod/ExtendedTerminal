@@ -1,11 +1,9 @@
-# CHANGELOG
-
-## Version Update
-- Require `Myotus` version to 15.0.7
+# Changelog
 
 ## Features
-- Extended Wireless Terminal support `Quantum Bridge Card`
-
+- `Extended Crafting` native EMI support (no more other categories!)
+- `Extended Terminal` Support `Polymorphic Energistics`(Polymorph)
+- `Wireless Extended Terminal` Support `Wireless Crafting Terminal` Features
 ## Bug Fixes
-- fix JEI missingSlot miss match in shapeless crafting recipe
-- Fixed AE2WTLib Wireless Universal Terminal recipes to preserve Myotus upgrade storage data
+- fix mouse middle click conflict with `Inventory Tweaks - ReFoxed`
+- fix missing hotkey `Open Wireless Extended Terminal`

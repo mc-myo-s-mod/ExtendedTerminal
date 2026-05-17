@@ -25,6 +25,7 @@ public class ETWTMenu extends ETTerminalMenu {
             .build(ETMenuType.ET_TERMINAL.getWTIdAsString());
     public static final String RESTOCK = AE2wtlibTags.RESTOCK;
     public static final String PICK_BLOCK = AE2wtlibTags.PICK_BLOCK;
+    public static final String CRAFT_IF_MISSING = AE2wtlibTags.CRAFT_IF_MISSING;
     public static final String MAGNET_MODE = "magnetMode";
     public static final String MAGNET_MENU = "magnetMenu";
     private final ETWTHost host;
@@ -39,6 +40,7 @@ public class ETWTMenu extends ETTerminalMenu {
 
         registerClientAction(RESTOCK, Boolean.class, this::setRestock);
         registerClientAction(PICK_BLOCK, Boolean.class, this::setPickBlock);
+        registerClientAction(CRAFT_IF_MISSING, Boolean.class, this::setCraftIfMissing);
         registerClientAction(MAGNET_MODE, MagnetMode.class, this::setMagnetMode);
         registerClientAction(MAGNET_MENU, this::openMagnetMenu);
     }
@@ -64,11 +66,23 @@ public class ETWTMenu extends ETTerminalMenu {
         return ItemWT.getBoolean(this.host.getItemStack(), PICK_BLOCK);
     }
 
+    public boolean isCraftIfMissing() {
+        return ItemWT.getBoolean(this.host.getItemStack(), CRAFT_IF_MISSING);
+    }
+
     public void setPickBlock(boolean enabled) {
         if (isClientSide()) {
             sendClientAction(PICK_BLOCK, enabled);
         }
         ItemWT.setBoolean(this.host.getItemStack(), enabled, PICK_BLOCK);
+        this.host.saveChanges();
+    }
+
+    public void setCraftIfMissing(boolean enabled) {
+        if (isClientSide()) {
+            sendClientAction(CRAFT_IF_MISSING, enabled);
+        }
+        ItemWT.setBoolean(this.host.getItemStack(), enabled, CRAFT_IF_MISSING);
         this.host.saveChanges();
     }
 
@@ -89,6 +103,7 @@ public class ETWTMenu extends ETTerminalMenu {
             sendClientAction(MAGNET_MODE, mode);
         }
         MagnetHandler.saveMagnetMode(this.host.getItemStack(), mode);
+        this.host.saveChanges();
     }
 
     public void openMagnetMenu() {

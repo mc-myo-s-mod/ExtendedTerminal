@@ -35,7 +35,6 @@ public class ExtendedTerminal {
         ETMenus.REGISTER.register(modEventBus);
         ETCreativeTab.REGISTER.register(modEventBus);
         if (MyotusAPI.modIntegrationManager().isLoaded(AE2WTLib.class)) {
-            ETNetwork.registerAE2WTLibPackets();
             WTItems.register();
             WTMenus.register();
             WTInits.registerTerminal();
