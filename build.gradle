@@ -263,7 +263,7 @@ tasks.named('jar', Jar).configure {
 }
 
 tasks.named('jarJar', Jar).configure {
-    archiveBaseName.set("ExtendedTerminal")
+    archiveBaseName.set("ExtendedTerminal-${minecraft_version}")
     archiveClassifier.set("")
 }
 
