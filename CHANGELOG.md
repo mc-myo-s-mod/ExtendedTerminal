@@ -1,5 +1,8 @@
 # Changelog
 
+# HotFix
+- fix translate
+
 ## Features
 - `Extended Crafting` native EMI support (no more other categories!)
 - `Extended Terminal` Support `Polymorphic Energistics`(Polymorph)
