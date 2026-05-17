@@ -26,5 +26,7 @@
   "gui.extendedterminal.sculkTerminal": "幽匿合成终端",
   "gui.extendedterminal.netherTerminal": "炼狱合成终端",
   "gui.extendedterminal.endTerminal": "终末合成终端",
-  "gui.extendedterminal.extremeTerminal": "终焉合成终端"
+  "gui.extendedterminal.extremeTerminal": "终焉合成终端",
+
+  "gui.ae2wtlib.pick_block.text": "启用选取方块"
 }

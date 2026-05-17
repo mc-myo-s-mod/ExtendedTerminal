@@ -4,16 +4,18 @@ import com.blakebr0.extendedcrafting.crafting.recipe.ShapelessTableRecipe;
 import committee.nova.mods.avaritia.common.crafting.recipe.EternalSingularityCraftRecipe;
 import committee.nova.mods.avaritia.common.crafting.recipe.InfinityCatalystCraftRecipe;
 import committee.nova.mods.avaritia.common.crafting.recipe.ShapelessTableCraftingRecipe;
+import me.myogoo.extendedterminal.api.adapter.recipe.ITableRecipeAdapter;
 import me.myogoo.extendedterminal.api.adapter.recipe.IShapelessTableRecipeAdapter;
 import net.byAqua3.avaritia.recipe.RecipeExtremeShapeless;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.Container;
 import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.ShapelessRecipe;
 
 import java.util.Optional;
 
-public class ShapelessTableRecipeAdapter implements IShapelessTableRecipeAdapter {
+public class ShapelessTableRecipeAdapter implements IShapelessTableRecipeAdapter<Container> {
     private final Recipe<?> recipe;
     private final int recipeTier;
 
@@ -48,9 +50,8 @@ public class ShapelessTableRecipeAdapter implements IShapelessTableRecipeAdapter
     }
 
     @Override
-    @SuppressWarnings("unchecked")
-    public <R extends Recipe<?>> R recipe() {
-        return (R) this.recipe;
+    public Recipe<?> recipe() {
+        return this.recipe;
     }
 
     @Override

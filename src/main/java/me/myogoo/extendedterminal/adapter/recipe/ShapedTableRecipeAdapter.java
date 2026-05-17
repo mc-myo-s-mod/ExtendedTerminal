@@ -2,16 +2,18 @@ package me.myogoo.extendedterminal.adapter.recipe;
 
 import com.blakebr0.extendedcrafting.crafting.recipe.ShapedTableRecipe;
 import committee.nova.mods.avaritia.common.crafting.recipe.ShapedTableCraftingRecipe;
+import me.myogoo.extendedterminal.api.adapter.recipe.ITableRecipeAdapter;
 import me.myogoo.extendedterminal.api.adapter.recipe.IShapedTableRecipeAdapter;
 import net.byAqua3.avaritia.recipe.RecipeExtremeShaped;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.Container;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.ShapedRecipe;
 
 
 import java.util.Optional;
 
-public class ShapedTableRecipeAdapter implements IShapedTableRecipeAdapter {
+public class ShapedTableRecipeAdapter implements IShapedTableRecipeAdapter<Container> {
     private final int recipeTier;
     private final int recipeWidth;
     private final int recipeHeight;
@@ -42,9 +44,8 @@ public class ShapedTableRecipeAdapter implements IShapedTableRecipeAdapter {
 
 
     @Override
-    @SuppressWarnings("unchecked")
-    public <R extends Recipe<?>> R recipe() {
-        return (R) this.recipe;
+    public Recipe<?> recipe() {
+        return this.recipe;
     }
 
     @Override

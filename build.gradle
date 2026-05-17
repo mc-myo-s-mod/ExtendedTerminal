@@ -150,6 +150,7 @@ dependencies {
     compileOnly fg.deobf("curse.maven:extended-crafting-expanded-1017786:5613251")
 
     compileOnly fg.deobf("maven.modrinth:applied-energistics-2-wireless-terminals:${AE2WTLib_version}")
+    compileOnly fg.deobf("maven.modrinth:polymorph:${Polymorph_version}")
     runtimeOnly fg.deobf("top.theillusivec4.curios:curios-forge:${curios_version}")
     runtimeOnly fg.deobf("dev.architectury:architectury-forge:${architectury_version}")
     runtimeOnly fg.deobf("me.shedaniel.cloth:cloth-config-forge:${cloth_config_version}")
@@ -167,10 +168,19 @@ dependencies {
     compileOnly fg.deobf("mezz.jei:jei-${minecraft_version}-common-api:${JEI_version}")
     compileOnly fg.deobf("mezz.jei:jei-${minecraft_version}-forge-api:${JEI_version}")
     compileOnly fg.deobf("me.shedaniel:RoughlyEnoughItems-forge:${REI_version}")
-    compileOnly fg.deobf("dev.emi:emi-forge:${EMI_version}:api")
+    compileOnly fg.deobf("dev.emi:emi-forge:${EMI_version}")
+    compileOnly fg.deobf("maven.modrinth:inventory-tweaks-refoxed:${InvTweaks_version}")
 
     if(project.enable_wtlib.toString().trim() == "true") {
         runtimeOnly fg.deobf("maven.modrinth:applied-energistics-2-wireless-terminals:${AE2WTLib_version}")
+    }
+
+    if(project.enable_polymorph.toString().trim() == "true") {
+        runtimeOnly fg.deobf("maven.modrinth:polymorph:${Polymorph_version}")
+    }
+
+    if(project.enable_invtweak.toString().trim() == "true") {
+        runtimeOnly fg.deobf("maven.modrinth:inventory-tweaks-refoxed:${InvTweaks_version}")
     }
 
     switch (project.itemListMod) {
@@ -183,7 +193,7 @@ dependencies {
         case "emi":
             runtimeOnly fg.deobf("dev.emi:emi-forge:${EMI_version}")
             break;
-        case "emjei":
+        case "jemi":
             runtimeOnly fg.deobf("mezz.jei:jei-${minecraft_version}-forge:${JEI_version}")
             runtimeOnly fg.deobf("dev.emi:emi-forge:${EMI_version}")
             break;
@@ -235,7 +245,8 @@ tasks.named('processResources', ProcessResources).configure {
 
 // Example for how to get properties into the manifest for reading at runtime.
 tasks.named('jar', Jar).configure {
-    archiveBaseName.set("ExtendedTerminal-${minecraft_version}")
+    archiveBaseName.set("ExtendedTerminal")
+    archiveClassifier.set("plain")
 
     manifest {
         attributes(["Specification-Title"     : mod_id,
@@ -249,6 +260,11 @@ tasks.named('jar', Jar).configure {
 
     // This is the preferred method to reobfuscate your jar file
     finalizedBy 'reobfJar'
+}
+
+tasks.named('jarJar', Jar).configure {
+    archiveBaseName.set("ExtendedTerminal")
+    archiveClassifier.set("")
 }
 
 tasks.withType(JavaCompile).configureEach {

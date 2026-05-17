@@ -15,13 +15,17 @@ import com.google.common.base.Preconditions;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import me.myogoo.extendedterminal.api.host.IETTerminalHost;
 import me.myogoo.extendedterminal.config.ExtendedTerminalConfig;
+import me.myogoo.extendedterminal.api.ModAccessor;
+import me.myogoo.extendedterminal.integration.polymorph.ETPolymorphRecipeSelection;
 import me.myogoo.extendedterminal.menu.ETMenuType;
 import me.myogoo.extendedterminal.menu.ETSlotSemantics;
 import me.myogoo.extendedterminal.menu.ETTerminalBaseMenu;
 import me.myogoo.extendedterminal.menu.extendedterminal.slot.ETAnvilSlot;
+import me.myogoo.extendedterminal.menu.extendedterminal.slot.ETCraftingSlot;
 import me.myogoo.extendedterminal.menu.extendedterminal.slot.ETSmithingSlot;
 import me.myogoo.extendedterminal.menu.extendedterminal.slot.ETStoneCutterSlot;
 import me.myogoo.extendedterminal.menu.slot.ETCraftingBaseSlot;
+import me.myogoo.myotus.api.MyotusAPI;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
@@ -106,7 +110,7 @@ public class ETTerminalMenu extends ETTerminalBaseMenu<CraftingRecipe> {
                     this.menuType.getSlotSemanticGrid());
         }
 
-        this.addSlot(this.outputSlot = new CraftingTermSlot(this.getPlayerInventory().player, this.getActionSource(),
+        this.addSlot(this.outputSlot = new ETCraftingSlot(this.getPlayerInventory().player, this.getActionSource(),
                         this.powerSource, host.getInventory(), craftingGridInv, craftingGridInv, this),
                 this.menuType.getSlotSemanticResult());
 
@@ -294,14 +298,23 @@ public class ETTerminalMenu extends ETTerminalBaseMenu<CraftingRecipe> {
         }
 
         var level = this.getPlayerInventory().player.level();
-        this.currentRecipe = level.getRecipeManager().getRecipeFor(RecipeType.CRAFTING, this.craftingRecipeContainer, level)
-                .orElse(null);
+        this.currentRecipe = MyotusAPI.modIntegrationManager().isLoaded(ModAccessor.Polymorph.class)
+                ? ETPolymorphRecipeSelection.getPlayerCraftingRecipe(this, this.craftingRecipeContainer, level, getPlayer())
+                        .orElse(null)
+                : level.getRecipeManager().getRecipeFor(RecipeType.CRAFTING, this.craftingRecipeContainer, level)
+                        .orElse(null);
         this.craftingRecipe = this.currentRecipe;
         if (this.craftingRecipe == null) {
             this.outputSlot.set(ItemStack.EMPTY);
         } else {
             this.outputSlot.set(this.craftingRecipe.assemble(this.craftingRecipeContainer, level.registryAccess()));
         }
+    }
+
+    @Override
+    public void onServerDataSync() {
+        super.onServerDataSync();
+        updateCurrentRecipeAndOutput(true);
     }
 
     public @Nullable SmithingRecipe getSmithingRecipe() {

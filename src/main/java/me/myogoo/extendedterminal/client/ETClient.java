@@ -11,7 +11,10 @@ import me.myogoo.extendedterminal.client.screen.avaritiaRe.SculkTerminalScreen;
 import me.myogoo.extendedterminal.client.screen.extendedcrafting.*;
 import me.myogoo.extendedterminal.client.screen.extendedterminal.ETTerminalScreen;
 import me.myogoo.extendedterminal.client.screen.extendedterminal.wt.ETWTScreen;
+import me.myogoo.extendedterminal.api.ModAccessor;
+import me.myogoo.extendedterminal.init.ETConfigTab;
 import me.myogoo.extendedterminal.init.ETParts;
+import me.myogoo.extendedterminal.integration.polymorph.ETPolymorph;
 import me.myogoo.extendedterminal.menu.avaritiaNeo.NeoExtremeTerminalMenu;
 import me.myogoo.extendedterminal.menu.avaritiaRe.EndTerminalMenu;
 import me.myogoo.extendedterminal.menu.avaritiaRe.ExtremeTerminalMenu;
@@ -42,10 +45,14 @@ public class ETClient {
     @SubscribeEvent
     public static void clientSetup(FMLClientSetupEvent event) {
         event.enqueueWork(ETClient::initScreens);
+        event.enqueueWork(ETConfigTab::initialize);
 
         event.enqueueWork(() -> {
-            if (MyotusAPI.get().modIntegrationManager().isLoaded(AE2WTLib.class)) {
+            if (MyotusAPI.modIntegrationManager().isLoaded(AE2WTLib.class)) {
                 initWTScreen();
+            }
+            if (MyotusAPI.modIntegrationManager().isLoaded(ModAccessor.Polymorph.class)) {
+                ETPolymorph.init();
             }
         });
     }

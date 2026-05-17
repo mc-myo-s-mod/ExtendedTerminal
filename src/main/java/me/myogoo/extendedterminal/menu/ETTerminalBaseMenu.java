@@ -10,7 +10,9 @@ import appeng.menu.me.items.CraftingTermMenu;
 import appeng.api.inventories.ISegmentedInventory;
 import appeng.util.inv.PlayerInternalInventory;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
+import me.myogoo.extendedterminal.api.ModAccessor;
 import me.myogoo.extendedterminal.api.config.IETTerminalConfig;
+import me.myogoo.myotus.api.MyotusAPI;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Container;
@@ -30,12 +32,16 @@ public abstract class ETTerminalBaseMenu<R extends Recipe<?>> extends MEStorageM
     protected R currentRecipe;
     protected final ETMenuType menuType;
     private static final String ACTION_CLEAR_TO_PLAYER = "clearToPlayer";
+    private static final String ACTION_POLYMORPH_SELECT_RECIPE = "polymorph$selectRecipe";
     private final IETTerminalConfig config;
     public ETTerminalBaseMenu(MenuType<?> menuType, int id, Inventory ip, ITerminalHost host,ETMenuType etMenuType, IETTerminalConfig config) {
         super(menuType, id, ip, host);
         this.menuType = etMenuType;
         this.config = config;
         registerClientAction(ACTION_CLEAR_TO_PLAYER, ResourceLocation.class, this::clearToPlayerInventory);
+        if (MyotusAPI.modIntegrationManager().isLoaded(ModAccessor.Polymorph.class)) {
+            registerClientAction(ACTION_POLYMORPH_SELECT_RECIPE, this::updatePolymorphRecipeSelection);
+        }
     }
 
     public R getCurrentRecipe() {
@@ -194,6 +200,15 @@ public abstract class ETTerminalBaseMenu<R extends Recipe<?>> extends MEStorageM
                 }
             }
         }
+    }
+
+    public void updatePolymorphRecipeSelection() {
+        if (isClientSide()) {
+            sendClientAction(ACTION_POLYMORPH_SELECT_RECIPE);
+            return;
+        }
+
+        updateCurrentRecipeAndOutput(true);
     }
 
     protected boolean checkCraftingOnlyActive() {

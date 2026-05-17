@@ -23,5 +23,7 @@ public final class ETModIntegration {
                 "Extended Crafting: Expanded", "*");
         registrar.registerLoadableMod(ModAccessor.ReAvaritia.class, "avaritia", "Re-Avaritia", "[1.3.9.8,)");
         registrar.registerLoadableMod(ModAccessor.AvaritiaNeo.class, "avaritia", "Avaritia", "[1.1.3,)");
+        registrar.registerLoadableMod(ModAccessor.Polymorph.class, "polymorph", "*");
+        registrar.registerLoadableMod(ModAccessor.InvTweaks.class, "invtweaks", "*");
     }
 }

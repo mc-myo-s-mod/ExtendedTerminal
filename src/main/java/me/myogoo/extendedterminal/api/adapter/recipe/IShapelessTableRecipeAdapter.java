@@ -1,3 +1,6 @@
 package me.myogoo.extendedterminal.api.adapter.recipe;
 
-public interface IShapelessTableRecipeAdapter extends ITableRecipeAdapter{ }
+import net.minecraft.world.Container;
+
+public interface IShapelessTableRecipeAdapter<I extends Container> extends ITableRecipeAdapter<I> {
+}

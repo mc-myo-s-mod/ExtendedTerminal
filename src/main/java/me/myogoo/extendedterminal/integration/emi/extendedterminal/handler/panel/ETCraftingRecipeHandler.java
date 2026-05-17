@@ -1,5 +1,7 @@
 package me.myogoo.extendedterminal.integration.emi.extendedterminal.handler.panel;
 
+import me.myogoo.extendedterminal.adapter.recipe.TableRecipeAdapters;
+
 import appeng.core.localization.ItemModText;
 import dev.emi.emi.api.recipe.EmiRecipe;
 import dev.emi.emi.api.recipe.VanillaEmiRecipeCategories;
@@ -39,16 +41,17 @@ public class ETCraftingRecipeHandler<T extends ETTerminalMenu> extends ETTermina
             return Result.createFailed(ItemModText.INCOMPATIBLE_RECIPE.text());
         }
 
-        var slotToIngredientMap = getGuiSlotToIngredientMap(menu, ITableRecipeAdapter.of(cRecipe));
+        var slotToIngredientMap = getGuiSlotToIngredientMap(menu, TableRecipeAdapters.of(cRecipe));
         var missingSlots = menu.findMissingIngredients(slotToIngredientMap);
 
         if (missingSlots.missingSlots().size() == slotToIngredientMap.size()) {
-            return Result.createFailed(ItemModText.NO_ITEMS.text(), missingSlots.missingSlots());
+            return Result.createFailed(ItemModText.NO_ITEMS.text(), missingSlots.missingSlots(),
+                    slotToIngredientMap.keySet());
         }
 
         if (!doTransfer) {
             if (missingSlots.anyMissingOrCraftable()) {
-                return new Result.PartiallyCraftable(missingSlots);
+                return new Result.PartiallyCraftable(missingSlots, slotToIngredientMap.keySet());
             }
         } else {
             boolean craftingMissing = AbstractContainerScreen.hasControlDown();
@@ -68,8 +71,9 @@ public class ETCraftingRecipeHandler<T extends ETTerminalMenu> extends ETTermina
     }
 
     @Override
-    protected Map<Integer, Ingredient> getGuiSlotToIngredientMap(T menu, ITableRecipeAdapter recipe) {
-        return ETCraftingRecipeTransferHelper.getGuiSlotToIngredientMap(menu, recipe.recipe());
+    protected Map<Integer, Ingredient> getGuiSlotToIngredientMap(T menu, ITableRecipeAdapter<?> recipe) {
+        return ETCraftingRecipeTransferHelper.getGuiSlotToIngredientMap(menu,
+                recipe.unwrap(CraftingRecipe.class).orElseThrow());
     }
 
     private Recipe<?> createFakeRecipe(EmiRecipe recipe) {

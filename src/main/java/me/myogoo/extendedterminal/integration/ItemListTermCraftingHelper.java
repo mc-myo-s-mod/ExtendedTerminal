@@ -3,9 +3,9 @@ package me.myogoo.extendedterminal.integration;
 import appeng.api.stacks.AEItemKey;
 import appeng.integration.modules.jeirei.EncodingHelper;
 import appeng.menu.me.common.GridInventoryEntry;
-import me.myogoo.extendedterminal.api.adapter.recipe.IShapedTableRecipeAdapter;
-import me.myogoo.extendedterminal.api.adapter.recipe.IShapelessTableRecipeAdapter;
 import me.myogoo.extendedterminal.api.adapter.recipe.ITableRecipeAdapter;
+import me.myogoo.extendedterminal.api.adapter.recipe.IShapelessTableRecipeAdapter;
+import me.myogoo.extendedterminal.api.adapter.recipe.IShapedTableRecipeAdapter;
 import me.myogoo.extendedterminal.menu.ETTerminalBaseMenu;
 import me.myogoo.extendedterminal.menu.extendedcrafting.ExtendedTerminalBaseMenu;
 import me.myogoo.extendedterminal.util.extendedcrafting.TableCraftingHelper;
@@ -49,7 +49,7 @@ public class ItemListTermCraftingHelper {
     }
 
 
-    public static NonNullList<ItemStack> findGoodTemplateItems(ITableRecipeAdapter recipe, ETTerminalBaseMenu<?> menu) {
+    public static NonNullList<ItemStack> findGoodTemplateItems(ITableRecipeAdapter<?> recipe, ETTerminalBaseMenu<?> menu) {
         var ingredientPriorities = EncodingHelper.getIngredientPriorities(menu, ENTRY_COMPARATOR);
 
         var templateItems = NonNullList.withSize(menu.getCraftingGridSize(), ItemStack.EMPTY);
@@ -71,11 +71,11 @@ public class ItemListTermCraftingHelper {
         return templateItems;
     }
 
-    public static NonNullList<Ingredient> ensureFittedCraftingGrid(ITableRecipeAdapter recipe) {
+    public static NonNullList<Ingredient> ensureFittedCraftingGrid(ITableRecipeAdapter<?> recipe) {
         var ingredients = recipe.recipe().getIngredients();
         NonNullList<Ingredient> expandedIngredients;
 
-        if (recipe instanceof IShapedTableRecipeAdapter shapedTableRecipe) {
+        if (recipe instanceof IShapedTableRecipeAdapter<?> shapedTableRecipe) {
             int width = shapedTableRecipe.width();
             int height = shapedTableRecipe.height();
             int matrixSize = width * height;
@@ -93,7 +93,7 @@ public class ItemListTermCraftingHelper {
                 }
             }
             return expandedIngredients;
-        } else if (recipe instanceof IShapelessTableRecipeAdapter shapelessTableRecipe) {
+        } else if (recipe instanceof IShapelessTableRecipeAdapter<?> shapelessTableRecipe) {
             expandedIngredients = TableCraftingHelper.makeNxNIngredients(shapelessTableRecipe);
             for (int i = 0; i < ingredients.size(); i++) {
                 expandedIngredients.set(i, ingredients.get(i));

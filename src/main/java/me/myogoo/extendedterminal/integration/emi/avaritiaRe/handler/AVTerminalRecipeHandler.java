@@ -1,5 +1,7 @@
 package me.myogoo.extendedterminal.integration.emi.avaritiaRe.handler;
 
+import me.myogoo.extendedterminal.adapter.recipe.TableRecipeAdapters;
+
 import appeng.core.localization.ItemModText;
 import committee.nova.mods.avaritia.common.crafting.recipe.ITierCraftingRecipe;
 import committee.nova.mods.avaritia.init.compat.emi.category.tables.EndCraftingTableCategory;
@@ -8,8 +10,8 @@ import committee.nova.mods.avaritia.init.compat.emi.category.tables.NetherCrafti
 import committee.nova.mods.avaritia.init.compat.emi.category.tables.SculkCraftingTableCategory;
 import dev.emi.emi.api.recipe.EmiRecipe;
 import dev.emi.emi.api.recipe.EmiRecipeCategory;
-import me.myogoo.extendedterminal.api.adapter.recipe.IShapedTableRecipeAdapter;
 import me.myogoo.extendedterminal.api.adapter.recipe.ITableRecipeAdapter;
+import me.myogoo.extendedterminal.api.adapter.recipe.IShapedTableRecipeAdapter;
 import me.myogoo.extendedterminal.integration.emi.handler.AbstractEmiTableRecipeHandler;
 import me.myogoo.extendedterminal.menu.ETMenuType;
 import me.myogoo.extendedterminal.menu.avaritiaRe.AvaritiaTerminalBaseMenu;
@@ -52,7 +54,7 @@ public class AVTerminalRecipeHandler<T extends AvaritiaTerminalBaseMenu> extends
         if(!(recipe instanceof ITierCraftingRecipe tableRecipe)) {
             return Result.createFailed(ItemModText.INCOMPATIBLE_RECIPE.text());
         }
-        var adapterRecipe = ITableRecipeAdapter.of(tableRecipe);
+        var adapterRecipe = TableRecipeAdapters.of(tableRecipe);
 
         // Find missing ingredient
         var slotToIngredientMap = getGuiSlotToIngredientMap(menu, adapterRecipe);
@@ -60,13 +62,14 @@ public class AVTerminalRecipeHandler<T extends AvaritiaTerminalBaseMenu> extends
 
         if (missingSlots.missingSlots().size() == slotToIngredientMap.size()) {
             // All missing, can't do much...
-            return Result.createFailed(ItemModText.NO_ITEMS.text(), missingSlots.missingSlots());
+            return Result.createFailed(ItemModText.NO_ITEMS.text(), missingSlots.missingSlots(),
+                    slotToIngredientMap.keySet());
         }
 
         if (!doTransfer) {
             if (missingSlots.anyMissingOrCraftable()) {
                 // Highlight the slots with missing ingredients
-                return new Result.PartiallyCraftable(missingSlots);
+                return new Result.PartiallyCraftable(missingSlots, slotToIngredientMap.keySet());
             }
         } else {
             // Thank you RS for pioneering this amazing feature! :)
@@ -86,14 +89,14 @@ public class AVTerminalRecipeHandler<T extends AvaritiaTerminalBaseMenu> extends
     }
 
     @Override
-    protected Map<Integer, Ingredient> getGuiSlotToIngredientMap(T menu, ITableRecipeAdapter recipe) {
+    protected Map<Integer, Ingredient> getGuiSlotToIngredientMap(T menu, ITableRecipeAdapter<?> recipe) {
         int gridSideLength = menu.getCraftingGridWidth();
         var raw = recipe.recipe().getIngredients();
         List<Ingredient> ingredients;
 
         int width = gridSideLength;
         int height = gridSideLength;
-        if (recipe instanceof IShapedTableRecipeAdapter shapedRecipe) {
+        if (recipe instanceof IShapedTableRecipeAdapter<?> shapedRecipe) {
             ingredients = ensureFittedCraftingGrid(shapedRecipe);
             width = shapedRecipe.width();
             height = shapedRecipe.height();

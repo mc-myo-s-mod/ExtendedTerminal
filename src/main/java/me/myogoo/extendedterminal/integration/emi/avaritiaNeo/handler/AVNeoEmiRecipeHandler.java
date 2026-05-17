@@ -1,10 +1,12 @@
 package me.myogoo.extendedterminal.integration.emi.avaritiaNeo.handler;
 
+import me.myogoo.extendedterminal.adapter.recipe.TableRecipeAdapters;
+
 import appeng.core.localization.ItemModText;
 import dev.emi.emi.api.recipe.EmiRecipe;
 import dev.emi.emi.api.recipe.EmiRecipeCategory;
-import me.myogoo.extendedterminal.api.adapter.recipe.IShapedTableRecipeAdapter;
 import me.myogoo.extendedterminal.api.adapter.recipe.ITableRecipeAdapter;
+import me.myogoo.extendedterminal.api.adapter.recipe.IShapedTableRecipeAdapter;
 import me.myogoo.extendedterminal.integration.emi.handler.AbstractEmiTableRecipeHandler;
 import me.myogoo.extendedterminal.menu.ETMenuType;
 import me.myogoo.extendedterminal.menu.avaritiaNeo.NeoExtremeTerminalMenu;
@@ -44,7 +46,7 @@ public class AVNeoEmiRecipeHandler extends AbstractEmiTableRecipeHandler<NeoExtr
         if(!(recipe instanceof RecipeExtremeCrafting tableRecipe)) {
             return Result.createFailed(ItemModText.INCOMPATIBLE_RECIPE.text());
         }
-        var adapterRecipe = ITableRecipeAdapter.of(tableRecipe);
+        var adapterRecipe = TableRecipeAdapters.of(tableRecipe);
 
         // Find missing ingredient
         var slotToIngredientMap = getGuiSlotToIngredientMap(menu, adapterRecipe);
@@ -52,12 +54,13 @@ public class AVNeoEmiRecipeHandler extends AbstractEmiTableRecipeHandler<NeoExtr
 
         if (missingSlots.missingSlots().size() == slotToIngredientMap.size()) {
             // All missing, can't do much...
-            return Result.createFailed(ItemModText.NO_ITEMS.text(), missingSlots.missingSlots());
+            return Result.createFailed(ItemModText.NO_ITEMS.text(), missingSlots.missingSlots(),
+                    slotToIngredientMap.keySet());
         }
 
         if (!doTransfer) {
             if (missingSlots.anyMissingOrCraftable()) {
-                return new Result.PartiallyCraftable(missingSlots);
+                return new Result.PartiallyCraftable(missingSlots, slotToIngredientMap.keySet());
             }
         } else {
             boolean craftMissing = AbstractContainerScreen.hasControlDown();
@@ -70,18 +73,18 @@ public class AVNeoEmiRecipeHandler extends AbstractEmiTableRecipeHandler<NeoExtr
 
     @Override
     protected boolean isCraftingRecipe(Recipe<?> recipe, EmiRecipe emiRecipe) {
-        return emiRecipe.getCategory().equals(this.category);
+        return recipe instanceof RecipeExtremeCrafting && emiRecipe.getCategory().equals(this.category);
     }
 
     @Override
-    protected Map<Integer, Ingredient> getGuiSlotToIngredientMap(NeoExtremeTerminalMenu menu, ITableRecipeAdapter recipe) {
+    protected Map<Integer, Ingredient> getGuiSlotToIngredientMap(NeoExtremeTerminalMenu menu, ITableRecipeAdapter<?> recipe) {
         int gridSideLength = menu.getCraftingGridWidth();
         var raw = recipe.recipe().getIngredients();
         List<Ingredient> ingredients;
 
         int width = gridSideLength;
         int height = gridSideLength;
-        if (recipe instanceof IShapedTableRecipeAdapter shapedRecipe) {
+        if (recipe instanceof IShapedTableRecipeAdapter<?> shapedRecipe) {
             ingredients = ensureFittedCraftingGrid(shapedRecipe);
             width = shapedRecipe.width();
             height = shapedRecipe.height();

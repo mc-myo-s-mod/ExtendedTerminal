@@ -4,7 +4,7 @@ import appeng.menu.SlotSemantic;
 import appeng.menu.SlotSemantics;
 import me.myogoo.extendedterminal.ExtendedTerminal;
 import me.myogoo.extendedterminal.api.ModAccessor.*;
-import me.myogoo.myotus.util.mod.ModIntegrationManager;
+import me.myogoo.myotus.api.MyotusAPI;
 import net.minecraft.resources.ResourceLocation;
 
 import java.lang.annotation.Annotation;
@@ -104,7 +104,7 @@ public enum ETMenuType {
             }
             return Arrays.stream(field.getDeclaredAnnotations())
                     .map(Annotation::annotationType)
-                    .allMatch(ModIntegrationManager::isLoaded);
+                    .allMatch(MyotusAPI.modIntegrationManager()::isLoaded);
         } catch (NoSuchFieldException e) {
             ExtendedTerminal.LOGGER.error("Menu type {} is not loaded due to missing field in ETMenuType", this.name());
         }

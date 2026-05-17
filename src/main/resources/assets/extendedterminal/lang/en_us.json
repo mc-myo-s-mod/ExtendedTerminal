@@ -44,5 +44,7 @@
   "gui.extendedterminal.anvilpanel": "Anvil",
   "gui.extendedterminal.anvilpanel.xpcost": "XP Cost: %d",
 
-  "extendedterminal.jei.notsupportederror": "This Recipe Currently Not Supported"
+  "extendedterminal.jei.notsupportederror": "This Recipe Currently Not Supported",
+
+  "gui.ae2wtlib.pick_block.text": "Enable Pick Block"
 }

@@ -1,9 +1,11 @@
 package me.myogoo.extendedterminal.integration.jei.extendedcrafting.handler;
 
+import me.myogoo.extendedterminal.adapter.recipe.TableRecipeAdapters;
+
 import appeng.core.localization.ItemModText;
 import com.blakebr0.extendedcrafting.api.crafting.ITableRecipe;
-import me.myogoo.extendedterminal.api.adapter.recipe.IShapedTableRecipeAdapter;
 import me.myogoo.extendedterminal.api.adapter.recipe.ITableRecipeAdapter;
+import me.myogoo.extendedterminal.api.adapter.recipe.IShapedTableRecipeAdapter;
 import me.myogoo.extendedterminal.integration.jei.handler.AbstractTableRecipeHandler;
 import me.myogoo.extendedterminal.menu.extendedcrafting.ExtendedTerminalBaseMenu;
 import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
@@ -46,7 +48,7 @@ public class ECJeiRecipeTransferHandler<T extends ExtendedTerminalBaseMenu> exte
 
         boolean craftMissing = AbstractContainerScreen.hasControlDown();
         var inputSlots = recipeSlots.getSlotViews(RecipeIngredientRole.INPUT);
-        var adapterRecipe = ITableRecipeAdapter.of(recipe);
+        var adapterRecipe = TableRecipeAdapters.of(recipe);
 
         var slotToIngredientMap = getGuiSlotToIngredientMap(menu, adapterRecipe);
         var missingSlots = menu.findMissingIngredients(slotToIngredientMap);
@@ -72,7 +74,7 @@ public class ECJeiRecipeTransferHandler<T extends ExtendedTerminalBaseMenu> exte
     }
 
     @Override
-    public Map<Integer, Ingredient> getGuiSlotToIngredientMap(T menu, ITableRecipeAdapter recipe) {
+    public Map<Integer, Ingredient> getGuiSlotToIngredientMap(T menu, ITableRecipeAdapter<?> recipe) {
         int gridSideLength = menu.getCraftingGridWidth();
         var raw = recipe.recipe().getIngredients();
         List<Ingredient> ingredients;
@@ -81,7 +83,7 @@ public class ECJeiRecipeTransferHandler<T extends ExtendedTerminalBaseMenu> exte
         int offsetY = 0;
         int width = gridSideLength;
         int height = gridSideLength;
-        if (recipe instanceof IShapedTableRecipeAdapter shapedRecipe) {
+        if (recipe instanceof IShapedTableRecipeAdapter<?> shapedRecipe) {
             ingredients = ensureFittedCraftingGrid(shapedRecipe);
             width = shapedRecipe.width();
             height = shapedRecipe.height();

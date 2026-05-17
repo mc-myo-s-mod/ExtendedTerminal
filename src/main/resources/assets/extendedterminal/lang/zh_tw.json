@@ -12,5 +12,7 @@
   "gui.extendedterminal.basicTerminal": "基礎合成拓展終端機",
   "gui.extendedterminal.advancedTerminal": "高級合成拓展終端機",
   "gui.extendedterminal.eliteTerminal": "精英合成拓展終端機",
-  "gui.extendedterminal.ultimateTerminal": "究極合成拓展終端機"
+  "gui.extendedterminal.ultimateTerminal": "究極合成拓展終端機",
+
+  "gui.ae2wtlib.pick_block.text": "啟用選取方塊"
 }
