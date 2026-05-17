@@ -7,3 +7,4 @@
 ## Bug Fixes
 - fix mouse middle click conflict with `Inventory Tweaks - ReFoxed`
 - fix missing hotkey `Open Wireless Extended Terminal`
+
