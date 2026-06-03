@@ -1,0 +1,9 @@
+{
+  "parent": "ae2:item/display_base",
+  "textures": {
+    "front": "ae2:part/crafting_terminal",
+    "front_bright": "extendedterminal:part/extendedterminal/et_bright",
+    "front_medium": "extendedterminal:part/extendedterminal/et_medium",
+    "front_dark": "extendedterminal:part/extendedterminal/et_dark"
+  }
+}

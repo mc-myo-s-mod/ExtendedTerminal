@@ -1,0 +1,7 @@
+{
+  "parent" : "extendedterminal:item/base/extendedcrafting_terminal_base",
+  "textures": {
+    "front_base": "extendedterminal:part/extendedcrafting/elite_terminal_front",
+    "sides": "extendedterminal:part/extendedcrafting/elite_terminal_side"
+  }
+}

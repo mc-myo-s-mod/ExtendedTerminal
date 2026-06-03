@@ -1,0 +1,423 @@
+package me.myogoo.extendedterminal.integration.emi.handler;
+
+import appeng.api.stacks.AEKey;
+import appeng.api.stacks.GenericStack;
+import appeng.core.AEConfig;
+import appeng.integration.modules.emi.EmiStackHelper;
+import appeng.integration.modules.jeirei.TransferHelper;
+import appeng.menu.AEBaseMenu;
+import appeng.menu.SlotSemantics;
+import appeng.menu.me.items.CraftingTermMenu;
+import dev.emi.emi.api.recipe.EmiPlayerInventory;
+import dev.emi.emi.api.recipe.EmiRecipe;
+import dev.emi.emi.api.recipe.handler.EmiCraftContext;
+import dev.emi.emi.api.recipe.handler.StandardRecipeHandler;
+import dev.emi.emi.api.stack.EmiIngredient;
+import dev.emi.emi.api.stack.EmiStack;
+import dev.emi.emi.api.widget.Bounds;
+import dev.emi.emi.api.widget.SlotWidget;
+import dev.emi.emi.api.widget.Widget;
+import me.myogoo.extendedterminal.api.adapter.recipe.ITableRecipeAdapter;
+import me.myogoo.extendedterminal.api.adapter.recipe.IShapedTableRecipeAdapter;
+import me.myogoo.extendedterminal.menu.ETTerminalBaseMenu;
+import me.myogoo.extendedterminal.network.serverbound.ETFillCraftingGridFromRecipePacket;
+import me.myogoo.myotus.api.MyotusAPI;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.Recipe;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.*;
+
+import static appeng.integration.modules.jeirei.TransferHelper.BLUE_SLOT_HIGHLIGHT_COLOR;
+import static appeng.integration.modules.jeirei.TransferHelper.RED_SLOT_HIGHLIGHT_COLOR;
+import static me.myogoo.extendedterminal.integration.ItemListTermCraftingHelper.findGoodTemplateItems;
+import static me.myogoo.extendedterminal.network.serverbound.ETFillCraftingGridFromRecipePacket.NOT_SET_RECIPE_SIZE;
+
+//mess up so dirty
+public abstract class AbstractEmiTableRecipeHandler<T extends ETTerminalBaseMenu<?>> implements StandardRecipeHandler<T> {
+    private final Class<T> containerClass;
+
+    public AbstractEmiTableRecipeHandler(Class<T> containerClass) {
+        this.containerClass = containerClass;
+    }
+
+    @Override
+    public List<Slot> getInputSources(T menu) {
+        var slots = new ArrayList<Slot>();
+        slots.addAll(menu.getSlots(SlotSemantics.PLAYER_HOTBAR));
+        slots.addAll(menu.getSlots(SlotSemantics.PLAYER_INVENTORY));
+        slots.addAll(menu.getSlots(menu.getCraftingGridSlotSemantic()));
+        return slots;
+    }
+
+    @Override
+    public List<Slot> getCraftingSlots(T menu) {
+        return menu.getSlots(menu.getCraftingGridSlotSemantic());
+    }
+
+    @Override
+    public @Nullable Slot getOutputSlot(T menu) {
+        for (var slot : menu.getSlots(menu.getOutputSlotSemantic())) {
+            return slot;
+        }
+        return null;
+    }
+
+    @Override
+    public EmiPlayerInventory getInventory(AbstractContainerScreen<T> screen) {
+        if (!AEConfig.instance().isExposeNetworkInventoryToEmi()) {
+            return StandardRecipeHandler.super.getInventory(screen);
+        }
+
+        var list = new ArrayList<EmiStack>();
+
+        for (Slot slot : getInputSources(screen.getMenu())) {
+            list.add(EmiStack.of(slot.getItem()));
+        }
+        var menu = screen.getMenu();
+        var repo = menu.getClientRepo();
+
+        if (repo != null) {
+            for (var entry : repo.getAllEntries()) {
+                if (entry.getStoredAmount() <= 0) {
+                    continue; // Skip items that are only craftable
+                }
+                var emiStack = EmiStackHelper
+                        .toEmiStack(new GenericStack(entry.getWhat(), entry.getStoredAmount()));
+                if (emiStack != null) {
+                    list.add(emiStack);
+                }
+            }
+        }
+
+        return new EmiPlayerInventory(list);
+    }
+
+    @Override
+    public boolean canCraft(EmiRecipe recipe, EmiCraftContext<T> context) {
+        if (context.getType() == EmiCraftContext.Type.FILL_BUTTON) {
+            return transferRecipe(recipe, context, false).canCraft();
+        }
+        return StandardRecipeHandler.super.canCraft(recipe, context);
+    }
+
+    protected abstract Result transferRecipe(T menu,
+                                             EmiRecipe emiRecipe,
+                                             boolean doTransfer);
+
+    protected final Result transferRecipe(EmiRecipe emiRecipe, EmiCraftContext<T> context, boolean doTransfer) {
+        if (!containerClass.isInstance(context.getScreenHandler())) {
+            return Result.createNotApplicable();
+        }
+
+        T menu = containerClass.cast(context.getScreenHandler());
+
+        var result = transferRecipe(menu, emiRecipe, doTransfer);
+        if (result instanceof Result.Success && doTransfer) {
+            Minecraft.getInstance().setScreen(context.getScreen());
+        }
+        return result;
+    }
+
+    @Override
+    public boolean craft(EmiRecipe recipe, EmiCraftContext<T> context) {
+        return transferRecipe(recipe, context, true).canCraft();
+    }
+
+    @Override
+    public List<ClientTooltipComponent> getTooltip(EmiRecipe recipe, EmiCraftContext<T> context) {
+        var tooltip = transferRecipe(recipe, context, false).getTooltip(recipe, context);
+        if (tooltip != null) {
+            return tooltip.stream()
+                    .map(Component::getVisualOrderText)
+                    .map(ClientTooltipComponent::create)
+                    .toList();
+        } else {
+            return StandardRecipeHandler.super.getTooltip(recipe, context);
+        }
+    }
+
+    @Override
+    public void render(EmiRecipe recipe, EmiCraftContext<T> context, List<Widget> widgets, GuiGraphics draw) {
+        transferRecipe(recipe, context, false).render(recipe, context, widgets, draw);
+    }
+
+    protected final boolean fitsInNxNGrid(Recipe<?> recipe, EmiRecipe emiRecipe, int gridSize) {
+        if (recipe != null) {
+            return recipe.canCraftInDimensions(gridSize, gridSize);
+        } else {
+            return true;
+        }
+    }
+
+    protected static sealed abstract class Result {
+        /**
+         * @return null doesn't override the default tooltip.
+         */
+        @Nullable
+        List<Component> getTooltip(EmiRecipe recipe, EmiCraftContext<?> context) {
+            return null;
+        }
+
+        abstract boolean canCraft();
+
+        void render(EmiRecipe recipe, EmiCraftContext<? extends AEBaseMenu> context, List<Widget> widgets,
+                    GuiGraphics draw) {
+        }
+
+        static final class Success extends Result {
+            @Override
+            boolean canCraft() {
+                return true;
+            }
+        }
+
+        /**
+         * There are missing ingredients, but at least one is present.
+         */
+        public static final class PartiallyCraftable extends Result {
+            private final CraftingTermMenu.MissingIngredientSlots missingSlots;
+            private final Set<Integer> inputSlotKeys;
+
+            public PartiallyCraftable(CraftingTermMenu.MissingIngredientSlots missingSlots) {
+                this(missingSlots, Set.of());
+            }
+
+            public PartiallyCraftable(CraftingTermMenu.MissingIngredientSlots missingSlots, Set<Integer> inputSlotKeys) {
+                this.missingSlots = missingSlots;
+                this.inputSlotKeys = Set.copyOf(inputSlotKeys);
+            }
+
+            @Override
+            boolean canCraft() {
+                return true;
+            }
+
+            @Override
+            List<Component> getTooltip(EmiRecipe recipe, EmiCraftContext<?> context) {
+                // EMI caches this tooltip, we cannot dynamically react to control being held here
+                return TransferHelper.createCraftingTooltip(missingSlots, false);
+            }
+
+            @Override
+            void render(EmiRecipe recipe, EmiCraftContext<? extends AEBaseMenu> context, List<Widget> widgets,
+                        GuiGraphics guiGraphics) {
+                renderMissingAndCraftableSlotOverlays(getRecipeInputSlots(recipe, widgets, inputSlotKeys), guiGraphics,
+                        missingSlots.missingSlots(),
+                        missingSlots.craftableSlots());
+            }
+        }
+
+        /**
+         * Indicates that some of the slots can already be crafted by the auto-crafting system.
+         */
+        static final class EncodeWithCraftables extends Result {
+            private final Set<AEKey> craftableKeys;
+
+            /**
+             * @param craftableKeys All keys that the current system can auto-craft.
+             */
+            public EncodeWithCraftables(Set<AEKey> craftableKeys) {
+                this.craftableKeys = craftableKeys;
+            }
+
+            @Override
+            boolean canCraft() {
+                return true;
+            }
+
+            @Override
+            List<Component> getTooltip(EmiRecipe emiRecipe, EmiCraftContext<?> context) {
+                var anyCraftable = emiRecipe.getInputs().stream()
+                        .anyMatch(ing -> isCraftable(craftableKeys, ing));
+                if (anyCraftable) {
+                    return TransferHelper.createEncodingTooltip(true);
+                }
+                return null;
+            }
+
+            @Override
+            void render(EmiRecipe recipe, EmiCraftContext<? extends AEBaseMenu> context, List<Widget> widgets,
+                        GuiGraphics guiGraphics) {
+                for (var widget : widgets) {
+                    if (widget instanceof SlotWidget slot && isInputSlot(slot)) {
+                        if (isCraftable(craftableKeys, slot.getStack())) {
+                            var poseStack = guiGraphics.pose();
+                            poseStack.pushPose();
+                            poseStack.translate(0, 0, 400);
+                            var bounds = getInnerBounds(slot);
+                            guiGraphics.fill(bounds.x(), bounds.y(), bounds.right(), bounds.bottom(),
+                                    BLUE_SLOT_HIGHLIGHT_COLOR);
+                            poseStack.popPose();
+                        }
+                    }
+                }
+            }
+
+            private static boolean isCraftable(Set<AEKey> craftableKeys, EmiIngredient ingredient) {
+                return ingredient.getEmiStacks().stream().anyMatch(emiIngredient -> {
+                    var stack = EmiStackHelper.toGenericStack(emiIngredient);
+                    return stack != null && craftableKeys.contains(stack.what());
+                });
+            }
+        }
+
+        static final class NotApplicable extends Result {
+            @Override
+            boolean canCraft() {
+                return false;
+            }
+        }
+
+        static final class Error extends Result {
+            private final Component message;
+            private final Set<Integer> missingSlots;
+            private final Set<Integer> inputSlotKeys;
+
+            public Error(Component message, Set<Integer> missingSlots) {
+                this(message, missingSlots, Set.of());
+            }
+
+            public Error(Component message, Set<Integer> missingSlots, Set<Integer> inputSlotKeys) {
+                this.message = message;
+                this.missingSlots = missingSlots;
+                this.inputSlotKeys = Set.copyOf(inputSlotKeys);
+            }
+
+            public Component getMessage() {
+                return message;
+            }
+
+            @Override
+            boolean canCraft() {
+                return false;
+            }
+
+            @Override
+            void render(EmiRecipe recipe, EmiCraftContext<? extends AEBaseMenu> context, List<Widget> widgets,
+                        GuiGraphics guiGraphics) {
+
+                renderMissingAndCraftableSlotOverlays(getRecipeInputSlots(recipe, widgets, inputSlotKeys),
+                        guiGraphics, missingSlots,
+                        Set.of());
+            }
+        }
+
+        public static Result.NotApplicable createNotApplicable() {
+            return new Result.NotApplicable();
+        }
+
+        public static Result.Success createSuccessful() {
+            return new Result.Success();
+        }
+
+        public static Result.Error createFailed(Component text) {
+            return new Result.Error(text, Set.of());
+        }
+
+        public static Result.Error createFailed(Component text, Set<Integer> missingSlots) {
+            return new Result.Error(text, missingSlots);
+        }
+
+        public static Result.Error createFailed(Component text, Set<Integer> missingSlots,
+                                                Set<Integer> inputSlotKeys) {
+            return new Result.Error(text, missingSlots, inputSlotKeys);
+        }
+    }
+
+    private static void renderMissingAndCraftableSlotOverlays(Map<Integer, SlotWidget> inputSlots,
+                                                              GuiGraphics guiGraphics,
+                                                              Set<Integer> missingSlots, Set<Integer> craftableSlots) {
+
+        for (var entry : inputSlots.entrySet()) {
+            boolean missing = missingSlots.contains(entry.getKey());
+            boolean craftable = craftableSlots.contains(entry.getKey());
+            if (missing || craftable) {
+                var poseStack = guiGraphics.pose();
+                poseStack.pushPose();
+                poseStack.translate(0, 0, 400);
+                var innerBounds = getInnerBounds(entry.getValue());
+                guiGraphics.fill(innerBounds.x(), innerBounds.y(), innerBounds.right(),
+                        innerBounds.bottom(), missing ? RED_SLOT_HIGHLIGHT_COLOR : BLUE_SLOT_HIGHLIGHT_COLOR);
+                poseStack.popPose();
+            }
+        }
+    }
+
+    private static boolean isInputSlot(SlotWidget slot) {
+        return slot.getRecipe() == null;
+    }
+
+    private static Bounds getInnerBounds(SlotWidget slot) {
+        var bounds = slot.getBounds();
+        return new Bounds(
+                bounds.x() + 1,
+                bounds.y() + 1,
+                bounds.width() - 2,
+                bounds.height() - 2);
+    }
+
+    private static Map<Integer, SlotWidget> getRecipeInputSlots(EmiRecipe recipe, List<Widget> widgets) {
+        List<EmiIngredient> inputs = recipe.getInputs();
+        var inputSlots = new HashMap<Integer, SlotWidget>(inputs.size());
+        for (int i = 0; i < recipe.getInputs().size(); i++) {
+            for (var widget : widgets) {
+                if (widget instanceof SlotWidget slot && isInputSlot(slot)) {
+                    if (slot.getStack() == inputs.get(i)) {
+                        inputSlots.put(i, slot);
+                        break;
+                    }
+                }
+            }
+        }
+        return inputSlots;
+    }
+
+    private static Map<Integer, SlotWidget> getRecipeInputSlots(EmiRecipe recipe, List<Widget> widgets,
+                                                                Set<Integer> inputSlotKeys) {
+        if (inputSlotKeys.isEmpty()) {
+            return getRecipeInputSlots(recipe, widgets);
+        }
+
+        var sortedKeys = inputSlotKeys.stream().sorted().toList();
+        var sortedSlots = widgets.stream()
+                .filter(SlotWidget.class::isInstance)
+                .map(SlotWidget.class::cast)
+                .filter(slot -> isInputSlot(slot) && !slot.getStack().isEmpty())
+                .sorted(Comparator.comparingInt((SlotWidget slot) -> slot.getBounds().y())
+                        .thenComparingInt(slot -> slot.getBounds().x()))
+                .toList();
+
+        var inputSlots = new HashMap<Integer, SlotWidget>(sortedKeys.size());
+        for (int i = 0; i < sortedKeys.size() && i < sortedSlots.size(); i++) {
+            inputSlots.put(sortedKeys.get(i), sortedSlots.get(i));
+        }
+
+        return inputSlots;
+    }
+
+    protected abstract boolean isCraftingRecipe(Recipe<?> recipe, EmiRecipe emiRecipe);
+
+    protected abstract Map<Integer, Ingredient> getGuiSlotToIngredientMap(T menu, ITableRecipeAdapter<?> recipe);
+
+    protected void performTransfer(T menu, ResourceLocation recipeId, ITableRecipeAdapter<?> recipe, boolean craftMissing) {
+        var templateItems = findGoodTemplateItems(recipe, menu);
+        int recipeWidth = NOT_SET_RECIPE_SIZE;
+        int recipeHeight = NOT_SET_RECIPE_SIZE;
+        if (recipe instanceof IShapedTableRecipeAdapter<?> shapedRecipe) {
+            recipeWidth = shapedRecipe.width();
+            recipeHeight = shapedRecipe.height();
+        }
+
+        var message = new ETFillCraftingGridFromRecipePacket(recipe.recipeId(), templateItems, craftMissing, recipeWidth, recipeHeight);
+        MyotusAPI.network().sendToServer(message);
+    }
+
+}

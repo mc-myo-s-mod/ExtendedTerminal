@@ -1,0 +1,19 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "me.myogoo.extendedterminal.mixin",
+  "compatibilityLevel": "JAVA_17",
+  "refmap": "extendedterminal.refmap.json",
+  "mixins": [
+    "wt.CraftingTerminalHandlerMixin",
+    "AEBaseMenuMixin",
+    "SmithingTransformRecipeAccessor",
+    "SmithingTrimRecipeAccessor"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  },
+  "overwrites": {
+    "requireAnnotations": true
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "me.myogoo.extendedterminal.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "refmap": "extendedterminal.refmap.json",
+  "mixins": [
+    "AE2WTLibCraftingTerminalHandlerMixin",
+    "FillCraftingGridFromRecipePacketMixin",
+    "RecipeManagerMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

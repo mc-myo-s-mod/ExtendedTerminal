@@ -1,0 +1,48 @@
+{
+  "$schema": "../schema.json",
+  "includes": [
+    "config.json"
+  ],
+  "text": {
+    "title": {
+      "position": {
+        "left": 8,
+        "top": 7
+      },
+      "text": {
+        "translate": "gui.extendedterminal.config.title"
+      }
+    },
+    "magnet_title": {
+      "position": {
+        "left": 8,
+        "top": 73
+      },
+      "text": {
+        "translate": "gui.ae2wtlib.magnet_settings_title"
+      }
+    }
+  },
+  "widgets": {
+    "pickBlock": {
+      "left": 10,
+      "top": 25,
+      "width": 180
+    },
+    "restock": {
+      "left": 10,
+      "top": 41,
+      "width": 180
+    },
+    "magnet": {
+      "left": 10,
+      "top": 83,
+      "width": 180
+    },
+    "pickupToME": {
+      "left": 10,
+      "top": 98,
+      "width": 180
+    }
+  }
+}

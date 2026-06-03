@@ -1,0 +1,36 @@
+{
+  "type": "forge:conditional",
+  "recipes": [
+    {
+      "conditions": [
+        {
+          "type": "myotus:mod_condition",
+          "active_mod": "ae2wtlib"
+        }
+      ],
+      "recipe": {
+        "type": "minecraft:crafting_shaped",
+        "pattern": [
+          "A",
+          "B",
+          "C"
+        ],
+        "key": {
+          "A": {
+            "item": "ae2:wireless_receiver"
+          },
+          "B": {
+            "item": "extendedterminal:et_terminal"
+          },
+          "C": {
+            "item": "ae2:dense_energy_cell"
+          }
+        },
+        "result": {
+          "item": "extendedterminal:wireless_et_terminal"
+        },
+        "show_notification": false
+      }
+    }
+  ]
+}

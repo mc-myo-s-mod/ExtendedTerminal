@@ -1,0 +1,107 @@
+{
+  "includes": [
+    "../terminals/terminal.json"
+  ],
+  "slots": {
+    "EXTREME_CRAFTING_GRID": {
+      "left": 8,
+      "bottom": 287
+    },
+    "EXTREME_CRAFTING_RESULT": {
+      "left": 82,
+      "bottom": 116
+    },
+    "PLAYER_ARMOR": {
+      "left": -16,
+      "bottom": 82,
+      "grid": "VERTICAL"
+    }
+  },
+  "text": {
+    "dialog_title": {
+      "text": {
+        "translate": "gui.ae2.Terminal"
+      },
+      "position": {
+        "left": 8,
+        "top": 6
+      }
+    },
+    "crafting_grid_title": {
+      "text": {
+        "translate": "gui.extendedterminal.extremeTerminal"
+      },
+      "position": {
+        "left": 8,
+        "bottom": 297
+      }
+    }
+  },
+  "terminalStyle": {
+    "header": {
+      "texture": "guis/ultimate_terminal.png",
+      "textureWidth": 512,
+      "textureHeight": 512,
+      "srcRect": [
+        0,
+        0,
+        195,
+        17
+      ]
+    },
+    "firstRow": {
+      "texture": "guis/ultimate_terminal.png",
+      "textureWidth": 512,
+      "textureHeight": 512,
+      "srcRect": [
+        0,
+        17,
+        195,
+        18
+      ]
+    },
+    "row": {
+      "texture": "guis/ultimate_terminal.png",
+      "textureWidth": 512,
+      "textureHeight": 512,
+      "srcRect": [
+        0,
+        35,
+        195,
+        18
+      ]
+    },
+    "lastRow": {
+      "texture": "guis/ultimate_terminal.png",
+      "textureWidth": 512,
+      "textureHeight": 512,
+      "srcRect": [
+        0,
+        53,
+        195,
+        18
+      ]
+    },
+    "bottom": {
+      "texture": "guis/ultimate_terminal.png",
+      "textureWidth": 512,
+      "textureHeight": 512,
+      "srcRect": [
+        0,
+        71,
+        195,
+        300
+      ]
+    }
+  },
+  "widgets": {
+    "clearCraftingGrid": {
+      "left": 149,
+      "bottom": 124
+    },
+    "clearToPlayerInv": {
+      "left": 159,
+      "bottom": 124
+    }
+  }
+}

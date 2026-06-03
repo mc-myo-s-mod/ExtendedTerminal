@@ -1,0 +1,185 @@
+plugins {
+    id 'base'
+    id 'idea'
+}
+
+def loadProjectProperties = { Project target ->
+    def propertiesFile = target.file('gradle.properties')
+    if (!propertiesFile.isFile()) {
+        return
+    }
+
+    def properties = new Properties()
+    propertiesFile.withInputStream { properties.load(it) }
+    properties.each { key, value ->
+        target.extensions.extraProperties.set(key.toString(), value)
+    }
+}
+
+allprojects {
+    loadProjectProperties(project)
+
+    group = findProperty('mod_group_id') ?: 'me.myogoo'
+    version = findProperty('mod_version') ?: 'unspecified'
+
+    repositories {
+        mavenLocal()
+        mavenCentral()
+        maven {
+            name = 'ModMaven'
+            url = "https://modmaven.dev"
+            content {
+                includeGroup "appeng"
+                includeGroup "de.mari_023"
+            }
+        }
+        maven {
+            name = 'CurseMaven'
+            url = "https://cursemaven.com"
+        }
+        maven {
+            name = 'Modrinth'
+            url = "https://api.modrinth.com/maven"
+        }
+        maven {
+            name = 'projectLocal'
+            url = rootProject.layout.projectDirectory.dir('repo').asFile.toURI()
+        }
+    }
+}
+
+subprojects {
+    apply plugin: 'java'
+    apply plugin: 'idea'
+    apply plugin: 'maven-publish'
+
+    tasks.withType(JavaCompile).configureEach {
+        options.encoding = 'UTF-8'
+    }
+
+    tasks.withType(Test).configureEach {
+        useJUnitPlatform()
+    }
+
+    tasks.withType(Javadoc).configureEach {
+        failOnError = false
+        options.encoding = 'UTF-8'
+        options.addStringOption('charSet', 'UTF-8')
+        options.addStringOption('docEncoding', 'UTF-8')
+        options.addStringOption('Xdoclint:none', '-quiet')
+    }
+
+    tasks.withType(org.gradle.api.publish.tasks.GenerateModuleMetadata).configureEach {
+        enabled = false
+    }
+
+    idea {
+        module {
+            downloadSources = true
+            downloadJavadoc = true
+        }
+    }
+
+    publishing {
+        repositories {
+            maven {
+                name = 'projectLocal'
+                url = rootProject.layout.projectDirectory.dir('repo').asFile.toURI()
+            }
+        }
+    }
+
+    tasks.register('publishToLocalMaven') {
+        group = 'publishing'
+        description = 'Publishes the mod jar to the local Maven repository.'
+        dependsOn tasks.named('publishToMavenLocal')
+    }
+}
+
+def modProjects = [
+        project(':forge-1-20-1'),
+        project(':neoforge-1-21-1')
+]
+
+configure(project(':common')) {
+    java {
+        toolchain.languageVersion = JavaLanguageVersion.of(21)
+    }
+
+    dependencies {
+        // Lets the ET common module resolve Myotus common/API classes while editing shared sources.
+        compileOnly "me.myogoo:myotus:${project(':neoforge-1-21-1').myotus_version}"
+    }
+}
+
+configure(modProjects) {
+    def commonJavaSourceDir = rootProject.layout.projectDirectory.dir('common/src/main/java').asFile
+    def commonResourcesSourceDir = rootProject.layout.projectDirectory.dir('common/src/main/resources').asFile
+    def generatedCommonJavaDir = layout.buildDirectory.dir('generated/sources/extendedTerminalCommon/java')
+    def generatedCommonResourcesDir = layout.buildDirectory.dir('generated/resources/extendedTerminalCommon')
+
+    def syncExtendedTerminalCommonJava = tasks.register('syncExtendedTerminalCommonJava', Sync) {
+        from commonJavaSourceDir
+        into generatedCommonJavaDir
+    }
+
+    def syncExtendedTerminalCommonResources = tasks.register('syncExtendedTerminalCommonResources', Sync) {
+        from commonResourcesSourceDir
+        into generatedCommonResourcesDir
+    }
+
+    def generatedCommonJavaSources = files(generatedCommonJavaDir).builtBy(syncExtendedTerminalCommonJava)
+    def generatedCommonResources = files(generatedCommonResourcesDir).builtBy(syncExtendedTerminalCommonResources)
+
+    base {
+        archivesName = "${project.mod_name}-${project.minecraft_version}"
+    }
+
+    sourceSets {
+        main {
+            java.srcDir generatedCommonJavaSources
+            resources.srcDir generatedCommonResources
+            resources.srcDir 'src/generated/resources'
+        }
+    }
+
+    tasks.named('compileJava').configure {
+        dependsOn syncExtendedTerminalCommonJava
+    }
+
+    tasks.named('processResources').configure {
+        dependsOn syncExtendedTerminalCommonResources
+    }
+
+    tasks.matching { it.name in ['genIntellijRuns', 'neoForgeIdeSync', 'idea', 'ideaModule'] }.configureEach {
+        dependsOn syncExtendedTerminalCommonJava
+        dependsOn syncExtendedTerminalCommonResources
+    }
+
+    idea {
+        module {
+            sourceDirs += generatedCommonJavaDir.get().asFile
+            generatedSourceDirs += generatedCommonJavaDir.get().asFile
+            resourceDirs += generatedCommonResourcesDir.get().asFile
+        }
+    }
+
+    tasks.named('jar', Jar).configure {
+        manifest {
+            attributes(["Specification-Title"     : mod_id,
+                        "Specification-Vendor"    : mod_authors,
+                        "Specification-Version"   : "1",
+                        "Implementation-Title"    : project.name,
+                        "Implementation-Version"  : project.version.toString(),
+                        "Implementation-Vendor"   : mod_authors,
+                        "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")])
+        }
+    }
+}
+
+tasks.register('syncIntellij') {
+    group = 'ide'
+    description = 'Prepares IntelliJ metadata and run configurations for all Extended Terminal modules.'
+    dependsOn ':forge-1-20-1:genIntellijRuns'
+    dependsOn ':neoforge-1-21-1:neoForgeIdeSync'
+}

@@ -1,0 +1,74 @@
+package me.myogoo.extendedterminal.api.adapter.recipe.table;
+
+import com.blakebr0.extendedcrafting.api.crafting.ITableRecipe;
+import com.blakebr0.extendedcrafting.crafting.recipe.ShapedTableRecipe;
+import com.blakebr0.extendedcrafting.crafting.recipe.ShapelessTableRecipe;
+import committee.nova.mods.avaritia.api.common.crafting.ITierCraftingRecipe;
+import committee.nova.mods.avaritia.common.crafting.recipe.ShapedTableCraftingRecipe;
+import committee.nova.mods.avaritia.common.crafting.recipe.ShapelessTableCraftingRecipe;
+import me.myogoo.extendedterminal.adapter.recipe.table.ShapedTableRecipeAdapter;
+import me.myogoo.extendedterminal.adapter.recipe.table.ShapelessTableRecipeAdapter;
+import me.myogoo.extendedterminal.api.adapter.recipe.IRecipeAdapter;
+import me.myogoo.extendedterminal.menu.ETTerminalBaseMenu;
+import net.byAqua3.avaritia.recipe.RecipeExtremeCrafting;
+import net.byAqua3.avaritia.recipe.RecipeExtremeShaped;
+import net.byAqua3.avaritia.recipe.RecipeExtremeShapeless;
+import net.minecraft.core.NonNullList;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.CraftingRecipe;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.ShapedRecipe;
+import net.minecraft.world.item.crafting.ShapelessRecipe;
+import me.myogoo.extendedterminal.api.annotation.AvaritiaNeo;
+import me.myogoo.extendedterminal.api.annotation.ExtendedCrafting;
+import me.myogoo.extendedterminal.api.annotation.ReAvaritia;
+
+public interface ITableRecipeAdapter extends IRecipeAdapter {
+    int tier();
+
+    int gridSize();
+    int sideLength();
+
+    NonNullList<Ingredient> ensureFittedCraftingGrid();
+    NonNullList<ItemStack> findGoodTemplateItems(ETTerminalBaseMenu<?> menu);
+
+    static ITableRecipeAdapter of(CraftingRecipe recipe) {
+        if (recipe instanceof ShapedRecipe shaped) {
+            return new ShapedTableRecipeAdapter(shaped);
+        } else if (recipe instanceof ShapelessRecipe shapeless) {
+            return new ShapelessTableRecipeAdapter(shapeless);
+        } else {
+            return new ShapelessTableRecipeAdapter(recipe);
+        }
+    }
+
+    @ExtendedCrafting
+    static ITableRecipeAdapter of(ITableRecipe recipe) {
+        if (recipe instanceof ShapedTableRecipe shaped) {
+            return new ShapedTableRecipeAdapter(shaped);
+        } else if (recipe instanceof ShapelessTableRecipe shapeless) {
+            return new ShapelessTableRecipeAdapter(shapeless);
+        }
+        throw new IllegalArgumentException("Unknown ITableRecipe implementation: " + recipe.getClass().getName());
+    }
+
+    @ReAvaritia
+    static ITableRecipeAdapter of(ITierCraftingRecipe recipe) {
+        if (recipe instanceof ShapedTableCraftingRecipe shaped) {
+            return new ShapedTableRecipeAdapter(shaped);
+        } else if (recipe instanceof ShapelessTableCraftingRecipe shapeless) {
+            return new ShapelessTableRecipeAdapter(shapeless);
+        }
+        throw new IllegalArgumentException("Unknown ITierCraftingRecipe implementation: " + recipe.getClass().getName());
+    }
+
+    @AvaritiaNeo
+    static ITableRecipeAdapter of(RecipeExtremeCrafting recipe) {
+        if (recipe instanceof RecipeExtremeShaped shaped) {
+            return new ShapedTableRecipeAdapter(shaped);
+        } else if (recipe instanceof RecipeExtremeShapeless shapeless) {
+            return new ShapelessTableRecipeAdapter(shapeless);
+        }
+        throw new IllegalArgumentException("Unknown RecipeExtremeCrafting implementation: " + recipe.getClass().getName());
+    }
+}
