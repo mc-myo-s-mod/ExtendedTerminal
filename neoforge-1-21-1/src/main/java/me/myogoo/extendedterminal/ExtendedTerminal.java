@@ -13,7 +13,6 @@ import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.InterModComms;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
-import net.neoforged.neoforge.common.NeoForge;
 import org.slf4j.Logger;
 import me.myogoo.extendedterminal.api.annotation.InvTweaks;
 
@@ -44,7 +43,6 @@ public class ExtendedTerminal {
             InterModComms.sendTo("invtweaks", "blacklist-screen", () -> "me.myogoo.extendedterminal.menu.*");
         }
 
-        NeoForge.EVENT_BUS.register(ETRecipeGen.class);
         modEventBus.addListener(ETNetwork::init);
 
     }

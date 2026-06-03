@@ -8,8 +8,7 @@
     "wt.CraftingTerminalHandlerMixin",
     "AEBaseMenuMixin",
     "SmithingTransformRecipeAccessor",
-    "SmithingTrimRecipeAccessor",
-    "RecipeManagerMixin"
+    "SmithingTrimRecipeAccessor"
   ],
   "injectors": {
     "defaultRequire": 1

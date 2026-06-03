@@ -1,10 +1,11 @@
 package me.myogoo.extendedterminal.integration;
 
 import me.myogoo.extendedterminal.ExtendedTerminal;
-import me.myogoo.extendedterminal.util.mod.AnnotationScanner;
 import me.myogoo.myotus.api.MyotusAPI;
 import me.myogoo.myotus.api.annotation.MyoMod;
 import me.myogoo.myotus.api.annotation.MyotusSubscriber;
+import me.myogoo.myotus.api.util.SafeClass;
+import me.myogoo.myotus.util.reflect.annotation.AnnotationScanner;
 import org.objectweb.asm.Type;
 
 import java.lang.annotation.Annotation;

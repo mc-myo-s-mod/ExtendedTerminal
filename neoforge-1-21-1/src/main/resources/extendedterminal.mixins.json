@@ -6,8 +6,7 @@
   "refmap": "extendedterminal.refmap.json",
   "mixins": [
     "AE2WTLibCraftingTerminalHandlerMixin",
-    "FillCraftingGridFromRecipePacketMixin",
-    "RecipeManagerMixin"
+    "FillCraftingGridFromRecipePacketMixin"
   ],
   "injectors": {
     "defaultRequire": 1
