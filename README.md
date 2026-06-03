@@ -1,5 +1,5 @@
 <p align="center">
-    <img width="200" src="readme/extended_terminal.png" alt="logo">  
+    <img width="200" src="readme/img/extended_terminal.png" alt="logo">  
 </p>
 <h1 align="center">Extended Terminal</h1>
 <p align="center">
