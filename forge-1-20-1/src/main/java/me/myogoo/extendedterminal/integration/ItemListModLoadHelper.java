@@ -1,7 +1,6 @@
 package me.myogoo.extendedterminal.integration;
 
 import me.myogoo.extendedterminal.ExtendedTerminal;
-import me.myogoo.extendedterminal.util.SafeClass;
 import me.myogoo.extendedterminal.util.mod.AnnotationScanner;
 import me.myogoo.myotus.api.MyotusAPI;
 import me.myogoo.myotus.api.annotation.MyoMod;

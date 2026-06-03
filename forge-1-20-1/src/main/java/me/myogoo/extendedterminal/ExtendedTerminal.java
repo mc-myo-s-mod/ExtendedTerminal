@@ -47,6 +47,7 @@ public class ExtendedTerminal {
         }
 
         MinecraftForge.EVENT_BUS.register(this);
+        MinecraftForge.EVENT_BUS.register(ETRecipeGen.class);
     }
 
     public static ResourceLocation makeId(String path) {
