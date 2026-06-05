@@ -28,5 +28,6 @@
   "gui.extendedterminal.endTerminal": "엔드 조합 터미널",
   "gui.extendedterminal.extremeTerminal": "익스트림 조합 터미널",
 
-  "gui.ae2wtlib.pick_block.text": "블록 선택 활성화"
+  "gui.ae2wtlib.pick_block.text": "블록 선택 활성화",
+  "gui.extendedterminal.united_terminal.recipe_kind": "United 레시피 타입 변경: %s"
 }

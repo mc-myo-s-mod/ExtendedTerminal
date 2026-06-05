@@ -14,5 +14,6 @@
   "gui.extendedterminal.eliteTerminal": "精鋭型クラフトターミナル",
   "gui.extendedterminal.ultimateTerminal": "究極型クラフトターミナル",
 
-  "gui.ae2wtlib.pick_block.text": "ブロック選択を有効化"
+  "gui.ae2wtlib.pick_block.text": "ブロック選択を有効化",
+  "gui.extendedterminal.united_terminal.recipe_kind": "United レシピタイプを切り替え: %s"
 }

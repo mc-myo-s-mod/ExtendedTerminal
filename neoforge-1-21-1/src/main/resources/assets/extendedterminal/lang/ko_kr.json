@@ -44,5 +44,6 @@
   "gui.extendedterminal.anvilpanel": "모루",
   "gui.extendedterminal.anvilpanel.xpcost": "경험치 비용: %d",
 
-  "extendedterminal.jei.notsupportederror": "현재 지원하지 않는 레시피입니다",
+  "extendedterminal.jei.notsupportederror": "현재 지원하지 않는 레시피입니다",,
+  "gui.extendedterminal.united_terminal.recipe_kind": "United 레시피 타입 변경: %s"
 }

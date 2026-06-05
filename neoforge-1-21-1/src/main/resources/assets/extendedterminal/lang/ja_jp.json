@@ -14,5 +14,6 @@
   "gui.extendedterminal.basicTerminal": "基本型クラフトターミナル",
   "gui.extendedterminal.advancedTerminal": "発展型クラフトターミナル",
   "gui.extendedterminal.eliteTerminal": "精鋭型クラフトターミナル",
-  "gui.extendedterminal.ultimateTerminal": "究極型クラフトターミナル"
+  "gui.extendedterminal.ultimateTerminal": "究極型クラフトターミナル",
+  "gui.extendedterminal.united_terminal.recipe_kind": "United レシピタイプを切り替え: %s"
 }

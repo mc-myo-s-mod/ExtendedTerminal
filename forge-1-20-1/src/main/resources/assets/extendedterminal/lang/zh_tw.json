@@ -14,5 +14,6 @@
   "gui.extendedterminal.eliteTerminal": "精英合成拓展終端機",
   "gui.extendedterminal.ultimateTerminal": "究極合成拓展終端機",
 
-  "gui.ae2wtlib.pick_block.text": "啟用選取方塊"
+  "gui.ae2wtlib.pick_block.text": "啟用選取方塊",
+  "gui.extendedterminal.united_terminal.recipe_kind": "切換 United 配方類型：%s"
 }

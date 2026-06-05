@@ -46,5 +46,6 @@
 
   "extendedterminal.jei.notsupportederror": "This Recipe Currently Not Supported",
 
-  "gui.ae2wtlib.pick_block.text": "Enable Pick Block"
+  "gui.ae2wtlib.pick_block.text": "Enable Pick Block",
+  "gui.extendedterminal.united_terminal.recipe_kind": "Cycle United recipe type: %s"
 }
