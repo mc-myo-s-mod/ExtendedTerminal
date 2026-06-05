@@ -1,0 +1,21 @@
+{
+  "type": "forge:conditional",
+  "recipes": [
+    {
+      "conditions": [
+        {
+          "type": "myotus:mod_condition",
+          "active_mod": "ae2wtlib"
+        },
+        {
+          "type": "myotus:mod_condition",
+          "active_mod": "extendedcrafting"
+        }
+      ],
+      "recipe": {
+        "type": "ae2wtlib:upgrade",
+        "terminal": "extendedterminal:wireless_united_terminal"
+      }
+    }
+  ]
+}

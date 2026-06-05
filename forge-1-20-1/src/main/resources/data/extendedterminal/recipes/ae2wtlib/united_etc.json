@@ -1,0 +1,28 @@
+{
+  "type": "forge:conditional",
+  "recipes": [
+    {
+      "conditions": [
+        {
+          "type": "myotus:mod_condition",
+          "active_mod": "ae2wtlib"
+        },
+        {
+          "type": "myotus:mod_condition",
+          "active_mod": "extendedcrafting"
+        }
+      ],
+      "recipe": {
+        "type": "ae2wtlib:combine",
+        "terminalA": {
+          "item": "extendedterminal:wireless_united_terminal"
+        },
+        "terminalB": {
+          "item": "ae2:wireless_crafting_terminal"
+        },
+        "terminalAName": "wireless_united_terminal",
+        "terminalBName": "crafting"
+      }
+    }
+  ]
+}

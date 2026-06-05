@@ -3,6 +3,10 @@
     {
       "type": "myotus:mod_condition",
       "active_mod": "ae2wtlib"
+    },
+    {
+      "type": "myotus:mod_condition",
+      "active_mod": "extendedcrafting"
     }
   ],
   "type": "minecraft:crafting_shaped",
@@ -16,14 +20,14 @@
       "item": "ae2:wireless_receiver"
     },
     "B": {
-      "item": "extendedterminal:et_terminal"
+      "item": "extendedterminal:united_terminal"
     },
     "C": {
       "item": "ae2:dense_energy_cell"
     }
   },
   "result": {
-    "id": "extendedterminal:wireless_et_terminal"
+    "id": "extendedterminal:wireless_united_terminal"
   },
   "show_notification": false
 }
