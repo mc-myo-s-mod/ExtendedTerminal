@@ -33,6 +33,10 @@ public class ECWorkstation {
             addWorkstation(registry, getEmiCategory(ADVANCED_TABLE_CATEGORY_ID), EmiStack.of(ETParts.ADVANCED_TERMINAL_PART));
             addWorkstation(registry, getEmiCategory(ELITE_TABLE_CATEGORY_ID), EmiStack.of(ETParts.ELITE_TERMINAL_PART));
             addWorkstation(registry, getEmiCategory(ULTIMATE_TABLE_CATEGORY_ID), EmiStack.of(ETParts.ULTIMATE_TERMINAL_PART));
+            addWorkstation(registry, getEmiCategory(BASIC_TABLE_CATEGORY_ID), EmiStack.of(ETParts.UNITED_TERMINAL_PART));
+            addWorkstation(registry, getEmiCategory(ADVANCED_TABLE_CATEGORY_ID), EmiStack.of(ETParts.UNITED_TERMINAL_PART));
+            addWorkstation(registry, getEmiCategory(ELITE_TABLE_CATEGORY_ID), EmiStack.of(ETParts.UNITED_TERMINAL_PART));
+            addWorkstation(registry, getEmiCategory(ULTIMATE_TABLE_CATEGORY_ID), EmiStack.of(ETParts.UNITED_TERMINAL_PART));
         });
     }
 

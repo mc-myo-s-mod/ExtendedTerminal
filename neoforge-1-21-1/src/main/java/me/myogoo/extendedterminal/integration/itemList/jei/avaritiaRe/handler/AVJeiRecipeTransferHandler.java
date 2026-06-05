@@ -1,5 +1,7 @@
 package me.myogoo.extendedterminal.integration.itemList.jei.avaritiaRe.handler;
 
+import me.myogoo.extendedterminal.menu.extendedcrafting.UnitedTerminalMenu;
+import me.myogoo.extendedterminal.menu.ETTerminalBaseMenu;
 import appeng.core.localization.ItemModText;
 import committee.nova.mods.avaritia.api.common.crafting.ITierCraftingRecipe;
 import me.myogoo.extendedterminal.api.adapter.recipe.table.ITableRecipeAdapter;
@@ -24,7 +26,7 @@ import java.util.Objects;
 import static appeng.integration.modules.itemlists.TransferHelper.BLUE_PLUS_BUTTON_COLOR;
 import static appeng.integration.modules.itemlists.TransferHelper.ORANGE_PLUS_BUTTON_COLOR;
 
-public class AVJeiRecipeTransferHandler<T extends AvaritiaTerminalBaseMenu> extends AbstractTableHolderRecipeHandler<T, ITierCraftingRecipe, RecipeHolder<ITierCraftingRecipe>> {
+public class AVJeiRecipeTransferHandler<T extends ETTerminalBaseMenu<?>> extends AbstractTableHolderRecipeHandler<T, ITierCraftingRecipe, RecipeHolder<ITierCraftingRecipe>> {
     private final IRecipeTransferHandlerHelper helper;
 
     public AVJeiRecipeTransferHandler(Class<T> containerClass, MenuType<T> menuType, RecipeType<RecipeHolder<ITierCraftingRecipe>> recipeType, IRecipeTransferHandlerHelper helper) {

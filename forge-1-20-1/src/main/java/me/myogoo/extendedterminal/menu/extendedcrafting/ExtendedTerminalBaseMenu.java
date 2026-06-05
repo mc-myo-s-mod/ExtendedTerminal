@@ -3,6 +3,7 @@ package me.myogoo.extendedterminal.menu.extendedcrafting;
 import appeng.api.inventories.ISegmentedInventory;
 import appeng.api.inventories.InternalInventory;
 import appeng.api.storage.ITerminalHost;
+import appeng.api.storage.MEStorage;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.InventoryActionPacket;
 import appeng.helpers.InventoryAction;
@@ -15,6 +16,8 @@ import me.myogoo.extendedterminal.api.config.IETTerminalConfig;
 import me.myogoo.extendedterminal.menu.ETTerminalBaseMenu;
 import me.myogoo.extendedterminal.menu.ETMenuType;
 import me.myogoo.extendedterminal.menu.extendedcrafting.slot.ExCraftingTerminalSlot;
+import me.myogoo.extendedterminal.menu.slot.ETCraftingBaseSlot;
+import net.minecraft.core.NonNullList;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.CraftingContainer;
@@ -22,11 +25,17 @@ import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.TransientCraftingContainer;
 import net.minecraft.world.item.ItemStack;
 
+import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.List;
+
 public class ExtendedTerminalBaseMenu extends ETTerminalBaseMenu<ITableRecipe> {
-    private final ExCraftingTerminalSlot outputSlot;
+    protected final ETCraftingBaseSlot<?, ?> outputSlot;
     private final ISegmentedInventory craftingInventoryHost;
-    private final CraftingMatrixSlot[] craftingSlots;
+    protected final CraftingMatrixSlot[] craftingSlots;
     private final CraftingContainer recipeTestContainer;
+    @Nullable
+    protected List<ItemStack> lastTestedItems;
 
     public ExtendedTerminalBaseMenu(MenuType<?> menuType, int id, Inventory ip, ITerminalHost host, ETMenuType etMenuType, IETTerminalConfig config) {
         super(menuType, id, ip, host, etMenuType, config);
@@ -39,11 +48,17 @@ public class ExtendedTerminalBaseMenu extends ETTerminalBaseMenu<ITableRecipe> {
             this.addSlot(this.craftingSlots[i] = new CraftingMatrixSlot(this,craftingGridInv,i), this.menuType.getSlotSemanticGrid());
         }
 
-        this.addSlot(this.outputSlot = new ExCraftingTerminalSlot(this.getPlayerInventory().player, this.getActionSource(),
-                        this.powerSource, host.getInventory(), craftingGridInv, craftingGridInv, this, this.menuType),
+        this.addSlot(this.outputSlot = createOutputSlot(host.getInventory(), craftingGridInv),
                 this.menuType.getSlotSemanticResult());
 
-        updateCurrentRecipeAndOutput(true);
+        if (etMenuType != ETMenuType.UNITED_TERMINAL) {
+            updateCurrentRecipeAndOutput(true);
+        }
+    }
+
+    protected ETCraftingBaseSlot<?, ?> createOutputSlot(MEStorage storage, InternalInventory craftingGridInv) {
+        return new ExCraftingTerminalSlot(this.getPlayerInventory().player, this.getActionSource(),
+                this.powerSource, storage, craftingGridInv, craftingGridInv, this, this.menuType);
     }
 
     @Override
@@ -83,6 +98,27 @@ public class ExtendedTerminalBaseMenu extends ETTerminalBaseMenu<ITableRecipe> {
             this.outputSlot.set(this.currentRecipe.assemble(recipeTestContainer,level.registryAccess()));
         }
     }
+
+    protected List<ItemStack> getCraftingSlotItems() {
+        var testItems = new ArrayList<ItemStack>(this.craftingSlots.length);
+        for (var craftingSlot : craftingSlots) {
+            testItems.add(craftingSlot.getItem().copy());
+        }
+        return testItems;
+    }
+
+    public CraftingContainer createTableInput(List<ItemStack> items, @Nullable ITableRecipe recipe) {
+        var positioned = NonNullList.withSize(this.menuType.getGridSize(), ItemStack.EMPTY);
+        for (int i = 0; i < positioned.size() && i < items.size(); i++) {
+            positioned.set(i, items.get(i).copy());
+        }
+        return new TransientCraftingContainer(this, this.menuType.getGridSideLength(), this.menuType.getGridSideLength(), positioned);
+    }
+
+    protected int getInputSideLength(@Nullable ITableRecipe recipe) {
+        return this.menuType.getGridSideLength();
+    }
+
     public ITableRecipe getCurrentRecipe() {
         return this.currentRecipe;
     }

@@ -1,5 +1,7 @@
 package me.myogoo.extendedterminal.integration.emi.avaritiaRe.handler;
 
+import me.myogoo.extendedterminal.menu.extendedcrafting.UnitedTerminalMenu;
+import me.myogoo.extendedterminal.menu.ETTerminalBaseMenu;
 import me.myogoo.extendedterminal.adapter.recipe.TableRecipeAdapters;
 
 import appeng.core.localization.ItemModText;
@@ -25,7 +27,7 @@ import java.util.Map;
 
 import static me.myogoo.extendedterminal.integration.ItemListTermCraftingHelper.ensureFittedCraftingGrid;
 
-public class AVTerminalRecipeHandler<T extends AvaritiaTerminalBaseMenu> extends AbstractEmiTableRecipeHandler<T> {
+public class AVTerminalRecipeHandler<T extends ETTerminalBaseMenu<?>> extends AbstractEmiTableRecipeHandler<T> {
     private final ETMenuType menuType;
     private final EmiRecipeCategory category;
     public AVTerminalRecipeHandler(EmiRecipeCategory category, Class<T> containerClass, ETMenuType menuType) {
@@ -74,7 +76,7 @@ public class AVTerminalRecipeHandler<T extends AvaritiaTerminalBaseMenu> extends
         } else {
             // Thank you RS for pioneering this amazing feature! :)
             boolean craftMissing = AbstractContainerScreen.hasControlDown();
-            performTransfer(menu, recipe.getId(), adapterRecipe, craftMissing);
+            performTransfer(menu, recipe.getId(), adapterRecipe, craftMissing, UnitedTerminalMenu.UnitedRecipeKind.RE_AVARITIA);
         }
 
         // No error

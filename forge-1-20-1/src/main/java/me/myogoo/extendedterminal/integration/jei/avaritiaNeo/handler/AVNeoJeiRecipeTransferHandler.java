@@ -1,5 +1,7 @@
 package me.myogoo.extendedterminal.integration.jei.avaritiaNeo.handler;
 
+import me.myogoo.extendedterminal.menu.extendedcrafting.UnitedTerminalMenu;
+import me.myogoo.extendedterminal.menu.ETTerminalBaseMenu;
 import me.myogoo.extendedterminal.adapter.recipe.TableRecipeAdapters;
 
 import appeng.core.localization.ItemModText;
@@ -29,7 +31,7 @@ import static appeng.integration.modules.jeirei.TransferHelper.BLUE_PLUS_BUTTON_
 import static appeng.integration.modules.jeirei.TransferHelper.ORANGE_PLUS_BUTTON_COLOR;
 import static me.myogoo.extendedterminal.integration.ItemListTermCraftingHelper.ensureFittedCraftingGrid;
 
-public class AVNeoJeiRecipeTransferHandler<T extends NeoExtremeTerminalMenu> extends AbstractTableRecipeHandler<T, RecipeExtremeCrafting> {
+public class AVNeoJeiRecipeTransferHandler<T extends ETTerminalBaseMenu<?>> extends AbstractTableRecipeHandler<T, RecipeExtremeCrafting> {
     private final IRecipeTransferHandlerHelper helper;
 
     public AVNeoJeiRecipeTransferHandler(Class<T> containerClass, MenuType<T> menuType, RecipeType<RecipeExtremeCrafting> recipeType, IRecipeTransferHandlerHelper helper) {
@@ -69,7 +71,7 @@ public class AVNeoJeiRecipeTransferHandler<T extends NeoExtremeTerminalMenu> ext
                 return new Result.PartiallyCraftable(missingSlots, color, craftMissing);
             }
         } else {
-            performTransfer(menu, adapterRecipe, craftMissing);
+            performTransfer(menu, adapterRecipe, craftMissing, UnitedTerminalMenu.UnitedRecipeKind.AVARITIA_NEO);
         }
 
         return Result.createSuccessful();

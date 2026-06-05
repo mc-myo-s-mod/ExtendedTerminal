@@ -10,6 +10,7 @@ import me.myogoo.extendedterminal.menu.extendedcrafting.AdvancedTerminalMenu;
 import me.myogoo.extendedterminal.menu.extendedcrafting.BasicTerminalMenu;
 import me.myogoo.extendedterminal.menu.extendedcrafting.EliteTerminalMenu;
 import me.myogoo.extendedterminal.menu.extendedcrafting.UltimateTerminalMenu;
+import me.myogoo.extendedterminal.menu.extendedcrafting.UnitedTerminalMenu;
 import me.myogoo.myotus.api.annotation.MyotusSubscriber;
 
 import java.util.function.Consumer;
@@ -36,6 +37,18 @@ public class ECRecipeHandler {
             addTerminalHandler(getEmiCategory(ULTIMATE_TABLE_CATEGORY_ID),
                     category -> registry.addRecipeHandler(UltimateTerminalMenu.TYPE,
                             new ECTerminalRecipeHandler<>(category, UltimateTerminalMenu.class, ETMenuType.ULTIMATE_TERMINAL)));
+            addTerminalHandler(getEmiCategory(BASIC_TABLE_CATEGORY_ID),
+                    category -> registry.addRecipeHandler(UnitedTerminalMenu.TYPE,
+                            new ECTerminalRecipeHandler<>(category, UnitedTerminalMenu.class, ETMenuType.UNITED_TERMINAL)));
+            addTerminalHandler(getEmiCategory(ADVANCED_TABLE_CATEGORY_ID),
+                    category -> registry.addRecipeHandler(UnitedTerminalMenu.TYPE,
+                            new ECTerminalRecipeHandler<>(category, UnitedTerminalMenu.class, ETMenuType.UNITED_TERMINAL)));
+            addTerminalHandler(getEmiCategory(ELITE_TABLE_CATEGORY_ID),
+                    category -> registry.addRecipeHandler(UnitedTerminalMenu.TYPE,
+                            new ECTerminalRecipeHandler<>(category, UnitedTerminalMenu.class, ETMenuType.UNITED_TERMINAL)));
+            addTerminalHandler(getEmiCategory(ULTIMATE_TABLE_CATEGORY_ID),
+                    category -> registry.addRecipeHandler(UnitedTerminalMenu.TYPE,
+                            new ECTerminalRecipeHandler<>(category, UnitedTerminalMenu.class, ETMenuType.UNITED_TERMINAL)));
         });
     }
 

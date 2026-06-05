@@ -15,6 +15,7 @@ import com.google.common.primitives.Ints;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntList;
 import me.myogoo.extendedterminal.integration.ItemListTermCraftingHelper;
+import me.myogoo.extendedterminal.menu.extendedcrafting.UnitedTerminalMenu;
 import me.myogoo.myotus.api.network.IMyotusPacket;
 import me.myogoo.myotus.api.network.MyoPacketContext;
 import me.myogoo.extendedterminal.util.extendedcrafting.TableCraftingHelper;
@@ -39,6 +40,7 @@ public class ETFillCraftingGridFromRecipePacket extends FillRecipeBasePacket imp
     private final boolean craftMissing;
     private final int recipeWidth;
     private final int recipeHeight;
+    private final @Nullable UnitedTerminalMenu.UnitedRecipeKind unitedRecipeKind;
 
 
     public ETFillCraftingGridFromRecipePacket(FriendlyByteBuf stream) {
@@ -54,6 +56,13 @@ public class ETFillCraftingGridFromRecipePacket extends FillRecipeBasePacket imp
         craftMissing = stream.readBoolean();
         recipeWidth = stream.readInt();
         recipeHeight = stream.readInt();
+        int kindOrdinal = stream.readInt();
+        UnitedTerminalMenu.UnitedRecipeKind decodedKind = null;
+        var kinds = UnitedTerminalMenu.UnitedRecipeKind.values();
+        if (kindOrdinal >= 0 && kindOrdinal < kinds.length) {
+            decodedKind = kinds[kindOrdinal];
+        }
+        unitedRecipeKind = decodedKind;
     }
 
 
@@ -64,11 +73,23 @@ public class ETFillCraftingGridFromRecipePacket extends FillRecipeBasePacket imp
             int recipeWidth,
             int recipeHeight
     ) {
+        this(recipeId, ingredientTemplates, craftMissing, recipeWidth, recipeHeight, null);
+    }
+
+    public ETFillCraftingGridFromRecipePacket(
+            @Nullable ResourceLocation recipeId,
+            List<ItemStack> ingredientTemplates,
+            boolean craftMissing,
+            int recipeWidth,
+            int recipeHeight,
+            @Nullable UnitedTerminalMenu.UnitedRecipeKind unitedRecipeKind
+    ) {
         this.recipeId = recipeId;
         this.ingredientTemplates = List.copyOf(ingredientTemplates);
         this.craftMissing = craftMissing;
         this.recipeWidth = recipeWidth;
         this.recipeHeight = recipeHeight;
+        this.unitedRecipeKind = unitedRecipeKind;
     }
 
     @Override
@@ -87,6 +108,7 @@ public class ETFillCraftingGridFromRecipePacket extends FillRecipeBasePacket imp
         stream.writeBoolean(this.craftMissing);
         stream.writeInt(this.recipeWidth);
         stream.writeInt(this.recipeHeight);
+        stream.writeInt(this.unitedRecipeKind == null ? -1 : this.unitedRecipeKind.ordinal());
     }
 
     public static void handle(ETFillCraftingGridFromRecipePacket packet, MyoPacketContext context) {
@@ -104,6 +126,9 @@ public class ETFillCraftingGridFromRecipePacket extends FillRecipeBasePacket imp
         if (!(menu instanceof IMenuCraftingPacket cct)) {
             // Server might have closed the menu before the client-packet is processed. This is not an error.
             return;
+        }
+        if (unitedRecipeKind != null && menu instanceof UnitedTerminalMenu unitedMenu) {
+            unitedMenu.setSelectedRecipeKind(unitedRecipeKind);
         }
 
         @Nullable

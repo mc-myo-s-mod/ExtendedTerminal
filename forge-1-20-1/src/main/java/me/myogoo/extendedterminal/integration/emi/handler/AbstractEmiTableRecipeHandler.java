@@ -20,6 +20,7 @@ import dev.emi.emi.api.widget.Widget;
 import me.myogoo.extendedterminal.api.adapter.recipe.ITableRecipeAdapter;
 import me.myogoo.extendedterminal.api.adapter.recipe.IShapedTableRecipeAdapter;
 import me.myogoo.extendedterminal.menu.ETTerminalBaseMenu;
+import me.myogoo.extendedterminal.menu.extendedcrafting.UnitedTerminalMenu;
 import me.myogoo.extendedterminal.network.serverbound.ETFillCraftingGridFromRecipePacket;
 import me.myogoo.myotus.api.MyotusAPI;
 import net.minecraft.client.Minecraft;
@@ -408,6 +409,11 @@ public abstract class AbstractEmiTableRecipeHandler<T extends ETTerminalBaseMenu
     protected abstract Map<Integer, Ingredient> getGuiSlotToIngredientMap(T menu, ITableRecipeAdapter<?> recipe);
 
     protected void performTransfer(T menu, ResourceLocation recipeId, ITableRecipeAdapter<?> recipe, boolean craftMissing) {
+        performTransfer(menu, recipeId, recipe, craftMissing, null);
+    }
+
+    protected void performTransfer(T menu, ResourceLocation recipeId, ITableRecipeAdapter<?> recipe, boolean craftMissing,
+                                   UnitedTerminalMenu.UnitedRecipeKind unitedRecipeKind) {
         var templateItems = findGoodTemplateItems(recipe, menu);
         int recipeWidth = NOT_SET_RECIPE_SIZE;
         int recipeHeight = NOT_SET_RECIPE_SIZE;
@@ -416,7 +422,7 @@ public abstract class AbstractEmiTableRecipeHandler<T extends ETTerminalBaseMenu
             recipeHeight = shapedRecipe.height();
         }
 
-        var message = new ETFillCraftingGridFromRecipePacket(recipe.recipeId(), templateItems, craftMissing, recipeWidth, recipeHeight);
+        var message = new ETFillCraftingGridFromRecipePacket(recipe.recipeId(), templateItems, craftMissing, recipeWidth, recipeHeight, unitedRecipeKind);
         MyotusAPI.network().sendToServer(message);
     }
 

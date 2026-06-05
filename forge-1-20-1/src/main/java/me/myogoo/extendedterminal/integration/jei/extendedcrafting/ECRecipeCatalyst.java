@@ -27,5 +27,11 @@ public class ECRecipeCatalyst{
             registration.addRecipeCatalyst(ETParts.ELITE_TERMINAL_PART, EliteTableCategory.RECIPE_TYPE);
         if (instance.getUltimateConfig().enableTerminal())
             registration.addRecipeCatalyst(ETParts.ULTIMATE_TERMINAL_PART, UltimateTableCategory.RECIPE_TYPE);
+        if (instance.getUltimateConfig().enableTerminal()) {
+            registration.addRecipeCatalyst(ETParts.UNITED_TERMINAL_PART, BasicTableCategory.RECIPE_TYPE);
+            registration.addRecipeCatalyst(ETParts.UNITED_TERMINAL_PART, AdvancedTableCategory.RECIPE_TYPE);
+            registration.addRecipeCatalyst(ETParts.UNITED_TERMINAL_PART, EliteTableCategory.RECIPE_TYPE);
+            registration.addRecipeCatalyst(ETParts.UNITED_TERMINAL_PART, UltimateTableCategory.RECIPE_TYPE);
+        }
     }
 }

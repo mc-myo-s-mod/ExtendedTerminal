@@ -1,5 +1,7 @@
 package me.myogoo.extendedterminal.integration.itemList.jei.avaritiaNeo.handler;
 
+import me.myogoo.extendedterminal.menu.extendedcrafting.UnitedTerminalMenu;
+import me.myogoo.extendedterminal.menu.ETTerminalBaseMenu;
 import appeng.core.localization.ItemModText;
 import me.myogoo.extendedterminal.api.adapter.recipe.table.ITableRecipeAdapter;
 import me.myogoo.extendedterminal.integration.itemList.jei.handler.AbstractJeiTableRecipeHandler;
@@ -29,7 +31,7 @@ import java.util.function.Supplier;
 import static appeng.integration.modules.itemlists.TransferHelper.BLUE_PLUS_BUTTON_COLOR;
 import static appeng.integration.modules.itemlists.TransferHelper.ORANGE_PLUS_BUTTON_COLOR;
 
-public class AVNeoJeiRecipeTransferHandler<T extends NeoExtremeTerminalMenu>
+public class AVNeoJeiRecipeTransferHandler<T extends ETTerminalBaseMenu<?>>
         extends AbstractJeiTableRecipeHandler<T, RecipeExtremeCrafting>
         implements IRecipeTransferHandler<T, RecipeExtremeCrafting>, IJeiAbstractRecipeHandler {
 

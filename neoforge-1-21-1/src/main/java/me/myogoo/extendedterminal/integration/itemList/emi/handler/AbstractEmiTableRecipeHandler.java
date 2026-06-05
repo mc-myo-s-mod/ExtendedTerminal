@@ -15,6 +15,7 @@ import dev.emi.emi.api.widget.Widget;
 import me.myogoo.extendedterminal.api.adapter.recipe.table.ITableRecipeAdapter;
 import me.myogoo.extendedterminal.integration.itemList.module.ItemListTableRecipeTransferHandler;
 import me.myogoo.extendedterminal.menu.ETTerminalBaseMenu;
+import me.myogoo.extendedterminal.menu.extendedcrafting.UnitedTerminalMenu;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
@@ -180,6 +181,11 @@ public abstract class AbstractEmiTableRecipeHandler<T extends ETTerminalBaseMenu
     }
 
     protected Result doTransfer(T menu, ITableRecipeAdapter recipe, ResourceLocation id, boolean doTransfer) {
+        return doTransfer(menu, recipe, id, doTransfer, null);
+    }
+
+    protected Result doTransfer(T menu, ITableRecipeAdapter recipe, ResourceLocation id, boolean doTransfer,
+                                UnitedTerminalMenu.UnitedRecipeKind unitedRecipeKind) {
         // Find missing ingredient
         var slotToIngredientMap = getGuiSlotToIngredientMap(menu, recipe);
         var missingSlots = menu.findMissingIngredients(slotToIngredientMap);
@@ -198,7 +204,7 @@ public abstract class AbstractEmiTableRecipeHandler<T extends ETTerminalBaseMenu
         } else {
             // Thank you RS for pioneering this amazing feature! :)
             boolean craftMissing = AbstractContainerScreen.hasControlDown();
-            performTransfer(menu, recipe, craftMissing, id);
+            performTransfer(menu, recipe, craftMissing, id, unitedRecipeKind);
         }
         return Result.createSuccessful();
     }

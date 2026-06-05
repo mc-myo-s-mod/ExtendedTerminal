@@ -9,6 +9,7 @@ import me.myogoo.extendedterminal.menu.ETMenuType;
 import me.myogoo.extendedterminal.menu.avaritiaNeo.NeoExtremeTerminalMenu;
 import net.byAqua3.avaritia.compat.emi.AvaritiaEMIPlugin;
 import me.myogoo.extendedterminal.api.annotation.AvaritiaNeo;
+import me.myogoo.extendedterminal.menu.extendedcrafting.UnitedTerminalMenu;
 
 @AvaritiaNeo
 @EMI
@@ -16,6 +17,7 @@ import me.myogoo.extendedterminal.api.annotation.AvaritiaNeo;
 public class AVNeoRecipeHandler {
     @MyotusSubscriber
     public static void init(EmiRegistry registry) {
-        registry.addRecipeHandler(NeoExtremeTerminalMenu.TYPE, new AVNeoEmiRecipeHandler(AvaritiaEMIPlugin.EXTREME_CRAFTING, NeoExtremeTerminalMenu.class, ETMenuType.NEO_EXTREME_TERMINAL));
+        registry.addRecipeHandler(NeoExtremeTerminalMenu.TYPE, new AVNeoEmiRecipeHandler<>(AvaritiaEMIPlugin.EXTREME_CRAFTING, NeoExtremeTerminalMenu.class, ETMenuType.NEO_EXTREME_TERMINAL));
+        registry.addRecipeHandler(UnitedTerminalMenu.TYPE, new AVNeoEmiRecipeHandler<>(AvaritiaEMIPlugin.EXTREME_CRAFTING, UnitedTerminalMenu.class, ETMenuType.UNITED_TERMINAL));
     }
 }

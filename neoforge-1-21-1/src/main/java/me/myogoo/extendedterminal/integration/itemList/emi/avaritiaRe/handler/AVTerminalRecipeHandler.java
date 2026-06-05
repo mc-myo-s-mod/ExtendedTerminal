@@ -1,5 +1,7 @@
 package me.myogoo.extendedterminal.integration.itemList.emi.avaritiaRe.handler;
 
+import me.myogoo.extendedterminal.menu.extendedcrafting.UnitedTerminalMenu;
+import me.myogoo.extendedterminal.menu.ETTerminalBaseMenu;
 import appeng.core.localization.ItemModText;
 import committee.nova.mods.avaritia.api.common.crafting.ITierCraftingRecipe;
 import committee.nova.mods.avaritia.init.compat.emi.category.tables.*;
@@ -14,7 +16,7 @@ import net.minecraft.world.item.crafting.*;
 
 import java.util.Map;
 
-public class AVTerminalRecipeHandler<T extends AvaritiaTerminalBaseMenu> extends AbstractEmiTableRecipeHandler<T>  {
+public class AVTerminalRecipeHandler<T extends ETTerminalBaseMenu<?>> extends AbstractEmiTableRecipeHandler<T>  {
     private final ETMenuType menuType;
     private final EmiRecipeCategory category;
 
@@ -39,7 +41,7 @@ public class AVTerminalRecipeHandler<T extends AvaritiaTerminalBaseMenu> extends
         if (holder == null || !(holder.value() instanceof ITierCraftingRecipe tableRecipe)) {
             return Result.createFailed(ItemModText.INCOMPATIBLE_RECIPE.text());
         }
-        return doTransfer(menu, ITableRecipeAdapter.of(tableRecipe), holder.id(), doTransfer);
+        return doTransfer(menu, ITableRecipeAdapter.of(tableRecipe), holder.id(), doTransfer, UnitedTerminalMenu.UnitedRecipeKind.RE_AVARITIA);
     }
 
     @Override

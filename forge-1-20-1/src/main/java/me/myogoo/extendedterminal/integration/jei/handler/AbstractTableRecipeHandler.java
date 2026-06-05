@@ -8,6 +8,7 @@ import me.myogoo.extendedterminal.api.adapter.recipe.ITableRecipeAdapter;
 import me.myogoo.extendedterminal.api.adapter.recipe.IShapedTableRecipeAdapter;
 import me.myogoo.extendedterminal.menu.ETTerminalBaseMenu;
 import me.myogoo.extendedterminal.menu.extendedcrafting.ExtendedTerminalBaseMenu;
+import me.myogoo.extendedterminal.menu.extendedcrafting.UnitedTerminalMenu;
 import me.myogoo.extendedterminal.network.serverbound.ETFillCraftingGridFromRecipePacket;
 import me.myogoo.myotus.api.MyotusAPI;
 import mezz.jei.api.gui.builder.ITooltipBuilder;
@@ -31,7 +32,7 @@ import static appeng.integration.modules.jeirei.TransferHelper.RED_SLOT_HIGHLIGH
 import static me.myogoo.extendedterminal.integration.ItemListTermCraftingHelper.findGoodTemplateItems;
 import static me.myogoo.extendedterminal.network.serverbound.ETFillCraftingGridFromRecipePacket.NOT_SET_RECIPE_SIZE;
 
-public abstract class AbstractTableRecipeHandler<T extends ETTerminalBaseMenu<R>, R extends Recipe<?>> implements IRecipeTransferHandler<T, R> {
+public abstract class AbstractTableRecipeHandler<T extends ETTerminalBaseMenu<?>, R extends Recipe<?>> implements IRecipeTransferHandler<T, R> {
     private final Class<T> containerClass;
     private final MenuType<T> menuType;
     private final RecipeType<R> recipeType;
@@ -60,6 +61,11 @@ public abstract class AbstractTableRecipeHandler<T extends ETTerminalBaseMenu<R>
     protected abstract Map<Integer, Ingredient> getGuiSlotToIngredientMap(T menu, ITableRecipeAdapter<?> recipe);
 
     protected static void performTransfer(ETTerminalBaseMenu<?> menu, @Nullable ITableRecipeAdapter<?> recipe, boolean craftMissing) {
+        performTransfer(menu, recipe, craftMissing, null);
+    }
+
+    protected static void performTransfer(ETTerminalBaseMenu<?> menu, @Nullable ITableRecipeAdapter<?> recipe, boolean craftMissing,
+                                          UnitedTerminalMenu.UnitedRecipeKind unitedRecipeKind) {
         var templateItems = findGoodTemplateItems(recipe, menu);
         int recipeWidth = NOT_SET_RECIPE_SIZE;
         int recipeHeight = NOT_SET_RECIPE_SIZE;
@@ -67,7 +73,7 @@ public abstract class AbstractTableRecipeHandler<T extends ETTerminalBaseMenu<R>
             recipeWidth = shapedRecipe.width();
             recipeHeight = shapedRecipe.height();
         }
-        var message = new ETFillCraftingGridFromRecipePacket(recipe.recipeId(), templateItems, craftMissing, recipeWidth, recipeHeight);
+        var message = new ETFillCraftingGridFromRecipePacket(recipe.recipeId(), templateItems, craftMissing, recipeWidth, recipeHeight, unitedRecipeKind);
         MyotusAPI.network().sendToServer(message);
     }
 

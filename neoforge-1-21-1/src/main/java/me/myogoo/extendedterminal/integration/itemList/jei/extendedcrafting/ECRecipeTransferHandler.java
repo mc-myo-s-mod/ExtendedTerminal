@@ -11,6 +11,7 @@ import me.myogoo.extendedterminal.menu.extendedcrafting.AdvancedTerminalMenu;
 import me.myogoo.extendedterminal.menu.extendedcrafting.BasicTerminalMenu;
 import me.myogoo.extendedterminal.menu.extendedcrafting.EliteTerminalMenu;
 import me.myogoo.extendedterminal.menu.extendedcrafting.UltimateTerminalMenu;
+import me.myogoo.extendedterminal.menu.extendedcrafting.UnitedTerminalMenu;
 import me.myogoo.myotus.api.annotation.MyotusSubscriber;
 import mezz.jei.api.registration.IRecipeTransferRegistration;
 import me.myogoo.extendedterminal.api.annotation.ExtendedCrafting;
@@ -27,5 +28,9 @@ public class ECRecipeTransferHandler {
         registration.addRecipeTransferHandler(new ECJeiRecipeTransferHandler<>(AdvancedTerminalMenu.class, AdvancedTerminalMenu.TYPE, AdvancedTableCategory.RECIPE_TYPE, helper), AdvancedTableCategory.RECIPE_TYPE);
         registration.addRecipeTransferHandler(new ECJeiRecipeTransferHandler<>(EliteTerminalMenu.class, EliteTerminalMenu.TYPE, EliteTableCategory.RECIPE_TYPE, helper), EliteTableCategory.RECIPE_TYPE);
         registration.addRecipeTransferHandler(new ECJeiRecipeTransferHandler<>(UltimateTerminalMenu.class, UltimateTerminalMenu.TYPE, UltimateTableCategory.RECIPE_TYPE, helper), UltimateTableCategory.RECIPE_TYPE);
+        registration.addRecipeTransferHandler(new ECJeiRecipeTransferHandler<>(UnitedTerminalMenu.class, UnitedTerminalMenu.TYPE, BasicTableCategory.RECIPE_TYPE, helper), BasicTableCategory.RECIPE_TYPE);
+        registration.addRecipeTransferHandler(new ECJeiRecipeTransferHandler<>(UnitedTerminalMenu.class, UnitedTerminalMenu.TYPE, AdvancedTableCategory.RECIPE_TYPE, helper), AdvancedTableCategory.RECIPE_TYPE);
+        registration.addRecipeTransferHandler(new ECJeiRecipeTransferHandler<>(UnitedTerminalMenu.class, UnitedTerminalMenu.TYPE, EliteTableCategory.RECIPE_TYPE, helper), EliteTableCategory.RECIPE_TYPE);
+        registration.addRecipeTransferHandler(new ECJeiRecipeTransferHandler<>(UnitedTerminalMenu.class, UnitedTerminalMenu.TYPE, UltimateTableCategory.RECIPE_TYPE, helper), UltimateTableCategory.RECIPE_TYPE);
     }
 }

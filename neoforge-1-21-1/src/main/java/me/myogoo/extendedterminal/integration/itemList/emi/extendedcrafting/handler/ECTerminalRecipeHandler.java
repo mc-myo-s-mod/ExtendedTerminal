@@ -49,7 +49,7 @@ public class ECTerminalRecipeHandler<T extends ExtendedTerminalBaseMenu> extends
         if (holder == null || !(holder.value() instanceof ITableRecipe tableRecipe)) {
             return Result.createFailed(ItemModText.INCOMPATIBLE_RECIPE.text());
         }
-        return doTransfer(menu, ITableRecipeAdapter.of(tableRecipe), holder.id(), doTransfer);
+        return doTransfer(menu, ITableRecipeAdapter.of(tableRecipe), holder.id(), doTransfer, UnitedTerminalMenu.UnitedRecipeKind.EXTENDED_CRAFTING);
     }
 
     @Override

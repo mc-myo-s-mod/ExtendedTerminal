@@ -14,7 +14,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Map;
 import java.util.Optional;
 
-public abstract class AbstractTableHolderRecipeHandler<T extends ETTerminalBaseMenu<R>, R extends Recipe<?>, H extends RecipeHolder<R>>
+public abstract class AbstractTableHolderRecipeHandler<T extends ETTerminalBaseMenu<?>, R extends Recipe<?>, H extends RecipeHolder<R>>
         extends ItemListTableRecipeTransferHandler<T>
         implements IRecipeTransferHandler<T, H>, IJeiAbstractRecipeHandler {
     private final Class<T> containerClass;

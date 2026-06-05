@@ -39,7 +39,7 @@ public class ExCraftingTerminalSlot extends ETCraftingBaseSlot<ITableRecipe, Cra
         if (this.menu instanceof ExtendedTerminalBaseMenu terminalMenu) {
             var recipe = terminalMenu.getCurrentRecipe();
 
-            if (recipe != null && recipe.matches(ic, level)) {
+            if (recipe != null && recipe.matches(terminalMenu.createTableInput(containerItems(ic), recipe), level)) {
                 return terminalMenu.getCurrentRecipe();
             }
         }
@@ -47,13 +47,24 @@ public class ExCraftingTerminalSlot extends ETCraftingBaseSlot<ITableRecipe, Cra
         return level.getRecipeManager().getRecipeFor(ModRecipeTypes.TABLE.get(), ic, level).orElse(null);
     }
 
+    private static List<ItemStack> containerItems(CraftingContainer container) {
+        var items = NonNullList.withSize(container.getContainerSize(), ItemStack.EMPTY);
+        for (int i = 0; i < container.getContainerSize(); i++) {
+            items.set(i, container.getItem(i).copy());
+        }
+        return items;
+    }
+
     @Override
     protected NonNullList<ItemStack> getRemainingItems(CraftingContainer ic, Level level) {
         if (this.menu instanceof ExtendedTerminalBaseMenu terminalMenu) {
             var recipe = terminalMenu.getCurrentRecipe();
 
-            if (recipe != null && recipe.matches(ic, level)) {
-                return terminalMenu.getCurrentRecipe().getRemainingItems(ic);
+            if (recipe != null) {
+                var adjusted = terminalMenu.createTableInput(containerItems(ic), recipe);
+                if (recipe.matches(adjusted, level)) {
+                    return terminalMenu.getCurrentRecipe().getRemainingItems(adjusted);
+                }
             }
         }
 

@@ -27,6 +27,7 @@ import java.util.Objects;
 import static appeng.integration.modules.jeirei.TransferHelper.BLUE_PLUS_BUTTON_COLOR;
 import static appeng.integration.modules.jeirei.TransferHelper.ORANGE_PLUS_BUTTON_COLOR;
 import static me.myogoo.extendedterminal.integration.ItemListTermCraftingHelper.ensureFittedCraftingGrid;
+import me.myogoo.extendedterminal.menu.extendedcrafting.UnitedTerminalMenu;
 
 public class ECJeiRecipeTransferHandler<T extends ExtendedTerminalBaseMenu> extends AbstractTableRecipeHandler<T, ITableRecipe> {
     private final IRecipeTransferHandlerHelper helper;
@@ -68,7 +69,7 @@ public class ECJeiRecipeTransferHandler<T extends ExtendedTerminalBaseMenu> exte
                 return new Result.PartiallyCraftable(missingSlots, color, craftMissing);
             }
         } else {
-            performTransfer(menu, adapterRecipe, craftMissing);
+            performTransfer(menu, adapterRecipe, craftMissing, UnitedTerminalMenu.UnitedRecipeKind.EXTENDED_CRAFTING);
         }
         return Result.createSuccessful();
     }

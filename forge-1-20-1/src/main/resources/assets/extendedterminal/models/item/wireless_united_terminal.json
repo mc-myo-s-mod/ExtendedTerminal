@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "extendedterminal:item/wireless_et_terminal"
+  }
+}

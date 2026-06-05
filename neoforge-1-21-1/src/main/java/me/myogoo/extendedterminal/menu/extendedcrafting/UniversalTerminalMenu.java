@@ -6,8 +6,12 @@ import me.myogoo.extendedterminal.menu.ETMenuType;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.MenuType;
 
-public class UniversalTerminalMenu extends ExtendedTerminalBaseMenu{
+/**
+ * @deprecated Use {@link UnitedTerminalMenu}. Kept so older in-progress references still compile.
+ */
+@Deprecated(forRemoval = false)
+public class UniversalTerminalMenu extends UnitedTerminalMenu {
     public UniversalTerminalMenu(MenuType<?> menuType, int id, Inventory ip, ITerminalHost host, ETMenuType etMenuType, IETTerminalConfig config) {
-        super(menuType, id, ip, host, etMenuType, config);
+        super(menuType, id, ip, host);
     }
 }

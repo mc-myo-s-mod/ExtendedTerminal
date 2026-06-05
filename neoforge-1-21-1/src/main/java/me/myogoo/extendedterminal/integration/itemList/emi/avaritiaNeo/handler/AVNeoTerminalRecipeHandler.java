@@ -1,5 +1,7 @@
 package me.myogoo.extendedterminal.integration.itemList.emi.avaritiaNeo.handler;
 
+import me.myogoo.extendedterminal.menu.extendedcrafting.UnitedTerminalMenu;
+import me.myogoo.extendedterminal.menu.ETTerminalBaseMenu;
 import appeng.core.localization.ItemModText;
 import dev.emi.emi.api.recipe.EmiRecipe;
 import dev.emi.emi.api.recipe.EmiRecipeCategory;
@@ -16,11 +18,11 @@ import net.minecraft.world.item.crafting.RecipeHolder;
 
 import java.util.Map;
 
-public class AVNeoTerminalRecipeHandler extends AbstractEmiTableRecipeHandler<NeoExtremeTerminalMenu> {
+public class AVNeoTerminalRecipeHandler<T extends ETTerminalBaseMenu<?>> extends AbstractEmiTableRecipeHandler<T> {
     private final ETMenuType menuType;
     private final EmiRecipeCategory category;
 
-    public AVNeoTerminalRecipeHandler(EmiRecipeCategory category, Class<NeoExtremeTerminalMenu> containerClass, ETMenuType menuType) {
+    public AVNeoTerminalRecipeHandler(EmiRecipeCategory category, Class<T> containerClass, ETMenuType menuType) {
         super(containerClass);
         this.menuType = menuType;
         this.category = category;
@@ -32,7 +34,7 @@ public class AVNeoTerminalRecipeHandler extends AbstractEmiTableRecipeHandler<Ne
     }
 
     @Override
-    protected Result transferRecipe(NeoExtremeTerminalMenu menu, RecipeHolder<?> holder, EmiRecipe emiRecipe, boolean doTransfer) {
+    protected Result transferRecipe(T menu, RecipeHolder<?> holder, EmiRecipe emiRecipe, boolean doTransfer) {
         Result setup;
         if ((setup = transferSetup(holder, emiRecipe, menuType.getGridSize())) != null) {
             return setup;
@@ -41,7 +43,7 @@ public class AVNeoTerminalRecipeHandler extends AbstractEmiTableRecipeHandler<Ne
         if (holder == null || !(holder.value() instanceof RecipeExtremeCrafting tableRecipe)) {
             return Result.createFailed(ItemModText.INCOMPATIBLE_RECIPE.text());
         }
-        return doTransfer(menu, ITableRecipeAdapter.of(tableRecipe), holder.id(), doTransfer);
+        return doTransfer(menu, ITableRecipeAdapter.of(tableRecipe), holder.id(), doTransfer, UnitedTerminalMenu.UnitedRecipeKind.AVARITIA_NEO);
     }
 
     @Override
@@ -50,7 +52,7 @@ public class AVNeoTerminalRecipeHandler extends AbstractEmiTableRecipeHandler<Ne
     }
 
     @Override
-    protected Map<Integer, Ingredient> getGuiSlotToIngredientMap(NeoExtremeTerminalMenu menu, ITableRecipeAdapter recipe) {
+    protected Map<Integer, Ingredient> getGuiSlotToIngredientMap(T menu, ITableRecipeAdapter recipe) {
         return AVNeoRecipeTransferHelper.GuiSlotToIngredientMap.emi(menu, recipe);
     }
 }

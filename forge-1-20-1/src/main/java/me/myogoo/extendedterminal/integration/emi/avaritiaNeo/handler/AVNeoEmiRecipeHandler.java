@@ -1,5 +1,7 @@
 package me.myogoo.extendedterminal.integration.emi.avaritiaNeo.handler;
 
+import me.myogoo.extendedterminal.menu.extendedcrafting.UnitedTerminalMenu;
+import me.myogoo.extendedterminal.menu.ETTerminalBaseMenu;
 import me.myogoo.extendedterminal.adapter.recipe.TableRecipeAdapters;
 
 import appeng.core.localization.ItemModText;
@@ -21,18 +23,18 @@ import java.util.Map;
 
 import static me.myogoo.extendedterminal.integration.ItemListTermCraftingHelper.ensureFittedCraftingGrid;
 
-public class AVNeoEmiRecipeHandler extends AbstractEmiTableRecipeHandler<NeoExtremeTerminalMenu> {
+public class AVNeoEmiRecipeHandler<T extends ETTerminalBaseMenu<?>> extends AbstractEmiTableRecipeHandler<T> {
     private final ETMenuType menuType;
     private final EmiRecipeCategory category;
 
-    public AVNeoEmiRecipeHandler(EmiRecipeCategory category, Class<NeoExtremeTerminalMenu> containerClass, ETMenuType menuType) {
+    public AVNeoEmiRecipeHandler(EmiRecipeCategory category, Class<T> containerClass, ETMenuType menuType) {
         super(containerClass);
         this.menuType = menuType;
         this.category = category;
     }
 
     @Override
-    protected Result transferRecipe(NeoExtremeTerminalMenu menu, EmiRecipe emiRecipe, boolean doTransfer) {
+    protected Result transferRecipe(T menu, EmiRecipe emiRecipe, boolean doTransfer) {
         var recipe = emiRecipe.getBackingRecipe();
         boolean craftingRecipe = isCraftingRecipe(recipe, emiRecipe);
         if (!craftingRecipe) {
@@ -64,7 +66,7 @@ public class AVNeoEmiRecipeHandler extends AbstractEmiTableRecipeHandler<NeoExtr
             }
         } else {
             boolean craftMissing = AbstractContainerScreen.hasControlDown();
-            performTransfer(menu, emiRecipe.getId(), adapterRecipe, craftMissing);
+            performTransfer(menu, emiRecipe.getId(), adapterRecipe, craftMissing, UnitedTerminalMenu.UnitedRecipeKind.AVARITIA_NEO);
         }
 
         // No error
@@ -77,7 +79,7 @@ public class AVNeoEmiRecipeHandler extends AbstractEmiTableRecipeHandler<NeoExtr
     }
 
     @Override
-    protected Map<Integer, Ingredient> getGuiSlotToIngredientMap(NeoExtremeTerminalMenu menu, ITableRecipeAdapter<?> recipe) {
+    protected Map<Integer, Ingredient> getGuiSlotToIngredientMap(T menu, ITableRecipeAdapter<?> recipe) {
         int gridSideLength = menu.getCraftingGridWidth();
         var raw = recipe.recipe().getIngredients();
         List<Ingredient> ingredients;

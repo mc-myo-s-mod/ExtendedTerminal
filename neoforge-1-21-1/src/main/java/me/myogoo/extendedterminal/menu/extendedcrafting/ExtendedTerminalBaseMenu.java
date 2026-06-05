@@ -3,6 +3,7 @@ package me.myogoo.extendedterminal.menu.extendedcrafting;
 import appeng.api.inventories.ISegmentedInventory;
 import appeng.api.inventories.InternalInventory;
 import appeng.api.storage.ITerminalHost;
+import appeng.api.storage.MEStorage;
 import appeng.core.network.serverbound.InventoryActionPacket;
 import appeng.helpers.InventoryAction;
 import appeng.me.storage.LinkStatusRespectingInventory;
@@ -28,11 +29,11 @@ import java.util.*;
 
 
 public class ExtendedTerminalBaseMenu extends ETTerminalBaseMenu<ITableRecipe> {
-    private final ETCraftingBaseSlot outputSlot;
+    protected final ETCraftingBaseSlot outputSlot;
     private final ISegmentedInventory craftingInventoryHost;
     private final CraftingMatrixSlot[] craftingSlots;
     @Nullable
-    private TableCraftingInput lastTestedInput;
+    protected TableCraftingInput lastTestedInput;
 
     public ExtendedTerminalBaseMenu(MenuType<?> menuType, int id, Inventory ip, ITerminalHost host, ETMenuType etMenuType, IETTerminalConfig config) {
         super(menuType, id, ip, host,etMenuType, config);
@@ -45,11 +46,17 @@ public class ExtendedTerminalBaseMenu extends ETTerminalBaseMenu<ITableRecipe> {
         }
 
         var linkStatusInventory = new LinkStatusRespectingInventory(host.getInventory(), this::getLinkStatus);
-        this.addSlot(this.outputSlot = new ExCraftingTerminalSlot(this.getPlayerInventory().player, this.getActionSource(),
-                        this.energySource, linkStatusInventory, craftingGridInv, craftingGridInv, this,this.menuType),
+        this.addSlot(this.outputSlot = createOutputSlot(linkStatusInventory, craftingGridInv),
                 this.menuType.getSlotSemanticResult());
 
-        updateCurrentRecipeAndOutput(true);
+        if (etMenuType != ETMenuType.UNITED_TERMINAL) {
+            updateCurrentRecipeAndOutput(true);
+        }
+    }
+
+    protected ETCraftingBaseSlot<?, ?> createOutputSlot(MEStorage storage, InternalInventory craftingGridInv) {
+        return new ExCraftingTerminalSlot(this.getPlayerInventory().player, this.getActionSource(),
+                this.energySource, storage, craftingGridInv, craftingGridInv, this, this.menuType);
     }
 
     @Override
@@ -64,11 +71,8 @@ public class ExtendedTerminalBaseMenu extends ETTerminalBaseMenu<ITableRecipe> {
     protected void updateCurrentRecipeAndOutput(boolean forceUpdate) {
         if(checkCraftingOnlyActive()) return;
 
-        var testItems = new ArrayList<ItemStack>(this.craftingSlots.length);
-        for(var craftingSlot : craftingSlots) {
-            testItems.add(craftingSlot.getItem().copy());
-        }
-        var testInput = TableCraftingInput.of(menuType.getGridSideLength(), menuType.getGridSideLength(),testItems,this.menuType.getTier());
+        var testItems = getCraftingSlotItems();
+        var testInput = createTableInput(testItems, null);
 
         if (!forceUpdate && Objects.equals(this.lastTestedInput,testInput)) {
             return;
@@ -84,6 +88,22 @@ public class ExtendedTerminalBaseMenu extends ETTerminalBaseMenu<ITableRecipe> {
         } else {
             this.outputSlot.set(this.currentRecipe.value().assemble(testInput,registryAccess()));
         }
+    }
+
+    protected List<ItemStack> getCraftingSlotItems() {
+        var testItems = new ArrayList<ItemStack>(this.craftingSlots.length);
+        for(var craftingSlot : craftingSlots) {
+            testItems.add(craftingSlot.getItem().copy());
+        }
+        return testItems;
+    }
+
+    public TableCraftingInput createTableInput(List<ItemStack> items, @Nullable ITableRecipe recipe) {
+        return TableCraftingInput.of(menuType.getGridSideLength(), menuType.getGridSideLength(),items,getInputTier(recipe));
+    }
+
+    protected int getInputTier(@Nullable ITableRecipe recipe) {
+        return this.menuType.getTier();
     }
 
     @Override

@@ -15,6 +15,7 @@ import me.myogoo.extendedterminal.menu.avaritiaRe.ExtremeTerminalMenu;
 import me.myogoo.extendedterminal.menu.avaritiaRe.NetherTerminalMenu;
 import me.myogoo.extendedterminal.menu.avaritiaRe.SculkTerminalMenu;
 import me.myogoo.extendedterminal.api.annotation.ReAvaritia;
+import me.myogoo.extendedterminal.menu.extendedcrafting.UnitedTerminalMenu;
 
 @ReAvaritia
 @EMI
@@ -26,5 +27,9 @@ public class AVRecipeHandler {
         registry.addRecipeHandler(NetherTerminalMenu.TYPE, new AVTerminalRecipeHandler<>(NetherCraftingTableCategory.CATEGORY, NetherTerminalMenu.class, ETMenuType.NETHER_TERMINAL));
         registry.addRecipeHandler(EndTerminalMenu.TYPE, new AVTerminalRecipeHandler<>(EndCraftingTableCategory.CATEGORY, EndTerminalMenu.class, ETMenuType.END_TERMINAL));
         registry.addRecipeHandler(ExtremeTerminalMenu.TYPE, new AVTerminalRecipeHandler<>(ExtremeCraftingTableCategory.CATEGORY, ExtremeTerminalMenu.class, ETMenuType.EXTREME_TERMINAL));
+        registry.addRecipeHandler(UnitedTerminalMenu.TYPE, new AVTerminalRecipeHandler<>(SculkCraftingTableCategory.CATEGORY, UnitedTerminalMenu.class, ETMenuType.UNITED_TERMINAL));
+        registry.addRecipeHandler(UnitedTerminalMenu.TYPE, new AVTerminalRecipeHandler<>(NetherCraftingTableCategory.CATEGORY, UnitedTerminalMenu.class, ETMenuType.UNITED_TERMINAL));
+        registry.addRecipeHandler(UnitedTerminalMenu.TYPE, new AVTerminalRecipeHandler<>(EndCraftingTableCategory.CATEGORY, UnitedTerminalMenu.class, ETMenuType.UNITED_TERMINAL));
+        registry.addRecipeHandler(UnitedTerminalMenu.TYPE, new AVTerminalRecipeHandler<>(ExtremeCraftingTableCategory.CATEGORY, UnitedTerminalMenu.class, ETMenuType.UNITED_TERMINAL));
     }
 }
