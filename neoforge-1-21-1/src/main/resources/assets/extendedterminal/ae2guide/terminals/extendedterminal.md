@@ -20,7 +20,7 @@ item_ids:
 ## Recipe
 <RecipeFor id="extendedterminal:et_terminal" />
 
-<et:condition load="AE2WTLib" silent="true">
+<et:condition load="ae2wtlib" silent="true">
 # Wireless Terminal
 <ItemLink id="extendedterminal:wireless_et_terminal" /> is a wireless version of the <ItemLink id="extendedterminal:et_terminal" />. It requires a <ItemLink id="ae2:wireless_access_point"/> to function.
 ## Recipe
