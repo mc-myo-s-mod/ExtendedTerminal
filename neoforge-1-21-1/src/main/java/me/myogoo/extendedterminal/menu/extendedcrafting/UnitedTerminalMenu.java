@@ -4,6 +4,7 @@ import appeng.api.inventories.InternalInventory;
 import appeng.api.storage.ITerminalHost;
 import appeng.api.storage.MEStorage;
 import appeng.helpers.InventoryAction;
+import appeng.menu.guisync.GuiSync;
 import appeng.menu.implementations.MenuTypeBuilder;
 import com.blakebr0.extendedcrafting.api.TableCraftingInput;
 import com.blakebr0.extendedcrafting.api.crafting.ITableRecipe;
@@ -42,12 +43,14 @@ import java.util.List;
 import java.util.Objects;
 
 public class UnitedTerminalMenu extends ExtendedTerminalBaseMenu {
+    private static final String ACTION_SELECT_NEXT_RECIPE_KIND = "selectNextRecipeKind";
     public static final MenuType<UnitedTerminalMenu> TYPE = MenuTypeBuilder
             .create(UnitedTerminalMenu::new, ITerminalHost.class)
             .buildUnregistered(ETMenuType.UNITED_TERMINAL.getId());
 
     @Nullable
     private UnitedRecipe currentUnitedRecipe;
+    @GuiSync(0)
     private UnitedRecipeKind selectedRecipeKind = UnitedRecipeKind.EXTENDED_CRAFTING;
     @Nullable
     private List<ItemStack> lastUnitedItems;
@@ -56,6 +59,7 @@ public class UnitedTerminalMenu extends ExtendedTerminalBaseMenu {
 
     public UnitedTerminalMenu(MenuType<?> menuType, int id, Inventory ip, ITerminalHost host) {
         super(menuType, id, ip, host, ETMenuType.UNITED_TERMINAL, ExtendedCraftingConfig.INSTANCE.getUltimateConfig());
+        registerClientAction(ACTION_SELECT_NEXT_RECIPE_KIND, this::selectNextRecipeKind);
         updateCurrentRecipeAndOutput(true);
     }
 
@@ -73,7 +77,9 @@ public class UnitedTerminalMenu extends ExtendedTerminalBaseMenu {
         var testItems = getCraftingSlotItems();
         var recipe = findUnitedRecipe(testItems);
         var testInput = recipe == null
-                ? (hasActiveRecipeKinds() ? createTableInput(testItems, null) : createVanillaCraftingInput(testItems))
+                ? (this.selectedRecipeKind == UnitedRecipeKind.VANILLA_CRAFTING
+                ? createVanillaCraftingInput(testItems)
+                : createTableInput(testItems, null))
                 : recipe.input();
 
         if (!forceUpdate && Objects.equals(this.lastUnitedInput, testInput)) {
@@ -100,9 +106,6 @@ public class UnitedTerminalMenu extends ExtendedTerminalBaseMenu {
 
     @Nullable
     public UnitedRecipe findUnitedRecipe(List<ItemStack> items) {
-        if (!hasActiveRecipeKinds()) {
-            return findUnitedRecipe(items, UnitedRecipeKind.VANILLA_CRAFTING);
-        }
         normalizeSelectedRecipeKind();
         return findUnitedRecipe(items, this.selectedRecipeKind);
     }
@@ -122,7 +125,6 @@ public class UnitedTerminalMenu extends ExtendedTerminalBaseMenu {
 
     public void setSelectedRecipeKind(UnitedRecipeKind selectedRecipeKind) {
         if (selectedRecipeKind == null
-                || selectedRecipeKind == UnitedRecipeKind.VANILLA_CRAFTING
                 || !selectedRecipeKind.isActive()
                 || this.selectedRecipeKind == selectedRecipeKind) {
             return;
@@ -134,6 +136,10 @@ public class UnitedTerminalMenu extends ExtendedTerminalBaseMenu {
     }
 
     public void selectNextRecipeKind() {
+        if (isClientSide()) {
+            sendClientAction(ACTION_SELECT_NEXT_RECIPE_KIND);
+            return;
+        }
         var values = getActiveRecipeKinds();
         if (values.size() <= 1) {
             return;
@@ -151,7 +157,8 @@ public class UnitedTerminalMenu extends ExtendedTerminalBaseMenu {
     }
 
     public static List<UnitedRecipeKind> getActiveRecipeKinds() {
-        var kinds = new ArrayList<UnitedRecipeKind>(3);
+        var kinds = new ArrayList<UnitedRecipeKind>(4);
+        kinds.add(UnitedRecipeKind.VANILLA_CRAFTING);
         if (UnitedRecipeKind.EXTENDED_CRAFTING.isActive()) {
             kinds.add(UnitedRecipeKind.EXTENDED_CRAFTING);
         }

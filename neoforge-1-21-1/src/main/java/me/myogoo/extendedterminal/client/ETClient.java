@@ -13,6 +13,8 @@ import me.myogoo.extendedterminal.client.screen.extendedcrafting.AdvancedTermina
 import me.myogoo.extendedterminal.client.screen.extendedcrafting.BasicTerminalScreen;
 import me.myogoo.extendedterminal.client.screen.extendedcrafting.EliteTerminalScreen;
 import me.myogoo.extendedterminal.client.screen.extendedcrafting.UltimateTerminalScreen;
+import me.myogoo.extendedterminal.client.screen.extendedcrafting.UnitedTerminalScreen;
+import me.myogoo.extendedterminal.client.screen.extendedcrafting.wt.UnitedWTScreen;
 import me.myogoo.extendedterminal.client.screen.extendedterminal.ETTerminalScreen;
 import me.myogoo.extendedterminal.client.screen.extendedterminal.wt.ETWTScreen;
 import me.myogoo.extendedterminal.init.ETConfigTab;
@@ -27,6 +29,8 @@ import me.myogoo.extendedterminal.menu.extendedcrafting.AdvancedTerminalMenu;
 import me.myogoo.extendedterminal.menu.extendedcrafting.BasicTerminalMenu;
 import me.myogoo.extendedterminal.menu.extendedcrafting.EliteTerminalMenu;
 import me.myogoo.extendedterminal.menu.extendedcrafting.UltimateTerminalMenu;
+import me.myogoo.extendedterminal.menu.extendedcrafting.UnitedTerminalMenu;
+import me.myogoo.extendedterminal.menu.extendedcrafting.wt.UnitedWTMenu;
 import me.myogoo.extendedterminal.menu.extendedterminal.ETTerminalMenu;
 import me.myogoo.extendedterminal.menu.extendedterminal.wt.ETWTMenu;
 import me.myogoo.myotus.api.MyotusAPI;
@@ -67,6 +71,7 @@ public class ETClient {
         InitScreens.register(event, AdvancedTerminalMenu.TYPE, AdvancedTerminalScreen::new, "/screens/extended_terminal/advanced_terminal.json");
         InitScreens.register(event, EliteTerminalMenu.TYPE, EliteTerminalScreen::new, "/screens/extended_terminal/elite_terminal.json");
         InitScreens.register(event, UltimateTerminalMenu.TYPE, UltimateTerminalScreen::new, "/screens/extended_terminal/ultimate_terminal.json");
+        InitScreens.register(event, UnitedTerminalMenu.TYPE, UnitedTerminalScreen::new, "/screens/extended_terminal/united_terminal.json");
 
         // avaritia terminals
         InitScreens.register(event, SculkTerminalMenu.TYPE, SculkTerminalScreen::new, "/screens/avaritia/sculk_terminal.json");
@@ -79,6 +84,7 @@ public class ETClient {
 
     public static void InitWTScreen(RegisterMenuScreensEvent event) {
         InitScreens.register(event, ETWTMenu.TYPE, ETWTScreen::new, "/screens/wireless_et_terminal.json");
+        InitScreens.register(event, UnitedWTMenu.TYPE, UnitedWTScreen::new, "/screens/wireless_united_terminal.json");
     }
 
     public static void initColorParts(RegisterColorHandlersEvent.Item event) {

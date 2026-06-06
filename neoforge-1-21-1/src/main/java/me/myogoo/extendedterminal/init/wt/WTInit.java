@@ -12,7 +12,9 @@ import de.mari_023.ae2wtlib.api.registration.WTDefinition;
 import de.mari_023.ae2wtlib.api.terminal.ItemWT;
 import me.myogoo.extendedterminal.ExtendedTerminal;
 import me.myogoo.extendedterminal.me.host.ETWTHost;
+import me.myogoo.extendedterminal.me.host.UnitedWTHost;
 import me.myogoo.extendedterminal.menu.ETMenuType;
+import me.myogoo.extendedterminal.menu.extendedcrafting.wt.UnitedWTMenu;
 import me.myogoo.extendedterminal.menu.extendedterminal.wt.ETWTMenu;
 import me.myogoo.myotus.api.annotation.mods.AE2WTLib;
 import me.myogoo.myotus.api.MyotusAPI;
@@ -39,6 +41,8 @@ public class WTInit {
         terminalRegistered = true;
         register(WTItems.WIRELESS_ET_TERMINAL, ETMenuType.ET_TERMINAL, ETWTHost::new, ETWTMenu.TYPE,
                 new Icon(0, 0, 16, 16, TEXTURE));
+        register(WTItems.WIRELESS_UNITED_TERMINAL, ETMenuType.UNITED_TERMINAL, UnitedWTHost::new, UnitedWTMenu.TYPE,
+                new Icon(16, 0, 16, 16, TEXTURE));
     }
 
     private static void register(ItemLike terminal, ETMenuType etMenuType, WTDefinition.WTMenuHostFactory host,
@@ -56,8 +60,11 @@ public class WTInit {
 
         Upgrades.add(AE2wtlibItems.MAGNET_CARD, WTItems.WIRELESS_ET_TERMINAL.asItem(), 1);
         Upgrades.add(AE2wtlibItems.QUANTUM_BRIDGE_CARD, WTItems.WIRELESS_ET_TERMINAL.asItem(), 1);
+        Upgrades.add(AE2wtlibItems.MAGNET_CARD, WTItems.WIRELESS_UNITED_TERMINAL.asItem(), 1);
+        Upgrades.add(AE2wtlibItems.QUANTUM_BRIDGE_CARD, WTItems.WIRELESS_UNITED_TERMINAL.asItem(), 1);
 
         GridLinkables.register(WTItems.WIRELESS_ET_TERMINAL.asItem(), WirelessTerminalItem.LINKABLE_HANDLER);
+        GridLinkables.register(WTItems.WIRELESS_UNITED_TERMINAL.asItem(), WirelessTerminalItem.LINKABLE_HANDLER);
     }
 
     public static void initCapabilities(RegisterCapabilitiesEvent event) {

@@ -3,7 +3,7 @@ package me.myogoo.extendedterminal.integration.itemList.jei;
 import me.myogoo.myotus.api.annotation.itemList.jei.JEIGuiHandler;
 import me.myogoo.myotus.api.annotation.itemList.RecipeCategory;
 import me.myogoo.myotus.api.annotation.itemList.RecipeTransfer;
-import me.myogoo.extendedterminal.integration.itemList.ItemListModLoadHelper;
+import me.myogoo.myotus.integration.itemList.ItemListModLoadHelper;
 import mezz.jei.api.registration.IGuiHandlerRegistration;
 import mezz.jei.api.registration.IRecipeCatalystRegistration;
 import mezz.jei.api.registration.IRecipeTransferRegistration;

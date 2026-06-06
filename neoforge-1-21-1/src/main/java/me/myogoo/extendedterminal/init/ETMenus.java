@@ -11,6 +11,7 @@ import me.myogoo.extendedterminal.menu.extendedcrafting.AdvancedTerminalMenu;
 import me.myogoo.extendedterminal.menu.extendedcrafting.BasicTerminalMenu;
 import me.myogoo.extendedterminal.menu.extendedcrafting.EliteTerminalMenu;
 import me.myogoo.extendedterminal.menu.extendedcrafting.UltimateTerminalMenu;
+import me.myogoo.extendedterminal.menu.extendedcrafting.UnitedTerminalMenu;
 import me.myogoo.extendedterminal.menu.extendedterminal.ETTerminalMenu;
 import me.myogoo.extendedterminal.menu.extendedterminal.wt.ETWTMenu;
 import net.minecraft.core.registries.Registries;
@@ -29,6 +30,7 @@ public final class ETMenus {
     public static final Supplier<MenuType<AdvancedTerminalMenu>> ADVANCED_TERMINAL = REGISTER.register(ETMenuType.ADVANCED_TERMINAL.getIdAsString(), () -> AdvancedTerminalMenu.TYPE);
     public static final Supplier<MenuType<EliteTerminalMenu>> ELITE_TERMINAL = REGISTER.register(ETMenuType.ELITE_TERMINAL.getIdAsString(), () -> EliteTerminalMenu.TYPE);
     public static final Supplier<MenuType<UltimateTerminalMenu>> ULTIMATE_TERMINAL = REGISTER.register(ETMenuType.ULTIMATE_TERMINAL.getIdAsString(), () -> UltimateTerminalMenu.TYPE);
+    public static final Supplier<MenuType<UnitedTerminalMenu>> UNITED_TERMINAL = REGISTER.register(ETMenuType.UNITED_TERMINAL.getIdAsString(), () -> UnitedTerminalMenu.TYPE);
     
     // Re:Avaritia terminals
     public static final Supplier<MenuType<SculkTerminalMenu>> SCULK_TERMINAL = REGISTER.register(ETMenuType.SCULK_TERMINAL.getIdAsString(), () -> SculkTerminalMenu.TYPE);

@@ -2,6 +2,7 @@ package me.myogoo.extendedterminal.integration.itemList.emi.avaritiaRe;
 
 import dev.emi.emi.api.EmiRegistry;
 import dev.emi.emi.api.stack.EmiStack;
+import me.myogoo.extendedterminal.config.extendedcrafting.ExtendedCraftingConfig;
 import me.myogoo.myotus.api.annotation.itemList.RecipeCategory;
 import me.myogoo.myotus.api.annotation.itemList.emi.EMI;
 import committee.nova.mods.avaritia.init.compat.emi.category.tables.*;
@@ -19,5 +20,11 @@ public class AVWorkStation {
         registry.addWorkstation(NetherCraftingTableCategory.CATEGORY, EmiStack.of(ETParts.NETHER_TERMINAL_PART.get()));
         registry.addWorkstation(EndCraftingTableCategory.CATEGORY, EmiStack.of(ETParts.END_TERMINAL_PART.get()));
         registry.addWorkstation(ExtremeCraftingTableCategory.CATEGORY, EmiStack.of(ETParts.EXTREME_TERMINAL_PART.get()));
+        if (ExtendedCraftingConfig.INSTANCE.getUltimateConfig().enableTerminal()) {
+            registry.addWorkstation(SculkCraftingTableCategory.CATEGORY, EmiStack.of(ETParts.UNITED_TERMINAL_PART.get()));
+            registry.addWorkstation(NetherCraftingTableCategory.CATEGORY, EmiStack.of(ETParts.UNITED_TERMINAL_PART.get()));
+            registry.addWorkstation(EndCraftingTableCategory.CATEGORY, EmiStack.of(ETParts.UNITED_TERMINAL_PART.get()));
+            registry.addWorkstation(ExtremeCraftingTableCategory.CATEGORY, EmiStack.of(ETParts.UNITED_TERMINAL_PART.get()));
+        }
     }
 }
