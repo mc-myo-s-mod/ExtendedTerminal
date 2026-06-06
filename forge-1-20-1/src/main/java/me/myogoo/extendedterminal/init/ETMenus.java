@@ -20,6 +20,7 @@ public final class ETMenus {
     public static final Supplier<MenuType<AdvancedTerminalMenu>> ADVANCED_TERMINAL = REGISTER.register(ETMenuType.ADVANCED_TERMINAL.getIdAsString(), () -> AdvancedTerminalMenu.TYPE);
     public static final Supplier<MenuType<EliteTerminalMenu>> ELITE_TERMINAL = REGISTER.register(ETMenuType.ELITE_TERMINAL.getIdAsString(), () -> EliteTerminalMenu.TYPE);
     public static final Supplier<MenuType<?>> ULTIMATE_TERMINAL = REGISTER.register(ETMenuType.ULTIMATE_TERMINAL.getIdAsString(), () -> UltimateTerminalMenu.TYPE);
+    public static final Supplier<MenuType<?>> UNITED_TERMINAL = REGISTER.register(ETMenuType.UNITED_TERMINAL.getIdAsString(), () -> UnitedTerminalMenu.TYPE);
     public static final Supplier<MenuType<?>> EPIC_TERMINAL = REGISTER.register(ETMenuType.EPIC_TERMINAL.getIdAsString(), () -> EpicTerminalMenu.TYPE);
 
     // Re:Avaritia terminal

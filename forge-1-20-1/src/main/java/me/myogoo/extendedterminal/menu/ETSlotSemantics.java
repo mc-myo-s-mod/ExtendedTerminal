@@ -31,6 +31,9 @@ public final class ETSlotSemantics {
     public static final SlotSemantic ULTIMATE_CRAFTING_GRID = SlotSemantics.register("ULTIMATE_CRAFTING_GRID", true);
     public static final SlotSemantic ULTIMATE_CRAFTING_RESULT = SlotSemantics.register("ULTIMATE_CRAFTING_RESULT", false);
 
+    public static final SlotSemantic EXTENDED_CRAFTING_UNIVERSAL_GRID = SlotSemantics.register("EXTENDED_CRAFTING_UNIVERSAL_GRID", true);
+    public static final SlotSemantic EXTENDED_CRAFTING_UNIVERSAL_RESULT = SlotSemantics.register("EXTENDED_CRAFTING_UNIVERSAL_RESULT", false);
+
     public static final SlotSemantic EPIC_CRAFTING_GRID = SlotSemantics.register("EPIC_CRAFTING_GRID", true);
     public static final SlotSemantic EPIC_CRAFTING_RESULT = SlotSemantics.register("EPIC_CRAFTING_RESULT", false);
 

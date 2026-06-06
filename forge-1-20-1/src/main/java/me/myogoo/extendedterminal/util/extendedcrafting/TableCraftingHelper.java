@@ -1,6 +1,5 @@
 package me.myogoo.extendedterminal.util.extendedcrafting;
 
-import com.blakebr0.extendedcrafting.api.crafting.ITableRecipe;
 import me.myogoo.extendedterminal.api.adapter.recipe.ITableRecipeAdapter;
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.item.crafting.Ingredient;

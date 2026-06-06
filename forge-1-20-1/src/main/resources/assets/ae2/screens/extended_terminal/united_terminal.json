@@ -82,6 +82,10 @@
     "clearToPlayerInv": {
       "left": 159,
       "bottom": 129
+    },
+    "cycleRecipeKind": {
+      "left": 4,
+      "bottom": 129
     }
   }
 }

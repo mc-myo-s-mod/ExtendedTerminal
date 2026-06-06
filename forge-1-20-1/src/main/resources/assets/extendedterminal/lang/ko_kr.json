@@ -1,33 +1,26 @@
 {
   "itemGroup.extendedterminal": "확장된 터미널",
-
   "item.extendedterminal.basic_terminal": "기본 조합 터미널",
   "item.extendedterminal.advanced_terminal": "고급 조합 터미널",
   "item.extendedterminal.elite_terminal": "엘리트 조합 터미널",
   "item.extendedterminal.ultimate_terminal": "최고 조합 터미널",
-
   "item.extendedterminal.sculk_terminal": "스컬크 조합 터미널",
   "item.extendedterminal.nether_terminal": "네더 조합 터미널",
   "item.extendedterminal.end_terminal": "엔드 조합 터미널",
   "item.extendedterminal.extreme_terminal": "익스트림 조합 터미널",
-
   "item.extendedterminal.neo_extreme_terminal": "익스트림 조합 터미널",
-
   "item.extendedterminal.compat_processor": "통합 프로세서",
   "item.extendedterminal.printed_compat_processor": "인쇄된 통합 프로세서",
-
   "item.extendedterminal.item.tooltip.unregistered_terminal": "등록되지 않은 터미널",
-
   "gui.extendedterminal.basicTerminal": "기본 조합 터미널",
   "gui.extendedterminal.advancedTerminal": "고급 조합 터미널",
   "gui.extendedterminal.eliteTerminal": "엘리트 조합 터미널",
   "gui.extendedterminal.ultimateTerminal": "최고 조합 터미널",
-
   "gui.extendedterminal.sculkTerminal": "스컬크 조합 터미널",
   "gui.extendedterminal.netherTerminal": "네더 조합 터미널",
   "gui.extendedterminal.endTerminal": "엔드 조합 터미널",
   "gui.extendedterminal.extremeTerminal": "익스트림 조합 터미널",
-
   "gui.ae2wtlib.pick_block.text": "블록 선택 활성화",
-  "gui.extendedterminal.united_terminal.recipe_kind": "United 레시피 타입 변경: %s"
+  "gui.extendedterminal.united_terminal.recipe_kind": "United 레시피 타입 변경: %s",
+  "gui.extendedterminal.unitedTerminal": "통합 터미널"
 }

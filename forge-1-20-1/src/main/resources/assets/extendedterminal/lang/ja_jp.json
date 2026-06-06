@@ -1,19 +1,16 @@
 {
   "itemGroup.extendedterminal": "Extended Terminal",
-
   "item.extendedterminal.basic_terminal": "Extended Crafting用基本型クラフトターミナル",
   "item.extendedterminal.advanced_terminal": "Extended Crafting用発展型クラフトターミナル",
   "item.extendedterminal.elite_terminal": "Extended Crafting用精鋭型クラフトターミナル",
   "item.extendedterminal.ultimate_terminal": "Extended Crafting用究極型クラフトターミナル",
-
   "item.extendedterminal.compat_processor": "複合処理プロセッサ",
   "item.extendedterminal.printed_compat_processor": "複合処理回路",
-
   "gui.extendedterminal.basicTerminal": "基本型クラフトターミナル",
   "gui.extendedterminal.advancedTerminal": "発展型クラフトターミナル",
   "gui.extendedterminal.eliteTerminal": "精鋭型クラフトターミナル",
   "gui.extendedterminal.ultimateTerminal": "究極型クラフトターミナル",
-
   "gui.ae2wtlib.pick_block.text": "ブロック選択を有効化",
-  "gui.extendedterminal.united_terminal.recipe_kind": "United レシピタイプを切り替え: %s"
+  "gui.extendedterminal.united_terminal.recipe_kind": "United レシピタイプを切り替え: %s",
+  "gui.extendedterminal.unitedTerminal": "統合ターミナル"
 }

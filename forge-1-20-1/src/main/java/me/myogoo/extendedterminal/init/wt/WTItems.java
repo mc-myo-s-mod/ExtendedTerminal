@@ -7,6 +7,7 @@ import de.mari_023.ae2wtlib.terminal.ItemWT;
 import me.myogoo.extendedterminal.ExtendedTerminal;
 import me.myogoo.extendedterminal.init.ETItems;
 import me.myogoo.extendedterminal.item.wtitem.ETWTItem;
+import me.myogoo.extendedterminal.item.wtitem.UnitedWTItem;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 
@@ -21,6 +22,11 @@ public final class WTItems {
             "Extended Wireless Terminal",
             ExtendedTerminal.makeId("wireless_et_terminal"),
             ETWTItem::new
+    );
+    public static final ItemDefinition<ItemWT> WIRELESS_UNITED_TERMINAL = createWTItem(
+            "Wireless United Terminal",
+            ExtendedTerminal.makeId("wireless_united_terminal"),
+            UnitedWTItem::new
     );
 
     private static <T extends Item> ItemDefinition<T> createWTItem(String name, ResourceLocation id,

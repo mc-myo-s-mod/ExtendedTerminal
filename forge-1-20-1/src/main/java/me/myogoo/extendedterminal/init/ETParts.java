@@ -39,6 +39,7 @@ public class ETParts {
     public static final ItemDefinition<PartItem<AdvancedTerminalPart>> ADVANCED_TERMINAL_PART = createExtendedCraftingPart(ETMenuType.ADVANCED_TERMINAL, AdvancedTerminalPart.class, AdvancedTerminalPart::new);
     public static final ItemDefinition<PartItem<EliteTerminalPart>> ELITE_TERMINAL_PART = createExtendedCraftingPart(ETMenuType.ELITE_TERMINAL, EliteTerminalPart.class, EliteTerminalPart::new);
     public static final ItemDefinition<PartItem<UltimateTerminalPart>> ULTIMATE_TERMINAL_PART = createExtendedCraftingPart(ETMenuType.ULTIMATE_TERMINAL, UltimateTerminalPart.class, UltimateTerminalPart::new);
+    public static final ItemDefinition<PartItem<UnitedTerminalPart>> UNITED_TERMINAL_PART = createExtendedCraftingPart(ETMenuType.UNITED_TERMINAL, UnitedTerminalPart.class, UnitedTerminalPart::new);
     public static final ItemDefinition<PartItem<EpicTerminalPart>> EPIC_TERMINAL_PART = createExtendedCraftingPart(ETMenuType.EPIC_TERMINAL, EpicTerminalPart.class, EpicTerminalPart::new);
 
     // Re:Avaritia parts

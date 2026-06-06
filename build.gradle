@@ -149,6 +149,11 @@ configure(modProjects) {
 
     tasks.named('processResources').configure {
         dependsOn syncExtendedTerminalCommonResources
+        // Version-module resources must override shared common resources.
+        // Gradle visits the module's default src/main/resources before the generated common
+        // resource directory added below, so EXCLUDE keeps the version-specific file when
+        // both trees contain the same relative path.
+        duplicatesStrategy = DuplicatesStrategy.EXCLUDE
     }
 
     tasks.matching { it.name in ['genIntellijRuns', 'neoForgeIdeSync', 'idea', 'ideaModule'] }.configureEach {

@@ -1,6 +1,7 @@
 {
   "replace": false,
   "values": [
-    "extendedterminal:wireless_et_terminal"
+    "extendedterminal:wireless_et_terminal",
+    "extendedterminal:wireless_united_terminal"
   ]
 }
