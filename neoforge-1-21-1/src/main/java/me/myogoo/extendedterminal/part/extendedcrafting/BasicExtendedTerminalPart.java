@@ -30,7 +30,7 @@ public class BasicExtendedTerminalPart extends ETTerminalBasePart {
     public MenuType<?> getMenuType(Player p) {
         return BasicTerminalMenu.TYPE;
     }
-    
+
     @Override
     public IPartModel getStaticModels() {
         return this.selectModel(MODELS_OFF,MODELS_ON,MODELS_HAS_CHANNEL);
