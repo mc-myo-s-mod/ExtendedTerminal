@@ -20,6 +20,7 @@ import java.util.Map;
 
 import static me.myogoo.extendedterminal.integration.ItemListTermCraftingHelper.ensureFittedCraftingGrid;
 import me.myogoo.extendedterminal.menu.ETTerminalBaseMenu;
+import me.myogoo.extendedterminal.menu.extendedcrafting.UnitedTerminalMenu;
 
 public class ECTerminalRecipeHandler<T extends ETTerminalBaseMenu<?>> extends AbstractEmiTableRecipeHandler<T> {
     private final ETMenuType menuType;
@@ -66,7 +67,8 @@ public class ECTerminalRecipeHandler<T extends ETTerminalBaseMenu<?>> extends Ab
             }
         } else {
             boolean craftMissing = AbstractContainerScreen.hasControlDown();
-            performTransfer(menu, recipe.getId(), adapterRecipe, craftMissing);
+            performTransfer(menu, recipe.getId(), adapterRecipe, craftMissing,
+                    menu instanceof UnitedTerminalMenu ? UnitedTerminalMenu.UnitedRecipeKind.EXTENDED_CRAFTING : null);
         }
 
         return Result.createSuccessful();

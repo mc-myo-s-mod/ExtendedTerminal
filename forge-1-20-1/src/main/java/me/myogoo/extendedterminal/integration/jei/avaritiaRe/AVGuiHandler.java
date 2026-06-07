@@ -11,7 +11,9 @@ import me.myogoo.extendedterminal.client.screen.avaritiaRe.EndTerminalScreen;
 import me.myogoo.extendedterminal.client.screen.avaritiaRe.ExtremeTerminalScreen;
 import me.myogoo.extendedterminal.client.screen.avaritiaRe.NetherTerminalScreen;
 import me.myogoo.extendedterminal.client.screen.avaritiaRe.SculkTerminalScreen;
+import me.myogoo.extendedterminal.client.screen.extendedcrafting.UnitedTerminalScreen;
 import me.myogoo.extendedterminal.integration.jei.handler.JeiTableGuiHandler;
+import mezz.jei.api.gui.handlers.IGuiContainerHandler;
 import mezz.jei.api.registration.IGuiHandlerRegistration;
 import me.myogoo.extendedterminal.api.annotation.ReAvaritia;
 
@@ -25,5 +27,9 @@ public class AVGuiHandler {
         registration.addGuiContainerHandler(NetherTerminalScreen.class, new JeiTableGuiHandler<>(NetherCraftingTableCategory.RECIPE_TYPE));
         registration.addGuiContainerHandler(EndTerminalScreen.class, new JeiTableGuiHandler<>(EndCraftingTableCategory.RECIPE_TYPE));
         registration.addGuiContainerHandler(ExtremeTerminalScreen.class, new JeiTableGuiHandler<>(ExtremeCraftingTableCategory.RECIPE_TYPE));
+        registration.addGuiContainerHandler(UnitedTerminalScreen.class, (IGuiContainerHandler) new JeiTableGuiHandler<>(SculkCraftingTableCategory.RECIPE_TYPE));
+        registration.addGuiContainerHandler(UnitedTerminalScreen.class, (IGuiContainerHandler) new JeiTableGuiHandler<>(NetherCraftingTableCategory.RECIPE_TYPE));
+        registration.addGuiContainerHandler(UnitedTerminalScreen.class, (IGuiContainerHandler) new JeiTableGuiHandler<>(EndCraftingTableCategory.RECIPE_TYPE));
+        registration.addGuiContainerHandler(UnitedTerminalScreen.class, (IGuiContainerHandler) new JeiTableGuiHandler<>(ExtremeCraftingTableCategory.RECIPE_TYPE));
     }
 }
