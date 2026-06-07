@@ -5,7 +5,6 @@ import com.blakebr0.extendedcrafting.api.crafting.ITableRecipe;
 import me.myogoo.extendedterminal.api.adapter.recipe.table.ITableRecipeAdapter;
 import me.myogoo.extendedterminal.integration.itemList.jei.handler.AbstractTableHolderRecipeHandler;
 import me.myogoo.extendedterminal.integration.itemList.module.extendedcrafting.ECRecipeTransferHelper;
-import me.myogoo.extendedterminal.menu.extendedcrafting.ExtendedTerminalBaseMenu;
 import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.recipe.RecipeType;
@@ -24,8 +23,9 @@ import java.util.Objects;
 
 import static appeng.integration.modules.itemlists.TransferHelper.BLUE_PLUS_BUTTON_COLOR;
 import static appeng.integration.modules.itemlists.TransferHelper.ORANGE_PLUS_BUTTON_COLOR;
+import me.myogoo.extendedterminal.menu.ETTerminalBaseMenu;
 
-public class ECJeiRecipeTransferHandler<T extends ExtendedTerminalBaseMenu> extends AbstractTableHolderRecipeHandler<T, ITableRecipe, RecipeHolder<ITableRecipe>> {
+public class ECJeiRecipeTransferHandler<T extends ETTerminalBaseMenu<?>> extends AbstractTableHolderRecipeHandler<T, ITableRecipe, RecipeHolder<ITableRecipe>> {
     private final IRecipeTransferHandlerHelper helper;
 
     public ECJeiRecipeTransferHandler(Class<T> containerClass, MenuType<T> container, RecipeType<RecipeHolder<ITableRecipe>> recipeType, IRecipeTransferHandlerHelper helper) {

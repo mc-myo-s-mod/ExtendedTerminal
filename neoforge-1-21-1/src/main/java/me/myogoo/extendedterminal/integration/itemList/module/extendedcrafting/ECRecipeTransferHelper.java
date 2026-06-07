@@ -2,15 +2,15 @@ package me.myogoo.extendedterminal.integration.itemList.module.extendedcrafting;
 
 import me.myogoo.extendedterminal.api.adapter.recipe.table.IShapedTableRecipeAdapter;
 import me.myogoo.extendedterminal.api.adapter.recipe.table.ITableRecipeAdapter;
-import me.myogoo.extendedterminal.menu.extendedcrafting.ExtendedTerminalBaseMenu;
 import net.minecraft.world.item.crafting.Ingredient;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import me.myogoo.extendedterminal.menu.ETTerminalBaseMenu;
 
 public class ECRecipeTransferHelper {
-    public static Map<Integer, Ingredient> getGuiSlotToIngredientMap(ExtendedTerminalBaseMenu menu, ITableRecipeAdapter recipe) {
+    public static Map<Integer, Ingredient> getGuiSlotToIngredientMap(ETTerminalBaseMenu<?> menu, ITableRecipeAdapter recipe) {
         int gridSideLength = menu.getCraftingGridWidth();
         var raw = recipe.get().getIngredients();
         List<Ingredient> ingredients;

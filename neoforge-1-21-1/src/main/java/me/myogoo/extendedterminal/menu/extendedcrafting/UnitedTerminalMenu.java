@@ -13,7 +13,6 @@ import committee.nova.mods.avaritia.api.common.crafting.ITierCraftingRecipe;
 import committee.nova.mods.avaritia.api.common.crafting.TierInput;
 import me.myogoo.extendedterminal.api.annotation.AvaritiaNeo;
 import me.myogoo.extendedterminal.api.annotation.ExtendedCrafting;
-import me.myogoo.extendedterminal.api.annotation.Polymorph;
 import me.myogoo.extendedterminal.api.annotation.ReAvaritia;
 import me.myogoo.extendedterminal.config.extendedcrafting.ExtendedCraftingConfig;
 import me.myogoo.extendedterminal.menu.ETMenuType;
@@ -28,21 +27,28 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingInput;
-import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeInput;
-import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
-import com.illusivesoulworks.polymorph.api.PolymorphApi;
 
 import javax.annotation.Nullable;
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
+import appeng.api.inventories.ISegmentedInventory;
+import appeng.menu.slot.CraftingMatrixSlot;
+import com.google.common.base.Preconditions;
+import me.myogoo.extendedterminal.menu.ETTerminalBaseMenu;
+import appeng.core.network.serverbound.InventoryActionPacket;
+import appeng.me.storage.LinkStatusRespectingInventory;
+import net.neoforged.neoforge.network.PacketDistributor;
 
-public class UnitedTerminalMenu extends ExtendedTerminalBaseMenu {
+public class UnitedTerminalMenu extends ETTerminalBaseMenu<Recipe<RecipeInput>> {
+    protected final ETCraftingBaseSlot<?, ?> outputSlot;
+    private final ISegmentedInventory craftingInventoryHost;
+    protected final CraftingMatrixSlot[] craftingSlots;
+
     private static final String ACTION_SELECT_NEXT_RECIPE_KIND = "selectNextRecipeKind";
     public static final MenuType<UnitedTerminalMenu> TYPE = MenuTypeBuilder
             .create(UnitedTerminalMenu::new, ITerminalHost.class)
@@ -54,19 +60,51 @@ public class UnitedTerminalMenu extends ExtendedTerminalBaseMenu {
     private UnitedRecipeKind selectedRecipeKind = UnitedRecipeKind.EXTENDED_CRAFTING;
     @Nullable
     private List<ItemStack> lastUnitedItems;
-    @Nullable
-    private RecipeInput lastUnitedInput;
 
     public UnitedTerminalMenu(MenuType<?> menuType, int id, Inventory ip, ITerminalHost host) {
         super(menuType, id, ip, host, ETMenuType.UNITED_TERMINAL, ExtendedCraftingConfig.INSTANCE.getUltimateConfig());
+        this.craftingInventoryHost = (ISegmentedInventory) host;
+        this.craftingSlots = new CraftingMatrixSlot[this.menuType.getGridSize()];
+
+        var craftingGridInv = this.craftingInventoryHost.getSubInventory(this.menuType.getCraftingInventory());
+        for (int i = 0; i < this.menuType.getGridSize(); i++) {
+            this.addSlot(this.craftingSlots[i] = new CraftingMatrixSlot(this, craftingGridInv, i),
+                    this.menuType.getSlotSemanticGrid());
+        }
+
+        var linkStatusInventory = new LinkStatusRespectingInventory(host.getInventory(), this::getLinkStatus);
+        this.addSlot(this.outputSlot = createOutputSlot(linkStatusInventory, craftingGridInv),
+                this.menuType.getSlotSemanticResult());
+
         registerClientAction(ACTION_SELECT_NEXT_RECIPE_KIND, this::selectNextRecipeKind);
         updateCurrentRecipeAndOutput(true);
     }
 
-    @Override
     protected ETCraftingBaseSlot<?, ?> createOutputSlot(MEStorage storage, InternalInventory craftingGridInv) {
         return new UnitedCraftingTerminalSlot(this.getPlayerInventory().player, this.getActionSource(),
                 this.energySource, storage, craftingGridInv, craftingGridInv, this, this.menuType);
+    }
+
+
+    @Override
+    public void clearCraftingGrid() {
+        Preconditions.checkState(isClientSide());
+        CraftingMatrixSlot slot = craftingSlots[0];
+        var p = new InventoryActionPacket(InventoryAction.MOVE_REGION, slot.index, 0);
+        PacketDistributor.sendToServer(p);
+    }
+
+    protected List<ItemStack> getCraftingSlotItems() {
+        var testItems = new ArrayList<ItemStack>(this.craftingSlots.length);
+        for (var craftingSlot : craftingSlots) {
+            testItems.add(craftingSlot.getItem().copy());
+        }
+        return testItems;
+    }
+
+    @Override
+    public InternalInventory getCraftingMatrix() {
+        return this.craftingInventoryHost.getSubInventory(menuType.getCraftingInventory());
     }
 
     @Override
@@ -75,22 +113,15 @@ public class UnitedTerminalMenu extends ExtendedTerminalBaseMenu {
 
         normalizeSelectedRecipeKind();
         var testItems = getCraftingSlotItems();
-        var recipe = findUnitedRecipe(testItems);
-        var testInput = recipe == null
-                ? (this.selectedRecipeKind == UnitedRecipeKind.VANILLA_CRAFTING
-                ? createVanillaCraftingInput(testItems)
-                : createTableInput(testItems, null))
-                : recipe.input();
-
-        if (!forceUpdate && Objects.equals(this.lastUnitedInput, testInput)) {
+        if (!forceUpdate && sameItems(this.lastUnitedItems, testItems)) {
             return;
         }
 
+        var recipe = findUnitedRecipe(testItems);
+
         this.currentUnitedRecipe = recipe;
-        this.currentRecipe = recipe != null && recipe.kind == UnitedRecipeKind.EXTENDED_CRAFTING
-                ? recipe.castTableRecipeHolder()
-                : null;
-        this.lastUnitedInput = testInput;
+        this.currentRecipe = recipe == null ? null : recipe.castRecipeHolder();
+        this.lastUnitedItems = testItems;
 
         if (this.currentUnitedRecipe == null) {
             this.outputSlot.set(ItemStack.EMPTY);
@@ -102,6 +133,18 @@ public class UnitedTerminalMenu extends ExtendedTerminalBaseMenu {
     @Nullable
     public UnitedRecipe getCurrentUnitedRecipe() {
         return currentUnitedRecipe;
+    }
+
+    private static boolean sameItems(@Nullable List<ItemStack> previous, List<ItemStack> current) {
+        if (previous == null || previous.size() != current.size()) {
+            return false;
+        }
+        for (int i = 0; i < previous.size(); i++) {
+            if (!ItemStack.matches(previous.get(i), current.get(i))) {
+                return false;
+            }
+        }
+        return true;
     }
 
     @Nullable
@@ -153,12 +196,11 @@ public class UnitedTerminalMenu extends ExtendedTerminalBaseMenu {
             return;
         }
         var values = getActiveRecipeKinds();
-        this.selectedRecipeKind = values.isEmpty() ? UnitedRecipeKind.VANILLA_CRAFTING : values.getFirst();
+        this.selectedRecipeKind = values.isEmpty() ? UnitedRecipeKind.EXTENDED_CRAFTING : values.getFirst();
     }
 
     public static List<UnitedRecipeKind> getActiveRecipeKinds() {
-        var kinds = new ArrayList<UnitedRecipeKind>(4);
-        kinds.add(UnitedRecipeKind.VANILLA_CRAFTING);
+        var kinds = new ArrayList<UnitedRecipeKind>(3);
         if (UnitedRecipeKind.EXTENDED_CRAFTING.isActive()) {
             kinds.add(UnitedRecipeKind.EXTENDED_CRAFTING);
         }
@@ -173,39 +215,27 @@ public class UnitedTerminalMenu extends ExtendedTerminalBaseMenu {
 
     @Nullable
     public UnitedRecipe findUnitedRecipe(List<ItemStack> items, UnitedRecipeKind kind) {
-        if (kind != UnitedRecipeKind.VANILLA_CRAFTING && !kind.isActive()) {
+        if (!kind.isActive()) {
             return null;
         }
         var level = getPlayer().level();
         return switch (kind) {
-            case VANILLA_CRAFTING -> findVanillaCraftingRecipe(level, items);
             case EXTENDED_CRAFTING -> findExtendedCraftingRecipe(level, items);
             case AVARITIA_NEO -> findAvaritiaNeoRecipe(level, items);
             case RE_AVARITIA -> findReAvaritiaRecipe(level, items);
         };
     }
 
-    @Nullable
-    private UnitedRecipe findVanillaCraftingRecipe(Level level, List<ItemStack> items) {
-        var input = createVanillaCraftingInput(items);
-        var recipe = MyotusAPI.integrations().isLoaded(Polymorph.class)
-                ? PolymorphApi.getInstance().getRecipeManager().getPlayerRecipe(this, RecipeType.CRAFTING, input, level, getPlayer()).orElse(null)
-                : level.getRecipeManager().getRecipeFor(RecipeType.CRAFTING, input, level).orElse(null);
-        return recipe == null ? null : new UnitedRecipe(this, UnitedRecipeKind.VANILLA_CRAFTING, recipe, input);
+    public TableCraftingInput createTableInput(List<ItemStack> items, @Nullable ITableRecipe recipe) {
+        return TableCraftingInput.of(menuType.getGridSideLength(), menuType.getGridSideLength(), items, getInputTier(recipe));
     }
 
-    private CraftingInput createVanillaCraftingInput(List<ItemStack> items) {
-        var positioned = NonNullList.withSize(9, ItemStack.EMPTY);
-        for (int y = 0; y < 3; y++) {
-            for (int x = 0; x < 3; x++) {
-                int source = y * this.menuType.getGridSideLength() + x;
-                int target = y * 3 + x;
-                if (source >= 0 && source < items.size()) {
-                    positioned.set(target, items.get(source).copy());
-                }
-            }
+    protected int getInputTier(@Nullable ITableRecipe recipe) {
+        if (recipe == null) {
+            return 0;
         }
-        return CraftingInput.of(3, 3, positioned);
+        var tier = recipe.getTier();
+        return tier > 0 ? tier : 0;
     }
 
     @Nullable
@@ -248,15 +278,6 @@ public class UnitedTerminalMenu extends ExtendedTerminalBaseMenu {
     }
 
     @Override
-    protected int getInputTier(@Nullable ITableRecipe recipe) {
-        if (recipe == null) {
-            return 0;
-        }
-        var tier = recipe.getTier();
-        return tier > 0 ? tier : 0;
-    }
-
-    @Override
     public void doAction(ServerPlayer player, InventoryAction action, int slot, long id) {
         if (this.getSlot(slot) instanceof UnitedCraftingTerminalSlot craftingSlot) {
             switch (action) {
@@ -272,7 +293,6 @@ public class UnitedTerminalMenu extends ExtendedTerminalBaseMenu {
     }
 
     public enum UnitedRecipeKind {
-        VANILLA_CRAFTING(null),
         EXTENDED_CRAFTING(ExtendedCrafting.class),
         AVARITIA_NEO(AvaritiaNeo.class),
         RE_AVARITIA(ReAvaritia.class);
