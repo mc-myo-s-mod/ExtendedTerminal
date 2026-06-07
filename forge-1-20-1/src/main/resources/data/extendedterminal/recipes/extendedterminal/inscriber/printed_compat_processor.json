@@ -2,15 +2,15 @@
   "type": "ae2:inscriber",
   "ingredients": {
     "middle": {
-      "item": "extendedterminal:charged_ender_pearl"
+      "item": "myotus:charged_ender_pearl"
     },
     "top": {
-      "item": "extendedterminal:compat_press"
+      "item": "myotus:compat_press"
     }
   },
   "mode": "inscribe",
   "result": {
     "count": 1,
-    "item": "extendedterminal:printed_compat_processor"
+    "item": "myotus:printed_compat_processor"
   }
 }

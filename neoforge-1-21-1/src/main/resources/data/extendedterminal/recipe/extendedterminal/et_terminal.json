@@ -16,7 +16,7 @@
       "item": "minecraft:stonecutter"
     },
     "D": {
-      "item": "extendedterminal:compat_processor"
+      "item": "myotus:compat_processor"
     },
     "E" : {
       "item": "minecraft:anvil"

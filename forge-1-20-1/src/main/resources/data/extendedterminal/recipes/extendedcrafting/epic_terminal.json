@@ -16,7 +16,7 @@
             "item": "extendedcrafting:epic_table"
           },
           "P": {
-            "item": "extendedterminal:compat_processor"
+            "item": "myotus:compat_processor"
           },
           "T": {
             "item": "ae2:crafting_terminal"
