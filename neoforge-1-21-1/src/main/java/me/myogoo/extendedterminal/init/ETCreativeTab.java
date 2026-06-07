@@ -21,7 +21,7 @@ public class ETCreativeTab {
     public static final DeferredHolder<CreativeModeTab, CreativeModeTab> CREATIVE_TAB = REGISTER
             .register("creative_tab", () -> CreativeModeTab.builder()
                     .title(Component.translatable("itemGroup." + ExtendedTerminal.MODID))
-                    .icon(AEParts.CRAFTING_TERMINAL::stack)
+                    .icon(ETParts.ET_TERMINAL_PART::stack)
                     .displayItems((params, output) -> {
                         for (ItemDefinition<?> item : ETItems.ITEMS) {
                             if (isDeprecatedMaterial(item)) {
