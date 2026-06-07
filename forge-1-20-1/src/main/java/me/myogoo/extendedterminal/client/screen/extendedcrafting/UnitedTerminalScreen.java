@@ -3,7 +3,7 @@ package me.myogoo.extendedterminal.client.screen.extendedcrafting;
 import appeng.client.gui.Icon;
 import appeng.client.gui.style.ScreenStyle;
 import appeng.client.gui.widgets.IconButton;
-import com.blakebr0.extendedcrafting.api.crafting.ITableRecipe;
+import net.minecraft.world.item.crafting.Recipe;
 import me.myogoo.extendedterminal.client.screen.ETTerminalBaseScreen;
 import me.myogoo.extendedterminal.menu.extendedcrafting.UnitedTerminalMenu;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -15,7 +15,7 @@ import net.minecraft.world.item.Items;
 
 import java.util.List;
 
-public class UnitedTerminalScreen extends ETTerminalBaseScreen<ITableRecipe, UnitedTerminalMenu> {
+public class UnitedTerminalScreen extends ETTerminalBaseScreen<Recipe<?>, UnitedTerminalMenu> {
     private CycleRecipeKindButton cycleRecipeKindButton;
 
     public UnitedTerminalScreen(UnitedTerminalMenu menu, Inventory playerInventory, Component title, ScreenStyle style) {
@@ -42,7 +42,6 @@ public class UnitedTerminalScreen extends ETTerminalBaseScreen<ITableRecipe, Uni
 
     private Component selectedRecipeKindLabel() {
         return switch (this.getMenu().getSelectedRecipeKind()) {
-            case VANILLA_CRAFTING -> Component.literal("Crafting Table");
             case EXTENDED_CRAFTING -> Component.literal("Extended Crafting");
             case AVARITIA_NEO -> Component.literal("Avaritia Neo");
             case RE_AVARITIA -> Component.literal("Re:Avaritia");
@@ -51,7 +50,6 @@ public class UnitedTerminalScreen extends ETTerminalBaseScreen<ITableRecipe, Uni
 
     private Item selectedRecipeKindItem() {
         return switch (this.getMenu().getSelectedRecipeKind()) {
-            case VANILLA_CRAFTING -> Items.CRAFTING_TABLE;
             case EXTENDED_CRAFTING -> icon("extendedcrafting", "ultimate_table");
             case AVARITIA_NEO -> icon("avaritia", "extreme_crafting_table");
             case RE_AVARITIA -> icon("avaritia", "extreme_crafting_table");

@@ -1,7 +1,8 @@
 package me.myogoo.extendedterminal.client.screen.extendedcrafting.wt;
 
 import appeng.client.gui.style.ScreenStyle;
-import com.blakebr0.extendedcrafting.api.crafting.ITableRecipe;
+import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeInput;
 import de.mari_023.ae2wtlib.api.TextConstants;
 import de.mari_023.ae2wtlib.api.gui.Icon;
 import de.mari_023.ae2wtlib.api.gui.IconButton;
@@ -14,7 +15,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import org.jetbrains.annotations.NotNull;
 
-public class UnitedWTScreen extends ETTerminalBaseScreen<ITableRecipe, UnitedWTMenu> implements IUniversalTerminalCapable {
+public class UnitedWTScreen extends ETTerminalBaseScreen<Recipe<RecipeInput>, UnitedWTMenu> implements IUniversalTerminalCapable {
     private final ScrollingUpgradesPanel upgradesPanel;
     private final IconButton magnetCardMenuButton;
 
