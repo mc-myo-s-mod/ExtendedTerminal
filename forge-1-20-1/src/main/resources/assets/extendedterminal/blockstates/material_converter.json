@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "extendedterminal:block/material_converter"
+    }
+  }
+}

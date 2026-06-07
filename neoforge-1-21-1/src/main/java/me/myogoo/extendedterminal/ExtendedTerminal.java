@@ -26,6 +26,8 @@ public class ExtendedTerminal {
         ETConfig.initialize(modContainer);
 
         ETItems.REGISTER.register(modEventBus);
+        ETBlocks.REGISTER.register(modEventBus);
+        ETBlockEntities.REGISTER.register(modEventBus);
         ETCreativeTab.REGISTER.register(modEventBus);
         ETParts.REGISTER.register(modEventBus);
         ETMenus.REGISTER.register(modEventBus);

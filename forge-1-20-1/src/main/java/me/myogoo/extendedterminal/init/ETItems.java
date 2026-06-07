@@ -4,6 +4,7 @@ import appeng.core.definitions.ItemDefinition;
 import me.myogoo.extendedterminal.ExtendedTerminal;
 import me.myogoo.extendedterminal.item.ChargedEnderPearlItem;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -32,6 +33,10 @@ public class ETItems {
     public static final ItemDefinition<ChargedEnderPearlItem> CHARGED_ENDER_PEARL = createItem("charged_ender_pearl",
             ExtendedTerminal.makeId("charged_ender_pearl"),
             ChargedEnderPearlItem::new);
+
+    public static final ItemDefinition<BlockItem> MATERIAL_CONVERTER = createItem("material_converter",
+            ExtendedTerminal.makeId("material_converter"),
+            properties -> new BlockItem(ETBlocks.MATERIAL_CONVERTER_BLOCK, properties));
 
     public static <T extends Item> ItemDefinition<T> createItem(String name, ResourceLocation id, Function<Item.Properties, T> factory) {
         var item = factory.apply(new Item.Properties());

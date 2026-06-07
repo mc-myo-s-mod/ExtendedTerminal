@@ -21,6 +21,9 @@ public class ETCreativeTab {
                 .icon(ETParts.ET_TERMINAL_PART::stack)
                 .displayItems((params, output) -> {
                     for (ItemDefinition<?> item : ETItems.ITEMS) {
+                        if (isDeprecatedMaterial(item)) {
+                            continue;
+                        }
                         output.accept(item.stack());
                     }
                     if (MyotusAPI.integrations().isLoaded(AE2WTLib.class)) {
@@ -35,5 +38,12 @@ public class ETCreativeTab {
                     }
                 })
                 .build());
+    }
+
+    private static boolean isDeprecatedMaterial(ItemDefinition<?> item) {
+        return item == ETItems.COMPAT_PROCESSOR
+                || item == ETItems.COMPAT_PRESS
+                || item == ETItems.PRINTED_COMPAT_PROCESSOR
+                || item == ETItems.CHARGED_ENDER_PEARL;
     }
 }
