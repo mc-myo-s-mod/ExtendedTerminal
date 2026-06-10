@@ -24,6 +24,8 @@ import me.myogoo.extendedterminal.integration.polymorph.ETPolymorphRecipeSelecti
 import me.myogoo.extendedterminal.menu.ETMenuType;
 import me.myogoo.extendedterminal.menu.ETSlotSemantics;
 import me.myogoo.extendedterminal.menu.ETTerminalBaseMenu;
+import me.myogoo.extendedterminal.api.annotation.ApothicEnchanting;
+import me.myogoo.extendedterminal.api.annotation.Apotheosis;
 import me.myogoo.extendedterminal.menu.extendedterminal.slot.ETAnvilSlot;
 import me.myogoo.extendedterminal.menu.extendedterminal.slot.ETCraftingSlot;
 import me.myogoo.extendedterminal.menu.extendedterminal.slot.ETSmithingSlot;
@@ -489,9 +491,18 @@ public class ETTerminalMenu extends ETTerminalBaseMenu<CraftingRecipe> {
 
     private long getRequiredAnvilExperience(Player player) {
         int cost = Math.max(0, this.anvilCost);
+        if (usesApothicAnvilExperienceCost()) {
+            return MyotusAPI.experience().totalExperienceForLevel(cost);
+        }
+
         int targetLevel = Math.max(0, player.experienceLevel - cost);
         return MyotusAPI.experience().totalExperienceForLevel(player.experienceLevel)
                 - MyotusAPI.experience().totalExperienceForLevel(targetLevel);
+    }
+
+    private boolean usesApothicAnvilExperienceCost() {
+        return MyotusAPI.integrations().isLoaded(ApothicEnchanting.class)
+                || MyotusAPI.integrations().isLoaded(Apotheosis.class);
     }
 
     private long getPlayerRawExperience(Player player) {
