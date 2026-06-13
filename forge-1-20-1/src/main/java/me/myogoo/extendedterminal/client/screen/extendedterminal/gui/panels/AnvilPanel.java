@@ -5,13 +5,12 @@ import appeng.client.gui.WidgetContainer;
 import appeng.client.gui.style.Blitter;
 import appeng.client.gui.widgets.AETextField;
 import me.myogoo.extendedterminal.client.screen.extendedterminal.ETTerminalScreen;
+import me.myogoo.extendedterminal.client.screen.extendedterminal.gui.AnvilExperienceSourceButton;
 import me.myogoo.extendedterminal.client.screen.extendedterminal.gui.ETTerminalModePanel;
 import me.myogoo.extendedterminal.client.screen.extendedterminal.gui.XPLabelWidget;
 import me.myogoo.extendedterminal.menu.ETSlotSemantics;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.renderer.Rect2i;
-import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Blocks;
 
@@ -20,7 +19,7 @@ public class AnvilPanel extends ETTerminalModePanel {
 
     private final AETextField textField;
     private final XPLabelWidget enchantCostLabel;
-    private final Button priorityButton;
+    private final AnvilExperienceSourceButton priorityButton;
 
     public AnvilPanel(ETTerminalScreen screen, WidgetContainer widgets) {
         super(screen, widgets);
@@ -31,9 +30,7 @@ public class AnvilPanel extends ETTerminalModePanel {
         this.enchantCostLabel = new XPLabelWidget();
         widgets.add("ET_ANVIL_COST_LABEL", this.enchantCostLabel);
 
-        this.priorityButton = Button.builder(Component.literal("XP"), btn -> this.menu.cycleAnvilExperienceSourcePriority())
-                .bounds(0, 0, 48, 12)
-                .build();
+        this.priorityButton = new AnvilExperienceSourceButton(this.menu);
         widgets.add("ET_ANVIL_XP_PRIORITY_BUTTON", this.priorityButton);
         setVisible(false);
     }
@@ -51,7 +48,7 @@ public class AnvilPanel extends ETTerminalModePanel {
         screen.setSlotsHidden(ETSlotSemantics.ANVIL_RESULT, !visible);
         this.enchantCostLabel.setVisible(visible);
         this.textField.setVisible(visible);
-        this.priorityButton.visible = visible;
+        this.priorityButton.setVisibility(visible);
     }
 
     @Override
@@ -59,11 +56,11 @@ public class AnvilPanel extends ETTerminalModePanel {
         BG.dest(bounds.getX() + 8, bounds.getY() + bounds.getHeight() - 165).blit(guiGraphics);
     }
 
+
     @Override
     public void updateBeforeRender() {
         var resultSlot = menu.getSlots(ETSlotSemantics.ANVIL_RESULT).get(0);
         this.enchantCostLabel.setCost(resultSlot.hasItem() ? menu.getAnvilCost() : 0);
-        this.priorityButton.setMessage(Component.literal(this.menu.getAnvilExperienceSourcePriorityLabel()));
     }
 
     private void onNameChanged(String input) {

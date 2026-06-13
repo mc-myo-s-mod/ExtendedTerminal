@@ -4,16 +4,15 @@ import appeng.client.Point;
 import appeng.client.gui.WidgetContainer;
 import appeng.client.gui.style.Blitter;
 import appeng.client.gui.widgets.AETextField;
+import me.myogoo.extendedterminal.client.screen.extendedterminal.gui.AnvilExperienceSourceButton;
 import me.myogoo.extendedterminal.client.screen.extendedterminal.ETTerminalScreen;
 import me.myogoo.extendedterminal.client.screen.extendedterminal.gui.ETTerminalModePanel;
 import me.myogoo.extendedterminal.client.screen.extendedterminal.gui.XPLabelWidget;
 import me.myogoo.extendedterminal.menu.ETSlotSemantics;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.renderer.Rect2i;
 
 import net.minecraft.core.component.DataComponents;
-import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Blocks;
 
@@ -22,7 +21,7 @@ public class AnvilPanel extends ETTerminalModePanel {
 
     private final AETextField textField;
     private final XPLabelWidget enchantCostLabel;
-    private final Button priorityButton;
+    private final AnvilExperienceSourceButton priorityButton;
 
     public AnvilPanel(ETTerminalScreen<?> screen, WidgetContainer widgets) {
         super(screen, widgets);
@@ -33,9 +32,7 @@ public class AnvilPanel extends ETTerminalModePanel {
         this.enchantCostLabel = new XPLabelWidget();
         widgets.add("ET_ANVIL_COST_LABEL", this.enchantCostLabel);
 
-        this.priorityButton = Button.builder(Component.literal("XP"), btn -> this.menu.cycleAnvilExperienceSourcePriority())
-                .bounds(0, 0, 48, 12)
-                .build();
+        this.priorityButton = new AnvilExperienceSourceButton(this.menu);
         widgets.add("ET_ANVIL_XP_PRIORITY_BUTTON", this.priorityButton);
 
         setVisible(false);
@@ -56,12 +53,13 @@ public class AnvilPanel extends ETTerminalModePanel {
 
         enchantCostLabel.setVisible(visible);
         this.textField.setVisible(visible);
-        this.priorityButton.visible = visible;
+        this.priorityButton.setVisibility(visible);
     }
 
     public void drawBackgroundLayer(GuiGraphics guiGraphics, Rect2i bounds, Point mouse) {
         BG.dest(bounds.getX() + 8, bounds.getY() + bounds.getHeight() - 165).blit(guiGraphics);
     }
+
 
     private void onNameChanged(String input) {
         var slot = menu.getSlots(ETSlotSemantics.ANVIL_LEFT_INPUT).getFirst();
@@ -83,6 +81,5 @@ public class AnvilPanel extends ETTerminalModePanel {
         } else {
             enchantCostLabel.setCost(0);
         }
-        this.priorityButton.setMessage(Component.literal(this.menu.getAnvilExperienceSourcePriorityLabel()));
     }
 }

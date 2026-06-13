@@ -15,16 +15,16 @@
   },
   "widgets" : {
     "ET_ANVIL_NAME_FIELD": {
-      "left": 70,
+      "left": 34,
       "bottom": 159,
-      "width": 89,
+      "width": 125,
       "height": 12
     },
     "ET_ANVIL_XP_PRIORITY_BUTTON": {
       "left": 10,
-      "bottom": 159,
-      "width": 58,
-      "height": 12
+      "bottom": 163,
+      "width": 20,
+      "height": 20
     },
     "modeTabButtonAnvilPanel": {
       "left": 173,

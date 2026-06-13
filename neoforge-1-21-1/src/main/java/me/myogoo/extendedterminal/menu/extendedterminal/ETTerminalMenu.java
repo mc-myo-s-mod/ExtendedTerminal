@@ -35,6 +35,7 @@ import me.myogoo.extendedterminal.menu.slot.ETCraftingBaseSlot;
 import me.myogoo.myotus.api.MyotusAPI;
 import me.myogoo.myotus.api.experience.ExperienceMath;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -42,6 +43,7 @@ import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.*;
+import net.neoforged.fml.ModList;
 import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.Nullable;
 
@@ -60,6 +62,9 @@ public class ETTerminalMenu extends ETTerminalBaseMenu<CraftingRecipe> {
     private static final String ACTION_UPDATE_STONECUTTER_RECIPES = "updateStoneCutterRecipes";
     private static final String ACTION_SET_ANVIL_ITEM_NAME = "setAnvilItemName";
     private static final String ACTION_CYCLE_ANVIL_EXPERIENCE_SOURCE_PRIORITY = "cycleAnvilExperienceSourcePriority";
+    private static final ResourceLocation APPLIED_EXPERIENCED_CELL_ID =
+            ResourceLocation.fromNamespaceAndPath("appex", "experience_storage_cell_1k");
+    private static final ResourceLocation FLUID_XP_ID = ResourceLocation.parse(ExperienceMath.FLUID_XP_ID);
     // ---------------------------------------------------------------------
     // Fields : 공용
     // ---------------------------------------------------------------------
@@ -396,28 +401,53 @@ public class ETTerminalMenu extends ETTerminalBaseMenu<CraftingRecipe> {
         if (isClientSide()) {
             sendClientAction(ACTION_CYCLE_ANVIL_EXPERIENCE_SOURCE_PRIORITY);
         } else {
-            this.anvilExperienceSourcePriorityIndex = (this.anvilExperienceSourcePriorityIndex + 1) % 3;
+            int sourceCount = getAvailableAnvilExperienceSources().size();
+            this.anvilExperienceSourcePriorityIndex = sourceCount <= 1
+                    ? 0
+                    : (this.anvilExperienceSourcePriorityIndex + 1) % sourceCount;
         }
     }
 
     public List<ExperienceMath.ExperienceSource> getAnvilExperienceSourcePriority() {
-        return switch (this.anvilExperienceSourcePriorityIndex) {
-            case 1 -> List.of(ExperienceMath.ExperienceSource.FLUID_XP,
-                    ExperienceMath.ExperienceSource.APPLIED_EXPERIENCED_AMOUNT,
-                    ExperienceMath.ExperienceSource.PLAYER);
-            case 2 -> List.of(ExperienceMath.ExperienceSource.APPLIED_EXPERIENCED_AMOUNT,
-                    ExperienceMath.ExperienceSource.PLAYER,
-                    ExperienceMath.ExperienceSource.FLUID_XP);
-            default -> MyotusAPI.experience().defaultAnvilSourcePriority();
-        };
+        var sources = getAvailableAnvilExperienceSources();
+        if (sources.isEmpty()) {
+            return List.of(ExperienceMath.ExperienceSource.PLAYER);
+        }
+
+        int offset = Math.floorMod(this.anvilExperienceSourcePriorityIndex, sources.size());
+        var priority = new ArrayList<ExperienceMath.ExperienceSource>(sources.size());
+        priority.addAll(sources.subList(offset, sources.size()));
+        priority.addAll(sources.subList(0, offset));
+        return priority;
     }
 
     public String getAnvilExperienceSourcePriorityLabel() {
-        return switch (this.anvilExperienceSourcePriorityIndex) {
-            case 1 -> "Fluid > Cell > Player";
-            case 2 -> "Cell > Player > Fluid";
-            default -> "Player > Fluid > Cell";
-        };
+        return getAnvilExperienceSourcePriority().stream()
+                .map(source -> switch (source) {
+                    case PLAYER -> "Player";
+                    case FLUID_XP -> "Fluid";
+                    case APPLIED_EXPERIENCED_AMOUNT -> "Cell";
+                })
+                .reduce((left, right) -> left + " > " + right)
+                .orElse("Player");
+    }
+
+    private List<ExperienceMath.ExperienceSource> getAvailableAnvilExperienceSources() {
+        return MyotusAPI.experience().availableAnvilSourcePriority().stream()
+                .filter(source -> source != ExperienceMath.ExperienceSource.FLUID_XP
+                        || isFluidXpAvailable())
+                .filter(source -> source != ExperienceMath.ExperienceSource.APPLIED_EXPERIENCED_AMOUNT
+                        || isAppliedExperiencedCellAvailable())
+                .toList();
+    }
+
+    private static boolean isFluidXpAvailable() {
+        return BuiltInRegistries.FLUID.containsKey(FLUID_XP_ID);
+    }
+
+    private static boolean isAppliedExperiencedCellAvailable() {
+        return ModList.get().isLoaded("appex")
+                && BuiltInRegistries.ITEM.containsKey(APPLIED_EXPERIENCED_CELL_ID);
     }
 
     public boolean canPayAnvilCost(Player player) {
