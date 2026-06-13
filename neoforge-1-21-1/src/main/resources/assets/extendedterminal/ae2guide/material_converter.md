@@ -20,10 +20,10 @@ Place it on the AE2 network and right-click the block to run the conversion.
 
 ## Converted Materials
 
-- <ItemLink id="extendedterminal:compat_processor" /> → <ItemLink id="myotus:compat_processor" />
-- <ItemLink id="extendedterminal:printed_compat_processor" /> → <ItemLink id="myotus:printed_compat_processor" />
-- <ItemLink id="extendedterminal:compat_press" /> → <ItemLink id="myotus:compat_press" />
-- <ItemLink id="extendedterminal:charged_ender_pearl" /> → <ItemLink id="myotus:charged_ender_pearl" />
+- `extendedterminal:compat_processor` → <ItemLink id="myotus:compat_processor" />
+- `extendedterminal:printed_compat_processor` → <ItemLink id="myotus:printed_compat_processor" />
+- `extendedterminal:compat_press` → <ItemLink id="myotus:compat_press" />
+- `extendedterminal:charged_ender_pearl` → <ItemLink id="myotus:charged_ender_pearl" />
 
 ## Recipe
 
