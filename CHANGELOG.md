@@ -1,12 +1,7 @@
 # Changelog
 
-# HotFix
-- fix translate
-
 ## Features
-- `Extended Crafting` native EMI support (no more other categories!)
-- `Extended Terminal` Support `Polymorphic Energistics`(Polymorph)
-- `Wireless Extended Terminal` Support `Wireless Crafting Terminal` Features
+- Add `United Terminal`, which supports all NxN crafting recipes including Re:Avaritia, AvaritiaNeo, and Extended Crafting.
+- Add `Extended Terminal Anvil` support for consuming `Applied Experience` or `Fluid XP` instead of player XP.
+
 ## Bug Fixes
-- fix mouse middle click conflict with `Inventory Tweaks - ReFoxed`
-- fix missing hotkey `Open Wireless Extended Terminal`
