@@ -25,11 +25,18 @@ import me.myogoo.extendedterminal.menu.extendedcrafting.UnitedTerminalMenu;
 public class ECTerminalRecipeHandler<T extends ETTerminalBaseMenu<?>> extends AbstractEmiTableRecipeHandler<T> {
     private final ETMenuType menuType;
     private final EmiRecipeCategory category;
+    private final UnitedTerminalMenu.UnitedRecipeKind unitedRecipeKind;
 
     public ECTerminalRecipeHandler(EmiRecipeCategory category, Class<T> containerClass, ETMenuType menuType) {
+        this(category, containerClass, menuType, null);
+    }
+
+    public ECTerminalRecipeHandler(EmiRecipeCategory category, Class<T> containerClass, ETMenuType menuType,
+                                   UnitedTerminalMenu.UnitedRecipeKind unitedRecipeKind) {
         super(containerClass);
         this.menuType = menuType;
         this.category = category;
+        this.unitedRecipeKind = unitedRecipeKind;
     }
 
     @Override
@@ -45,7 +52,7 @@ public class ECTerminalRecipeHandler<T extends ETTerminalBaseMenu<?>> extends Ab
             return Result.createNotApplicable();
         }
 
-        if (!fitsInNxNGrid(recipe, emiRecipe, menuType.getGridSize())) {
+        if (!fitsInNxNGrid(recipe, emiRecipe, menuType.getGridSideLength())) {
             return Result.createFailed(ItemModText.RECIPE_TOO_LARGE.text());
         }
 
@@ -68,7 +75,11 @@ public class ECTerminalRecipeHandler<T extends ETTerminalBaseMenu<?>> extends Ab
         } else {
             boolean craftMissing = AbstractContainerScreen.hasControlDown();
             performTransfer(menu, recipe.getId(), adapterRecipe, craftMissing,
-                    menu instanceof UnitedTerminalMenu ? UnitedTerminalMenu.UnitedRecipeKind.EXTENDED_CRAFTING : null);
+                    menu instanceof UnitedTerminalMenu
+                            ? unitedRecipeKind != null
+                                    ? unitedRecipeKind
+                                    : UnitedTerminalMenu.UnitedRecipeKind.fromExtendedCraftingTier(adapterRecipe.tier())
+                            : null);
         }
 
         return Result.createSuccessful();

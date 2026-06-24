@@ -4,6 +4,8 @@
   "item.extendedterminal.advanced_terminal": "Extended Crafting用発展型クラフトターミナル",
   "item.extendedterminal.elite_terminal": "Extended Crafting用精鋭型クラフトターミナル",
   "item.extendedterminal.ultimate_terminal": "Extended Crafting用究極型クラフトターミナル",
+  "item.extendedterminal.united_terminal": "統合ターミナル",
+  "item.extendedterminal.wireless_united_terminal": "無線統合ターミナル",
   "item.extendedterminal.compat_processor": "複合処理プロセッサ",
   "item.extendedterminal.printed_compat_processor": "複合処理回路",
   "gui.extendedterminal.basicTerminal": "基本型クラフトターミナル",
@@ -12,5 +14,14 @@
   "gui.extendedterminal.ultimateTerminal": "究極型クラフトターミナル",
   "gui.ae2wtlib.pick_block.text": "ブロック選択を有効化",
   "gui.extendedterminal.united_terminal.recipe_kind": "United レシピタイプを切り替え: %s",
-  "gui.extendedterminal.unitedTerminal": "統合ターミナル"
+  "gui.extendedterminal.unitedTerminal": "統合ターミナル",
+  "gui.extendedterminal.united_terminal.kind.extended_crafting.basic": "Basic Table",
+  "gui.extendedterminal.united_terminal.kind.extended_crafting.advanced": "Advanced Table",
+  "gui.extendedterminal.united_terminal.kind.extended_crafting.elite": "Elite Table",
+  "gui.extendedterminal.united_terminal.kind.extended_crafting.ultimate": "Ultimate Table",
+  "gui.extendedterminal.united_terminal.kind.avaritia_neo.extreme": "Extreme Crafting Table",
+  "gui.extendedterminal.united_terminal.kind.re_avaritia.sculk": "Sculk Table",
+  "gui.extendedterminal.united_terminal.kind.re_avaritia.nether": "Nether Table",
+  "gui.extendedterminal.united_terminal.kind.re_avaritia.end": "End Table",
+  "gui.extendedterminal.united_terminal.kind.re_avaritia.extreme": "Extreme Crafting Table"
 }

@@ -17,15 +17,24 @@ import net.minecraft.world.item.crafting.RecipeHolder;
 import java.util.Map;
 import me.myogoo.extendedterminal.menu.ETTerminalBaseMenu;
 import me.myogoo.extendedterminal.menu.extendedcrafting.UnitedTerminalMenu;
+import org.jetbrains.annotations.Nullable;
 
 public class ECTerminalRecipeHandler<T extends ETTerminalBaseMenu<?>> extends AbstractEmiTableRecipeHandler<T> {
     private final ETMenuType menuType;
     private final EmiRecipeCategory category;
+    @Nullable
+    private final UnitedTerminalMenu.UnitedRecipeKind unitedRecipeKind;
 
     public ECTerminalRecipeHandler(EmiRecipeCategory category, Class<T> containerClass, ETMenuType menuType) {
+        this(category, containerClass, menuType, null);
+    }
+
+    public ECTerminalRecipeHandler(EmiRecipeCategory category, Class<T> containerClass, ETMenuType menuType,
+                                   @Nullable UnitedTerminalMenu.UnitedRecipeKind unitedRecipeKind) {
         super(containerClass);
         this.menuType = menuType;
         this.category = category;
+        this.unitedRecipeKind = unitedRecipeKind;
     }
 
     @Override
@@ -44,14 +53,18 @@ public class ECTerminalRecipeHandler<T extends ETTerminalBaseMenu<?>> extends Ab
     @Override
     protected Result transferRecipe(T menu, RecipeHolder<?> holder, EmiRecipe emiRecipe, boolean doTransfer) {
         Result setup;
-        if ((setup = transferSetup(holder, emiRecipe, menuType.getGridSize())) != null) {
+        if ((setup = transferSetup(holder, emiRecipe, menuType.getGridSideLength())) != null) {
             return setup;
         }
 
         if (holder == null || !(holder.value() instanceof ITableRecipe tableRecipe)) {
             return Result.createFailed(ItemModText.INCOMPATIBLE_RECIPE.text());
         }
-        return doTransfer(menu, ITableRecipeAdapter.of(tableRecipe), holder.id(), doTransfer, UnitedTerminalMenu.UnitedRecipeKind.EXTENDED_CRAFTING);
+        var adapterRecipe = ITableRecipeAdapter.of(tableRecipe);
+        return doTransfer(menu, adapterRecipe, holder.id(), doTransfer,
+                unitedRecipeKind != null
+                        ? unitedRecipeKind
+                        : UnitedTerminalMenu.UnitedRecipeKind.fromExtendedCraftingTier(adapterRecipe.tier()));
     }
 
     @Override

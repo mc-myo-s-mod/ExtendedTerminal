@@ -11,7 +11,7 @@ item_ids:
   - wireless_united_terminal
 ---
 # United Terminal
-<et:condition load="extendedcrafting">
+<myotus:condition load="extendedcrafting">
 <ItemImage id="extendedterminal:united_terminal" scale={3}/>
 
 <ItemLink id="extendedterminal:united_terminal" /> combines the Extended Terminal tools with Extended Crafting support in a single terminal.
@@ -20,7 +20,7 @@ Use it when you want one terminal for normal crafting, smithing, stonecutting, a
 ## Recipe
 <RecipeFor id="extendedterminal:united_terminal" />
 
-<et:condition load="ae2wtlib" silent="true">
+<myotus:condition load="ae2wtlib" silent="true">
 ## Wireless United Terminal
 <ItemLink id="extendedterminal:wireless_united_terminal" /> is a wireless version of the <ItemLink id="extendedterminal:united_terminal" />.
 It requires a <ItemLink id="ae2:wireless_access_point"/> to function.
@@ -35,5 +35,5 @@ It requires a <ItemLink id="ae2:wireless_access_point"/> to function.
     <Recipe id="extendedterminal:ae2wtlib/united_etp" />
     <Recipe id="extendedterminal:ae2wtlib/upgrade_wireless_united_terminal" />
 </Row>
-</et:condition>
-</et:condition>
+</myotus:condition>
+</myotus:condition>

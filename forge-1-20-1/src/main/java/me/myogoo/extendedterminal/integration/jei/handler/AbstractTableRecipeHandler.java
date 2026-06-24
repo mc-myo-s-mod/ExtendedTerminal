@@ -6,6 +6,7 @@ import appeng.menu.me.items.CraftingTermMenu;
 import com.blakebr0.extendedcrafting.api.crafting.ITableRecipe;
 import me.myogoo.extendedterminal.api.adapter.recipe.ITableRecipeAdapter;
 import me.myogoo.extendedterminal.api.adapter.recipe.IShapedTableRecipeAdapter;
+import me.myogoo.extendedterminal.client.ae2helpers.ETAutoCraftingWatcher;
 import me.myogoo.extendedterminal.menu.ETTerminalBaseMenu;
 import me.myogoo.extendedterminal.menu.extendedcrafting.ExtendedTerminalBaseMenu;
 import me.myogoo.extendedterminal.menu.extendedcrafting.UnitedTerminalMenu;
@@ -60,12 +61,12 @@ public abstract class AbstractTableRecipeHandler<T extends ETTerminalBaseMenu<?>
 
     protected abstract Map<Integer, Ingredient> getGuiSlotToIngredientMap(T menu, ITableRecipeAdapter<?> recipe);
 
-    protected static void performTransfer(ETTerminalBaseMenu<?> menu, @Nullable ITableRecipeAdapter<?> recipe, boolean craftMissing) {
+    protected void performTransfer(T menu, @Nullable ITableRecipeAdapter<?> recipe, boolean craftMissing) {
         performTransfer(menu, recipe, craftMissing, null);
     }
 
-    protected static void performTransfer(ETTerminalBaseMenu<?> menu, @Nullable ITableRecipeAdapter<?> recipe, boolean craftMissing,
-                                          UnitedTerminalMenu.UnitedRecipeKind unitedRecipeKind) {
+    protected void performTransfer(T menu, @Nullable ITableRecipeAdapter<?> recipe, boolean craftMissing,
+                                   UnitedTerminalMenu.UnitedRecipeKind unitedRecipeKind) {
         var templateItems = findGoodTemplateItems(recipe, menu);
         int recipeWidth = NOT_SET_RECIPE_SIZE;
         int recipeHeight = NOT_SET_RECIPE_SIZE;
@@ -73,6 +74,7 @@ public abstract class AbstractTableRecipeHandler<T extends ETTerminalBaseMenu<?>
             recipeWidth = shapedRecipe.width();
             recipeHeight = shapedRecipe.height();
         }
+        ETAutoCraftingWatcher.INSTANCE.preparePending(menu, getGuiSlotToIngredientMap(menu, recipe), craftMissing);
         var message = new ETFillCraftingGridFromRecipePacket(recipe.recipeId(), templateItems, craftMissing, recipeWidth, recipeHeight, unitedRecipeKind);
         MyotusAPI.network().sendToServer(message);
     }

@@ -41,7 +41,9 @@ public class AVTerminalRecipeHandler<T extends ETTerminalBaseMenu<?>> extends Ab
         if (holder == null || !(holder.value() instanceof ITierCraftingRecipe tableRecipe)) {
             return Result.createFailed(ItemModText.INCOMPATIBLE_RECIPE.text());
         }
-        return doTransfer(menu, ITableRecipeAdapter.of(tableRecipe), holder.id(), doTransfer, UnitedTerminalMenu.UnitedRecipeKind.RE_AVARITIA);
+        var adapterRecipe = ITableRecipeAdapter.of(tableRecipe);
+        return doTransfer(menu, adapterRecipe, holder.id(), doTransfer,
+                UnitedTerminalMenu.UnitedRecipeKind.fromReAvaritiaTier(adapterRecipe.tier()));
     }
 
     @Override

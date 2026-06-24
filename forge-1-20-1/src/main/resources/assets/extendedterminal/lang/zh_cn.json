@@ -4,6 +4,8 @@
   "item.extendedterminal.advanced_terminal": "高级合成终端",
   "item.extendedterminal.elite_terminal": "精英合成终端",
   "item.extendedterminal.ultimate_terminal": "终极合成终端",
+  "item.extendedterminal.united_terminal": "联合终端",
+  "item.extendedterminal.wireless_united_terminal": "无线联合终端",
   "item.extendedterminal.sculk_terminal": "幽匿合成终端",
   "item.extendedterminal.nether_terminal": "炼狱合成终端",
   "item.extendedterminal.end_terminal": "终末合成终端",
@@ -22,5 +24,14 @@
   "gui.extendedterminal.extremeTerminal": "终焉合成终端",
   "gui.ae2wtlib.pick_block.text": "启用选取方块",
   "gui.extendedterminal.united_terminal.recipe_kind": "切换 United 配方类型：%s",
-  "gui.extendedterminal.unitedTerminal": "联合终端"
+  "gui.extendedterminal.unitedTerminal": "联合终端",
+  "gui.extendedterminal.united_terminal.kind.extended_crafting.basic": "Basic Table",
+  "gui.extendedterminal.united_terminal.kind.extended_crafting.advanced": "Advanced Table",
+  "gui.extendedterminal.united_terminal.kind.extended_crafting.elite": "Elite Table",
+  "gui.extendedterminal.united_terminal.kind.extended_crafting.ultimate": "Ultimate Table",
+  "gui.extendedterminal.united_terminal.kind.avaritia_neo.extreme": "Extreme Crafting Table",
+  "gui.extendedterminal.united_terminal.kind.re_avaritia.sculk": "Sculk Table",
+  "gui.extendedterminal.united_terminal.kind.re_avaritia.nether": "Nether Table",
+  "gui.extendedterminal.united_terminal.kind.re_avaritia.end": "End Table",
+  "gui.extendedterminal.united_terminal.kind.re_avaritia.extreme": "Extreme Crafting Table"
 }

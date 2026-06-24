@@ -4,6 +4,8 @@
   "item.extendedterminal.advanced_terminal": "고급 조합 터미널",
   "item.extendedterminal.elite_terminal": "엘리트 조합 터미널",
   "item.extendedterminal.ultimate_terminal": "최고 조합 터미널",
+  "item.extendedterminal.united_terminal": "통합 터미널",
+  "item.extendedterminal.wireless_united_terminal": "무선 통합 터미널",
   "item.extendedterminal.sculk_terminal": "스컬크 조합 터미널",
   "item.extendedterminal.nether_terminal": "네더 조합 터미널",
   "item.extendedterminal.end_terminal": "엔드 조합 터미널",
@@ -32,5 +34,14 @@
   "gui.extendedterminal.extremeTerminal": "익스트림 조합 터미널",
   "gui.ae2wtlib.pick_block.text": "블록 선택 활성화",
   "gui.extendedterminal.united_terminal.recipe_kind": "United 레시피 타입 변경: %s",
-  "gui.extendedterminal.unitedTerminal": "통합 터미널"
+  "gui.extendedterminal.unitedTerminal": "통합 터미널",
+  "gui.extendedterminal.united_terminal.kind.extended_crafting.basic": "기본 테이블",
+  "gui.extendedterminal.united_terminal.kind.extended_crafting.advanced": "고급 테이블",
+  "gui.extendedterminal.united_terminal.kind.extended_crafting.elite": "엘리트 테이블",
+  "gui.extendedterminal.united_terminal.kind.extended_crafting.ultimate": "궁극 테이블",
+  "gui.extendedterminal.united_terminal.kind.avaritia_neo.extreme": "익스트림 조합대",
+  "gui.extendedterminal.united_terminal.kind.re_avaritia.sculk": "스컬크 테이블",
+  "gui.extendedterminal.united_terminal.kind.re_avaritia.nether": "네더 테이블",
+  "gui.extendedterminal.united_terminal.kind.re_avaritia.end": "엔드 테이블",
+  "gui.extendedterminal.united_terminal.kind.re_avaritia.extreme": "익스트림 조합대"
 }

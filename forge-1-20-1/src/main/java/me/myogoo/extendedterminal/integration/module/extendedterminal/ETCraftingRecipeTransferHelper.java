@@ -5,6 +5,7 @@ import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.FillCraftingGridFromRecipePacket;
 import appeng.integration.modules.jeirei.EncodingHelper;
 import appeng.menu.me.common.GridInventoryEntry;
+import me.myogoo.extendedterminal.client.ae2helpers.ETAutoCraftingWatcher;
 import me.myogoo.extendedterminal.menu.extendedterminal.ETTerminalMenu;
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.item.ItemStack;
@@ -109,6 +110,7 @@ public final class ETCraftingRecipeTransferHelper {
             templateItems.set(entry.getKey(), stack);
         }
 
+        ETAutoCraftingWatcher.INSTANCE.preparePending(menu, getGuiSlotToIngredientMap(menu, recipe), craftMissing);
         NetworkHandler.instance().sendToServer(new FillCraftingGridFromRecipePacket(recipe.getId(), templateItems, craftMissing));
     }
 }

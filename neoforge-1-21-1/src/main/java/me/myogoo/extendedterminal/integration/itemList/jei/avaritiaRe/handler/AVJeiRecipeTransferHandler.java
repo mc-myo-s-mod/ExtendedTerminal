@@ -67,7 +67,8 @@ public class AVJeiRecipeTransferHandler<T extends ETTerminalBaseMenu<?>> extends
                 return new Result.PartiallyCraftable(missingSlots, color, craftMissing);
             }
         } else {
-            performTransfer(menu, adapterRecipe, craftMissing, recipeHolder.id());
+            performTransfer(menu, adapterRecipe, craftMissing, recipeHolder.id(),
+                    UnitedTerminalMenu.UnitedRecipeKind.fromReAvaritiaTier(adapterRecipe.tier()));
         }
 
         return Result.createSuccessful();

@@ -7,6 +7,8 @@
   "item.extendedterminal.advanced_terminal": "Advanced Extended Crafting Terminal",
   "item.extendedterminal.elite_terminal": "Elite Extended Crafting Terminal",
   "item.extendedterminal.ultimate_terminal": "Ultimate Extended Crafting Terminal",
+  "item.extendedterminal.united_terminal": "United Terminal",
+  "item.extendedterminal.wireless_united_terminal": "Wireless United Terminal",
   "item.extendedterminal.sculk_terminal": "Sculk Crafting Terminal",
   "item.extendedterminal.nether_terminal": "Nether Crafting Terminal",
   "item.extendedterminal.end_terminal": "End Crafting Terminal",
@@ -42,5 +44,16 @@
   "gui.extendedterminal.anvilpanel.xpcost": "XP Cost: %d",
   "extendedterminal.jei.notsupportederror": "This Recipe Currently Not Supported",
   "gui.extendedterminal.united_terminal.recipe_kind": "Cycle United recipe type: %s",
-  "gui.extendedterminal.unitedTerminal": "United Terminal"
+  "gui.extendedterminal.unitedTerminal": "United Terminal",
+  "gui.extendedterminal.united_terminal.kind.extended_crafting.basic": "Basic Table",
+  "gui.extendedterminal.united_terminal.kind.extended_crafting.advanced": "Advanced Table",
+  "gui.extendedterminal.united_terminal.kind.extended_crafting.elite": "Elite Table",
+  "gui.extendedterminal.united_terminal.kind.extended_crafting.ultimate": "Ultimate Table",
+  "gui.extendedterminal.united_terminal.kind.avaritia_neo.extreme": "Extreme Crafting Table",
+  "gui.extendedterminal.united_terminal.kind.re_avaritia.sculk": "Sculk Table",
+  "gui.extendedterminal.united_terminal.kind.re_avaritia.nether": "Nether Table",
+  "gui.extendedterminal.united_terminal.kind.re_avaritia.end": "End Table",
+  "gui.extendedterminal.united_terminal.kind.re_avaritia.extreme": "Extreme Crafting Table",
+  "gui.extendedterminal.config.united.title": "United Terminal Config",
+  "gui.extendedterminal.config.remember_united_recipe_kind": "Remember last United recipe type"
 }

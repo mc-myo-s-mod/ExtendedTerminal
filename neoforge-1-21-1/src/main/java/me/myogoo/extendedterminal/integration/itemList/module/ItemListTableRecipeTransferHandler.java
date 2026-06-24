@@ -2,6 +2,7 @@ package me.myogoo.extendedterminal.integration.itemList.module;
 
 import appeng.core.network.ServerboundPacket;
 import me.myogoo.extendedterminal.api.adapter.recipe.table.IShapedTableRecipeAdapter;
+import me.myogoo.extendedterminal.client.ae2helpers.ETAutoCraftingWatcher;
 import me.myogoo.extendedterminal.api.adapter.recipe.table.ITableRecipeAdapter;
 import me.myogoo.extendedterminal.menu.ETTerminalBaseMenu;
 import me.myogoo.extendedterminal.menu.extendedcrafting.UnitedTerminalMenu;
@@ -31,6 +32,7 @@ public abstract class ItemListTableRecipeTransferHandler<T extends ETTerminalBas
             recipeHeight = shapedRecipe.height();
         }
 
+        ETAutoCraftingWatcher.INSTANCE.preparePending(menu, getGuiSlotToIngredientMap(menu, recipe), craftMissing);
         ServerboundPacket message = new FillTableCraftingGridFromRecipePacket(recipeId, templateItems, craftMissing,
                 recipeWidth, recipeHeight, unitedRecipeKind);
         PacketDistributor.sendToServer(message);

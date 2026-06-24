@@ -12,6 +12,7 @@ import me.myogoo.extendedterminal.menu.extendedcrafting.EliteTerminalMenu;
 import me.myogoo.extendedterminal.menu.extendedcrafting.UltimateTerminalMenu;
 import me.myogoo.extendedterminal.menu.extendedcrafting.UnitedTerminalMenu;
 import me.myogoo.myotus.api.annotation.MyotusSubscriber;
+import me.myogoo.extendedterminal.menu.extendedcrafting.UnitedTerminalMenu.UnitedRecipeKind;
 
 import java.util.function.Consumer;
 
@@ -39,16 +40,16 @@ public class ECRecipeHandler {
                             new ECTerminalRecipeHandler<>(category, UltimateTerminalMenu.class, ETMenuType.ULTIMATE_TERMINAL)));
             addTerminalHandler(getEmiCategory(BASIC_TABLE_CATEGORY_ID),
                     category -> registry.addRecipeHandler(UnitedTerminalMenu.TYPE,
-                            new ECTerminalRecipeHandler<>(category, UnitedTerminalMenu.class, ETMenuType.UNITED_TERMINAL)));
+                            new ECTerminalRecipeHandler<>(category, UnitedTerminalMenu.class, ETMenuType.UNITED_TERMINAL, UnitedRecipeKind.EXTENDED_CRAFTING_BASIC)));
             addTerminalHandler(getEmiCategory(ADVANCED_TABLE_CATEGORY_ID),
                     category -> registry.addRecipeHandler(UnitedTerminalMenu.TYPE,
-                            new ECTerminalRecipeHandler<>(category, UnitedTerminalMenu.class, ETMenuType.UNITED_TERMINAL)));
+                            new ECTerminalRecipeHandler<>(category, UnitedTerminalMenu.class, ETMenuType.UNITED_TERMINAL, UnitedRecipeKind.EXTENDED_CRAFTING_ADVANCED)));
             addTerminalHandler(getEmiCategory(ELITE_TABLE_CATEGORY_ID),
                     category -> registry.addRecipeHandler(UnitedTerminalMenu.TYPE,
-                            new ECTerminalRecipeHandler<>(category, UnitedTerminalMenu.class, ETMenuType.UNITED_TERMINAL)));
+                            new ECTerminalRecipeHandler<>(category, UnitedTerminalMenu.class, ETMenuType.UNITED_TERMINAL, UnitedRecipeKind.EXTENDED_CRAFTING_ELITE)));
             addTerminalHandler(getEmiCategory(ULTIMATE_TABLE_CATEGORY_ID),
                     category -> registry.addRecipeHandler(UnitedTerminalMenu.TYPE,
-                            new ECTerminalRecipeHandler<>(category, UnitedTerminalMenu.class, ETMenuType.UNITED_TERMINAL)));
+                            new ECTerminalRecipeHandler<>(category, UnitedTerminalMenu.class, ETMenuType.UNITED_TERMINAL, UnitedRecipeKind.EXTENDED_CRAFTING_ULTIMATE)));
         });
     }
 

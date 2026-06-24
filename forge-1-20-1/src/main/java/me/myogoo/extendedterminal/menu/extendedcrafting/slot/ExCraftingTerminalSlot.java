@@ -63,7 +63,21 @@ public class ExCraftingTerminalSlot extends ETCraftingBaseSlot<ITableRecipe, Cra
             if (recipe != null) {
                 var adjusted = terminalMenu.createTableInput(containerItems(ic), recipe);
                 if (recipe.matches(adjusted, level)) {
-                    return terminalMenu.getCurrentRecipe().getRemainingItems(adjusted);
+                    var compactRemaining = terminalMenu.getCurrentRecipe().getRemainingItems(adjusted);
+                    var expandedRemaining = NonNullList.withSize(this.menuType.getGridSize(), ItemStack.EMPTY);
+                    int side = adjusted.getWidth();
+                    int offset = Math.floorDiv(this.menuType.getGridSideLength() - side, 2);
+                    for (int y = 0; y < side; y++) {
+                        for (int x = 0; x < side; x++) {
+                            int compactIndex = y * side + x;
+                            int expandedIndex = (y + offset) * this.menuType.getGridSideLength() + (x + offset);
+                            if (compactIndex >= 0 && compactIndex < compactRemaining.size()
+                                    && expandedIndex >= 0 && expandedIndex < expandedRemaining.size()) {
+                                expandedRemaining.set(expandedIndex, compactRemaining.get(compactIndex));
+                            }
+                        }
+                    }
+                    return expandedRemaining;
                 }
             }
         }

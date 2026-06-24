@@ -2,6 +2,8 @@ package me.myogoo.extendedterminal;
 
 import com.mojang.logging.LogUtils;
 
+import me.myogoo.extendedterminal.compat.ae2helpers.AE2HelpersCompat;
+import me.myogoo.extendedterminal.compat.ae2helpers.AE2HelpersUpgradeRegistration;
 import me.myogoo.extendedterminal.init.*;
 import me.myogoo.extendedterminal.init.wt.WTInits;
 import me.myogoo.extendedterminal.init.wt.WTItems;
@@ -10,6 +12,7 @@ import me.myogoo.myotus.api.MyotusAPI;
 import me.myogoo.myotus.api.annotation.mods.AE2WTLib;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.InterModComms;
 import net.minecraftforge.fml.common.Mod;
@@ -26,6 +29,7 @@ public class ExtendedTerminal {
     public ExtendedTerminal() {
         ETConfig.init();
         ETModIntegration.initialize();
+        AE2HelpersCompat.logDetectedState(LOGGER);
         ETNetwork.register();
 
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
@@ -35,6 +39,7 @@ public class ExtendedTerminal {
         ETParts.REGISTER.register(modEventBus);
         ETMenus.REGISTER.register(modEventBus);
         ETCreativeTab.REGISTER.register(modEventBus);
+        modEventBus.addListener(EventPriority.LOWEST, AE2HelpersUpgradeRegistration::registerTerminalPartUpgrades);
         if (MyotusAPI.integrations().isLoaded(AE2WTLib.class)) {
             WTItems.register();
             WTMenus.register();

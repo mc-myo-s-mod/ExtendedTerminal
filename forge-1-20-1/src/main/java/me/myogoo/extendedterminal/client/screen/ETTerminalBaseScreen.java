@@ -10,6 +10,7 @@ import appeng.core.sync.packets.InventoryActionPacket;
 import appeng.helpers.InventoryAction;
 import appeng.menu.SlotSemantic;
 import com.mojang.blaze3d.platform.InputConstants;
+import me.myogoo.extendedterminal.client.ae2helpers.ETAutoCraftingWatcher;
 import me.myogoo.extendedterminal.menu.ETMenuType;
 import me.myogoo.extendedterminal.menu.ETTerminalBaseMenu;
 import me.myogoo.extendedterminal.menu.extendedcrafting.ExtendedTerminalBaseMenu;
@@ -43,6 +44,7 @@ public class ETTerminalBaseScreen<R extends Recipe<?>,T extends ETTerminalBaseMe
 
     @Override
     public void onClose() {
+        ETAutoCraftingWatcher.INSTANCE.clear();
         if(AEConfig.instance().isClearGridOnClose()) {
             this.getMenu().clearCraftingGrid();
         }
@@ -66,6 +68,12 @@ public class ETTerminalBaseScreen<R extends Recipe<?>,T extends ETTerminalBaseMe
             return;
         }
         super.slotClicked(slot, slotIdx, mouseButton, clickType);
+    }
+
+    @Override
+    public void containerTick() {
+        super.containerTick();
+        ETAutoCraftingWatcher.INSTANCE.onTick(this);
     }
 
     @Override

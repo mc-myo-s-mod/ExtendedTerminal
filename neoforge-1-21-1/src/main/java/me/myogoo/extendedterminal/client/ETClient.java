@@ -71,7 +71,7 @@ public class ETClient {
         InitScreens.register(event, AdvancedTerminalMenu.TYPE, AdvancedTerminalScreen::new, "/screens/extended_terminal/advanced_terminal.json");
         InitScreens.register(event, EliteTerminalMenu.TYPE, EliteTerminalScreen::new, "/screens/extended_terminal/elite_terminal.json");
         InitScreens.register(event, UltimateTerminalMenu.TYPE, UltimateTerminalScreen::new, "/screens/extended_terminal/ultimate_terminal.json");
-        InitScreens.register(event, UnitedTerminalMenu.TYPE, UnitedTerminalScreen::new, "/screens/extended_terminal/united_terminal.json");
+        InitScreens.register(event, UnitedTerminalMenu.TYPE, UnitedTerminalScreen<UnitedTerminalMenu>::new, "/screens/extended_terminal/united_terminal.json");
 
         // avaritia terminals
         InitScreens.register(event, SculkTerminalMenu.TYPE, SculkTerminalScreen::new, "/screens/avaritia/sculk_terminal.json");

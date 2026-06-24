@@ -1,6 +1,8 @@
 package me.myogoo.extendedterminal;
 
 import com.mojang.logging.LogUtils;
+import me.myogoo.extendedterminal.compat.ae2helpers.AE2HelpersCompat;
+import me.myogoo.extendedterminal.compat.ae2helpers.AE2HelpersUpgradeRegistration;
 import me.myogoo.extendedterminal.init.*;
 import me.myogoo.extendedterminal.init.wt.WTInit;
 import me.myogoo.extendedterminal.init.wt.WTItems;
@@ -23,6 +25,7 @@ public class ExtendedTerminal {
 
     public ExtendedTerminal(IEventBus modEventBus, ModContainer modContainer) {
         ETModIntegration.initialize();
+        AE2HelpersCompat.logDetectedState(LOGGER);
         ETConfig.initialize(modContainer);
 
         ETItems.REGISTER.register(modEventBus);
@@ -32,6 +35,7 @@ public class ExtendedTerminal {
         ETParts.REGISTER.register(modEventBus);
         ETMenus.REGISTER.register(modEventBus);
         ETDataComponent.REGISTER.register(modEventBus);
+        modEventBus.addListener(EventPriority.LOWEST, AE2HelpersUpgradeRegistration::registerTerminalPartUpgrades);
 
         if(MyotusAPI.integrations().isLoaded(AE2WTLib.class)) {
             WTItems.register();

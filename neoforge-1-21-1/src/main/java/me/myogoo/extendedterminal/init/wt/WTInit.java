@@ -1,6 +1,7 @@
 package me.myogoo.extendedterminal.init.wt;
 
 import appeng.api.features.GridLinkables;
+import me.myogoo.extendedterminal.compat.ae2helpers.AE2HelpersUpgradeRegistration;
 import appeng.api.upgrades.Upgrades;
 import appeng.items.tools.powered.WirelessTerminalItem;
 import appeng.items.tools.powered.powersink.PoweredItemCapabilities;
@@ -18,23 +19,22 @@ import me.myogoo.extendedterminal.menu.extendedcrafting.wt.UnitedWTMenu;
 import me.myogoo.extendedterminal.menu.extendedterminal.wt.ETWTMenu;
 import me.myogoo.myotus.api.annotation.mods.AE2WTLib;
 import me.myogoo.myotus.api.MyotusAPI;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.level.ItemLike;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.registries.RegisterEvent;
 
-import java.util.Optional;
-
 import static me.myogoo.extendedterminal.init.wt.WTItems.WT_ITEMS;
 
 public class WTInit {
-    private final static ResourceLocation ICON_SRC = ExtendedTerminal.makeId("textures/guis/icons.png");
-    private final static Icon.Texture TEXTURE = new Icon.Texture(ICON_SRC, 128, 128);
+    private static final String AE_WIRELESS_TERMINAL_HOTKEY = "wireless_terminal";
+    private static final Icon.Texture WIRELESS_ET_TERMINAL_ICON = new Icon.Texture(
+            ExtendedTerminal.makeId("textures/item/wireless_et_terminal.png"), 16, 16);
+    private static final Icon.Texture WIRELESS_UNITED_TERMINAL_ICON = new Icon.Texture(
+            ExtendedTerminal.makeId("textures/item/wireless_united_terminal.png"), 16, 16);
     private static boolean terminalRegistered = false;
 
     public static synchronized void registerTerminal() {
@@ -43,16 +43,16 @@ public class WTInit {
         }
         terminalRegistered = true;
         register(WTItems.WIRELESS_ET_TERMINAL, ETMenuType.ET_TERMINAL, ETWTHost::new, ETWTMenu.TYPE,
-                new Icon(0, 0, 16, 16, TEXTURE));
+                new Icon(0, 0, 16, 16, WIRELESS_ET_TERMINAL_ICON));
         register(WTItems.WIRELESS_UNITED_TERMINAL, ETMenuType.UNITED_TERMINAL, UnitedWTHost::new, UnitedWTMenu.TYPE,
-                new Icon(16, 0, 16, 16, TEXTURE));
+                new Icon(0, 0, 16, 16, WIRELESS_UNITED_TERMINAL_ICON));
     }
 
     private static void register(ItemLike terminal, ETMenuType etMenuType, WTDefinition.WTMenuHostFactory host,
             MenuType<?> menuType, Icon icon) {
         AddTerminalEvent
                 .register(e -> e.builder(etMenuType.getWTIdAsString(), host, menuType, (ItemWT) terminal.asItem(), icon)
-                        .hotkeyName(etMenuType.getWTIdAsString())
+                        .hotkeyName(AE_WIRELESS_TERMINAL_HOTKEY)
                         .addTerminal());
     }
 
@@ -65,23 +65,11 @@ public class WTInit {
         Upgrades.add(AE2wtlibItems.QUANTUM_BRIDGE_CARD, WTItems.WIRELESS_ET_TERMINAL.asItem(), 1);
         Upgrades.add(AE2wtlibItems.MAGNET_CARD, WTItems.WIRELESS_UNITED_TERMINAL.asItem(), 1);
         Upgrades.add(AE2wtlibItems.QUANTUM_BRIDGE_CARD, WTItems.WIRELESS_UNITED_TERMINAL.asItem(), 1);
-        registerImportExportCards(WTItems.WIRELESS_ET_TERMINAL.asItem());
-        registerImportExportCards(WTItems.WIRELESS_UNITED_TERMINAL.asItem());
+        AE2HelpersUpgradeRegistration.registerSupportedCards(WTItems.WIRELESS_ET_TERMINAL.asItem());
+        AE2HelpersUpgradeRegistration.registerSupportedCards(WTItems.WIRELESS_UNITED_TERMINAL.asItem());
 
         GridLinkables.register(WTItems.WIRELESS_ET_TERMINAL.asItem(), WirelessTerminalItem.LINKABLE_HANDLER);
         GridLinkables.register(WTItems.WIRELESS_UNITED_TERMINAL.asItem(), WirelessTerminalItem.LINKABLE_HANDLER);
-    }
-
-    private static void registerImportExportCards(ItemLike terminal) {
-        findImportExportCard("import_card").ifPresent(card -> Upgrades.add(card, terminal, 1));
-        findImportExportCard("export_card").ifPresent(card -> Upgrades.add(card, terminal, 1));
-    }
-
-    private static Optional<Item> findImportExportCard(String path) {
-        var modernId = ResourceLocation.fromNamespaceAndPath("ae2importexportcard", path);
-        var legacyId = ResourceLocation.fromNamespaceAndPath("ae2insertexportcard", path);
-        return BuiltInRegistries.ITEM.getOptional(modernId)
-                .or(() -> BuiltInRegistries.ITEM.getOptional(legacyId));
     }
 
     public static void initCapabilities(RegisterCapabilitiesEvent event) {

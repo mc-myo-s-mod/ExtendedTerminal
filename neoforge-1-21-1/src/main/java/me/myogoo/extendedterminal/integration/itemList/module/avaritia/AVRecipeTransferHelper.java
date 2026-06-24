@@ -54,12 +54,16 @@ public class AVRecipeTransferHelper {
             var raw = recipe.get().getIngredients();
             List<Ingredient> ingredients;
 
+            int offsetX = 0;
+            int offsetY = 0;
             int width = gridSideLength;
             int height = gridSideLength;
             if (recipe instanceof IShapedTableRecipeAdapter shapedRecipe) {
                 ingredients = shapedRecipe.ensureFittedCraftingGrid();
                 width = shapedRecipe.width();
                 height = shapedRecipe.height();
+                offsetX = Math.floorDiv(gridSideLength - shapedRecipe.width(), 2);
+                offsetY = Math.floorDiv(gridSideLength - shapedRecipe.height(), 2);
             } else {
                 ingredients = raw;
             }
@@ -71,7 +75,7 @@ public class AVRecipeTransferHelper {
                 int x = i % width;
                 int y = i / width;
 
-                var guiSlot = y * width + x;
+                var guiSlot = (y + offsetY) * gridSideLength + (x + offsetX);
                 var ing = ingredients.get(i);
                 if (!ing.isEmpty()) {
                     result.put(guiSlot, ing);

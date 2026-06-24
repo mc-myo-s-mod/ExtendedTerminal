@@ -1,9 +1,12 @@
 package me.myogoo.extendedterminal.init;
 
-import me.myogoo.extendedterminal.client.screen.extendedterminal.gui.config.ETTerminalConfigScreen;
 import me.myogoo.extendedterminal.ExtendedTerminal;
+import me.myogoo.extendedterminal.client.screen.extendedcrafting.gui.config.UnitedTerminalConfigScreen;
+import me.myogoo.extendedterminal.client.screen.extendedterminal.gui.config.ETTerminalConfigScreen;
 import me.myogoo.extendedterminal.init.wt.WTItems;
 import me.myogoo.extendedterminal.me.host.ETWTHost;
+import me.myogoo.extendedterminal.me.host.UnitedWTHost;
+import me.myogoo.extendedterminal.part.extendedcrafting.UnitedTerminalPart;
 import me.myogoo.myotus.api.MyotusAPI;
 import me.myogoo.myotus.api.annotation.mods.AE2WTLib;
 import me.myogoo.myotus.api.config.MyoConfigTab;
@@ -12,18 +15,29 @@ import net.minecraft.resources.ResourceLocation;
 
 public class ETConfigTab {
     public static void initialize() {
-        if (!MyotusAPI.integrations().isLoaded(AE2WTLib.class)) {
-            return;
+        var ae2wtlibLoaded = MyotusAPI.integrations().isLoaded(AE2WTLib.class);
+
+        if (ae2wtlibLoaded) {
+            MyotusAPI.get()
+                    .configRegistrar()
+                    .terminalConfigTab(new MyoConfigTab(
+                            ResourceLocation.fromNamespaceAndPath(ExtendedTerminal.MODID, "wireless_et_terminal"),
+                            Component.translatable("gui.extendedterminal.config.title"),
+                            WTItems.WIRELESS_ET_TERMINAL.stack(),
+                            "et_config.json",
+                            new ETTerminalConfigScreen()
+                    ).visibleWhen(context -> context.host() instanceof ETWTHost));
         }
 
         MyotusAPI.get()
                 .configRegistrar()
                 .terminalConfigTab(new MyoConfigTab(
-                        ResourceLocation.fromNamespaceAndPath(ExtendedTerminal.MODID, "wireless_et_terminal"),
-                        Component.translatable("gui.extendedterminal.config.title"),
-                        WTItems.WIRELESS_ET_TERMINAL.stack(),
-                        "et_config.json",
-                        new ETTerminalConfigScreen()
-                ).visibleWhen(context -> context.host() instanceof ETWTHost));
+                        ResourceLocation.fromNamespaceAndPath(ExtendedTerminal.MODID, "united_terminal"),
+                        Component.translatable("gui.extendedterminal.config.united.title"),
+                        ETParts.UNITED_TERMINAL_PART.stack(),
+                        "united_config.json",
+                        new UnitedTerminalConfigScreen()
+                ).visibleWhen(context -> context.host() instanceof UnitedTerminalPart
+                        || (ae2wtlibLoaded && context.host() instanceof UnitedWTHost)));
     }
 }

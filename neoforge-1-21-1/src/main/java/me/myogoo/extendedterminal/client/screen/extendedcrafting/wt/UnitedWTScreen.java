@@ -1,6 +1,7 @@
 package me.myogoo.extendedterminal.client.screen.extendedcrafting.wt;
 
 import appeng.client.gui.style.ScreenStyle;
+import me.myogoo.extendedterminal.client.screen.extendedcrafting.UnitedTerminalScreen;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeInput;
 import de.mari_023.ae2wtlib.api.TextConstants;
@@ -11,11 +12,18 @@ import de.mari_023.ae2wtlib.api.terminal.IUniversalTerminalCapable;
 import de.mari_023.ae2wtlib.api.terminal.WTMenuHost;
 import me.myogoo.extendedterminal.client.screen.ETTerminalBaseScreen;
 import me.myogoo.extendedterminal.menu.extendedcrafting.wt.UnitedWTMenu;
+import me.myogoo.myotus.client.gui.widgets.button.MyoCycleOverlayButton;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Items;
 import org.jetbrains.annotations.NotNull;
 
-public class UnitedWTScreen extends ETTerminalBaseScreen<Recipe<RecipeInput>, UnitedWTMenu> implements IUniversalTerminalCapable {
+import java.util.List;
+
+public class UnitedWTScreen extends UnitedTerminalScreen<UnitedWTMenu> implements IUniversalTerminalCapable {
     private final ScrollingUpgradesPanel upgradesPanel;
     private final IconButton magnetCardMenuButton;
 

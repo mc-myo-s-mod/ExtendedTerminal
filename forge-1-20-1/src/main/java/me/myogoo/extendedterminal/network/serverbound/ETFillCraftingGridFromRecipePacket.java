@@ -10,15 +10,13 @@ import appeng.api.storage.StorageHelper;
 import appeng.helpers.IMenuCraftingPacket;
 import appeng.items.storage.ViewCellItem;
 import appeng.util.prioritylist.IPartitionList;
-import com.google.common.base.Preconditions;
 import com.google.common.primitives.Ints;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntList;
-import me.myogoo.extendedterminal.integration.ItemListTermCraftingHelper;
 import me.myogoo.extendedterminal.menu.extendedcrafting.UnitedTerminalMenu;
+import me.myogoo.extendedterminal.menu.recipe.ETRecipeTransferPlanner;
 import me.myogoo.myotus.api.network.IMyotusPacket;
 import me.myogoo.myotus.api.network.MyoPacketContext;
-import me.myogoo.extendedterminal.util.extendedcrafting.TableCraftingHelper;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
@@ -26,6 +24,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.Recipe;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
@@ -56,11 +55,9 @@ public class ETFillCraftingGridFromRecipePacket extends FillRecipeBasePacket imp
         craftMissing = stream.readBoolean();
         recipeWidth = stream.readInt();
         recipeHeight = stream.readInt();
-        int kindOrdinal = stream.readInt();
         UnitedTerminalMenu.UnitedRecipeKind decodedKind = null;
-        var kinds = UnitedTerminalMenu.UnitedRecipeKind.values();
-        if (kindOrdinal >= 0 && kindOrdinal < kinds.length) {
-            decodedKind = kinds[kindOrdinal];
+        if (stream.readBoolean()) {
+            decodedKind = UnitedTerminalMenu.UnitedRecipeKind.bySerializedName(stream.readUtf());
         }
         unitedRecipeKind = decodedKind;
     }
@@ -108,7 +105,10 @@ public class ETFillCraftingGridFromRecipePacket extends FillRecipeBasePacket imp
         stream.writeBoolean(this.craftMissing);
         stream.writeInt(this.recipeWidth);
         stream.writeInt(this.recipeHeight);
-        stream.writeInt(this.unitedRecipeKind == null ? -1 : this.unitedRecipeKind.ordinal());
+        stream.writeBoolean(this.unitedRecipeKind != null);
+        if (this.unitedRecipeKind != null) {
+            stream.writeUtf(this.unitedRecipeKind.serializedName());
+        }
     }
 
     public static void handle(ETFillCraftingGridFromRecipePacket packet, MyoPacketContext context) {
@@ -243,36 +243,10 @@ public class ETFillCraftingGridFromRecipePacket extends FillRecipeBasePacket imp
 
     @Override
     protected NonNullList<Ingredient> getDesiredIngredients(Player player) {
+        Recipe<?> recipe = null;
         if (recipeId != null) {
-            var recipe = player.level().getRecipeManager().byKey(this.recipeId);
-            if (recipe.isPresent()) {
-                return ItemListTermCraftingHelper.ensureNxNTableCraftingGrid(recipe.get(), ingredientTemplates.size(), recipeWidth, recipeHeight);
-            }
+            recipe = player.level().getRecipeManager().byKey(this.recipeId).orElse(null);
         }
-
-        var ingredients = NonNullList.withSize(this.ingredientTemplates.size(), Ingredient.EMPTY);
-        Preconditions.checkArgument(ingredients.size() == this.ingredientTemplates.size(),
-                "Got %d ingredient templates from client, expected %d",
-                ingredientTemplates.size(), ingredients.size());
-
-        //shapeless recipes
-        if (recipeWidth == NOT_SET_RECIPE_SIZE || recipeHeight == NOT_SET_RECIPE_SIZE) {
-            for (int i = 0; i < ingredients.size(); i++) {
-                var template = ingredientTemplates.get(i);
-                if (!template.isEmpty()) {
-                    ingredients.set(i, Ingredient.of(template));
-                }
-            }
-        } else {
-            int cursor = 0;
-            var coordinator = TableCraftingHelper.indexToCoordinate(ingredientTemplates.size(), recipeWidth, recipeHeight);
-
-            for (int i = 0; i < ingredients.size(); i++) {
-                if (coordinator.test(i)) {
-                    ingredients.set(i, Ingredient.of(ingredientTemplates.get(cursor++)));
-                }
-            }
-        }
-        return ingredients;
+        return ETRecipeTransferPlanner.desiredIngredients(recipe, ingredientTemplates, recipeWidth, recipeHeight);
     }
 }

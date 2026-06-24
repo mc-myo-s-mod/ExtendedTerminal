@@ -14,6 +14,7 @@ import committee.nova.mods.avaritia.api.common.crafting.TierInput;
 import me.myogoo.extendedterminal.api.annotation.AvaritiaNeo;
 import me.myogoo.extendedterminal.api.annotation.ExtendedCrafting;
 import me.myogoo.extendedterminal.api.annotation.ReAvaritia;
+import me.myogoo.extendedterminal.api.host.IUnitedTerminalHost;
 import me.myogoo.extendedterminal.config.extendedcrafting.ExtendedCraftingConfig;
 import me.myogoo.extendedterminal.menu.ETMenuType;
 import me.myogoo.extendedterminal.menu.extendedcrafting.slot.UnitedCraftingTerminalSlot;
@@ -49,7 +50,9 @@ public class UnitedTerminalMenu extends ETTerminalBaseMenu<Recipe<RecipeInput>> 
     private final ISegmentedInventory craftingInventoryHost;
     protected final CraftingMatrixSlot[] craftingSlots;
 
+    public static final String ACTION_REMEMBER_RECIPE_KIND = "rememberRecipeKind";
     private static final String ACTION_SELECT_NEXT_RECIPE_KIND = "selectNextRecipeKind";
+    private static final String ACTION_SELECT_PREVIOUS_RECIPE_KIND = "selectPreviousRecipeKind";
     public static final MenuType<UnitedTerminalMenu> TYPE = MenuTypeBuilder
             .create(UnitedTerminalMenu::new, ITerminalHost.class)
             .buildUnregistered(ETMenuType.UNITED_TERMINAL.getId());
@@ -57,7 +60,7 @@ public class UnitedTerminalMenu extends ETTerminalBaseMenu<Recipe<RecipeInput>> 
     @Nullable
     private UnitedRecipe currentUnitedRecipe;
     @GuiSync(0)
-    private UnitedRecipeKind selectedRecipeKind = UnitedRecipeKind.EXTENDED_CRAFTING;
+    private UnitedRecipeKind selectedRecipeKind = UnitedRecipeKind.EXTENDED_CRAFTING_ULTIMATE;
     @Nullable
     private List<ItemStack> lastUnitedItems;
 
@@ -76,7 +79,10 @@ public class UnitedTerminalMenu extends ETTerminalBaseMenu<Recipe<RecipeInput>> 
         this.addSlot(this.outputSlot = createOutputSlot(linkStatusInventory, craftingGridInv),
                 this.menuType.getSlotSemanticResult());
 
+        registerClientAction(ACTION_REMEMBER_RECIPE_KIND, Boolean.class, this::setRememberRecipeKind);
         registerClientAction(ACTION_SELECT_NEXT_RECIPE_KIND, this::selectNextRecipeKind);
+        registerClientAction(ACTION_SELECT_PREVIOUS_RECIPE_KIND, this::selectPreviousRecipeKind);
+        loadRememberedRecipeKind();
         updateCurrentRecipeAndOutput(true);
     }
 
@@ -173,14 +179,58 @@ public class UnitedTerminalMenu extends ETTerminalBaseMenu<Recipe<RecipeInput>> 
             return;
         }
         this.selectedRecipeKind = selectedRecipeKind;
+        saveRememberedRecipeKind(selectedRecipeKind);
         this.currentUnitedRecipe = null;
         this.lastUnitedItems = null;
         updateCurrentRecipeAndOutput(true);
     }
 
-    public void selectNextRecipeKind() {
+    private void loadRememberedRecipeKind() {
+        if (!(getHost() instanceof IUnitedTerminalHost host) || !host.rememberUnitedRecipeKind()) {
+            return;
+        }
+
+        var remembered = host.getRememberedUnitedRecipeKind();
+        if (remembered != null && remembered.isActive()) {
+            this.selectedRecipeKind = remembered;
+        }
+    }
+
+    private void saveRememberedRecipeKind(UnitedRecipeKind recipeKind) {
+        if (!isClientSide() && getHost() instanceof IUnitedTerminalHost host && host.rememberUnitedRecipeKind()) {
+            host.setRememberedUnitedRecipeKind(recipeKind);
+        }
+    }
+
+    public boolean rememberRecipeKind() {
+        return !(getHost() instanceof IUnitedTerminalHost host) || host.rememberUnitedRecipeKind();
+    }
+
+    public void setRememberRecipeKind(boolean remember) {
         if (isClientSide()) {
-            sendClientAction(ACTION_SELECT_NEXT_RECIPE_KIND);
+            sendClientAction(ACTION_REMEMBER_RECIPE_KIND, remember);
+            return;
+        }
+
+        if (getHost() instanceof IUnitedTerminalHost host) {
+            host.setRememberUnitedRecipeKind(remember);
+            if (remember) {
+                host.setRememberedUnitedRecipeKind(getSelectedRecipeKind());
+            }
+        }
+    }
+
+    public void selectNextRecipeKind() {
+        selectRecipeKindOffset(1, ACTION_SELECT_NEXT_RECIPE_KIND);
+    }
+
+    public void selectPreviousRecipeKind() {
+        selectRecipeKindOffset(-1, ACTION_SELECT_PREVIOUS_RECIPE_KIND);
+    }
+
+    private void selectRecipeKindOffset(int offset, String clientAction) {
+        if (isClientSide()) {
+            sendClientAction(clientAction);
             return;
         }
         var values = getActiveRecipeKinds();
@@ -188,7 +238,7 @@ public class UnitedTerminalMenu extends ETTerminalBaseMenu<Recipe<RecipeInput>> 
             return;
         }
         var currentIndex = values.indexOf(this.selectedRecipeKind);
-        setSelectedRecipeKind(values.get((currentIndex + 1) % values.size()));
+        setSelectedRecipeKind(values.get(Math.floorMod(currentIndex + offset, values.size())));
     }
 
     private void normalizeSelectedRecipeKind() {
@@ -196,19 +246,15 @@ public class UnitedTerminalMenu extends ETTerminalBaseMenu<Recipe<RecipeInput>> 
             return;
         }
         var values = getActiveRecipeKinds();
-        this.selectedRecipeKind = values.isEmpty() ? UnitedRecipeKind.EXTENDED_CRAFTING : values.getFirst();
+        this.selectedRecipeKind = values.isEmpty() ? UnitedRecipeKind.EXTENDED_CRAFTING_ULTIMATE : values.getFirst();
     }
 
     public static List<UnitedRecipeKind> getActiveRecipeKinds() {
-        var kinds = new ArrayList<UnitedRecipeKind>(3);
-        if (UnitedRecipeKind.EXTENDED_CRAFTING.isActive()) {
-            kinds.add(UnitedRecipeKind.EXTENDED_CRAFTING);
-        }
-        if (UnitedRecipeKind.AVARITIA_NEO.isActive()) {
-            kinds.add(UnitedRecipeKind.AVARITIA_NEO);
-        }
-        if (UnitedRecipeKind.RE_AVARITIA.isActive()) {
-            kinds.add(UnitedRecipeKind.RE_AVARITIA);
+        var kinds = new ArrayList<UnitedRecipeKind>(UnitedRecipeKind.values().length);
+        for (var kind : UnitedRecipeKind.values()) {
+            if (kind.isActive()) {
+                kinds.add(kind);
+            }
         }
         return kinds;
     }
@@ -219,10 +265,10 @@ public class UnitedTerminalMenu extends ETTerminalBaseMenu<Recipe<RecipeInput>> 
             return null;
         }
         var level = getPlayer().level();
-        return switch (kind) {
-            case EXTENDED_CRAFTING -> findExtendedCraftingRecipe(level, items);
-            case AVARITIA_NEO -> findAvaritiaNeoRecipe(level, items);
-            case RE_AVARITIA -> findReAvaritiaRecipe(level, items);
+        return switch (kind.family()) {
+            case EXTENDED_CRAFTING -> findExtendedCraftingRecipe(level, items, kind);
+            case AVARITIA_NEO -> findAvaritiaNeoRecipe(level, items, kind);
+            case RE_AVARITIA -> findReAvaritiaRecipe(level, items, kind);
         };
     }
 
@@ -239,22 +285,25 @@ public class UnitedTerminalMenu extends ETTerminalBaseMenu<Recipe<RecipeInput>> 
     }
 
     @Nullable
-    private UnitedRecipe findExtendedCraftingRecipe(Level level, List<ItemStack> items) {
+    private UnitedRecipe findExtendedCraftingRecipe(Level level, List<ItemStack> items, UnitedRecipeKind kind) {
         for (var recipe : level.getRecipeManager().getAllRecipesFor(ModRecipeTypes.TABLE.get())) {
+            if (recipe.value().getTier() != kind.tier()) {
+                continue;
+            }
             var input = createTableInput(items, recipe.value());
             if (recipe.value().matches(input, level)) {
-                return new UnitedRecipe(this, UnitedRecipeKind.EXTENDED_CRAFTING, recipe, input);
+                return new UnitedRecipe(this, kind, recipe, input);
             }
         }
         return null;
     }
 
     @Nullable
-    private UnitedRecipe findAvaritiaNeoRecipe(Level level, List<ItemStack> items) {
+    private UnitedRecipe findAvaritiaNeoRecipe(Level level, List<ItemStack> items, UnitedRecipeKind kind) {
         try {
             var input = CraftingInput.of(menuType.getGridSideLength(), menuType.getGridSideLength(), items);
             return level.getRecipeManager().getRecipeFor(AvaritiaRecipes.EXTREME_CRAFTING.get(), input, level)
-                    .map(recipe -> new UnitedRecipe(this, UnitedRecipeKind.AVARITIA_NEO, recipe, input))
+                    .map(recipe -> new UnitedRecipe(this, kind, recipe, input))
                     .orElse(null);
         } catch (LinkageError ignored) {
             return null;
@@ -262,16 +311,12 @@ public class UnitedTerminalMenu extends ETTerminalBaseMenu<Recipe<RecipeInput>> 
     }
 
     @Nullable
-    private UnitedRecipe findReAvaritiaRecipe(Level level, List<ItemStack> items) {
+    private UnitedRecipe findReAvaritiaRecipe(Level level, List<ItemStack> items, UnitedRecipeKind kind) {
         try {
-            for (int tier = 4; tier >= 1; tier--) {
-                var input = TierInput.of(menuType.getGridSideLength(), menuType.getGridSideLength(), items, tier);
-                var recipe = level.getRecipeManager().getRecipeFor(committee.nova.mods.avaritia.init.registry.ModRecipeTypes.CRAFTING_TABLE_RECIPE.get(), input, level);
-                if (recipe.isPresent()) {
-                    return new UnitedRecipe(this, UnitedRecipeKind.RE_AVARITIA, recipe.get(), input);
-                }
-            }
-            return null;
+            var input = TierInput.of(menuType.getGridSideLength(), menuType.getGridSideLength(), items, kind.tier());
+            return level.getRecipeManager().getRecipeFor(committee.nova.mods.avaritia.init.registry.ModRecipeTypes.CRAFTING_TABLE_RECIPE.get(), input, level)
+                    .map(recipe -> new UnitedRecipe(this, kind, recipe, input))
+                    .orElse(null);
         } catch (LinkageError ignored) {
             return null;
         }
@@ -293,20 +338,84 @@ public class UnitedTerminalMenu extends ETTerminalBaseMenu<Recipe<RecipeInput>> 
     }
 
     public enum UnitedRecipeKind {
-        EXTENDED_CRAFTING(ExtendedCrafting.class),
-        AVARITIA_NEO(AvaritiaNeo.class),
-        RE_AVARITIA(ReAvaritia.class);
+        EXTENDED_CRAFTING_BASIC("extended_crafting/basic", RecipeFamily.EXTENDED_CRAFTING, ExtendedCrafting.class, 1, "gui.extendedterminal.united_terminal.kind.extended_crafting.basic", "extendedcrafting", "basic_table"),
+        EXTENDED_CRAFTING_ADVANCED("extended_crafting/advanced", RecipeFamily.EXTENDED_CRAFTING, ExtendedCrafting.class, 2, "gui.extendedterminal.united_terminal.kind.extended_crafting.advanced", "extendedcrafting", "advanced_table"),
+        EXTENDED_CRAFTING_ELITE("extended_crafting/elite", RecipeFamily.EXTENDED_CRAFTING, ExtendedCrafting.class, 3, "gui.extendedterminal.united_terminal.kind.extended_crafting.elite", "extendedcrafting", "elite_table"),
+        EXTENDED_CRAFTING_ULTIMATE("extended_crafting/ultimate", RecipeFamily.EXTENDED_CRAFTING, ExtendedCrafting.class, 4, "gui.extendedterminal.united_terminal.kind.extended_crafting.ultimate", "extendedcrafting", "ultimate_table"),
+        AVARITIA_NEO_EXTREME("avaritia_neo/extreme", RecipeFamily.AVARITIA_NEO, AvaritiaNeo.class, 4, "gui.extendedterminal.united_terminal.kind.avaritia_neo.extreme", "avaritia", "extreme_crafting_table"),
+        RE_AVARITIA_SCULK("re_avaritia/sculk", RecipeFamily.RE_AVARITIA, ReAvaritia.class, 1, "gui.extendedterminal.united_terminal.kind.re_avaritia.sculk", "avaritia", "sculk_crafting_table"),
+        RE_AVARITIA_NETHER("re_avaritia/nether", RecipeFamily.RE_AVARITIA, ReAvaritia.class, 2, "gui.extendedterminal.united_terminal.kind.re_avaritia.nether", "avaritia", "nether_crafting_table"),
+        RE_AVARITIA_END("re_avaritia/end", RecipeFamily.RE_AVARITIA, ReAvaritia.class, 3, "gui.extendedterminal.united_terminal.kind.re_avaritia.end", "avaritia", "end_crafting_table"),
+        RE_AVARITIA_EXTREME("re_avaritia/extreme", RecipeFamily.RE_AVARITIA, ReAvaritia.class, 4, "gui.extendedterminal.united_terminal.kind.re_avaritia.extreme", "avaritia", "extreme_crafting_table");
 
+        private final String serializedName;
+        private final RecipeFamily family;
         @Nullable
         private final Class<? extends Annotation> integration;
+        private final int tier;
+        private final String labelKey;
+        private final String iconNamespace;
+        private final String iconPath;
 
-        UnitedRecipeKind(@Nullable Class<? extends Annotation> integration) {
+        UnitedRecipeKind(String serializedName, RecipeFamily family, @Nullable Class<? extends Annotation> integration,
+                         int tier, String labelKey, String iconNamespace, String iconPath) {
+            this.serializedName = serializedName;
+            this.family = family;
             this.integration = integration;
+            this.tier = tier;
+            this.labelKey = labelKey;
+            this.iconNamespace = iconNamespace;
+            this.iconPath = iconPath;
+        }
+
+        public String serializedName() { return serializedName; }
+        public RecipeFamily family() { return family; }
+        public int tier() { return tier; }
+        public String labelKey() { return labelKey; }
+        public String iconNamespace() { return iconNamespace; }
+        public String iconPath() { return iconPath; }
+
+        @Nullable
+        public static UnitedRecipeKind bySerializedName(String name) {
+            for (var kind : values()) {
+                if (kind.serializedName.equals(name)) {
+                    return kind;
+                }
+            }
+            return null;
+        }
+
+        @Nullable
+        public static UnitedRecipeKind fromExtendedCraftingTier(int tier) {
+            return switch (tier) {
+                case 1 -> EXTENDED_CRAFTING_BASIC;
+                case 2 -> EXTENDED_CRAFTING_ADVANCED;
+                case 3 -> EXTENDED_CRAFTING_ELITE;
+                case 4 -> EXTENDED_CRAFTING_ULTIMATE;
+                default -> null;
+            };
+        }
+
+        @Nullable
+        public static UnitedRecipeKind fromReAvaritiaTier(int tier) {
+            return switch (tier) {
+                case 1 -> RE_AVARITIA_SCULK;
+                case 2 -> RE_AVARITIA_NETHER;
+                case 3 -> RE_AVARITIA_END;
+                case 4 -> RE_AVARITIA_EXTREME;
+                default -> null;
+            };
         }
 
         public boolean isActive() {
             return integration == null || MyotusAPI.integrations().isLoaded(integration);
         }
+    }
+
+    public enum RecipeFamily {
+        EXTENDED_CRAFTING,
+        AVARITIA_NEO,
+        RE_AVARITIA
     }
 
     public record UnitedRecipe(UnitedTerminalMenu menu, UnitedRecipeKind kind,

@@ -1,7 +1,11 @@
 {
   "parent" : "extendedterminal:item/base/extendedcrafting_terminal_base",
   "textures": {
-    "front_base": "extendedterminal:part/extendedcrafting/ultimate_terminal_front",
-    "sides": "extendedterminal:part/extendedcrafting/ultimate_terminal_side"
+    "front_base": "extendedterminal:part/united/united_terminal_front",
+    "sides": "extendedterminal:part/united/united_terminal_side",
+    "front_bright": "extendedterminal:part/united/united_bright",
+    "front_medium": "ae2:part/crafting_terminal_medium",
+    "front_dark": "extendedterminal:part/united/united_dark"
+
   }
 }

@@ -43,7 +43,7 @@ public class AVNeoTerminalRecipeHandler<T extends ETTerminalBaseMenu<?>> extends
         if (holder == null || !(holder.value() instanceof RecipeExtremeCrafting tableRecipe)) {
             return Result.createFailed(ItemModText.INCOMPATIBLE_RECIPE.text());
         }
-        return doTransfer(menu, ITableRecipeAdapter.of(tableRecipe), holder.id(), doTransfer, UnitedTerminalMenu.UnitedRecipeKind.AVARITIA_NEO);
+        return doTransfer(menu, ITableRecipeAdapter.of(tableRecipe), holder.id(), doTransfer, UnitedTerminalMenu.UnitedRecipeKind.AVARITIA_NEO_EXTREME);
     }
 
     @Override

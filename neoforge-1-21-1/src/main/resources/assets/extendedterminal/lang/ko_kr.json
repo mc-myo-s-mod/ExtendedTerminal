@@ -2,6 +2,8 @@
   "itemGroup.extendedterminal": "확장된 터미널",
   "item.extendedterminal.et_terminal": "확장 터미널",
   "item.extendedterminal.wireless_et_terminal": "무선 확장 터미널",
+  "item.extendedterminal.united_terminal": "통합 터미널",
+  "item.extendedterminal.wireless_united_terminal": "무선 통합 터미널",
   "key.ae2.wireless_et_terminal": "무선 확장 터미널 열기",
   "item.extendedterminal.basic_terminal": "기본 조합 터미널",
   "item.extendedterminal.advanced_terminal": "고급 조합 터미널",
@@ -42,5 +44,16 @@
   "gui.extendedterminal.anvilpanel.xpcost": "경험치 비용: %d",
   "extendedterminal.jei.notsupportederror": "현재 지원하지 않는 레시피입니다",
   "gui.extendedterminal.united_terminal.recipe_kind": "United 레시피 타입 변경: %s",
-  "gui.extendedterminal.unitedTerminal": "통합 터미널"
+  "gui.extendedterminal.unitedTerminal": "통합 터미널",
+  "gui.extendedterminal.united_terminal.kind.extended_crafting.basic": "기본 테이블",
+  "gui.extendedterminal.united_terminal.kind.extended_crafting.advanced": "고급 테이블",
+  "gui.extendedterminal.united_terminal.kind.extended_crafting.elite": "엘리트 테이블",
+  "gui.extendedterminal.united_terminal.kind.extended_crafting.ultimate": "궁극 테이블",
+  "gui.extendedterminal.united_terminal.kind.avaritia_neo.extreme": "익스트림 조합대",
+  "gui.extendedterminal.united_terminal.kind.re_avaritia.sculk": "스컬크 테이블",
+  "gui.extendedterminal.united_terminal.kind.re_avaritia.nether": "네더 테이블",
+  "gui.extendedterminal.united_terminal.kind.re_avaritia.end": "엔드 테이블",
+  "gui.extendedterminal.united_terminal.kind.re_avaritia.extreme": "익스트림 조합대",
+  "gui.extendedterminal.config.united.title": "통합 터미널 설정",
+  "gui.extendedterminal.config.remember_united_recipe_kind": "마지막 United 레시피 타입 기억"
 }

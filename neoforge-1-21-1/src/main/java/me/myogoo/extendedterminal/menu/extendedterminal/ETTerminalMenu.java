@@ -166,6 +166,7 @@ public class ETTerminalMenu extends ETTerminalBaseMenu<CraftingRecipe> {
 
     public void setMode(ETTerminalMode mode) {
         if (isClientSide()) {
+            this.currentMode = mode;
             sendClientAction(ACTION_SET_MODE, mode);
         } else {
             this.host.setMode(mode);
@@ -433,7 +434,7 @@ public class ETTerminalMenu extends ETTerminalBaseMenu<CraftingRecipe> {
     }
 
     private List<ExperienceMath.ExperienceSource> getAvailableAnvilExperienceSources() {
-        return MyotusAPI.experience().availableAnvilSourcePriority().stream()
+        return MyotusAPI.experience().defaultAnvilSourcePriority().stream()
                 .filter(source -> source != ExperienceMath.ExperienceSource.FLUID_XP
                         || isFluidXpAvailable())
                 .filter(source -> source != ExperienceMath.ExperienceSource.APPLIED_EXPERIENCED_AMOUNT
@@ -626,6 +627,6 @@ public class ETTerminalMenu extends ETTerminalBaseMenu<CraftingRecipe> {
     @Override
     public void onServerDataSync(ShortSet updatedFields) {
         super.onServerDataSync(updatedFields);
-        updateCraftingOutput(true);
+        updateCurrentRecipeAndOutput(true);
     }
 }
