@@ -89,6 +89,9 @@ public class ECJeiRecipeTransferHandler<T extends ETTerminalBaseMenu<?>> extends
     @Override
     public Map<Integer, Ingredient> getGuiSlotToIngredientMap(T menu, ITableRecipeAdapter<?> recipe) {
         int gridSideLength = menu.getCraftingGridWidth();
+        if (menu instanceof UnitedTerminalMenu) {
+            gridSideLength = recipe.tier() * 2 + 1;
+        }
         var raw = recipe.recipe().getIngredients();
         List<Ingredient> ingredients;
 

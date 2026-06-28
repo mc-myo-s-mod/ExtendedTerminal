@@ -45,9 +45,7 @@ public class UnitedWTScreen extends ETTerminalBaseScreen<Recipe<?>, UnitedWTMenu
     }
 
     private Component selectedRecipeKindTooltip() {
-        return Component.translatable(
-                ETTranslationKey.GUI.UNITED_RECIPE_KIND.key(),
-                selectedRecipeKindLabel());
+        return selectedRecipeKindLabel();
     }
 
     private Component selectedRecipeKindLabel() {

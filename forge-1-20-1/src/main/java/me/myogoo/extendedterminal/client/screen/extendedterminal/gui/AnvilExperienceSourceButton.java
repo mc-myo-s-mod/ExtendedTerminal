@@ -38,15 +38,7 @@ public class AnvilExperienceSourceButton extends MyoCycleOverlayButton {
     }
 
     private static Component createSourcePriorityLabel(ETTerminalMenu menu) {
-        var label = Component.empty();
-        var labelKeys = menu.getAnvilExperienceSourcePriorityLabelKeys();
-        for (int i = 0; i < labelKeys.size(); i++) {
-            if (i > 0) {
-                label.append(Component.literal(" > "));
-            }
-            label.append(Component.translatable(labelKeys.get(i).key()));
-        }
-        return label;
+        return Component.translatable(menu.getAnvilExperienceSourcePriorityLabelKeys().get(0).key());
     }
 
     @Override

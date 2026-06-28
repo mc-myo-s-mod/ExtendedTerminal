@@ -2,6 +2,8 @@ package me.myogoo.extendedterminal.integration.itemList.module.extendedcrafting;
 
 import me.myogoo.extendedterminal.api.adapter.recipe.table.IShapedTableRecipeAdapter;
 import me.myogoo.extendedterminal.api.adapter.recipe.table.ITableRecipeAdapter;
+import me.myogoo.extendedterminal.menu.extendedcrafting.UnitedTerminalMenu;
+import net.minecraft.client.Minecraft;
 import net.minecraft.world.item.crafting.Ingredient;
 
 import java.util.HashMap;
@@ -12,6 +14,10 @@ import me.myogoo.extendedterminal.menu.ETTerminalBaseMenu;
 public class ECRecipeTransferHelper {
     public static Map<Integer, Ingredient> getGuiSlotToIngredientMap(ETTerminalBaseMenu<?> menu, ITableRecipeAdapter recipe) {
         int gridSideLength = menu.getCraftingGridWidth();
+        if(menu instanceof UnitedTerminalMenu unitedTerminal) {
+            //hmm... Minecraft.getInstance().screen instanceof JEI?
+            gridSideLength = recipe.tier() * 2 + 1;
+        }
         var raw = recipe.get().getIngredients();
         List<Ingredient> ingredients;
 
