@@ -1,5 +1,6 @@
 package me.myogoo.extendedterminal.item.partitem;
 
+import me.myogoo.extendedterminal.api.translation.ETTranslationKey;
 import appeng.api.parts.IPart;
 import appeng.api.parts.IPartItem;
 import appeng.items.parts.PartItem;
@@ -18,7 +19,7 @@ public class EmptyPartItem<T extends IPart> extends PartItem<T> {
 
     @Override
     public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltip, TooltipFlag flag) {
-        tooltip.add(Component.translatable("item.extendedterminal.item.tooltip.unregistered_terminal"));
+        tooltip.add(Component.translatable(ETTranslationKey.ITEM.ITEM_UNREGISTERED_TERMINAL_TOOLTIP.key()));
     }
 
 }

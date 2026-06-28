@@ -36,7 +36,7 @@ public class AVNeoTerminalRecipeHandler<T extends ETTerminalBaseMenu<?>> extends
     @Override
     protected Result transferRecipe(T menu, RecipeHolder<?> holder, EmiRecipe emiRecipe, boolean doTransfer) {
         Result setup;
-        if ((setup = transferSetup(holder, emiRecipe, menuType.getGridSize())) != null) {
+        if ((setup = transferSetup(holder, emiRecipe, menuType.getGridSideLength())) != null) {
             return setup;
         }
 

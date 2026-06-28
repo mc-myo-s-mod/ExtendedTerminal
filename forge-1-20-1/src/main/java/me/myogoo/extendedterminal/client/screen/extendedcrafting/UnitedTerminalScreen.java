@@ -1,6 +1,8 @@
 package me.myogoo.extendedterminal.client.screen.extendedcrafting;
 
 import appeng.client.gui.style.ScreenStyle;
+import appeng.client.gui.Icon;
+import me.myogoo.extendedterminal.api.translation.ETTranslationKey;
 import net.minecraft.world.item.crafting.Recipe;
 import me.myogoo.extendedterminal.client.screen.ETTerminalBaseScreen;
 import me.myogoo.myotus.client.gui.widgets.button.MyoCycleOverlayButton;
@@ -42,12 +44,6 @@ public class UnitedTerminalScreen extends ETTerminalBaseScreen<Recipe<?>, United
     }
 
     private Component selectedRecipeKindTooltip() {
-        return Component.translatable(
-                "gui.extendedterminal.united_terminal.recipe_kind",
-                selectedRecipeKindLabel());
-    }
-
-    private Component selectedRecipeKindLabel() {
         return Component.translatable(this.getMenu().getSelectedRecipeKind().labelKey());
     }
 

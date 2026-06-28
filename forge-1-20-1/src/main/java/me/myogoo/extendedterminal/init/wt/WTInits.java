@@ -1,5 +1,6 @@
 package me.myogoo.extendedterminal.init.wt;
 
+import me.myogoo.extendedterminal.api.translation.ETTranslationKey;
 import appeng.api.upgrades.Upgrades;
 import me.myogoo.extendedterminal.compat.ae2helpers.AE2HelpersUpgradeRegistration;
 import de.mari_023.ae2wtlib.AE2wtlib;
@@ -25,7 +26,7 @@ public final class WTInits {
                     ETWTMenu.TYPE,
                     WTItems.WIRELESS_ET_TERMINAL.asItem(),
                     AE_WIRELESS_TERMINAL_HOTKEY,
-                    "item.extendedterminal.wireless_et_terminal");
+                    ETTranslationKey.ITEM.ITEM_WIRELESS_ET_TERMINAL.key());
             var unitedTerminalName = ETMenuType.UNITED_TERMINAL.getWTIdAsString();
             event.addTerminal(
                     unitedTerminalName,
@@ -33,7 +34,7 @@ public final class WTInits {
                     UnitedWTMenu.TYPE,
                     WTItems.WIRELESS_UNITED_TERMINAL.asItem(),
                     AE_WIRELESS_TERMINAL_HOTKEY,
-                    "item.extendedterminal.wireless_united_terminal");
+                    ETTranslationKey.ITEM.ITEM_WIRELESS_UNITED_TERMINAL.key());
             Upgrades.add(AE2wtlib.MAGNET_CARD, WTItems.WIRELESS_ET_TERMINAL.asItem(), 1);
             Upgrades.add(AE2wtlib.MAGNET_CARD, WTItems.WIRELESS_UNITED_TERMINAL.asItem(), 1);
             AE2HelpersUpgradeRegistration.registerSupportedCards(WTItems.WIRELESS_ET_TERMINAL.asItem());

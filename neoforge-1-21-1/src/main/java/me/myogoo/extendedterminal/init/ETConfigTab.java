@@ -1,5 +1,6 @@
 package me.myogoo.extendedterminal.init;
 
+import me.myogoo.extendedterminal.api.translation.ETTranslationKey;
 import me.myogoo.extendedterminal.ExtendedTerminal;
 import me.myogoo.extendedterminal.client.screen.extendedcrafting.gui.config.UnitedTerminalConfigScreen;
 import me.myogoo.extendedterminal.client.screen.extendedterminal.gui.config.ETTerminalConfigScreen;
@@ -22,7 +23,7 @@ public class ETConfigTab {
                     .configRegistrar()
                     .terminalConfigTab(new MyoConfigTab(
                             ResourceLocation.fromNamespaceAndPath(ExtendedTerminal.MODID, "wireless_et_terminal"),
-                            Component.translatable("gui.extendedterminal.config.title"),
+                            Component.translatable(ETTranslationKey.GUI.GUI_CONFIG_TITLE.key()),
                             WTItems.WIRELESS_ET_TERMINAL.stack(),
                             "et_config.json",
                             new ETTerminalConfigScreen()
@@ -33,7 +34,7 @@ public class ETConfigTab {
                 .configRegistrar()
                 .terminalConfigTab(new MyoConfigTab(
                         ResourceLocation.fromNamespaceAndPath(ExtendedTerminal.MODID, "united_terminal"),
-                        Component.translatable("gui.extendedterminal.config.united.title"),
+                        Component.translatable(ETTranslationKey.GUI.GUI_CONFIG_UNITED_TITLE.key()),
                         ETParts.UNITED_TERMINAL_PART.stack(),
                         "united_config.json",
                         new UnitedTerminalConfigScreen()

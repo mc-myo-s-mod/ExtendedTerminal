@@ -1,5 +1,6 @@
 package me.myogoo.extendedterminal.client.screen.extendedcrafting.gui.config;
 
+import me.myogoo.extendedterminal.api.translation.ETTranslationKey;
 import appeng.client.gui.AEBaseScreen;
 import appeng.client.gui.WidgetContainer;
 import appeng.client.gui.widgets.AECheckbox;
@@ -20,7 +21,7 @@ public class UnitedTerminalConfigScreen implements MyoConfigTabScreen {
         this.menu = menu;
         this.rememberRecipeKind = widget.addCheckbox(
                 "rememberRecipeKind",
-                Component.translatable("gui.extendedterminal.config.remember_united_recipe_kind"),
+                Component.translatable(ETTranslationKey.GUI.GUI_CONFIG_REMEMBER_UNITED_RECIPE_KIND.key()),
                 this::save
         );
         updateState();

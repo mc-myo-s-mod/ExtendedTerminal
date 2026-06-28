@@ -1,12 +1,9 @@
 package me.myogoo.extendedterminal.menu.extendedterminal;
 
 import appeng.api.config.Actionable;
+import appeng.api.networking.security.IActionSource;
 import appeng.api.inventories.ISegmentedInventory;
 import appeng.api.inventories.InternalInventory;
-import appeng.api.networking.security.IActionSource;
-import appeng.api.stacks.AEKey;
-import appeng.api.stacks.KeyCounter;
-import appeng.api.storage.StorageHelper;
 import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.InventoryActionPacket;
 import appeng.helpers.InventoryAction;
@@ -19,6 +16,8 @@ import appeng.menu.slot.CraftingTermSlot;
 import com.google.common.base.Preconditions;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import me.myogoo.extendedterminal.api.host.IETTerminalHost;
+import me.myogoo.extendedterminal.api.translation.ETTranslationKey;
+import me.myogoo.myotus.client.MyoTranslateKey;
 import me.myogoo.extendedterminal.config.ExtendedTerminalConfig;
 import me.myogoo.extendedterminal.integration.polymorph.ETPolymorphRecipeSelection;
 import me.myogoo.extendedterminal.menu.ETMenuType;
@@ -33,7 +32,6 @@ import me.myogoo.extendedterminal.menu.extendedterminal.slot.ETStoneCutterSlot;
 import me.myogoo.extendedterminal.menu.slot.ETCraftingBaseSlot;
 import me.myogoo.myotus.api.MyotusAPI;
 import me.myogoo.myotus.api.experience.ExperienceMath;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
@@ -50,7 +48,6 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.item.crafting.SmithingRecipe;
 import net.minecraft.world.item.crafting.StonecutterRecipe;
-import net.minecraftforge.fml.ModList;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -71,9 +68,6 @@ public class ETTerminalMenu extends ETTerminalBaseMenu<CraftingRecipe> {
     private static final String ACTION_SET_MODE = "setMode";
     private static final String ACTION_SET_ANVIL_ITEM_NAME = "setAnvilItemName";
     private static final String ACTION_CYCLE_ANVIL_EXPERIENCE_SOURCE_PRIORITY = "cycleAnvilExperienceSourcePriority";
-    private static final ResourceLocation APPLIED_EXPERIENCED_CELL_ID =
-            new ResourceLocation("appex", "experience_storage_cell_1k");
-    private static final ResourceLocation FLUID_XP_ID = new ResourceLocation(ExperienceMath.FLUID_XP_ID);
 
     private final ISegmentedInventory craftingInventoryHost;
     private final IETTerminalHost host;
@@ -106,6 +100,10 @@ public class ETTerminalMenu extends ETTerminalBaseMenu<CraftingRecipe> {
     private int anvilCost;
     @GuiSync(3)
     private int anvilExperienceSourcePriorityIndex;
+    @GuiSync(4)
+    private boolean anvilFluidXpAvailable;
+    @GuiSync(5)
+    private boolean anvilAppliedExperiencedAvailable;
     private boolean handlingAnvilTake;
 
     public ETTerminalMenu(MenuType<?> menuType, int id, Inventory ip, IETTerminalHost host) {
@@ -428,6 +426,7 @@ public class ETTerminalMenu extends ETTerminalBaseMenu<CraftingRecipe> {
         if (isClientSide()) {
             sendClientAction(ACTION_CYCLE_ANVIL_EXPERIENCE_SOURCE_PRIORITY);
         } else {
+            updateAnvilExperienceSourceAvailability();
             int sourceCount = getAvailableAnvilExperienceSources().size();
             this.anvilExperienceSourcePriorityIndex = sourceCount <= 1
                     ? 0
@@ -448,13 +447,14 @@ public class ETTerminalMenu extends ETTerminalBaseMenu<CraftingRecipe> {
         return priority;
     }
 
-    public String getAnvilExperienceSourcePriorityLabel() {
+    public List<MyoTranslateKey> getAnvilExperienceSourcePriorityLabelKeys() {
         return getAnvilExperienceSourcePriority().stream()
-                .map(source -> switch (source) {
-                    case PLAYER -> "Player";
-                    case FLUID_XP -> "Fluid";
-                    case APPLIED_EXPERIENCED_AMOUNT -> "Cell";
-                }).findFirst().orElse("Player");
+                .<MyoTranslateKey>map(source -> switch (source) {
+                    case PLAYER -> ETTranslationKey.GUI.ANVIL_EXPERIENCE_SOURCE_PLAYER;
+                    case FLUID_XP -> ETTranslationKey.GUI.ANVIL_EXPERIENCE_SOURCE_FLUID;
+                    case APPLIED_EXPERIENCED_AMOUNT -> ETTranslationKey.GUI.ANVIL_EXPERIENCE_SOURCE_CELL;
+                })
+                .toList();
     }
 
     private List<ExperienceMath.ExperienceSource> getAvailableAnvilExperienceSources() {
@@ -466,13 +466,31 @@ public class ETTerminalMenu extends ETTerminalBaseMenu<CraftingRecipe> {
                 .toList();
     }
 
-    private static boolean isFluidXpAvailable() {
-        return BuiltInRegistries.FLUID.containsKey(FLUID_XP_ID);
+    private boolean isFluidXpAvailable() {
+        return isServerSide()
+                ? hasNetworkExperienceSource(ExperienceMath.ExperienceSource.FLUID_XP)
+                : this.anvilFluidXpAvailable;
     }
 
-    private static boolean isAppliedExperiencedCellAvailable() {
-        return ModList.get().isLoaded("appex")
-                && BuiltInRegistries.ITEM.containsKey(APPLIED_EXPERIENCED_CELL_ID);
+    private boolean isAppliedExperiencedCellAvailable() {
+        return isServerSide()
+                ? hasNetworkExperienceSource(ExperienceMath.ExperienceSource.APPLIED_EXPERIENCED_AMOUNT)
+                : this.anvilAppliedExperiencedAvailable;
+    }
+
+    private void updateAnvilExperienceSourceAvailability() {
+        this.anvilFluidXpAvailable = hasNetworkExperienceSource(ExperienceMath.ExperienceSource.FLUID_XP);
+        this.anvilAppliedExperiencedAvailable = hasNetworkExperienceSource(
+                ExperienceMath.ExperienceSource.APPLIED_EXPERIENCED_AMOUNT);
+
+        int sourceCount = getAvailableAnvilExperienceSources().size();
+        this.anvilExperienceSourcePriorityIndex = sourceCount <= 1
+                ? 0
+                : Math.floorMod(this.anvilExperienceSourcePriorityIndex, sourceCount);
+    }
+
+    private boolean hasNetworkExperienceSource(ExperienceMath.ExperienceSource source) {
+        return MyotusAPI.experience().hasNetworkExperienceSource(this.storage, source);
     }
 
     public boolean canPayAnvilCost(Player player) {
@@ -547,60 +565,29 @@ public class ETTerminalMenu extends ETTerminalBaseMenu<CraftingRecipe> {
     }
 
     private long getAvailableStorageExperience(ExperienceMath.ExperienceSource source) {
-        if (this.storage == null) {
-            return 0;
-        }
-        long experience = 0;
-        KeyCounter availableStacks = this.storage.getAvailableStacks();
-        for (var entry : availableStacks) {
-            if (matchesExperienceSource(entry.getKey(), source)) {
-                experience = Math.addExact(experience, entry.getLongValue());
-            }
-        }
-        return experience;
+        return MyotusAPI.experience().availableStorageExperience(this.storage, source);
+    }
+
+    private IActionSource getActionSourceFor(Player player) {
+        return IActionSource.ofPlayer(player, getActionHost());
     }
 
     private boolean canExtractStorageExperience(Player player, long amount, ExperienceMath.ExperienceSource source) {
-        return amount <= 0 || extractStorageExperience(player, amount, source, Actionable.SIMULATE) == amount;
+        return MyotusAPI.experience().canExtractStorageExperience(this.powerSource, this.storage,
+                getActionSourceFor(player), amount, source);
     }
 
     private void extractStorageExperience(Player player, long amount, ExperienceMath.ExperienceSource source) {
-        if (amount > 0) {
-            extractStorageExperience(player, amount, source, Actionable.MODULATE);
-        }
+        MyotusAPI.experience().extractStorageExperience(this.powerSource, this.storage, getActionSourceFor(player),
+                amount, source, Actionable.MODULATE);
     }
 
-    private long extractStorageExperience(Player player, long amount, ExperienceMath.ExperienceSource source,
-            Actionable actionable) {
-        if (amount <= 0 || this.storage == null) {
-            return 0;
+    @Override
+    public void broadcastChanges() {
+        if (isServerSide()) {
+            updateAnvilExperienceSourceAvailability();
         }
-        IActionSource actionSource = IActionSource.ofPlayer(player, getActionHost());
-        long extracted = 0;
-        KeyCounter availableStacks = this.storage.getAvailableStacks();
-        for (var entry : availableStacks) {
-            AEKey key = entry.getKey();
-            if (!matchesExperienceSource(key, source)) {
-                continue;
-            }
-            long remaining = amount - extracted;
-            if (remaining <= 0) {
-                break;
-            }
-            long toExtract = Math.min(remaining, entry.getLongValue());
-            extracted += StorageHelper.poweredExtraction(this.powerSource, this.storage, key, toExtract, actionSource,
-                    actionable);
-        }
-        return extracted;
-    }
-
-    private boolean matchesExperienceSource(AEKey key, ExperienceMath.ExperienceSource source) {
-        String keyId = key.getId().toString();
-        return switch (source) {
-            case FLUID_XP -> ExperienceMath.FLUID_XP_ID.equals(keyId);
-            case APPLIED_EXPERIENCED_AMOUNT -> ExperienceMath.APPLIED_EXPERIENCED_AE_KEY_ID.equals(keyId);
-            case PLAYER -> false;
-        };
+        super.broadcastChanges();
     }
 
     public void setAnvilItemName(String name) {

@@ -14,6 +14,8 @@ import committee.nova.mods.avaritia.api.common.crafting.TierInput;
 import me.myogoo.extendedterminal.api.annotation.AvaritiaNeo;
 import me.myogoo.extendedterminal.api.annotation.ExtendedCrafting;
 import me.myogoo.extendedterminal.api.annotation.ReAvaritia;
+import me.myogoo.extendedterminal.api.translation.ETTranslationKey;
+import me.myogoo.myotus.client.MyoTranslateKey;
 import me.myogoo.extendedterminal.api.host.IUnitedTerminalHost;
 import me.myogoo.extendedterminal.config.extendedcrafting.ExtendedCraftingConfig;
 import me.myogoo.extendedterminal.menu.ETMenuType;
@@ -287,7 +289,7 @@ public class UnitedTerminalMenu extends ETTerminalBaseMenu<Recipe<RecipeInput>> 
     @Nullable
     private UnitedRecipe findExtendedCraftingRecipe(Level level, List<ItemStack> items, UnitedRecipeKind kind) {
         for (var recipe : level.getRecipeManager().getAllRecipesFor(ModRecipeTypes.TABLE.get())) {
-            if (recipe.value().getTier() != kind.tier()) {
+            if (!canCraftExtendedCraftingRecipeInKind(recipe.value(), kind)) {
                 continue;
             }
             var input = createTableInput(items, recipe.value());
@@ -296,6 +298,14 @@ public class UnitedTerminalMenu extends ETTerminalBaseMenu<Recipe<RecipeInput>> 
             }
         }
         return null;
+    }
+
+    private static boolean canCraftExtendedCraftingRecipeInKind(ITableRecipe recipe, UnitedRecipeKind kind) {
+        int recipeTier = recipe.getTier();
+        if (recipe.hasRequiredTier()) {
+            return recipeTier == kind.tier();
+        }
+        return recipeTier <= kind.tier();
     }
 
     @Nullable
@@ -338,27 +348,27 @@ public class UnitedTerminalMenu extends ETTerminalBaseMenu<Recipe<RecipeInput>> 
     }
 
     public enum UnitedRecipeKind {
-        EXTENDED_CRAFTING_BASIC("extended_crafting/basic", RecipeFamily.EXTENDED_CRAFTING, ExtendedCrafting.class, 1, "gui.extendedterminal.united_terminal.kind.extended_crafting.basic", "extendedcrafting", "basic_table"),
-        EXTENDED_CRAFTING_ADVANCED("extended_crafting/advanced", RecipeFamily.EXTENDED_CRAFTING, ExtendedCrafting.class, 2, "gui.extendedterminal.united_terminal.kind.extended_crafting.advanced", "extendedcrafting", "advanced_table"),
-        EXTENDED_CRAFTING_ELITE("extended_crafting/elite", RecipeFamily.EXTENDED_CRAFTING, ExtendedCrafting.class, 3, "gui.extendedterminal.united_terminal.kind.extended_crafting.elite", "extendedcrafting", "elite_table"),
-        EXTENDED_CRAFTING_ULTIMATE("extended_crafting/ultimate", RecipeFamily.EXTENDED_CRAFTING, ExtendedCrafting.class, 4, "gui.extendedterminal.united_terminal.kind.extended_crafting.ultimate", "extendedcrafting", "ultimate_table"),
-        AVARITIA_NEO_EXTREME("avaritia_neo/extreme", RecipeFamily.AVARITIA_NEO, AvaritiaNeo.class, 4, "gui.extendedterminal.united_terminal.kind.avaritia_neo.extreme", "avaritia", "extreme_crafting_table"),
-        RE_AVARITIA_SCULK("re_avaritia/sculk", RecipeFamily.RE_AVARITIA, ReAvaritia.class, 1, "gui.extendedterminal.united_terminal.kind.re_avaritia.sculk", "avaritia", "sculk_crafting_table"),
-        RE_AVARITIA_NETHER("re_avaritia/nether", RecipeFamily.RE_AVARITIA, ReAvaritia.class, 2, "gui.extendedterminal.united_terminal.kind.re_avaritia.nether", "avaritia", "nether_crafting_table"),
-        RE_AVARITIA_END("re_avaritia/end", RecipeFamily.RE_AVARITIA, ReAvaritia.class, 3, "gui.extendedterminal.united_terminal.kind.re_avaritia.end", "avaritia", "end_crafting_table"),
-        RE_AVARITIA_EXTREME("re_avaritia/extreme", RecipeFamily.RE_AVARITIA, ReAvaritia.class, 4, "gui.extendedterminal.united_terminal.kind.re_avaritia.extreme", "avaritia", "extreme_crafting_table");
+        EXTENDED_CRAFTING_BASIC("extended_crafting/basic", RecipeFamily.EXTENDED_CRAFTING, ExtendedCrafting.class, 1, ETTranslationKey.GUI.UNITED_RECIPE_KIND_EXTENDED_CRAFTING_BASIC, "extendedcrafting", "basic_table"),
+        EXTENDED_CRAFTING_ADVANCED("extended_crafting/advanced", RecipeFamily.EXTENDED_CRAFTING, ExtendedCrafting.class, 2, ETTranslationKey.GUI.UNITED_RECIPE_KIND_EXTENDED_CRAFTING_ADVANCED, "extendedcrafting", "advanced_table"),
+        EXTENDED_CRAFTING_ELITE("extended_crafting/elite", RecipeFamily.EXTENDED_CRAFTING, ExtendedCrafting.class, 3, ETTranslationKey.GUI.UNITED_RECIPE_KIND_EXTENDED_CRAFTING_ELITE, "extendedcrafting", "elite_table"),
+        EXTENDED_CRAFTING_ULTIMATE("extended_crafting/ultimate", RecipeFamily.EXTENDED_CRAFTING, ExtendedCrafting.class, 4, ETTranslationKey.GUI.UNITED_RECIPE_KIND_EXTENDED_CRAFTING_ULTIMATE, "extendedcrafting", "ultimate_table"),
+        AVARITIA_NEO_EXTREME("avaritia_neo/extreme", RecipeFamily.AVARITIA_NEO, AvaritiaNeo.class, 4, ETTranslationKey.GUI.UNITED_RECIPE_KIND_AVARITIA_NEO_EXTREME, "avaritia", "extreme_crafting_table"),
+        RE_AVARITIA_SCULK("re_avaritia/sculk", RecipeFamily.RE_AVARITIA, ReAvaritia.class, 1, ETTranslationKey.GUI.UNITED_RECIPE_KIND_RE_AVARITIA_SCULK, "avaritia", "sculk_crafting_table"),
+        RE_AVARITIA_NETHER("re_avaritia/nether", RecipeFamily.RE_AVARITIA, ReAvaritia.class, 2, ETTranslationKey.GUI.UNITED_RECIPE_KIND_RE_AVARITIA_NETHER, "avaritia", "nether_crafting_table"),
+        RE_AVARITIA_END("re_avaritia/end", RecipeFamily.RE_AVARITIA, ReAvaritia.class, 3, ETTranslationKey.GUI.UNITED_RECIPE_KIND_RE_AVARITIA_END, "avaritia", "end_crafting_table"),
+        RE_AVARITIA_EXTREME("re_avaritia/extreme", RecipeFamily.RE_AVARITIA, ReAvaritia.class, 4, ETTranslationKey.GUI.UNITED_RECIPE_KIND_RE_AVARITIA_EXTREME, "avaritia", "extreme_crafting_table");
 
         private final String serializedName;
         private final RecipeFamily family;
         @Nullable
         private final Class<? extends Annotation> integration;
         private final int tier;
-        private final String labelKey;
+        private final MyoTranslateKey labelKey;
         private final String iconNamespace;
         private final String iconPath;
 
         UnitedRecipeKind(String serializedName, RecipeFamily family, @Nullable Class<? extends Annotation> integration,
-                         int tier, String labelKey, String iconNamespace, String iconPath) {
+                         int tier, MyoTranslateKey labelKey, String iconNamespace, String iconPath) {
             this.serializedName = serializedName;
             this.family = family;
             this.integration = integration;
@@ -371,7 +381,7 @@ public class UnitedTerminalMenu extends ETTerminalBaseMenu<Recipe<RecipeInput>> 
         public String serializedName() { return serializedName; }
         public RecipeFamily family() { return family; }
         public int tier() { return tier; }
-        public String labelKey() { return labelKey; }
+        public String labelKey() { return labelKey.key(); }
         public String iconNamespace() { return iconNamespace; }
         public String iconPath() { return iconPath; }
 

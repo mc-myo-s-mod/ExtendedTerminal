@@ -1,5 +1,6 @@
 package me.myogoo.extendedterminal.init;
 
+import me.myogoo.extendedterminal.api.translation.ETTranslationKey;
 import me.myogoo.extendedterminal.client.screen.extendedterminal.gui.config.ETTerminalConfigScreen;
 import me.myogoo.extendedterminal.ExtendedTerminal;
 import me.myogoo.extendedterminal.init.wt.WTItems;
@@ -22,7 +23,7 @@ public final class ETConfigTab {
         MyotusAPI.configTabs()
                 .terminalConfigTab(new MyoConfigTab(
                         new ResourceLocation(ExtendedTerminal.MODID, "wireless_et_terminal"),
-                        Component.translatable("gui.extendedterminal.config.title"),
+                        Component.translatable(ETTranslationKey.GUI.GUI_CONFIG_TITLE.key()),
                         WTItems.WIRELESS_ET_TERMINAL.stack(),
                         "et_config.json",
                         new ETTerminalConfigScreen()

@@ -5,6 +5,7 @@ import appeng.core.definitions.AEParts;
 import appeng.core.definitions.ItemDefinition;
 import de.mari_023.ae2wtlib.api.terminal.ItemWT;
 import me.myogoo.extendedterminal.ExtendedTerminal;
+import me.myogoo.extendedterminal.api.translation.ETTranslationKey;
 import me.myogoo.extendedterminal.init.wt.WTItems;
 import me.myogoo.myotus.api.annotation.mods.AE2WTLib;
 import me.myogoo.myotus.api.MyotusAPI;
@@ -20,7 +21,7 @@ public class ETCreativeTab {
 
     public static final DeferredHolder<CreativeModeTab, CreativeModeTab> CREATIVE_TAB = REGISTER
             .register("creative_tab", () -> CreativeModeTab.builder()
-                    .title(Component.translatable("itemGroup." + ExtendedTerminal.MODID))
+                    .title(Component.translatable(ETTranslationKey.ITEM_GROUP_EXTENDED_TERMINAL.key()))
                     .icon(ETParts.ET_TERMINAL_PART::stack)
                     .displayItems((params, output) -> {
                         for (ItemDefinition<?> item : ETItems.ITEMS) {

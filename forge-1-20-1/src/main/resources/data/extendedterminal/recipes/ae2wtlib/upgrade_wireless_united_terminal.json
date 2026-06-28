@@ -14,7 +14,10 @@
       ],
       "recipe": {
         "type": "ae2wtlib:upgrade",
-        "terminal": "extendedterminal:wireless_united_terminal"
+        "terminal": {
+          "item": "extendedterminal:wireless_united_terminal"
+        },
+        "terminalName": "wireless_united_terminal"
       }
     }
   ]

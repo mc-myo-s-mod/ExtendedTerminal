@@ -42,6 +42,10 @@
   "gui.extendedterminal.stonecutterpanel": "석재 절단기",
   "gui.extendedterminal.anvilpanel": "모루",
   "gui.extendedterminal.anvilpanel.xpcost": "경험치 비용: %d",
+  "gui.extendedterminal.anvil_experience_source.priority": "경험치 소스: %s",
+  "gui.extendedterminal.anvil_experience_source.player": "플레이어",
+  "gui.extendedterminal.anvil_experience_source.fluid": "유체",
+  "gui.extendedterminal.anvil_experience_source.cell": "셀",
   "extendedterminal.jei.notsupportederror": "현재 지원하지 않는 레시피입니다",
   "gui.extendedterminal.united_terminal.recipe_kind": "United 레시피 타입 변경: %s",
   "gui.extendedterminal.unitedTerminal": "통합 터미널",
@@ -55,5 +59,6 @@
   "gui.extendedterminal.united_terminal.kind.re_avaritia.end": "엔드 테이블",
   "gui.extendedterminal.united_terminal.kind.re_avaritia.extreme": "익스트림 조합대",
   "gui.extendedterminal.config.united.title": "통합 터미널 설정",
-  "gui.extendedterminal.config.remember_united_recipe_kind": "마지막 United 레시피 타입 기억"
+  "gui.extendedterminal.config.remember_united_recipe_kind": "마지막 United 레시피 타입 기억",
+  "gui.ae2wtlib.pick_block.text": "블록 선택 활성화"
 }

@@ -1,5 +1,6 @@
 package me.myogoo.extendedterminal.client.screen.extendedterminal.gui;
 
+import me.myogoo.extendedterminal.api.translation.ETTranslationKey;
 import appeng.client.Point;
 import appeng.client.gui.ICompositeWidget;
 import net.minecraft.client.Minecraft;
@@ -11,7 +12,7 @@ public class XPLabelWidget implements ICompositeWidget {
     private static final int RED_COLOR = 0xFF6060;
     private static final int GREEN_COLOR = 0x80FF20;
 
-    private Component text = Component.translatable("gui.extendedterminal.anvilpanel.xpcost", 0);
+    private Component text = Component.translatable(ETTranslationKey.GUI.GUI_ANVIL_PANEL_XP_COST.key(), 0);
     private boolean visible;
     private int x;
     private int y;
@@ -47,7 +48,7 @@ public class XPLabelWidget implements ICompositeWidget {
             return;
         }
         this.cost = cost;
-        this.text = Component.translatable("gui.extendedterminal.anvilpanel.xpcost", this.cost);
+        this.text = Component.translatable(ETTranslationKey.GUI.GUI_ANVIL_PANEL_XP_COST.key(), this.cost);
         this.color = this.cost > 0 ? GREEN_COLOR : RED_COLOR;
     }
 

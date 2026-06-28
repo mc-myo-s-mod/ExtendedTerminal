@@ -6,6 +6,7 @@ import appeng.client.gui.WidgetContainer;
 import appeng.client.gui.style.Blitter;
 import appeng.client.gui.widgets.Scrollbar;
 import me.myogoo.extendedterminal.client.screen.extendedterminal.ETTerminalScreen;
+import me.myogoo.extendedterminal.api.translation.ETTranslationKey;
 import me.myogoo.extendedterminal.client.screen.extendedterminal.gui.ETTerminalModePanel;
 import me.myogoo.extendedterminal.menu.ETSlotSemantics;
 import net.minecraft.client.Minecraft;
@@ -34,7 +35,7 @@ public class StoneCutterPanel extends ETTerminalModePanel {
     private final Scrollbar scrollbar;
 
     public StoneCutterPanel(ETTerminalScreen screen, WidgetContainer widgets) {
-        super(screen, widgets);
+        super(screen, widgets, ETTranslationKey.GUI.GUI_STONECUTTER_PANEL);
         this.scrollbar = widgets.addScrollBar("stonecuttingPatternModeScrollbar", Scrollbar.SMALL);
         this.scrollbar.setRange(0, 0, COLS);
         this.scrollbar.setCaptureMouseWheel(false);

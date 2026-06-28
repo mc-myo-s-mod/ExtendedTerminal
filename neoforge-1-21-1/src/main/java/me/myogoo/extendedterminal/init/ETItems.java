@@ -1,5 +1,6 @@
 package me.myogoo.extendedterminal.init;
 
+import me.myogoo.extendedterminal.api.translation.ETTranslationKey;
 import appeng.core.definitions.ItemDefinition;
 import de.mari_023.ae2wtlib.api.terminal.ItemWT;
 import me.myogoo.extendedterminal.ExtendedTerminal;
@@ -25,15 +26,15 @@ public class ETItems {
 
     public static final ItemDefinition<Item> COMPAT_PROCESSOR = createItem("compat processor",
             ExtendedTerminal.makeId("compat_processor"),
-            properties -> new TooltipItem(properties, "item.extendedterminal.item.tooltip.deprecated_material"));
+            properties -> new TooltipItem(properties, ETTranslationKey.ITEM.ITEM_DEPRECATED_MATERIAL_TOOLTIP.key()));
 
     public static final ItemDefinition<Item> COMPAT_PRESS = createItem("compat press",
             ExtendedTerminal.makeId("compat_press"),
-            properties -> new TooltipItem(properties, "item.extendedterminal.item.tooltip.deprecated_material"));
+            properties -> new TooltipItem(properties, ETTranslationKey.ITEM.ITEM_DEPRECATED_MATERIAL_TOOLTIP.key()));
 
     public static final ItemDefinition<Item> PRINTED_COMPAT_PROCESSOR = createItem("printed compat circuit",
             ExtendedTerminal.makeId("printed_compat_processor"),
-            properties -> new TooltipItem(properties, "item.extendedterminal.item.tooltip.deprecated_material"));
+            properties -> new TooltipItem(properties, ETTranslationKey.ITEM.ITEM_DEPRECATED_MATERIAL_TOOLTIP.key()));
 
     public static final ItemDefinition<ChargedEnderPearlItem> CHARGED_ENDER_PEARL = createItem("charged ender pearl",
             ExtendedTerminal.makeId("charged_ender_pearl"),
@@ -42,7 +43,7 @@ public class ETItems {
     public static final ItemDefinition<TooltipBlockItem> MATERIAL_CONVERTER = createItem("material_converter",
             ExtendedTerminal.makeId("material_converter"),
             properties -> new TooltipBlockItem(ETBlocks.MATERIAL_CONVERTER.get(), properties,
-                    "item.extendedterminal.material_converter.tooltip"));
+                    ETTranslationKey.ITEM.ITEM_MATERIAL_CONVERTER_TOOLTIP.key()));
 
     public static <T extends Item> ItemDefinition<T> createItem(String name, ResourceLocation id,
             Function<Item.Properties, T> itemFactory) {

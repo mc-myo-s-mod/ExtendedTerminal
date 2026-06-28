@@ -1,6 +1,8 @@
 package me.myogoo.extendedterminal.client.screen.extendedcrafting.wt;
 
 import appeng.client.gui.style.ScreenStyle;
+import appeng.client.gui.Icon;
+import me.myogoo.extendedterminal.api.translation.ETTranslationKey;
 import net.minecraft.world.item.crafting.Recipe;
 import me.myogoo.extendedterminal.client.screen.ETTerminalBaseScreen;
 import me.myogoo.extendedterminal.menu.extendedcrafting.wt.UnitedWTMenu;
@@ -20,6 +22,7 @@ public class UnitedWTScreen extends ETTerminalBaseScreen<Recipe<?>, UnitedWTMenu
     public UnitedWTScreen(UnitedWTMenu menu, Inventory playerInventory, Component title, ScreenStyle style) {
         super(menu, playerInventory, title, style);
         this.cycleRecipeKindButton = new MyoCycleOverlayButton(
+                () -> Icon.ARROW_RIGHT,
                 (Runnable) this::cycleRecipeKind,
                 (Runnable) this::cycleRecipeKindBackwards,
                 this::selectedRecipeKindItem,
@@ -43,7 +46,7 @@ public class UnitedWTScreen extends ETTerminalBaseScreen<Recipe<?>, UnitedWTMenu
 
     private Component selectedRecipeKindTooltip() {
         return Component.translatable(
-                "gui.extendedterminal.united_terminal.recipe_kind",
+                ETTranslationKey.GUI.UNITED_RECIPE_KIND.key(),
                 selectedRecipeKindLabel());
     }
 

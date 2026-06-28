@@ -7,6 +7,7 @@ import appeng.client.gui.style.Blitter;
 import appeng.client.gui.widgets.ActionButton;
 import appeng.menu.SlotSemantics;
 import me.myogoo.extendedterminal.client.screen.extendedterminal.ETTerminalScreen;
+import me.myogoo.extendedterminal.api.translation.ETTranslationKey;
 import me.myogoo.extendedterminal.client.screen.extendedterminal.gui.ETTerminalModePanel;
 import me.myogoo.extendedterminal.menu.ETSlotSemantics;
 import net.minecraft.client.gui.GuiGraphics;
@@ -21,7 +22,7 @@ public class SmithingTablePanel extends ETTerminalModePanel {
     private final ActionButton clearBtn;
     private final ActionButton clearToPlayerInvBtn;
     public SmithingTablePanel(ETTerminalScreen screen, WidgetContainer widgets) {
-        super(screen, widgets);
+        super(screen, widgets, ETTranslationKey.GUI.GUI_SMITHING_TABLE_PANEL);
 
         this.clearBtn = new ActionButton(ActionItems.S_STASH, btn -> menu.clearSmithingGrid());
         clearBtn.setHalfSize(true);

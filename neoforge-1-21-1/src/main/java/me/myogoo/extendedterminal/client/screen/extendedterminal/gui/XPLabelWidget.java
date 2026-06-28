@@ -1,5 +1,6 @@
 package me.myogoo.extendedterminal.client.screen.extendedterminal.gui;
 
+import me.myogoo.extendedterminal.api.translation.ETTranslationKey;
 import appeng.client.Point;
 import appeng.client.gui.ICompositeWidget;
 import net.minecraft.client.Minecraft;
@@ -20,7 +21,7 @@ public class XPLabelWidget implements ICompositeWidget {
 
     public XPLabelWidget() {
         this.cost = 0;
-        this.text = Component.translatable("gui.extendedterminal.anvilpanel.xpcost", cost);
+        this.text = Component.translatable(ETTranslationKey.GUI.GUI_ANVIL_PANEL_XP_COST.key(), cost);
         this.color = RED_COLOR;
     }
 
@@ -61,7 +62,7 @@ public class XPLabelWidget implements ICompositeWidget {
         this.cost = cost;
 
         // 상태 변경 직후 텍스트/색 갱신 → 다음 프레임에 바로 반영됨
-        this.text = Component.translatable("gui.extendedterminal.anvilpanel.xpcost", this.cost);
+        this.text = Component.translatable(ETTranslationKey.GUI.GUI_ANVIL_PANEL_XP_COST.key(), this.cost);
         this.color = (this.cost > 0) ? GREEN_COLOR : RED_COLOR;
     }
 }

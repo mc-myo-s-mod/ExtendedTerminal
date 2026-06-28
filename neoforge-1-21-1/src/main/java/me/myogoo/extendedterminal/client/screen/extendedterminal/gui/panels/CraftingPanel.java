@@ -6,6 +6,7 @@ import appeng.client.gui.style.Blitter;
 import appeng.client.gui.widgets.ActionButton;
 import appeng.menu.SlotSemantics;
 import me.myogoo.extendedterminal.client.screen.extendedterminal.ETTerminalScreen;
+import me.myogoo.extendedterminal.api.translation.ETTranslationKey;
 import me.myogoo.extendedterminal.client.screen.extendedterminal.gui.ETTerminalModePanel;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.Rect2i;
@@ -19,7 +20,7 @@ public class CraftingPanel extends ETTerminalModePanel {
     private final ActionButton clearToInv;
 
     public CraftingPanel(ETTerminalScreen screen, WidgetContainer widgets, ActionButton clearToStorage, ActionButton clearToInv) {
-        super(screen, widgets);
+        super(screen, widgets, ETTranslationKey.GUI.GUI_CRAFTING_PANEL);
         this.clearToStorage = clearToStorage;
         this.clearToInv = clearToInv;
 

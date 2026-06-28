@@ -41,7 +41,7 @@ public class AVNeoEmiRecipeHandler<T extends ETTerminalBaseMenu<?>> extends Abst
             return Result.createNotApplicable();
         }
 
-        if (!fitsInNxNGrid(recipe, emiRecipe, menuType.getGridSize())) {
+        if (!fitsInNxNGrid(recipe, emiRecipe, menuType.getGridSideLength())) {
             return Result.createFailed(ItemModText.RECIPE_TOO_LARGE.text());
         }
 

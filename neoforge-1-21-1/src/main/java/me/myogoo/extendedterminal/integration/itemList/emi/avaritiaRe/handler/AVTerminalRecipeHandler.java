@@ -13,17 +13,26 @@ import me.myogoo.extendedterminal.integration.itemList.module.avaritia.AVRecipeT
 import me.myogoo.extendedterminal.menu.ETMenuType;
 import me.myogoo.extendedterminal.menu.avaritiaRe.AvaritiaTerminalBaseMenu;
 import net.minecraft.world.item.crafting.*;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
 
 public class AVTerminalRecipeHandler<T extends ETTerminalBaseMenu<?>> extends AbstractEmiTableRecipeHandler<T>  {
     private final ETMenuType menuType;
     private final EmiRecipeCategory category;
+    @Nullable
+    private final UnitedTerminalMenu.UnitedRecipeKind unitedRecipeKind;
 
     public AVTerminalRecipeHandler(EmiRecipeCategory category, Class<T> containerClass, ETMenuType menuType) {
+        this(category, containerClass, menuType, null);
+    }
+
+    public AVTerminalRecipeHandler(EmiRecipeCategory category, Class<T> containerClass, ETMenuType menuType,
+                                   @Nullable UnitedTerminalMenu.UnitedRecipeKind unitedRecipeKind) {
         super(containerClass);
         this.menuType = menuType;
         this.category = category;
+        this.unitedRecipeKind = unitedRecipeKind;
     }
 
     @Override
@@ -34,7 +43,7 @@ public class AVTerminalRecipeHandler<T extends ETTerminalBaseMenu<?>> extends Ab
     @Override
     protected Result transferRecipe(T menu, RecipeHolder<?> holder, EmiRecipe emiRecipe, boolean doTransfer) {
         Result setup;
-        if((setup = transferSetup(holder, emiRecipe, menuType.getGridSize())) != null) {
+        if((setup = transferSetup(holder, emiRecipe, menuType.getGridSideLength())) != null) {
             return setup;
         }
 
@@ -43,7 +52,9 @@ public class AVTerminalRecipeHandler<T extends ETTerminalBaseMenu<?>> extends Ab
         }
         var adapterRecipe = ITableRecipeAdapter.of(tableRecipe);
         return doTransfer(menu, adapterRecipe, holder.id(), doTransfer,
-                UnitedTerminalMenu.UnitedRecipeKind.fromReAvaritiaTier(adapterRecipe.tier()));
+                menu instanceof UnitedTerminalMenu && unitedRecipeKind != null
+                        ? unitedRecipeKind
+                        : UnitedTerminalMenu.UnitedRecipeKind.fromReAvaritiaTier(adapterRecipe.tier()));
     }
 
     @Override

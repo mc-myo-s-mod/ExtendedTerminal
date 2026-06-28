@@ -1,5 +1,6 @@
 package me.myogoo.extendedterminal.init;
 
+import me.myogoo.extendedterminal.api.translation.ETTranslationKey;
 import appeng.api.config.Actionable;
 import appeng.core.definitions.ItemDefinition;
 import appeng.items.tools.powered.WirelessTerminalItem;
@@ -17,7 +18,7 @@ public class ETCreativeTab {
 
     static {
         REGISTER.register("itemgroup.extendedcrafting",() -> CreativeModeTab.builder()
-                .title(Component.translatable("itemGroup.extendedterminal"))
+                .title(Component.translatable(ETTranslationKey.ITEM_GROUP_EXTENDED_TERMINAL.key()))
                 .icon(ETParts.ET_TERMINAL_PART::stack)
                 .displayItems((params, output) -> {
                     for (ItemDefinition<?> item : ETItems.ITEMS) {

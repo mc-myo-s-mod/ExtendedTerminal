@@ -1,5 +1,6 @@
 package me.myogoo.extendedterminal.item;
 
+import me.myogoo.extendedterminal.api.translation.ETTranslationKey;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
@@ -24,7 +25,7 @@ public class ChargedEnderPearlItem extends EnderpearlItem {
 
     @Override
     public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltip, TooltipFlag flag) {
-        tooltip.add(Component.translatable("item.extendedterminal.item.tooltip.deprecated_material")
+        tooltip.add(Component.translatable(ETTranslationKey.ITEM.ITEM_DEPRECATED_MATERIAL_TOOLTIP.key())
                 .withStyle(ChatFormatting.YELLOW));
     }
 

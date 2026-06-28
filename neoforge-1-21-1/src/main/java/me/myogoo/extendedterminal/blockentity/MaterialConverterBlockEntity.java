@@ -1,5 +1,6 @@
 package me.myogoo.extendedterminal.blockentity;
 
+import me.myogoo.extendedterminal.api.translation.ETTranslationKey;
 import appeng.api.config.Actionable;
 import appeng.api.networking.GridFlags;
 import appeng.api.networking.security.IActionSource;
@@ -43,12 +44,12 @@ public class MaterialConverterBlockEntity extends AENetworkedBlockEntity {
 
     public Component convertMaterials(Player player) {
         if (!this.getMainNode().isOnline()) {
-            return Component.translatable("message.extendedterminal.material_converter.offline");
+            return Component.translatable(ETTranslationKey.MESSAGE.MESSAGE_MATERIAL_CONVERTER_OFFLINE.key());
         }
 
         var grid = this.getMainNode().getGrid();
         if (grid == null) {
-            return Component.translatable("message.extendedterminal.material_converter.offline");
+            return Component.translatable(ETTranslationKey.MESSAGE.MESSAGE_MATERIAL_CONVERTER_OFFLINE.key());
         }
 
         var storage = grid.getStorageService().getInventory();
@@ -74,12 +75,12 @@ public class MaterialConverterBlockEntity extends AENetworkedBlockEntity {
         }
 
         if (converted > 0) {
-            return Component.translatable("message.extendedterminal.material_converter.converted", converted);
+            return Component.translatable(ETTranslationKey.MESSAGE.MESSAGE_MATERIAL_CONVERTER_CONVERTED.key(), converted);
         }
 
         return missingTarget
-                ? Component.translatable("message.extendedterminal.material_converter.missing_targets")
-                : Component.translatable("message.extendedterminal.material_converter.empty");
+                ? Component.translatable(ETTranslationKey.MESSAGE.MESSAGE_MATERIAL_CONVERTER_MISSING_TARGETS.key())
+                : Component.translatable(ETTranslationKey.MESSAGE.MESSAGE_MATERIAL_CONVERTER_EMPTY.key());
     }
 
     private static long convert(MEStorage storage, IActionSource source, AEItemKey oldKey, AEItemKey newKey) {

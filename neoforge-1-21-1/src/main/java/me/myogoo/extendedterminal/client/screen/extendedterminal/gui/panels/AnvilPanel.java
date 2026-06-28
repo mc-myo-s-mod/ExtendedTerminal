@@ -6,6 +6,7 @@ import appeng.client.gui.style.Blitter;
 import appeng.client.gui.widgets.AETextField;
 import me.myogoo.extendedterminal.client.screen.extendedterminal.gui.AnvilExperienceSourceButton;
 import me.myogoo.extendedterminal.client.screen.extendedterminal.ETTerminalScreen;
+import me.myogoo.extendedterminal.api.translation.ETTranslationKey;
 import me.myogoo.extendedterminal.client.screen.extendedterminal.gui.ETTerminalModePanel;
 import me.myogoo.extendedterminal.client.screen.extendedterminal.gui.XPLabelWidget;
 import me.myogoo.extendedterminal.menu.ETSlotSemantics;
@@ -24,7 +25,7 @@ public class AnvilPanel extends ETTerminalModePanel {
     private final AnvilExperienceSourceButton priorityButton;
 
     public AnvilPanel(ETTerminalScreen<?> screen, WidgetContainer widgets) {
-        super(screen, widgets);
+        super(screen, widgets, ETTranslationKey.GUI.GUI_ANVIL_PANEL);
 
         this.textField = widgets.addTextField("ET_ANVIL_NAME_FIELD");
         this.textField.setMaxLength(50);

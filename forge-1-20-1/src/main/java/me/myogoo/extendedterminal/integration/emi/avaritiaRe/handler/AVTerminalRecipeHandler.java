@@ -20,6 +20,7 @@ import me.myogoo.extendedterminal.menu.avaritiaRe.AvaritiaTerminalBaseMenu;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
 import java.util.List;
@@ -30,10 +31,19 @@ import static me.myogoo.extendedterminal.integration.ItemListTermCraftingHelper.
 public class AVTerminalRecipeHandler<T extends ETTerminalBaseMenu<?>> extends AbstractEmiTableRecipeHandler<T> {
     private final ETMenuType menuType;
     private final EmiRecipeCategory category;
+    @Nullable
+    private final UnitedTerminalMenu.UnitedRecipeKind unitedRecipeKind;
+
     public AVTerminalRecipeHandler(EmiRecipeCategory category, Class<T> containerClass, ETMenuType menuType) {
+        this(category, containerClass, menuType, null);
+    }
+
+    public AVTerminalRecipeHandler(EmiRecipeCategory category, Class<T> containerClass, ETMenuType menuType,
+                                   @Nullable UnitedTerminalMenu.UnitedRecipeKind unitedRecipeKind) {
         super(containerClass);
         this.menuType = menuType;
         this.category = category;
+        this.unitedRecipeKind = unitedRecipeKind;
     }
 
     @Override
@@ -49,7 +59,7 @@ public class AVTerminalRecipeHandler<T extends ETTerminalBaseMenu<?>> extends Ab
             return Result.createNotApplicable();
         }
 
-        if (!fitsInNxNGrid(recipe, emiRecipe, menuType.getGridSize())) {
+        if (!fitsInNxNGrid(recipe, emiRecipe, menuType.getGridSideLength())) {
             return Result.createFailed(ItemModText.RECIPE_TOO_LARGE.text());
         }
 
@@ -76,7 +86,10 @@ public class AVTerminalRecipeHandler<T extends ETTerminalBaseMenu<?>> extends Ab
         } else {
             // Thank you RS for pioneering this amazing feature! :)
             boolean craftMissing = AbstractContainerScreen.hasControlDown();
-            performTransfer(menu, recipe.getId(), adapterRecipe, craftMissing, UnitedTerminalMenu.UnitedRecipeKind.fromReAvaritiaTier(adapterRecipe.tier()));
+            performTransfer(menu, recipe.getId(), adapterRecipe, craftMissing,
+                    menu instanceof UnitedTerminalMenu && unitedRecipeKind != null
+                            ? unitedRecipeKind
+                            : UnitedTerminalMenu.UnitedRecipeKind.fromReAvaritiaTier(adapterRecipe.tier()));
         }
 
         // No error

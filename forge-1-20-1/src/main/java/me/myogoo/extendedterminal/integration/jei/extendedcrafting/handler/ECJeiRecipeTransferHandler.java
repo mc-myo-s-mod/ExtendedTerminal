@@ -31,10 +31,19 @@ import me.myogoo.extendedterminal.menu.extendedcrafting.UnitedTerminalMenu;
 
 public class ECJeiRecipeTransferHandler<T extends ETTerminalBaseMenu<?>> extends AbstractTableRecipeHandler<T, ITableRecipe> {
     private final IRecipeTransferHandlerHelper helper;
+    @Nullable
+    private final UnitedTerminalMenu.UnitedRecipeKind unitedRecipeKind;
 
     public ECJeiRecipeTransferHandler(Class<T> containerClass, MenuType<T> container, RecipeType<ITableRecipe> recipeType, IRecipeTransferHandlerHelper helper) {
+        this(containerClass, container, recipeType, helper, null);
+    }
+
+    public ECJeiRecipeTransferHandler(Class<T> containerClass, MenuType<T> container, RecipeType<ITableRecipe> recipeType,
+                                      IRecipeTransferHandlerHelper helper,
+                                      @Nullable UnitedTerminalMenu.UnitedRecipeKind unitedRecipeKind) {
         super(containerClass, container, recipeType);
         this.helper = helper;
+        this.unitedRecipeKind = unitedRecipeKind;
     }
 
     @Override
@@ -69,7 +78,10 @@ public class ECJeiRecipeTransferHandler<T extends ETTerminalBaseMenu<?>> extends
                 return new Result.PartiallyCraftable(missingSlots, color, craftMissing);
             }
         } else {
-            performTransfer(menu, adapterRecipe, craftMissing, UnitedTerminalMenu.UnitedRecipeKind.fromExtendedCraftingTier(adapterRecipe.tier()));
+            performTransfer(menu, adapterRecipe, craftMissing,
+                    menu instanceof UnitedTerminalMenu && unitedRecipeKind != null
+                            ? unitedRecipeKind
+                            : UnitedTerminalMenu.UnitedRecipeKind.fromExtendedCraftingTier(adapterRecipe.tier()));
         }
         return Result.createSuccessful();
     }

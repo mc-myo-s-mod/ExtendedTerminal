@@ -28,10 +28,20 @@ import static appeng.integration.modules.itemlists.TransferHelper.ORANGE_PLUS_BU
 
 public class AVJeiRecipeTransferHandler<T extends ETTerminalBaseMenu<?>> extends AbstractTableHolderRecipeHandler<T, ITierCraftingRecipe, RecipeHolder<ITierCraftingRecipe>> {
     private final IRecipeTransferHandlerHelper helper;
+    @Nullable
+    private final UnitedTerminalMenu.UnitedRecipeKind unitedRecipeKind;
 
     public AVJeiRecipeTransferHandler(Class<T> containerClass, MenuType<T> menuType, RecipeType<RecipeHolder<ITierCraftingRecipe>> recipeType, IRecipeTransferHandlerHelper helper) {
+        this(containerClass, menuType, recipeType, helper, null);
+    }
+
+    public AVJeiRecipeTransferHandler(Class<T> containerClass, MenuType<T> menuType,
+                                      RecipeType<RecipeHolder<ITierCraftingRecipe>> recipeType,
+                                      IRecipeTransferHandlerHelper helper,
+                                      @Nullable UnitedTerminalMenu.UnitedRecipeKind unitedRecipeKind) {
         super(containerClass, menuType, recipeType);
         this.helper = helper;
+        this.unitedRecipeKind = unitedRecipeKind;
     }
 
     @Override
@@ -68,7 +78,9 @@ public class AVJeiRecipeTransferHandler<T extends ETTerminalBaseMenu<?>> extends
             }
         } else {
             performTransfer(menu, adapterRecipe, craftMissing, recipeHolder.id(),
-                    UnitedTerminalMenu.UnitedRecipeKind.fromReAvaritiaTier(adapterRecipe.tier()));
+                    menu instanceof UnitedTerminalMenu && unitedRecipeKind != null
+                            ? unitedRecipeKind
+                            : UnitedTerminalMenu.UnitedRecipeKind.fromReAvaritiaTier(adapterRecipe.tier()));
         }
 
         return Result.createSuccessful();

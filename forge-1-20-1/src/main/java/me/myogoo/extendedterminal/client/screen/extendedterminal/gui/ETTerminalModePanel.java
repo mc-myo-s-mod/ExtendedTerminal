@@ -4,6 +4,8 @@ import appeng.client.Point;
 import appeng.client.gui.ICompositeWidget;
 import appeng.client.gui.WidgetContainer;
 import me.myogoo.extendedterminal.client.screen.extendedterminal.ETTerminalScreen;
+import me.myogoo.extendedterminal.api.translation.ETTranslationKey;
+import me.myogoo.myotus.client.MyoTranslateKey;
 import me.myogoo.extendedterminal.menu.extendedterminal.ETTerminalMenu;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.network.chat.Component;
@@ -13,20 +15,22 @@ public abstract class ETTerminalModePanel implements ICompositeWidget {
     protected final ETTerminalScreen<?> screen;
     protected final ETTerminalMenu menu;
     protected final WidgetContainer widgets;
+    protected final MyoTranslateKey tabTooltipKey;
     protected boolean visible;
     protected int x;
     protected int y;
 
-    protected ETTerminalModePanel(ETTerminalScreen<?> screen, WidgetContainer widgets) {
+    protected ETTerminalModePanel(ETTerminalScreen<?> screen, WidgetContainer widgets, MyoTranslateKey tabTooltipKey) {
         this.screen = screen;
         this.menu = screen.getMenu();
         this.widgets = widgets;
+        this.tabTooltipKey = tabTooltipKey;
     }
 
     public abstract ItemStack getIcon();
 
     public Component getTabTooltip() {
-        return Component.translatable("gui.extendedterminal." + getClass().getSimpleName().toLowerCase());
+        return Component.translatable(this.tabTooltipKey.key());
     }
 
     public String getWidgetId() {

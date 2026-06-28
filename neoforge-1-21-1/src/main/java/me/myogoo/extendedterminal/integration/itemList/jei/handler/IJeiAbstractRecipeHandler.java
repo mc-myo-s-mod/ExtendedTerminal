@@ -1,5 +1,6 @@
 package me.myogoo.extendedterminal.integration.itemList.jei.handler;
 
+import me.myogoo.extendedterminal.api.translation.ETTranslationKey;
 import appeng.core.localization.ItemModText;
 import appeng.integration.modules.itemlists.TransferHelper;
 import appeng.menu.me.items.CraftingTermMenu;
@@ -11,7 +12,7 @@ import mezz.jei.api.recipe.transfer.IRecipeTransferHandlerHelper;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;;
+import org.jetbrains.annotations.Nullable;
 
 public interface IJeiAbstractRecipeHandler {
     int BLUE_SLOT_HIGHLIGHT_COLOR = TransferHelper.BLUE_SLOT_HIGHLIGHT_COLOR;
@@ -37,7 +38,7 @@ public interface IJeiAbstractRecipeHandler {
         }
 
         public static IRecipeTransferError createNotSupportedError(IRecipeTransferHandlerHelper helper) {
-            return helper.createUserErrorWithTooltip(Component.translatable("extendedterminal.jei.notsupportederror"));
+            return helper.createUserErrorWithTooltip(Component.translatable(ETTranslationKey.JEI.JEI_NOT_SUPPORTED_ERROR.key()));
         }
 
         public static IRecipeTransferError createRecipeToLargeError(IRecipeTransferHandlerHelper helper) {
