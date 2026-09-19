@@ -5,21 +5,37 @@ import appeng.api.parts.IPartModel;
 import appeng.items.parts.PartModels;
 import appeng.parts.PartModel;
 import me.myogoo.extendedterminal.ExtendedTerminal;
+import me.myogoo.extendedterminal.api.host.IUnitedTerminalHost;
 import me.myogoo.extendedterminal.config.extendedcrafting.ExtendedCraftingConfig;
 import me.myogoo.extendedterminal.menu.ETMenuType;
 import me.myogoo.extendedterminal.menu.extendedcrafting.UnitedTerminalMenu;
 import me.myogoo.extendedterminal.part.ETTerminalBasePart;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.MenuType;
+import org.jetbrains.annotations.Nullable;
 
-public class UnitedTerminalPart extends ETTerminalBasePart {
+public class UnitedTerminalPart extends ETTerminalBasePart implements IUnitedTerminalHost {
+    private static final String REMEMBER_RECIPE_TYPE = "rememberUnitedRecipeType";
+    private static final String SELECTED_RECIPE_TYPE = "selectedUnitedRecipeType";
+
     @PartModels
     public static final ResourceLocation UNITED_MODEL_BASE = ExtendedTerminal.makeId("part/extendedcrafting/united_terminal_base");
+    @PartModels
+    public static final ResourceLocation UNITED_MODEL_OFF = ExtendedTerminal.makeId("part/extendedcrafting/united_terminal_off");
+    @PartModels
+    public static final ResourceLocation UNITED_MODEL_ON = ExtendedTerminal.makeId("part/extendedcrafting/united_terminal_on");
 
-    public static final IPartModel MODELS_OFF = new PartModel(UNITED_MODEL_BASE, MODEL_OFF, MODEL_STATUS_OFF);
-    public static final IPartModel MODELS_ON = new PartModel(UNITED_MODEL_BASE, MODEL_ON, MODEL_STATUS_ON);
-    public static final IPartModel MODELS_HAS_CHANNEL = new PartModel(UNITED_MODEL_BASE, MODEL_ON, MODEL_STATUS_HAS_CHANNEL);
+    public static final IPartModel MODELS_OFF = new PartModel(UNITED_MODEL_BASE, UNITED_MODEL_OFF, MODEL_STATUS_OFF);
+    public static final IPartModel MODELS_ON = new PartModel(UNITED_MODEL_BASE, UNITED_MODEL_ON, MODEL_STATUS_ON);
+    public static final IPartModel MODELS_HAS_CHANNEL = new PartModel(UNITED_MODEL_BASE, UNITED_MODEL_ON, MODEL_STATUS_HAS_CHANNEL);
+
+    private boolean rememberUnitedRecipeType = true;
+    @Nullable
+    private UnitedTerminalMenu.UnitedRecipeKind lastRecipeKind;
+    private boolean isLoading;
 
     public UnitedTerminalPart(IPartItem<?> partItem) {
         super(partItem, ETMenuType.UNITED_TERMINAL, ExtendedCraftingConfig.INSTANCE.getUltimateConfig());
@@ -33,5 +49,72 @@ public class UnitedTerminalPart extends ETTerminalBasePart {
     @Override
     public IPartModel getStaticModels() {
         return this.selectModel(MODELS_OFF, MODELS_ON, MODELS_HAS_CHANNEL);
+    }
+
+    @Override
+    public void readFromNBT(CompoundTag data) {
+        this.isLoading = true;
+        try {
+            super.readFromNBT(data);
+            this.rememberUnitedRecipeType = !data.contains(REMEMBER_RECIPE_TYPE, Tag.TAG_BYTE)
+                    || data.getBoolean(REMEMBER_RECIPE_TYPE);
+            this.lastRecipeKind = readRecipeKind(data);
+        } finally {
+            this.isLoading = false;
+        }
+    }
+
+    @Override
+    public void writeToNBT(CompoundTag data) {
+        super.writeToNBT(data);
+        data.putBoolean(REMEMBER_RECIPE_TYPE, this.rememberUnitedRecipeType);
+        if (this.lastRecipeKind != null) {
+            data.putString(SELECTED_RECIPE_TYPE, this.lastRecipeKind.name());
+        } else {
+            data.remove(SELECTED_RECIPE_TYPE);
+        }
+    }
+
+    @Override
+    public void saveChanges() {
+        if (!this.isLoading) {
+            super.saveChanges();
+        }
+    }
+
+    @Override
+    public boolean shouldRememberRecipeType() {
+        return rememberUnitedRecipeType;
+    }
+
+    @Override
+    public void setRememberRecipeType(boolean remember) {
+        this.rememberUnitedRecipeType = remember;
+        if (!remember) {
+            this.lastRecipeKind = null;
+        }
+        this.saveChanges();
+    }
+
+    @Override
+    public @Nullable UnitedTerminalMenu.UnitedRecipeKind getLastRecipeKind() {
+        return lastRecipeKind;
+    }
+
+    @Override
+    public void setLastRecipeKind(@Nullable UnitedTerminalMenu.UnitedRecipeKind recipeKind) {
+        this.lastRecipeKind = recipeKind;
+        this.saveChanges();
+    }
+
+    private static @Nullable UnitedTerminalMenu.UnitedRecipeKind readRecipeKind(CompoundTag data) {
+        if (!data.contains(SELECTED_RECIPE_TYPE, Tag.TAG_STRING)) {
+            return null;
+        }
+        try {
+            return UnitedTerminalMenu.UnitedRecipeKind.valueOf(data.getString(SELECTED_RECIPE_TYPE));
+        } catch (IllegalArgumentException ignored) {
+            return null;
+        }
     }
 }

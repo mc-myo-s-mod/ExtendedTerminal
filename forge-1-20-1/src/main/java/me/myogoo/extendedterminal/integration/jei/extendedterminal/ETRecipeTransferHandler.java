@@ -6,6 +6,7 @@ import me.myogoo.extendedterminal.config.ExtendedTerminalConfig;
 import me.myogoo.extendedterminal.integration.jei.extendedterminal.handler.ETCraftingRecipeTransfer;
 import me.myogoo.extendedterminal.integration.jei.extendedterminal.handler.ETSmithingRecipeTransfer;
 import me.myogoo.extendedterminal.integration.jei.extendedterminal.handler.ETStonecutterRecipeTransfer;
+import me.myogoo.extendedterminal.menu.extendedcrafting.UnitedTerminalMenu;
 import me.myogoo.extendedterminal.menu.extendedterminal.ETTerminalMenu;
 import me.myogoo.myotus.api.annotation.MyotusSubscriber;
 import mezz.jei.api.constants.RecipeTypes;
@@ -19,13 +20,17 @@ public class ETRecipeTransferHandler {
         var config = ExtendedTerminalConfig.INSTANCE.getExtendedTerminalConfig();
         var helper = registration.getTransferHelper();
 
+        registration.addRecipeTransferHandler(
+                new ETCraftingRecipeTransfer<>(UnitedTerminalMenu.TYPE, UnitedTerminalMenu.class, helper),
+                RecipeTypes.CRAFTING);
+
         if (!config.enableTerminal()) {
             return;
         }
 
         if (config.enableCraftingPanel()) {
             registration.addRecipeTransferHandler(
-                    new ETCraftingRecipeTransfer(ETTerminalMenu.TYPE, ETTerminalMenu.class, helper),
+                    new ETCraftingRecipeTransfer<>(ETTerminalMenu.TYPE, ETTerminalMenu.class, helper),
                     RecipeTypes.CRAFTING);
         }
         if (config.enableSmithingPanel()) {

@@ -22,7 +22,7 @@ public class ETStonecutterRecipeHandler<T extends ETTerminalMenu> extends ETTerm
     @Override
     protected Result transferRecipe(T menu, EmiRecipe emiRecipe, boolean doTransfer) {
         var recipeId = emiRecipe.getId();
-        var recipe = emiRecipe.getBackingRecipe();
+        var recipe = resolveBackingRecipe(emiRecipe);
         boolean craftingRecipe = isCraftingRecipe(recipe, emiRecipe);
         if (!craftingRecipe || recipe == null) {
             return Result.createNotApplicable();

@@ -37,6 +37,9 @@ public final class ETSlotSemantics {
     public static final SlotSemantic EPIC_CRAFTING_GRID = SlotSemantics.register("EPIC_CRAFTING_GRID", true);
     public static final SlotSemantic EPIC_CRAFTING_RESULT = SlotSemantics.register("EPIC_CRAFTING_RESULT", false);
 
+    public static final SlotSemantic LEGENDARY_CRAFTING_GRID = SlotSemantics.register("LEGENDARY_CRAFTING_GRID", true);
+    public static final SlotSemantic LEGENDARY_CRAFTING_RESULT = SlotSemantics.register("LEGENDARY_CRAFTING_RESULT", false);
+
     public static final SlotSemantic AVARITIA_CRAFTING_GRID = SlotSemantics.register("AVARITIA_CRAFTING_GRID", true);
     public static final SlotSemantic AVARITIA_CRAFTING_RESULT = SlotSemantics.register("AVARITIA_CRAFTING_RESULT", false);
 

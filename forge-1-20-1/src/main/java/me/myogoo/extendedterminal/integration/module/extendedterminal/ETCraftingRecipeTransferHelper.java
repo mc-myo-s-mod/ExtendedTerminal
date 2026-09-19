@@ -5,7 +5,10 @@ import appeng.core.sync.network.NetworkHandler;
 import appeng.core.sync.packets.FillCraftingGridFromRecipePacket;
 import appeng.integration.modules.jeirei.EncodingHelper;
 import appeng.menu.me.common.GridInventoryEntry;
+import me.myogoo.extendedterminal.api.adapter.recipe.ITableRecipeAdapter;
+import me.myogoo.extendedterminal.api.adapter.recipe.IShapedTableRecipeAdapter;
 import me.myogoo.extendedterminal.client.ae2helpers.ETAutoCraftingWatcher;
+import me.myogoo.extendedterminal.menu.extendedcrafting.UnitedTerminalMenu;
 import me.myogoo.extendedterminal.menu.extendedterminal.ETTerminalMenu;
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.item.ItemStack;
@@ -32,6 +35,34 @@ public final class ETCraftingRecipeTransferHelper {
         var result = new LinkedHashMap<Integer, Ingredient>(ingredients.size());
         for (int i = 0; i < ingredients.size(); i++) {
             int guiSlot = (i / recipeWidth) * gridWidth + (i % recipeWidth);
+            var ingredient = ingredients.get(i);
+            if (!ingredient.isEmpty()) {
+                result.put(guiSlot, ingredient);
+            }
+        }
+        return result;
+    }
+
+    public static Map<Integer, Ingredient> getGuiSlotToIngredientMap(UnitedTerminalMenu menu,
+                                                                     ITableRecipeAdapter<?> recipe) {
+        var ingredients = recipe.recipe().getIngredients();
+        int gridSideLength = menu.getCraftingGridWidth();
+        int width = gridSideLength;
+        int offsetX = 0;
+        int offsetY = 0;
+
+        if (recipe instanceof IShapedTableRecipeAdapter<?> shapedRecipe) {
+            width = shapedRecipe.width();
+            offsetX = Math.floorDiv(gridSideLength - shapedRecipe.width(), 2);
+            offsetY = Math.floorDiv(gridSideLength - shapedRecipe.height(), 2);
+        }
+
+        int count = Math.min(ingredients.size(), gridSideLength * gridSideLength);
+        var result = new LinkedHashMap<Integer, Ingredient>(count);
+        for (int i = 0; i < count; i++) {
+            int x = i % width;
+            int y = i / width;
+            int guiSlot = (y + offsetY) * gridSideLength + (x + offsetX);
             var ingredient = ingredients.get(i);
             if (!ingredient.isEmpty()) {
                 result.put(guiSlot, ingredient);

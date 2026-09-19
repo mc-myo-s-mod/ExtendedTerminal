@@ -68,8 +68,12 @@ public class ETClient {
         InitScreens.register(AdvancedTerminalMenu.TYPE,AdvancedTerminalScreen::new,"/screens/extended_terminal/advanced_terminal.json");
         InitScreens.register(EliteTerminalMenu.TYPE,EliteTerminalScreen::new,"/screens/extended_terminal/elite_terminal.json");
         InitScreens.register(UltimateTerminalMenu.TYPE,UltimateTerminalScreen::new,"/screens/extended_terminal/ultimate_terminal.json");
-        InitScreens.register(UnitedTerminalMenu.TYPE,UnitedTerminalScreen::new,"/screens/extended_terminal/united_terminal.json");
+        InitScreens.<UnitedTerminalMenu, UnitedTerminalScreen<UnitedTerminalMenu>>register(UnitedTerminalMenu.TYPE,
+                (menu, playerInventory, title, style) -> new UnitedTerminalScreen<>(menu, playerInventory, title, style),
+                "/screens/extended_terminal/united_terminal.json");
         InitScreens.register(EpicTerminalMenu.TYPE,EpicTerminalScreen::new,"/screens/extended_terminal/epic_terminal.json");
+        InitScreens.register(LegendaryTerminalMenu.TYPE, LegendaryTerminalScreen::new,
+                "/screens/extended_terminal/legendary_terminal.json");
 
         InitScreens.register(SculkTerminalMenu.TYPE,SculkTerminalScreen::new,"/screens/avaritia/sculk_terminal.json");
         InitScreens.register(NetherTerminalMenu.TYPE,NetherTerminalScreen::new,"/screens/avaritia/nether_terminal.json");
@@ -91,4 +95,3 @@ public class ETClient {
                 ETParts.TERMINAL_PARTS.stream().map(x -> (ItemLike) x).toArray(ItemLike[]::new));
     }
 }
-

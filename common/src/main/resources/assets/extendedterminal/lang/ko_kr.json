@@ -52,5 +52,7 @@
   "gui.extendedterminal.unitedTerminal": "통합 터미널",
   "gui.extendedterminal.config.united.title": "통합 터미널 설정",
   "gui.extendedterminal.config.remember_united_recipe_type": "마지막 United 레시피 타입 기억",
+  "item.extendedterminal.legendary_terminal": "전설 조합 터미널",
+  "gui.extendedterminal.legendaryTerminal": "전설 확장 터미널",
   "gui.ae2wtlib.pick_block.text": "블록 선택 활성화"
 }

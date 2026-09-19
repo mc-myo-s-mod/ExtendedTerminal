@@ -14,6 +14,8 @@ public class ETRecipeCatalyst {
     @MyotusSubscriber
     public static void init(IRecipeCatalystRegistration registration) {
         var config = ExtendedTerminalConfig.INSTANCE.getExtendedTerminalConfig();
+        registration.addRecipeCatalyst(ETParts.UNITED_TERMINAL_PART, RecipeTypes.CRAFTING);
+
         if (!config.enableTerminal()) {
             return;
         }

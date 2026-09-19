@@ -71,4 +71,15 @@ item_ids:
         <RecipeFor id="extendedterminal:epic_terminal" />
 
     </myotus:condition>
+    <myotus:condition load="legendary-excrafting">
+## Legendary Extended Crafting Terminal
+        <Row>
+        <ItemImage id="extendedterminal:legendary_terminal" scale={3}/>
+        <ItemImage id="extendedcrafting:legendary_table" scale={3}/>
+        </Row>
+        <ItemLink id="extendedterminal:legendary_terminal" /> provides a 13×13 crafting grid for
+        <ItemLink id="extendedcrafting:legendary_table" /> recipes.
+        <RecipeFor id="extendedterminal:legendary_terminal" />
+
+    </myotus:condition>
 </myotus:condition>

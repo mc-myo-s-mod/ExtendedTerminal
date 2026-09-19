@@ -6,6 +6,7 @@ import me.myogoo.extendedterminal.integration.jei.extendedterminal.handler.ETCra
 import me.myogoo.extendedterminal.integration.jei.extendedterminal.handler.ETSmithingRecipeTransfer;
 import me.myogoo.extendedterminal.integration.jei.extendedterminal.handler.ETStonecutterRecipeTransfer;
 import me.myogoo.extendedterminal.menu.extendedterminal.wt.ETWTMenu;
+import me.myogoo.extendedterminal.menu.extendedcrafting.wt.UnitedWTMenu;
 import me.myogoo.myotus.api.annotation.MyotusSubscriber;
 import me.myogoo.myotus.api.annotation.mods.AE2WTLib;
 import mezz.jei.api.constants.RecipeTypes;
@@ -21,5 +22,6 @@ public class ETWTRecipeTransferHandler {
         registration.addRecipeTransferHandler(new ETCraftingRecipeTransfer<>(ETWTMenu.TYPE, ETWTMenu.class, helper), RecipeTypes.CRAFTING);
         registration.addRecipeTransferHandler(new ETSmithingRecipeTransfer<>(ETWTMenu.TYPE, ETWTMenu.class, helper), RecipeTypes.SMITHING);
         registration.addRecipeTransferHandler(new ETStonecutterRecipeTransfer<>(ETWTMenu.TYPE, ETWTMenu.class, helper), RecipeTypes.STONECUTTING);
+        registration.addRecipeTransferHandler(new ETCraftingRecipeTransfer<>(UnitedWTMenu.TYPE, UnitedWTMenu.class, helper), RecipeTypes.CRAFTING);
     }
 }

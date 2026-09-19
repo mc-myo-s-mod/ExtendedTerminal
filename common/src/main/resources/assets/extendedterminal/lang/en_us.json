@@ -54,5 +54,7 @@
   "gui.extendedterminal.config.remember_united_recipe_type": "Remember last United recipe type",
   "item.extendedterminal.epic_terminal": "Epic Crafting Terminal",
   "gui.extendedterminal.epicTerminal": "Epic Extended Terminal",
+  "item.extendedterminal.legendary_terminal": "Legendary Crafting Terminal",
+  "gui.extendedterminal.legendaryTerminal": "Legendary Extended Terminal",
   "gui.ae2wtlib.pick_block.text": "Enable Pick Block"
 }

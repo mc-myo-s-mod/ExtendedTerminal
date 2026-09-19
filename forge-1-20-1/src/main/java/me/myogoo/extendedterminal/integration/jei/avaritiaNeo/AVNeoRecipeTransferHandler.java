@@ -9,6 +9,9 @@ import mezz.jei.api.registration.IRecipeTransferRegistration;
 import net.byAqua3.avaritia.compat.jei.AvaritiaJEIPlugin;
 import me.myogoo.extendedterminal.api.annotation.AvaritiaNeo;
 import me.myogoo.extendedterminal.menu.extendedcrafting.UnitedTerminalMenu;
+import me.myogoo.extendedterminal.menu.extendedcrafting.wt.UnitedWTMenu;
+import me.myogoo.myotus.api.MyotusAPI;
+import me.myogoo.myotus.api.annotation.mods.AE2WTLib;
 
 @JEI
 @RecipeTransfer
@@ -20,5 +23,8 @@ public class AVNeoRecipeTransferHandler {
         
         registration.addRecipeTransferHandler(new AVNeoJeiRecipeTransferHandler<>(NeoExtremeTerminalMenu.class, NeoExtremeTerminalMenu.TYPE, AvaritiaJEIPlugin.EXTREME_CRAFTING, helper), AvaritiaJEIPlugin.EXTREME_CRAFTING);
         registration.addRecipeTransferHandler(new AVNeoJeiRecipeTransferHandler<>(UnitedTerminalMenu.class, UnitedTerminalMenu.TYPE, AvaritiaJEIPlugin.EXTREME_CRAFTING, helper), AvaritiaJEIPlugin.EXTREME_CRAFTING);
+        if (MyotusAPI.integrations().isLoaded(AE2WTLib.class)) {
+            registration.addRecipeTransferHandler(new AVNeoJeiRecipeTransferHandler<>(UnitedWTMenu.class, UnitedWTMenu.TYPE, AvaritiaJEIPlugin.EXTREME_CRAFTING, helper), AvaritiaJEIPlugin.EXTREME_CRAFTING);
+        }
     }
 }

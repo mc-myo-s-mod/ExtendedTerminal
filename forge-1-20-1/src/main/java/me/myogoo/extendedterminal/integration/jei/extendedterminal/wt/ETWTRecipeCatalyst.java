@@ -18,5 +18,6 @@ public class ETWTRecipeCatalyst {
         registration.addRecipeCatalyst(WTItems.WIRELESS_ET_TERMINAL, RecipeTypes.SMITHING);
         registration.addRecipeCatalyst(WTItems.WIRELESS_ET_TERMINAL, RecipeTypes.STONECUTTING);
         registration.addRecipeCatalyst(WTItems.WIRELESS_ET_TERMINAL, RecipeTypes.ANVIL);
+        registration.addRecipeCatalyst(WTItems.WIRELESS_UNITED_TERMINAL, RecipeTypes.CRAFTING);
     }
 }

@@ -31,5 +31,7 @@
   "gui.extendedterminal.anvil_experience_source.priority": "经验来源：%s",
   "gui.extendedterminal.anvil_experience_source.player": "玩家",
   "gui.extendedterminal.anvil_experience_source.fluid": "流体",
-  "gui.extendedterminal.anvil_experience_source.cell": "单元"
+  "gui.extendedterminal.anvil_experience_source.cell": "单元",
+  "item.extendedterminal.legendary_terminal": "传奇合成终端",
+  "gui.extendedterminal.legendaryTerminal": "传奇扩展终端"
 }

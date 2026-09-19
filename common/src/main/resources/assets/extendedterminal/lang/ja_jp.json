@@ -21,5 +21,7 @@
   "gui.extendedterminal.anvil_experience_source.priority": "XPソース: %s",
   "gui.extendedterminal.anvil_experience_source.player": "プレイヤー",
   "gui.extendedterminal.anvil_experience_source.fluid": "液体",
-  "gui.extendedterminal.anvil_experience_source.cell": "セル"
+  "gui.extendedterminal.anvil_experience_source.cell": "セル",
+  "item.extendedterminal.legendary_terminal": "伝説級クラフティングターミナル",
+  "gui.extendedterminal.legendaryTerminal": "伝説級拡張ターミナル"
 }

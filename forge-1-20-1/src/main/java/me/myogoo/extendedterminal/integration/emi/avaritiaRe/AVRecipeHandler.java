@@ -16,6 +16,9 @@ import me.myogoo.extendedterminal.menu.avaritiaRe.NetherTerminalMenu;
 import me.myogoo.extendedterminal.menu.avaritiaRe.SculkTerminalMenu;
 import me.myogoo.extendedterminal.api.annotation.ReAvaritia;
 import me.myogoo.extendedterminal.menu.extendedcrafting.UnitedTerminalMenu;
+import me.myogoo.extendedterminal.menu.extendedcrafting.wt.UnitedWTMenu;
+import me.myogoo.myotus.api.MyotusAPI;
+import me.myogoo.myotus.api.annotation.mods.AE2WTLib;
 
 @ReAvaritia
 @EMI
@@ -31,5 +34,11 @@ public class AVRecipeHandler {
         registry.addRecipeHandler(UnitedTerminalMenu.TYPE, new AVTerminalRecipeHandler<>(NetherCraftingTableCategory.CATEGORY, UnitedTerminalMenu.class, ETMenuType.UNITED_TERMINAL, UnitedTerminalMenu.UnitedRecipeKind.RE_AVARITIA_NETHER));
         registry.addRecipeHandler(UnitedTerminalMenu.TYPE, new AVTerminalRecipeHandler<>(EndCraftingTableCategory.CATEGORY, UnitedTerminalMenu.class, ETMenuType.UNITED_TERMINAL, UnitedTerminalMenu.UnitedRecipeKind.RE_AVARITIA_END));
         registry.addRecipeHandler(UnitedTerminalMenu.TYPE, new AVTerminalRecipeHandler<>(ExtremeCraftingTableCategory.CATEGORY, UnitedTerminalMenu.class, ETMenuType.UNITED_TERMINAL, UnitedTerminalMenu.UnitedRecipeKind.RE_AVARITIA_EXTREME));
+        if (MyotusAPI.integrations().isLoaded(AE2WTLib.class)) {
+            registry.addRecipeHandler(UnitedWTMenu.TYPE, new AVTerminalRecipeHandler<>(SculkCraftingTableCategory.CATEGORY, UnitedWTMenu.class, ETMenuType.UNITED_TERMINAL, UnitedTerminalMenu.UnitedRecipeKind.RE_AVARITIA_SCULK));
+            registry.addRecipeHandler(UnitedWTMenu.TYPE, new AVTerminalRecipeHandler<>(NetherCraftingTableCategory.CATEGORY, UnitedWTMenu.class, ETMenuType.UNITED_TERMINAL, UnitedTerminalMenu.UnitedRecipeKind.RE_AVARITIA_NETHER));
+            registry.addRecipeHandler(UnitedWTMenu.TYPE, new AVTerminalRecipeHandler<>(EndCraftingTableCategory.CATEGORY, UnitedWTMenu.class, ETMenuType.UNITED_TERMINAL, UnitedTerminalMenu.UnitedRecipeKind.RE_AVARITIA_END));
+            registry.addRecipeHandler(UnitedWTMenu.TYPE, new AVTerminalRecipeHandler<>(ExtremeCraftingTableCategory.CATEGORY, UnitedWTMenu.class, ETMenuType.UNITED_TERMINAL, UnitedTerminalMenu.UnitedRecipeKind.RE_AVARITIA_EXTREME));
+        }
     }
 }

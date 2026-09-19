@@ -6,12 +6,10 @@ import me.myogoo.extendedterminal.ExtendedTerminal;
 import me.myogoo.myotus.api.MyotusAPI;
 import net.minecraft.resources.ResourceLocation;
 
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Field;
-import java.util.Arrays;
 import me.myogoo.extendedterminal.api.annotation.AvaritiaNeo;
 import me.myogoo.extendedterminal.api.annotation.EpicExCrafting;
 import me.myogoo.extendedterminal.api.annotation.ExtendedCrafting;
+import me.myogoo.extendedterminal.api.annotation.LegendaryExCrafting;
 import me.myogoo.extendedterminal.api.annotation.ReAvaritia;
 
 
@@ -30,11 +28,14 @@ public enum ETMenuType {
     @ExtendedCrafting
     ULTIMATE_TERMINAL(9,4, ETSlotSemantics.ULTIMATE_CRAFTING_GRID, ETSlotSemantics.ULTIMATE_CRAFTING_RESULT),
 
-    @ExtendedCrafting
     UNITED_TERMINAL(9,0, ETSlotSemantics.EXTENDED_CRAFTING_UNIVERSAL_GRID, ETSlotSemantics.EXTENDED_CRAFTING_UNIVERSAL_RESULT),
     
     @EpicExCrafting
     EPIC_TERMINAL(11,5, ETSlotSemantics.EPIC_CRAFTING_GRID, ETSlotSemantics.EPIC_CRAFTING_RESULT),
+
+    @LegendaryExCrafting
+    LEGENDARY_TERMINAL(13,6, ETSlotSemantics.LEGENDARY_CRAFTING_GRID,
+            ETSlotSemantics.LEGENDARY_CRAFTING_RESULT),
 
     @ReAvaritia
     SCULK_TERMINAL(3, 1, ETSlotSemantics.SCULK_CRAFTING_GRID, ETSlotSemantics.SCULK_CRAFTING_RESULT),
@@ -103,17 +104,15 @@ public enum ETMenuType {
     }
 
     public boolean canLoad() {
-        try {
-            Field field = ETMenuType.class.getField(this.name());
-            if(field.getDeclaredAnnotations().length == 0) {
-                return true;
-            }
-            return Arrays.stream(field.getDeclaredAnnotations())
-                    .map(Annotation::annotationType)
-                    .allMatch(MyotusAPI.integrations()::isLoaded);
-        } catch (NoSuchFieldException e) {
-            ExtendedTerminal.LOGGER.error("Menu type {} is not loaded due to missing field in ETMenuType", this.name());
-        }
-        return false;
+        return switch (this) {
+            case BASIC_TERMINAL, ADVANCED_TERMINAL, ELITE_TERMINAL, ULTIMATE_TERMINAL ->
+                    MyotusAPI.integrations().isLoaded(ExtendedCrafting.class);
+            case EPIC_TERMINAL -> MyotusAPI.integrations().isLoaded(EpicExCrafting.class);
+            case LEGENDARY_TERMINAL -> MyotusAPI.integrations().isLoaded(LegendaryExCrafting.class);
+            case SCULK_TERMINAL, NETHER_TERMINAL, END_TERMINAL, EXTREME_TERMINAL ->
+                    MyotusAPI.integrations().isLoaded(ReAvaritia.class);
+            case NEO_EXTREME_TERMINAL -> MyotusAPI.integrations().isLoaded(AvaritiaNeo.class);
+            default -> true;
+        };
     }
 }

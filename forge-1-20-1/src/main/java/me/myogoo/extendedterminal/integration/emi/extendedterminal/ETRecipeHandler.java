@@ -8,6 +8,7 @@ import me.myogoo.extendedterminal.integration.emi.extendedterminal.handler.panel
 import me.myogoo.extendedterminal.integration.emi.extendedterminal.handler.panel.ETSmithingRecipeHandler;
 import me.myogoo.extendedterminal.integration.emi.extendedterminal.handler.panel.ETStonecutterRecipeHandler;
 import me.myogoo.extendedterminal.menu.extendedterminal.ETTerminalMenu;
+import me.myogoo.extendedterminal.menu.extendedcrafting.UnitedTerminalMenu;
 import me.myogoo.myotus.api.annotation.MyotusSubscriber;
 
 @EMI
@@ -16,6 +17,9 @@ public class ETRecipeHandler {
     @MyotusSubscriber
     public static void init(EmiRegistry registry) {
         var config = ExtendedTerminalConfig.INSTANCE.getExtendedTerminalConfig();
+        registry.addRecipeHandler(UnitedTerminalMenu.TYPE,
+                new ETCraftingRecipeHandler<>(UnitedTerminalMenu.class));
+
         if (!config.enableTerminal()) {
             return;
         }

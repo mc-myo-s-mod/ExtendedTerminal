@@ -22,6 +22,7 @@ public final class ETMenus {
     public static final Supplier<MenuType<?>> ULTIMATE_TERMINAL = REGISTER.register(ETMenuType.ULTIMATE_TERMINAL.getIdAsString(), () -> UltimateTerminalMenu.TYPE);
     public static final Supplier<MenuType<?>> UNITED_TERMINAL = REGISTER.register(ETMenuType.UNITED_TERMINAL.getIdAsString(), () -> UnitedTerminalMenu.TYPE);
     public static final Supplier<MenuType<?>> EPIC_TERMINAL = REGISTER.register(ETMenuType.EPIC_TERMINAL.getIdAsString(), () -> EpicTerminalMenu.TYPE);
+    public static final Supplier<MenuType<?>> LEGENDARY_TERMINAL = REGISTER.register(ETMenuType.LEGENDARY_TERMINAL.getIdAsString(), () -> LegendaryTerminalMenu.TYPE);
 
     // Re:Avaritia terminal
     public static final Supplier<MenuType<SculkTerminalMenu>> SCULK_TERMINAL = REGISTER.register(ETMenuType.SCULK_TERMINAL.getIdAsString(), () -> SculkTerminalMenu.TYPE);

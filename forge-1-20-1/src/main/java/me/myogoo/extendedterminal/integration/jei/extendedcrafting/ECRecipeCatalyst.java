@@ -9,6 +9,9 @@ import me.myogoo.myotus.api.annotation.itemList.RecipeCategory;
 import me.myogoo.myotus.api.annotation.itemList.jei.JEI;
 import me.myogoo.extendedterminal.config.extendedcrafting.ExtendedCraftingConfig;
 import me.myogoo.extendedterminal.init.ETParts;
+import me.myogoo.extendedterminal.init.wt.WTItems;
+import me.myogoo.myotus.api.MyotusAPI;
+import me.myogoo.myotus.api.annotation.mods.AE2WTLib;
 import mezz.jei.api.registration.IRecipeCatalystRegistration;
 import me.myogoo.extendedterminal.api.annotation.ExtendedCrafting;
 
@@ -27,11 +30,15 @@ public class ECRecipeCatalyst{
             registration.addRecipeCatalyst(ETParts.ELITE_TERMINAL_PART, EliteTableCategory.RECIPE_TYPE);
         if (instance.getUltimateConfig().enableTerminal())
             registration.addRecipeCatalyst(ETParts.ULTIMATE_TERMINAL_PART, UltimateTableCategory.RECIPE_TYPE);
-        if (instance.getUltimateConfig().enableTerminal()) {
-            registration.addRecipeCatalyst(ETParts.UNITED_TERMINAL_PART, BasicTableCategory.RECIPE_TYPE);
-            registration.addRecipeCatalyst(ETParts.UNITED_TERMINAL_PART, AdvancedTableCategory.RECIPE_TYPE);
-            registration.addRecipeCatalyst(ETParts.UNITED_TERMINAL_PART, EliteTableCategory.RECIPE_TYPE);
-            registration.addRecipeCatalyst(ETParts.UNITED_TERMINAL_PART, UltimateTableCategory.RECIPE_TYPE);
+        registration.addRecipeCatalyst(ETParts.UNITED_TERMINAL_PART, BasicTableCategory.RECIPE_TYPE);
+        registration.addRecipeCatalyst(ETParts.UNITED_TERMINAL_PART, AdvancedTableCategory.RECIPE_TYPE);
+        registration.addRecipeCatalyst(ETParts.UNITED_TERMINAL_PART, EliteTableCategory.RECIPE_TYPE);
+        registration.addRecipeCatalyst(ETParts.UNITED_TERMINAL_PART, UltimateTableCategory.RECIPE_TYPE);
+        if (MyotusAPI.integrations().isLoaded(AE2WTLib.class)) {
+            registration.addRecipeCatalyst(WTItems.WIRELESS_UNITED_TERMINAL, BasicTableCategory.RECIPE_TYPE);
+            registration.addRecipeCatalyst(WTItems.WIRELESS_UNITED_TERMINAL, AdvancedTableCategory.RECIPE_TYPE);
+            registration.addRecipeCatalyst(WTItems.WIRELESS_UNITED_TERMINAL, EliteTableCategory.RECIPE_TYPE);
+            registration.addRecipeCatalyst(WTItems.WIRELESS_UNITED_TERMINAL, UltimateTableCategory.RECIPE_TYPE);
         }
     }
 }

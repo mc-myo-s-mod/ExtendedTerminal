@@ -6,11 +6,10 @@ import appeng.api.storage.MEStorage;
 import appeng.helpers.InventoryAction;
 import appeng.menu.guisync.GuiSync;
 import appeng.menu.implementations.MenuTypeBuilder;
-import com.blakebr0.extendedcrafting.api.crafting.ITableRecipe;
-import com.blakebr0.extendedcrafting.init.ModRecipeTypes;
 import me.myogoo.extendedterminal.api.annotation.AvaritiaNeo;
 import me.myogoo.extendedterminal.api.annotation.ExtendedCrafting;
 import me.myogoo.extendedterminal.api.annotation.ReAvaritia;
+import me.myogoo.extendedterminal.api.host.IUnitedTerminalHost;
 import me.myogoo.extendedterminal.api.translation.ETTranslationKey;
 import me.myogoo.myotus.client.MyoTranslateKey;
 import me.myogoo.extendedterminal.config.extendedcrafting.ExtendedCraftingConfig;
@@ -18,7 +17,6 @@ import me.myogoo.extendedterminal.menu.ETMenuType;
 import me.myogoo.extendedterminal.menu.extendedcrafting.slot.UnitedCraftingTerminalSlot;
 import me.myogoo.extendedterminal.menu.slot.ETCraftingBaseSlot;
 import me.myogoo.myotus.api.MyotusAPI;
-import net.byAqua3.avaritia.loader.AvaritiaRecipes;
 import net.minecraft.core.NonNullList;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Inventory;
@@ -26,7 +24,10 @@ import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.TransientCraftingContainer;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.item.crafting.ShapedRecipe;
 import net.minecraft.world.level.Level;
 
 import javax.annotation.Nullable;
@@ -46,6 +47,7 @@ public class UnitedTerminalMenu extends ETTerminalBaseMenu<Recipe<?>> {
     private final ISegmentedInventory craftingInventoryHost;
     protected final CraftingMatrixSlot[] craftingSlots;
 
+    public static final String ACTION_REMEMBER_RECIPE_TYPE = "rememberRecipeType";
     private static final String ACTION_SELECT_NEXT_RECIPE_KIND = "selectNextRecipeKind";
     private static final String ACTION_SELECT_PREVIOUS_RECIPE_KIND = "selectPreviousRecipeKind";
     public static final MenuType<UnitedTerminalMenu> TYPE = MenuTypeBuilder
@@ -57,7 +59,7 @@ public class UnitedTerminalMenu extends ETTerminalBaseMenu<Recipe<?>> {
     @Nullable
     private List<ItemStack> lastUnitedItems;
     @GuiSync(0)
-    private UnitedRecipeKind selectedRecipeKind = UnitedRecipeKind.EXTENDED_CRAFTING_ULTIMATE;
+    private UnitedRecipeKind selectedRecipeKind = UnitedRecipeKind.VANILLA;
 
     public UnitedTerminalMenu(MenuType<?> menuType, int id, Inventory ip, ITerminalHost host) {
         super(menuType, id, ip, host, ETMenuType.UNITED_TERMINAL, ExtendedCraftingConfig.INSTANCE.getUltimateConfig());
@@ -73,8 +75,10 @@ public class UnitedTerminalMenu extends ETTerminalBaseMenu<Recipe<?>> {
         this.addSlot(this.outputSlot = createOutputSlot(host.getInventory(), craftingGridInv),
                 this.menuType.getSlotSemanticResult());
 
+        registerClientAction(ACTION_REMEMBER_RECIPE_TYPE, Boolean.class, this::setRememberRecipeType);
         registerClientAction(ACTION_SELECT_NEXT_RECIPE_KIND, this::selectNextRecipeKind);
         registerClientAction(ACTION_SELECT_PREVIOUS_RECIPE_KIND, this::selectPreviousRecipeKind);
+        loadSavedRecipeKind();
         updateCurrentRecipeAndOutput(true);
     }
 
@@ -206,9 +210,45 @@ public class UnitedTerminalMenu extends ETTerminalBaseMenu<Recipe<?>> {
             return;
         }
         this.selectedRecipeKind = selectedRecipeKind;
+        saveSelectedRecipeKind(selectedRecipeKind);
         this.currentUnitedRecipe = null;
         this.lastUnitedItems = null;
         updateCurrentRecipeAndOutput(true);
+    }
+
+    private void loadSavedRecipeKind() {
+        if (!(getHost() instanceof IUnitedTerminalHost host) || !host.shouldRememberRecipeType()) {
+            return;
+        }
+
+        var remembered = host.getLastRecipeKind();
+        if (remembered != null && remembered.isActive()) {
+            this.selectedRecipeKind = remembered;
+        }
+    }
+
+    private void saveSelectedRecipeKind(UnitedRecipeKind recipeKind) {
+        if (!isClientSide() && getHost() instanceof IUnitedTerminalHost host && host.shouldRememberRecipeType()) {
+            host.setLastRecipeKind(recipeKind);
+        }
+    }
+
+    public boolean rememberRecipeType() {
+        return !(getHost() instanceof IUnitedTerminalHost host) || host.shouldRememberRecipeType();
+    }
+
+    public void setRememberRecipeType(boolean remember) {
+        if (isClientSide()) {
+            sendClientAction(ACTION_REMEMBER_RECIPE_TYPE, remember);
+            return;
+        }
+
+        if (getHost() instanceof IUnitedTerminalHost host) {
+            host.setRememberRecipeType(remember);
+            if (remember) {
+                host.setLastRecipeKind(getSelectedRecipeKind());
+            }
+        }
     }
 
     public void selectNextRecipeKind() {
@@ -237,7 +277,8 @@ public class UnitedTerminalMenu extends ETTerminalBaseMenu<Recipe<?>> {
             return;
         }
         var values = getActiveRecipeKinds();
-        this.selectedRecipeKind = values.isEmpty() ? UnitedRecipeKind.EXTENDED_CRAFTING_ULTIMATE : values.get(0);
+        this.selectedRecipeKind = values.isEmpty() ? UnitedRecipeKind.VANILLA : values.get(0);
+        saveSelectedRecipeKind(this.selectedRecipeKind);
     }
 
     public static List<UnitedRecipeKind> getActiveRecipeKinds() {
@@ -257,14 +298,14 @@ public class UnitedTerminalMenu extends ETTerminalBaseMenu<Recipe<?>> {
         }
         var level = getPlayer().level();
         return switch (kind.family()) {
-            case EXTENDED_CRAFTING -> findExtendedCraftingRecipe(level, items, kind);
-            case AVARITIA_NEO -> findAvaritiaNeoRecipe(level, items, kind);
-            case RE_AVARITIA -> findReAvaritiaRecipe(level, items, kind);
+            case VANILLA -> findVanillaRecipe(level, items, kind);
+            case EXTENDED_CRAFTING -> ExtendedCraftingLookup.findRecipe(this, level, items, kind);
+            case AVARITIA_NEO -> AvaritiaNeoLookup.findRecipe(this, level, items, kind);
+            case RE_AVARITIA -> ReAvaritiaLookup.findRecipe(this, level, items, kind);
         };
     }
 
-    public CraftingContainer createTableInput(List<ItemStack> items, @Nullable ITableRecipe recipe) {
-        int side = getInputSideLength(recipe);
+    public CraftingContainer createTableInput(List<ItemStack> items, int side) {
         int offset = Math.floorDiv(this.menuType.getGridSideLength() - side, 2);
         var positioned = NonNullList.withSize(side * side, ItemStack.EMPTY);
         for (int y = 0; y < side; y++) {
@@ -279,60 +320,59 @@ public class UnitedTerminalMenu extends ETTerminalBaseMenu<Recipe<?>> {
         return new TransientCraftingContainer(this, side, side, positioned);
     }
 
-    protected int getInputSideLength(@Nullable ITableRecipe recipe) {
-        if (recipe == null) {
-            return this.menuType.getGridSideLength();
-        }
-        return recipe.getTier() * 2 + 1;
-    }
-
     @Nullable
-    private UnitedRecipe findExtendedCraftingRecipe(Level level, List<ItemStack> items, UnitedRecipeKind kind) {
-        for (var recipe : level.getRecipeManager().getAllRecipesFor(ModRecipeTypes.TABLE.get())) {
-            if (!canCraftExtendedCraftingRecipeInKind(recipe, kind)) {
-                continue;
-            }
-            var input = createTableInput(items, recipe);
-            if (recipe.matches(input, level)) {
+    private UnitedRecipe findVanillaRecipe(Level level, List<ItemStack> items, UnitedRecipeKind kind) {
+        int centerOffset = Math.floorDiv(this.menuType.getGridSideLength() - 3, 2);
+        var centeredInput = createVanillaInput(items, centerOffset, centerOffset);
+        var sequentialInput = createVanillaSequentialInput(items);
+
+        for (CraftingRecipe recipe : level.getRecipeManager().getAllRecipesFor(RecipeType.CRAFTING)) {
+            var input = recipe instanceof ShapedRecipe
+                    ? centeredInput
+                    : sequentialInput;
+            if (input != null && recipe.matches(input, level)) {
                 return new UnitedRecipe(this, kind, recipe, input);
             }
         }
         return null;
     }
 
-    private static boolean canCraftExtendedCraftingRecipeInKind(ITableRecipe recipe, UnitedRecipeKind kind) {
-        int recipeTier = recipe.getTier();
-        if (recipe.hasRequiredTier()) {
-            return recipeTier == kind.tier();
-        }
-        return recipeTier <= kind.tier();
-    }
-
     @Nullable
-    private UnitedRecipe findAvaritiaNeoRecipe(Level level, List<ItemStack> items, UnitedRecipeKind kind) {
-        try {
-            var input = createFullGridInput(items);
-            return level.getRecipeManager().getRecipeFor(AvaritiaRecipes.EXTREME_CRAFTING.get(), input, level)
-                    .map(recipe -> new UnitedRecipe(this, kind, recipe, input))
-                    .orElse(null);
-        } catch (LinkageError ignored) {
-            return null;
-        }
-    }
+    private CraftingContainer createVanillaInput(List<ItemStack> items, int left, int top) {
+        int side = 3;
+        var positioned = NonNullList.withSize(side * side, ItemStack.EMPTY);
+        for (int y = 0; y < this.menuType.getGridSideLength(); y++) {
+            for (int x = 0; x < this.menuType.getGridSideLength(); x++) {
+                int source = y * this.menuType.getGridSideLength() + x;
+                if (source >= items.size()) {
+                    continue;
+                }
 
-    @Nullable
-    private UnitedRecipe findReAvaritiaRecipe(Level level, List<ItemStack> items, UnitedRecipeKind kind) {
-        try {
-            var input = createTierGridInput(items, kind.tier());
-            for (var recipe : level.getRecipeManager().getAllRecipesFor(committee.nova.mods.avaritia.init.registry.ModRecipeTypes.CRAFTING_TABLE_RECIPE.get())) {
-                if (recipe.getTier() == kind.tier() && recipe.matches(input, level)) {
-                    return new UnitedRecipe(this, kind, recipe, input);
+                var item = items.get(source);
+                boolean inside = x >= left && x < left + side && y >= top && y < top + side;
+                if (inside) {
+                    positioned.set((y - top) * side + (x - left), item.copy());
+                } else if (!item.isEmpty()) {
+                    return null;
                 }
             }
-            return null;
-        } catch (LinkageError ignored) {
-            return null;
         }
+        return new TransientCraftingContainer(this, side, side, positioned);
+    }
+
+    @Nullable
+    private CraftingContainer createVanillaSequentialInput(List<ItemStack> items) {
+        int size = 3 * 3;
+        var positioned = NonNullList.withSize(size, ItemStack.EMPTY);
+        for (int i = 0; i < items.size(); i++) {
+            var item = items.get(i);
+            if (i < size) {
+                positioned.set(i, item.copy());
+            } else if (!item.isEmpty()) {
+                return null;
+            }
+        }
+        return new TransientCraftingContainer(this, 3, 3, positioned);
     }
 
     private CraftingContainer createTierGridInput(List<ItemStack> items, int tier) {
@@ -359,6 +399,83 @@ public class UnitedTerminalMenu extends ETTerminalBaseMenu<Recipe<?>> {
         return new TransientCraftingContainer(this, menuType.getGridSideLength(), menuType.getGridSideLength(), positioned);
     }
 
+    @ExtendedCrafting
+    private static final class ExtendedCraftingLookup {
+        private ExtendedCraftingLookup() {
+        }
+
+        @Nullable
+        private static UnitedRecipe findRecipe(UnitedTerminalMenu menu, Level level, List<ItemStack> items,
+                                               UnitedRecipeKind kind) {
+            try {
+                for (var recipe : level.getRecipeManager()
+                        .getAllRecipesFor(com.blakebr0.extendedcrafting.init.ModRecipeTypes.TABLE.get())) {
+                    if (!canCraftInKind(recipe, kind)) {
+                        continue;
+                    }
+                    var input = menu.createTableInput(items, recipe.getTier() * 2 + 1);
+                    if (recipe.matches(input, level)) {
+                        return new UnitedRecipe(menu, kind, recipe, input);
+                    }
+                }
+                return null;
+            } catch (LinkageError ignored) {
+                return null;
+            }
+        }
+
+        private static boolean canCraftInKind(com.blakebr0.extendedcrafting.api.crafting.ITableRecipe recipe,
+                                              UnitedRecipeKind kind) {
+            int recipeTier = recipe.getTier();
+            if (recipe.hasRequiredTier()) {
+                return recipeTier == kind.tier();
+            }
+            return recipeTier <= kind.tier();
+        }
+    }
+
+    @AvaritiaNeo
+    private static final class AvaritiaNeoLookup {
+        private AvaritiaNeoLookup() {
+        }
+
+        @Nullable
+        private static UnitedRecipe findRecipe(UnitedTerminalMenu menu, Level level, List<ItemStack> items,
+                                               UnitedRecipeKind kind) {
+            try {
+                var input = menu.createFullGridInput(items);
+                return level.getRecipeManager().getRecipeFor(net.byAqua3.avaritia.loader.AvaritiaRecipes.EXTREME_CRAFTING.get(), input, level)
+                        .map(recipe -> new UnitedRecipe(menu, kind, recipe, input))
+                        .orElse(null);
+            } catch (LinkageError ignored) {
+                return null;
+            }
+        }
+    }
+
+    @ReAvaritia
+    private static final class ReAvaritiaLookup {
+        private ReAvaritiaLookup() {
+        }
+
+        @Nullable
+        private static UnitedRecipe findRecipe(UnitedTerminalMenu menu, Level level, List<ItemStack> items,
+                                               UnitedRecipeKind kind) {
+            try {
+                var input = menu.createTierGridInput(items, kind.tier());
+                for (var recipe : level.getRecipeManager()
+                        .getAllRecipesFor(committee.nova.mods.avaritia.init.registry.ModRecipeTypes.CRAFTING_TABLE_RECIPE.get())) {
+                    if (recipe.getTier() == kind.tier() && recipe.matches(input, level)) {
+                        return new UnitedRecipe(menu, kind, recipe, input);
+                    }
+                }
+                return null;
+            } catch (LinkageError ignored) {
+                return null;
+            }
+        }
+    }
+
     @Override
     public void doAction(ServerPlayer player, InventoryAction action, int slot, long id) {
         if (this.getSlot(slot) instanceof UnitedCraftingTerminalSlot craftingSlot) {
@@ -375,6 +492,7 @@ public class UnitedTerminalMenu extends ETTerminalBaseMenu<Recipe<?>> {
     }
 
     public enum UnitedRecipeKind {
+        VANILLA("vanilla", RecipeFamily.VANILLA, null, -1, ETTranslationKey.BLOCK.MINECRAFT_CRAFTING_TABLE, "minecraft", "crafting_table"),
         EXTENDED_CRAFTING_BASIC("extended_crafting/basic", RecipeFamily.EXTENDED_CRAFTING, ExtendedCrafting.class, 1, ETTranslationKey.BLOCK.EXTENDED_CRAFTING_BASIC, "extendedcrafting", "basic_table"),
         EXTENDED_CRAFTING_ADVANCED("extended_crafting/advanced", RecipeFamily.EXTENDED_CRAFTING, ExtendedCrafting.class, 2, ETTranslationKey.BLOCK.EXTENDED_CRAFTING_ADVANCED, "extendedcrafting", "advanced_table"),
         EXTENDED_CRAFTING_ELITE("extended_crafting/elite", RecipeFamily.EXTENDED_CRAFTING, ExtendedCrafting.class, 3, ETTranslationKey.BLOCK.EXTENDED_CRAFTING_ELITE, "extendedcrafting", "elite_table"),
@@ -450,6 +568,7 @@ public class UnitedTerminalMenu extends ETTerminalBaseMenu<Recipe<?>> {
     }
 
     public enum RecipeFamily {
+        VANILLA,
         EXTENDED_CRAFTING,
         AVARITIA_NEO,
         RE_AVARITIA

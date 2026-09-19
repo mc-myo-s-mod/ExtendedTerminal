@@ -14,6 +14,7 @@ public final class ExtendedCraftingConfig implements IETConfig {
     private static final TerminalConfigEntry ELITE_ENTRY;
     private static final TerminalConfigEntry ULTIMATE_ENTRY;
     private static final TerminalConfigEntry EPIC_ENTRY;
+    private static final TerminalConfigEntry LEGENDARY_ENTRY;
 
     public final static ExtendedCraftingConfig INSTANCE;
 
@@ -24,6 +25,7 @@ public final class ExtendedCraftingConfig implements IETConfig {
         ELITE_ENTRY = TerminalConfigEntry.instantCreate(BUILDER, "Elite Crafting Terminal", 1);
         ULTIMATE_ENTRY = TerminalConfigEntry.instantCreate(BUILDER, "Ultimate Crafting Terminal", 1);
         EPIC_ENTRY = TerminalConfigEntry.instantCreate(BUILDER, "Epic Crafting Terminal", 1);
+        LEGENDARY_ENTRY = TerminalConfigEntry.instantCreate(BUILDER, "Legendary Crafting Terminal", 1);
         BUILDER.pop();
         COMMON = BUILDER.build();
         INSTANCE = new ExtendedCraftingConfig();
@@ -34,6 +36,7 @@ public final class ExtendedCraftingConfig implements IETConfig {
     private IETTerminalConfig elite;
     private IETTerminalConfig ultimate;
     private IETTerminalConfig epic;
+    private IETTerminalConfig legendary;
 
     public void bake() {
         this.basic = BASIC_ENTRY.bake();
@@ -41,6 +44,7 @@ public final class ExtendedCraftingConfig implements IETConfig {
         this.elite = ELITE_ENTRY.bake();
         this.ultimate = ULTIMATE_ENTRY.bake();
         this.epic = EPIC_ENTRY.bake();
+        this.legendary = LEGENDARY_ENTRY.bake();
     }
 
     private ExtendedCraftingConfig() {
@@ -63,4 +67,6 @@ public final class ExtendedCraftingConfig implements IETConfig {
     }
 
     public IETTerminalConfig getEpicConfig() { return this.epic; }
+
+    public IETTerminalConfig getLegendaryConfig() { return this.legendary; }
 }

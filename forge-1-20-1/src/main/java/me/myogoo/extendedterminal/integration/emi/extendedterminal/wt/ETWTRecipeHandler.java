@@ -7,6 +7,7 @@ import me.myogoo.extendedterminal.integration.emi.extendedterminal.handler.panel
 import me.myogoo.extendedterminal.integration.emi.extendedterminal.handler.panel.ETSmithingRecipeHandler;
 import me.myogoo.extendedterminal.integration.emi.extendedterminal.handler.panel.ETStonecutterRecipeHandler;
 import me.myogoo.extendedterminal.menu.extendedterminal.wt.ETWTMenu;
+import me.myogoo.extendedterminal.menu.extendedcrafting.wt.UnitedWTMenu;
 import me.myogoo.myotus.api.annotation.MyotusSubscriber;
 import me.myogoo.myotus.api.annotation.mods.AE2WTLib;
 
@@ -19,5 +20,6 @@ public class ETWTRecipeHandler {
         registry.addRecipeHandler(ETWTMenu.TYPE, new ETCraftingRecipeHandler<>(ETWTMenu.class));
         registry.addRecipeHandler(ETWTMenu.TYPE, new ETSmithingRecipeHandler<>(ETWTMenu.class));
         registry.addRecipeHandler(ETWTMenu.TYPE, new ETStonecutterRecipeHandler<>(ETWTMenu.class));
+        registry.addRecipeHandler(UnitedWTMenu.TYPE, new ETCraftingRecipeHandler<>(UnitedWTMenu.class));
     }
 }

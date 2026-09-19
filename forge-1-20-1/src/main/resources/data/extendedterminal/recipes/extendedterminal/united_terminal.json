@@ -1,0 +1,48 @@
+{
+  "type": "forge:conditional",
+  "recipes": [
+    {
+      "conditions": [
+        {
+          "type": "forge:not",
+          "value": {
+            "type": "myotus:mod_condition",
+            "active_mod": "re-avaritia"
+          }
+        },
+        {
+          "type": "forge:not",
+          "value": {
+            "type": "myotus:mod_condition",
+            "active_mod": "avaritia-neo"
+          }
+        },
+        {
+          "type": "forge:not",
+          "value": {
+            "type": "myotus:mod_condition",
+            "active_mod": "extendedcrafting"
+          }
+        }
+      ],
+      "recipe": {
+        "type": "minecraft:crafting_shapeless",
+        "ingredients": [
+          {
+            "item": "minecraft:crafting_table"
+          },
+          {
+            "item": "myotus:compat_processor"
+          },
+          {
+            "item": "ae2:dense_energy_cell"
+          }
+        ],
+        "result": {
+          "count": 1,
+          "item": "extendedterminal:united_terminal"
+        }
+      }
+    }
+  ]
+}

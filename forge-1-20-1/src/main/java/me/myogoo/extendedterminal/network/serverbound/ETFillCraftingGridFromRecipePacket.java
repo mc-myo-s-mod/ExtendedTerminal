@@ -33,6 +33,8 @@ import java.util.*;
 
 public class ETFillCraftingGridFromRecipePacket extends FillRecipeBasePacket implements IMyotusPacket {
     public static final int NOT_SET_RECIPE_SIZE = -1;
+    private static final int UNITED_GRID_SIZE = 81;
+    private static final int MAX_RECIPE_KIND_NAME_LENGTH = 32;
 
     private final @Nullable ResourceLocation recipeId;
     private final List<ItemStack> ingredientTemplates;
@@ -57,9 +59,14 @@ public class ETFillCraftingGridFromRecipePacket extends FillRecipeBasePacket imp
         recipeHeight = stream.readInt();
         UnitedTerminalMenu.UnitedRecipeKind decodedKind = null;
         if (stream.readBoolean()) {
-            decodedKind = UnitedTerminalMenu.UnitedRecipeKind.bySerializedName(stream.readUtf());
+            var serializedName = stream.readUtf(MAX_RECIPE_KIND_NAME_LENGTH);
+            decodedKind = UnitedTerminalMenu.UnitedRecipeKind.bySerializedName(serializedName);
+            if (decodedKind == null) {
+                throw new IllegalArgumentException("Unknown United recipe kind: " + serializedName);
+            }
         }
         unitedRecipeKind = decodedKind;
+        validateUnitedTransfer(unitedRecipeKind, ingredientTemplates.size(), recipeWidth, recipeHeight);
     }
 
 
@@ -81,6 +88,7 @@ public class ETFillCraftingGridFromRecipePacket extends FillRecipeBasePacket imp
             int recipeHeight,
             @Nullable UnitedTerminalMenu.UnitedRecipeKind unitedRecipeKind
     ) {
+        validateUnitedTransfer(unitedRecipeKind, ingredientTemplates.size(), recipeWidth, recipeHeight);
         this.recipeId = recipeId;
         this.ingredientTemplates = List.copyOf(ingredientTemplates);
         this.craftMissing = craftMissing;
@@ -107,7 +115,7 @@ public class ETFillCraftingGridFromRecipePacket extends FillRecipeBasePacket imp
         stream.writeInt(this.recipeHeight);
         stream.writeBoolean(this.unitedRecipeKind != null);
         if (this.unitedRecipeKind != null) {
-            stream.writeUtf(this.unitedRecipeKind.serializedName());
+            stream.writeUtf(this.unitedRecipeKind.serializedName(), MAX_RECIPE_KIND_NAME_LENGTH);
         }
     }
 
@@ -127,8 +135,14 @@ public class ETFillCraftingGridFromRecipePacket extends FillRecipeBasePacket imp
             // Server might have closed the menu before the client-packet is processed. This is not an error.
             return;
         }
-        if (unitedRecipeKind != null && menu instanceof UnitedTerminalMenu unitedMenu) {
+        if (unitedRecipeKind != null) {
+            if (!(menu instanceof UnitedTerminalMenu unitedMenu) || !unitedRecipeKind.isActive()) {
+                return;
+            }
             unitedMenu.setSelectedRecipeKind(unitedRecipeKind);
+            if (unitedMenu.getSelectedRecipeKind() != unitedRecipeKind) {
+                return;
+            }
         }
 
         @Nullable
@@ -248,5 +262,19 @@ public class ETFillCraftingGridFromRecipePacket extends FillRecipeBasePacket imp
             recipe = player.level().getRecipeManager().byKey(this.recipeId).orElse(null);
         }
         return ETRecipeTransferPlanner.desiredIngredients(recipe, ingredientTemplates, recipeWidth, recipeHeight);
+    }
+
+    private static void validateUnitedTransfer(@Nullable UnitedTerminalMenu.UnitedRecipeKind recipeKind,
+            int ingredientTemplateCount, int recipeWidth, int recipeHeight) {
+        if (recipeKind == null) {
+            return;
+        }
+        if (ingredientTemplateCount != UNITED_GRID_SIZE) {
+            throw new IllegalArgumentException("United recipe transfer requires exactly 81 ingredient templates");
+        }
+        if ((recipeWidth != NOT_SET_RECIPE_SIZE && (recipeWidth < 1 || recipeWidth > 9))
+                || (recipeHeight != NOT_SET_RECIPE_SIZE && (recipeHeight < 1 || recipeHeight > 9))) {
+            throw new IllegalArgumentException("United recipe transfer dimensions must be between 1 and 9");
+        }
     }
 }

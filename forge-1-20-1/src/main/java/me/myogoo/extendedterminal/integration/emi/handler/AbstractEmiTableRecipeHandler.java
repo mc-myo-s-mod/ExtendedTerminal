@@ -128,6 +128,15 @@ public abstract class AbstractEmiTableRecipeHandler<T extends ETTerminalBaseMenu
         return result;
     }
 
+    @Nullable
+    protected Recipe<?> resolveBackingRecipe(EmiRecipe recipe) {
+        var backingRecipe = recipe.getBackingRecipe();
+        if (backingRecipe != null || recipe.getId() == null || Minecraft.getInstance().level == null) {
+            return backingRecipe;
+        }
+        return Minecraft.getInstance().level.getRecipeManager().byKey(recipe.getId()).orElse(null);
+    }
+
     @Override
     public boolean craft(EmiRecipe recipe, EmiCraftContext<T> context) {
         return transferRecipe(recipe, context, true).canCraft();
@@ -424,7 +433,9 @@ public abstract class AbstractEmiTableRecipeHandler<T extends ETTerminalBaseMenu
         }
 
         ETAutoCraftingWatcher.INSTANCE.preparePending(menu, getGuiSlotToIngredientMap(menu, recipe), craftMissing);
-        var message = new ETFillCraftingGridFromRecipePacket(recipe.recipeId(), templateItems, craftMissing, recipeWidth, recipeHeight, unitedRecipeKind);
+        var transferRecipeId = unitedRecipeKind == null ? recipe.recipeId() : recipeId;
+        var message = new ETFillCraftingGridFromRecipePacket(transferRecipeId, templateItems, craftMissing,
+                recipeWidth, recipeHeight, unitedRecipeKind);
         MyotusAPI.network().sendToServer(message);
     }
 

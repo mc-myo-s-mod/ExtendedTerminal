@@ -1,0 +1,101 @@
+{
+  "includes": [
+    "../terminals/terminal.json"
+  ],
+  "slots": {
+    "LEGENDARY_CRAFTING_GRID": {
+      "left": 8,
+      "bottom": 331
+    },
+    "LEGENDARY_CRAFTING_RESULT": {
+      "left": 278,
+      "bottom": 224
+    },
+    "PLAYER_ARMOR": {
+      "left": -16,
+      "bottom": 81,
+      "grid": "VERTICAL"
+    },
+    "PLAYER_INVENTORY": {
+      "left": 44,
+      "bottom": 81,
+      "grid": "BREAK_AFTER_9COLS"
+    },
+    "PLAYER_HOTBAR": {
+      "left": 44,
+      "bottom": 23,
+      "grid": "HORIZONTAL"
+    }
+  },
+  "text": {
+    "dialog_title": {
+      "text": {
+        "translate": "gui.ae2.Terminal"
+      },
+      "position": {
+        "left": 8,
+        "top": 6
+      }
+    },
+    "crafting_grid_title": {
+      "text": {
+        "translate": "gui.extendedterminal.legendaryTerminal"
+      },
+      "position": {
+        "left": 8,
+        "bottom": 343
+      }
+    },
+    "player_inventory_title": {
+      "text": {
+        "translate": "container.inventory"
+      },
+      "position": {
+        "left": 44,
+        "bottom": 92
+      }
+    }
+  },
+  "terminalStyle": {
+    "header": {
+      "texture": "guis/epic_terminal.png",
+      "textureWidth": 512,
+      "textureHeight": 512,
+      "srcRect": [0, 0, 195, 17]
+    },
+    "firstRow": {
+      "texture": "guis/epic_terminal.png",
+      "textureWidth": 512,
+      "textureHeight": 512,
+      "srcRect": [0, 17, 195, 18]
+    },
+    "row": {
+      "texture": "guis/epic_terminal.png",
+      "textureWidth": 512,
+      "textureHeight": 512,
+      "srcRect": [0, 35, 195, 18]
+    },
+    "lastRow": {
+      "texture": "guis/epic_terminal.png",
+      "textureWidth": 512,
+      "textureHeight": 512,
+      "srcRect": [0, 53, 195, 18]
+    },
+    "bottom": {
+      "texture": "extendedcrafting:textures/gui/legendary_table.png",
+      "textureWidth": 512,
+      "textureHeight": 512,
+      "srcRect": [0, 0, 305, 349]
+    }
+  },
+  "widgets": {
+    "clearCraftingGrid": {
+      "left": 260,
+      "bottom": 81
+    },
+    "clearToPlayerInv": {
+      "left": 250,
+      "bottom": 81
+    }
+  }
+}
