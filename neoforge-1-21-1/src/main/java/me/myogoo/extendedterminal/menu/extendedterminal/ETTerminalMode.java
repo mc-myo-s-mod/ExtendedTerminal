@@ -2,16 +2,12 @@ package me.myogoo.extendedterminal.menu.extendedterminal;
 
 import appeng.menu.SlotSemantic;
 import appeng.menu.SlotSemantics;
-import me.myogoo.extendedterminal.ExtendedTerminal;
 import me.myogoo.extendedterminal.config.ExtendedTerminalConfig;
 import me.myogoo.extendedterminal.menu.ETMenuType;
 import me.myogoo.extendedterminal.menu.ETSlotSemantics;
 import me.myogoo.extendedterminal.part.extendedterminal.ETTerminalPart;
-import me.myogoo.myotus.api.MyotusAPI;
 import net.minecraft.resources.ResourceLocation;
 
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.List;
 
@@ -28,20 +24,7 @@ public enum ETTerminalMode {
     }
 
     public boolean canLoad() {
-        try {
-            Field field = ETTerminalMode.class.getField(this.name());
-            if (field.getDeclaredAnnotations().length == 0) {
-                return this.enabled;
-            }
-            return Arrays.stream(field.getDeclaredAnnotations())
-                    .map(Annotation::annotationType)
-                    .allMatch(a -> MyotusAPI.get().integrations().isLoaded(a)) && this.enabled;
-
-        } catch (NoSuchFieldException e) {
-            ExtendedTerminal.LOGGER.error("Terminal Mode {} is not loaded due to missing field in ETTerminalMode",
-                    this.name());
-        }
-        return false;
+        return this.enabled;
     }
 
     public ResourceLocation getInventoryId() {

@@ -8,9 +8,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.neoforged.fml.common.asm.enumextension.ExtensionInfo;
 import net.neoforged.fml.common.asm.enumextension.IExtensibleEnum;
 
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Field;
-import java.util.Arrays;
 import me.myogoo.extendedterminal.api.annotation.AvaritiaNeo;
 import me.myogoo.extendedterminal.api.annotation.ExtendedCrafting;
 import me.myogoo.extendedterminal.api.annotation.ReAvaritia;
@@ -101,18 +98,14 @@ public enum ETMenuType implements IExtensibleEnum {
     }
 
     public boolean canLoad() {
-        try {
-            Field field = ETMenuType.class.getField(this.name());
-            if (field.getDeclaredAnnotations().length == 0) {
-                return true; // No annotations means it can be loaded by default
-            }
-            return Arrays.stream(field.getDeclaredAnnotations())
-                    .map(Annotation::annotationType)
-                    .allMatch(a -> MyotusAPI.get().integrations().isLoaded(a));
-        } catch (NoSuchFieldException e) {
-            ExtendedTerminal.LOGGER.error("Menu type {} is not loaded due to missing field in ETMenuType", this.name());
-        }
-        return false;
+        return switch (this) {
+            case BASIC_TERMINAL, ADVANCED_TERMINAL, ELITE_TERMINAL, ULTIMATE_TERMINAL ->
+                    MyotusAPI.get().integrations().isLoaded(ExtendedCrafting.class);
+            case SCULK_TERMINAL, NETHER_TERMINAL, END_TERMINAL, EXTREME_TERMINAL ->
+                    MyotusAPI.get().integrations().isLoaded(ReAvaritia.class);
+            case NEO_EXTREME_TERMINAL -> MyotusAPI.get().integrations().isLoaded(AvaritiaNeo.class);
+            default -> true;
+        };
     }
 
     public static ExtensionInfo getExtensionInfo() {

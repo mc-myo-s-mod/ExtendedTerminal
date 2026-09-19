@@ -15,6 +15,8 @@ import me.myogoo.myotus.api.annotation.mods.AE2WTLib;
 public class ETWTRecipeCategory {
     @MyotusSubscriber
     public static void init(EmiRegistry registry) {
+        registry.addWorkstation(VanillaEmiRecipeCategories.CRAFTING,
+                EmiStack.of(WTItems.WIRELESS_UNITED_TERMINAL));
         registry.addWorkstation(VanillaEmiRecipeCategories.CRAFTING, EmiStack.of(WTItems.WIRELESS_ET_TERMINAL));
         registry.addWorkstation(VanillaEmiRecipeCategories.SMITHING, EmiStack.of(WTItems.WIRELESS_ET_TERMINAL));
         registry.addWorkstation(VanillaEmiRecipeCategories.ANVIL_REPAIRING, EmiStack.of(WTItems.WIRELESS_ET_TERMINAL));

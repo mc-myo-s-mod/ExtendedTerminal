@@ -12,8 +12,12 @@ import me.myogoo.extendedterminal.menu.avaritiaRe.EndTerminalMenu;
 import me.myogoo.extendedterminal.menu.avaritiaRe.ExtremeTerminalMenu;
 import me.myogoo.extendedterminal.menu.avaritiaRe.NetherTerminalMenu;
 import me.myogoo.extendedterminal.menu.avaritiaRe.SculkTerminalMenu;
+import me.myogoo.extendedterminal.menu.extendedcrafting.wt.UnitedWTMenu;
 import me.myogoo.extendedterminal.menu.extendedterminal.MyoRecipeType;
+import me.myogoo.extendedterminal.menu.extendedterminal.UnitedTerminalMenu;
+import me.myogoo.myotus.api.MyotusAPI;
 import me.myogoo.myotus.api.annotation.MyotusSubscriber;
+import me.myogoo.myotus.api.annotation.mods.AE2WTLib;
 import mezz.jei.api.registration.IRecipeTransferRegistration;
 import me.myogoo.extendedterminal.api.annotation.ReAvaritia;
 
@@ -29,9 +33,15 @@ public class AVRecipeTransferHandler {
         registration.addRecipeTransferHandler(new AVJeiRecipeTransferHandler<>(NetherTerminalMenu.class, NetherTerminalMenu.TYPE, NetherCraftingTableCategory.RECIPE_TYPE, helper), NetherCraftingTableCategory.RECIPE_TYPE);
         registration.addRecipeTransferHandler(new AVJeiRecipeTransferHandler<>(EndTerminalMenu.class, EndTerminalMenu.TYPE, EndCraftingTableCategory.RECIPE_TYPE, helper), EndCraftingTableCategory.RECIPE_TYPE);
         registration.addRecipeTransferHandler(new AVJeiRecipeTransferHandler<>(ExtremeTerminalMenu.class, ExtremeTerminalMenu.TYPE, ExtremeCraftingTableCategory.RECIPE_TYPE, helper), ExtremeCraftingTableCategory.RECIPE_TYPE);
-        registration.addRecipeTransferHandler(new AVJeiUnitedRecipeTransferHandler(SculkCraftingTableCategory.RECIPE_TYPE, helper, MyoRecipeType.SCULK), SculkCraftingTableCategory.RECIPE_TYPE);
-        registration.addRecipeTransferHandler(new AVJeiUnitedRecipeTransferHandler(NetherCraftingTableCategory.RECIPE_TYPE, helper, MyoRecipeType.Nether), NetherCraftingTableCategory.RECIPE_TYPE);
-        registration.addRecipeTransferHandler(new AVJeiUnitedRecipeTransferHandler(EndCraftingTableCategory.RECIPE_TYPE, helper, MyoRecipeType.END), EndCraftingTableCategory.RECIPE_TYPE);
-        registration.addRecipeTransferHandler(new AVJeiUnitedRecipeTransferHandler(ExtremeCraftingTableCategory.RECIPE_TYPE, helper, MyoRecipeType.EXTREME), ExtremeCraftingTableCategory.RECIPE_TYPE);
+        registration.addRecipeTransferHandler(new AVJeiUnitedRecipeTransferHandler<>(UnitedTerminalMenu.class, UnitedTerminalMenu.TYPE, SculkCraftingTableCategory.RECIPE_TYPE, helper, MyoRecipeType.SCULK), SculkCraftingTableCategory.RECIPE_TYPE);
+        registration.addRecipeTransferHandler(new AVJeiUnitedRecipeTransferHandler<>(UnitedTerminalMenu.class, UnitedTerminalMenu.TYPE, NetherCraftingTableCategory.RECIPE_TYPE, helper, MyoRecipeType.Nether), NetherCraftingTableCategory.RECIPE_TYPE);
+        registration.addRecipeTransferHandler(new AVJeiUnitedRecipeTransferHandler<>(UnitedTerminalMenu.class, UnitedTerminalMenu.TYPE, EndCraftingTableCategory.RECIPE_TYPE, helper, MyoRecipeType.END), EndCraftingTableCategory.RECIPE_TYPE);
+        registration.addRecipeTransferHandler(new AVJeiUnitedRecipeTransferHandler<>(UnitedTerminalMenu.class, UnitedTerminalMenu.TYPE, ExtremeCraftingTableCategory.RECIPE_TYPE, helper, MyoRecipeType.EXTREME), ExtremeCraftingTableCategory.RECIPE_TYPE);
+        if (MyotusAPI.integrations().isLoaded(AE2WTLib.class)) {
+            registration.addRecipeTransferHandler(new AVJeiUnitedRecipeTransferHandler<>(UnitedWTMenu.class, UnitedWTMenu.TYPE, SculkCraftingTableCategory.RECIPE_TYPE, helper, MyoRecipeType.SCULK), SculkCraftingTableCategory.RECIPE_TYPE);
+            registration.addRecipeTransferHandler(new AVJeiUnitedRecipeTransferHandler<>(UnitedWTMenu.class, UnitedWTMenu.TYPE, NetherCraftingTableCategory.RECIPE_TYPE, helper, MyoRecipeType.Nether), NetherCraftingTableCategory.RECIPE_TYPE);
+            registration.addRecipeTransferHandler(new AVJeiUnitedRecipeTransferHandler<>(UnitedWTMenu.class, UnitedWTMenu.TYPE, EndCraftingTableCategory.RECIPE_TYPE, helper, MyoRecipeType.END), EndCraftingTableCategory.RECIPE_TYPE);
+            registration.addRecipeTransferHandler(new AVJeiUnitedRecipeTransferHandler<>(UnitedWTMenu.class, UnitedWTMenu.TYPE, ExtremeCraftingTableCategory.RECIPE_TYPE, helper, MyoRecipeType.EXTREME), ExtremeCraftingTableCategory.RECIPE_TYPE);
+        }
     }
 }

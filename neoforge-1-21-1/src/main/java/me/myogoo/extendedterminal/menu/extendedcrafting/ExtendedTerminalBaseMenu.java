@@ -47,7 +47,7 @@ public class ExtendedTerminalBaseMenu extends TableTerminalBaseMenu<ITableRecipe
         }
 
         var level = getPlayer().level();
-        var castedInput = testInput.cast(TableCraftingInput.class);
+        var castedInput = TableCraftingInput.of(testInput.width(), testInput.height(), testInput.items(), testInput.tier());
         this.currentRecipe = level.getRecipeManager().getRecipeFor(ModRecipeTypes.TABLE.get(), castedInput, level)
                 .orElse(null);
         this.lastTestedInput = testInput;

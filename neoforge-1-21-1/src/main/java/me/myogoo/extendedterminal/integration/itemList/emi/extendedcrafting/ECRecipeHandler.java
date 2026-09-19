@@ -9,9 +9,12 @@ import me.myogoo.extendedterminal.menu.extendedcrafting.AdvancedTerminalMenu;
 import me.myogoo.extendedterminal.menu.extendedcrafting.BasicTerminalMenu;
 import me.myogoo.extendedterminal.menu.extendedcrafting.EliteTerminalMenu;
 import me.myogoo.extendedterminal.menu.extendedcrafting.UltimateTerminalMenu;
+import me.myogoo.extendedterminal.menu.extendedcrafting.wt.UnitedWTMenu;
 import me.myogoo.extendedterminal.menu.extendedterminal.MyoRecipeType;
 import me.myogoo.extendedterminal.menu.extendedterminal.UnitedTerminalMenu;
+import me.myogoo.myotus.api.MyotusAPI;
 import me.myogoo.myotus.api.annotation.MyotusSubscriber;
+import me.myogoo.myotus.api.annotation.mods.AE2WTLib;
 
 import static me.myogoo.extendedterminal.integration.itemList.emi.extendedcrafting.ECWorkStation.*;
 import me.myogoo.extendedterminal.api.annotation.ExtendedCrafting;
@@ -31,6 +34,12 @@ public class ECRecipeHandler {
             registry.addRecipeHandler(UnitedTerminalMenu.TYPE, new ECTerminalRecipeHandler<>(getEmiCategory(ADVANCED_TABLE_CATEGORY_ID), UnitedTerminalMenu.class, ETMenuType.UNITED_TERMINAL, MyoRecipeType.ADVANCED));
             registry.addRecipeHandler(UnitedTerminalMenu.TYPE, new ECTerminalRecipeHandler<>(getEmiCategory(ELITE_TABLE_CATEGORY_ID), UnitedTerminalMenu.class, ETMenuType.UNITED_TERMINAL, MyoRecipeType.ELITE));
             registry.addRecipeHandler(UnitedTerminalMenu.TYPE, new ECTerminalRecipeHandler<>(getEmiCategory(ULTIMATE_TABLE_CATEGORY_ID), UnitedTerminalMenu.class, ETMenuType.UNITED_TERMINAL, MyoRecipeType.ULTIMATE));
+            if (MyotusAPI.integrations().isLoaded(AE2WTLib.class)) {
+                registry.addRecipeHandler(UnitedWTMenu.TYPE, new ECTerminalRecipeHandler<>(getEmiCategory(BASIC_TABLE_CATEGORY_ID), UnitedWTMenu.class, ETMenuType.UNITED_TERMINAL, MyoRecipeType.BASIC));
+                registry.addRecipeHandler(UnitedWTMenu.TYPE, new ECTerminalRecipeHandler<>(getEmiCategory(ADVANCED_TABLE_CATEGORY_ID), UnitedWTMenu.class, ETMenuType.UNITED_TERMINAL, MyoRecipeType.ADVANCED));
+                registry.addRecipeHandler(UnitedWTMenu.TYPE, new ECTerminalRecipeHandler<>(getEmiCategory(ELITE_TABLE_CATEGORY_ID), UnitedWTMenu.class, ETMenuType.UNITED_TERMINAL, MyoRecipeType.ELITE));
+                registry.addRecipeHandler(UnitedWTMenu.TYPE, new ECTerminalRecipeHandler<>(getEmiCategory(ULTIMATE_TABLE_CATEGORY_ID), UnitedWTMenu.class, ETMenuType.UNITED_TERMINAL, MyoRecipeType.ULTIMATE));
+            }
         });
     }
 }

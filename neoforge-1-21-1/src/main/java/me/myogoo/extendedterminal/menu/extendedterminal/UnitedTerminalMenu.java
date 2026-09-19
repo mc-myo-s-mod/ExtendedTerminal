@@ -218,7 +218,7 @@ public class UnitedTerminalMenu extends TableTerminalBaseMenu<Recipe<RecipeInput
 
     @Nullable
     private static MyoTableRecipe findExtendedCraftingRecipe(Level level, MyoTableInput input) {
-        return level.getRecipeManager().getRecipeFor(ModRecipeTypes.TABLE.get(), input.cast(TableCraftingInput.class), level)
+        return level.getRecipeManager().getRecipeFor(ModRecipeTypes.TABLE.get(), TableCraftingInput.of(input.width(), input.height(), input.items(), input.tier()), level)
                 .map(recipe -> MyoTableRecipe.of(recipe.value(), recipe.id()))
                 .orElse(null);
     }
@@ -239,7 +239,7 @@ public class UnitedTerminalMenu extends TableTerminalBaseMenu<Recipe<RecipeInput
 
     @Nullable
     private static MyoTableRecipe findReAvaritiaRecipe(Level level, MyoTableInput input) {
-        return level.getRecipeManager().getRecipeFor(committee.nova.mods.avaritia.init.registry.ModRecipeTypes.CRAFTING_TABLE_RECIPE.get(), input.cast(TierInput.class), level)
+        return level.getRecipeManager().getRecipeFor(committee.nova.mods.avaritia.init.registry.ModRecipeTypes.CRAFTING_TABLE_RECIPE.get(), TierInput.of(input.width(), input.height(), input.items(), input.tier()), level)
                 .map(recipe -> MyoTableRecipe.of(recipe.value(), recipe.id()))
                 .orElse(null);
 

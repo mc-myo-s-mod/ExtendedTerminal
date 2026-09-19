@@ -9,7 +9,10 @@ import me.myogoo.myotus.api.annotation.itemList.jei.JEI;
 import me.myogoo.extendedterminal.config.avaritiaRe.AvaritiaReConfig;
 import me.myogoo.extendedterminal.config.extendedcrafting.ExtendedCraftingConfig;
 import me.myogoo.extendedterminal.init.ETParts;
+import me.myogoo.extendedterminal.init.wt.WTItems;
+import me.myogoo.myotus.api.MyotusAPI;
 import me.myogoo.myotus.api.annotation.MyotusSubscriber;
+import me.myogoo.myotus.api.annotation.mods.AE2WTLib;
 import mezz.jei.api.registration.IRecipeCatalystRegistration;
 import me.myogoo.extendedterminal.api.annotation.ReAvaritia;
 
@@ -31,6 +34,11 @@ public class AVRecipeCatalyst {
         registration.addRecipeCatalyst(ETParts.UNITED_TERMINAL_PART, NetherCraftingTableCategory.RECIPE_TYPE);
         registration.addRecipeCatalyst(ETParts.UNITED_TERMINAL_PART, EndCraftingTableCategory.RECIPE_TYPE);
         registration.addRecipeCatalyst(ETParts.UNITED_TERMINAL_PART, ExtremeCraftingTableCategory.RECIPE_TYPE);
+        if (MyotusAPI.integrations().isLoaded(AE2WTLib.class)) {
+            registration.addRecipeCatalyst(WTItems.WIRELESS_UNITED_TERMINAL,
+                    SculkCraftingTableCategory.RECIPE_TYPE, NetherCraftingTableCategory.RECIPE_TYPE,
+                    EndCraftingTableCategory.RECIPE_TYPE, ExtremeCraftingTableCategory.RECIPE_TYPE);
+        }
 
     }
 }

@@ -96,11 +96,11 @@ abstract class AbstractTableRecipeAdapter implements MyoTableRecipe {
         var annotation = recipeType.getMyomodAnnotation();
 
         if (annotation == ExtendedCrafting.class) {
-            return ((ITableRecipe) this.recipe).getRemainingItems(input.cast(TableCraftingInput.class));
+            return ((ITableRecipe) this.recipe).getRemainingItems(TableCraftingInput.of(input.width(), input.height(), input.items(), input.tier()));
         }
 
         if (annotation == ReAvaritia.class) {
-            return ((ITierCraftingRecipe) this.recipe).getRemainingItems(input.cast(TierInput.class));
+            return ((ITierCraftingRecipe) this.recipe).getRemainingItems(TierInput.of(input.width(), input.height(), input.items(), input.tier()));
         }
 
         if (annotation == AvaritiaNeo.class) {
@@ -120,13 +120,13 @@ abstract class AbstractTableRecipeAdapter implements MyoTableRecipe {
 
         if (annotation == ExtendedCrafting.class) {
             if (this.recipe instanceof ITableRecipe tableRecipe) {
-                return tableRecipe.matches(input.cast(TableCraftingInput.class), level);
+                return tableRecipe.matches(TableCraftingInput.of(input.width(), input.height(), input.items(), input.tier()), level);
             }
         }
 
         if (annotation == ReAvaritia.class) {
             if (this.recipe instanceof ITierCraftingRecipe tableRecipe) {
-                return tableRecipe.matches(input.cast(TierInput.class), level);
+                return tableRecipe.matches(TierInput.of(input.width(), input.height(), input.items(), input.tier()), level);
             }
         }
 
@@ -178,11 +178,11 @@ abstract class AbstractTableRecipeAdapter implements MyoTableRecipe {
 
     private static class MagicRecipe {
         public static ItemStack assemble(ITableRecipe recipe, MyoTableInput input, RegistryAccess registryAccess) {
-            return recipe.assemble(input.cast(TableCraftingInput.class), registryAccess);
+            return recipe.assemble(TableCraftingInput.of(input.width(), input.height(), input.items(), input.tier()), registryAccess);
         }
 
         public static ItemStack assemble(ITierCraftingRecipe recipe, MyoTableInput input, RegistryAccess registryAccess) {
-            return recipe.assemble(input.cast(TierInput.class), registryAccess);
+            return recipe.assemble(TierInput.of(input.width(), input.height(), input.items(), input.tier()), registryAccess);
         }
 
         public static ItemStack assemble(CraftingRecipe recipe, MyoTableInput input, RegistryAccess registryAccess) {

@@ -49,7 +49,7 @@ public class AvaritiaTerminalBaseMenu extends TableTerminalBaseMenu<ITierCraftin
         }
 
         var level = getPlayer().level();
-        var castedInput = testInput.cast(TierInput.class);
+        var castedInput = TierInput.of(testInput.width(), testInput.height(), testInput.items(), testInput.tier());
         this.currentRecipe = level.getRecipeManager().getRecipeFor(ModRecipeTypes.CRAFTING_TABLE_RECIPE.get(), castedInput, level)
                 .orElse(null);
         this.lastTestedInput = testInput;

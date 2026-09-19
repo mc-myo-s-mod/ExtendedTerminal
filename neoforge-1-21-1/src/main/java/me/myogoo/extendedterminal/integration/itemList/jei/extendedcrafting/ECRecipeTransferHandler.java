@@ -11,9 +11,12 @@ import me.myogoo.extendedterminal.menu.extendedcrafting.AdvancedTerminalMenu;
 import me.myogoo.extendedterminal.menu.extendedcrafting.BasicTerminalMenu;
 import me.myogoo.extendedterminal.menu.extendedcrafting.EliteTerminalMenu;
 import me.myogoo.extendedterminal.menu.extendedcrafting.UltimateTerminalMenu;
+import me.myogoo.extendedterminal.menu.extendedcrafting.wt.UnitedWTMenu;
 import me.myogoo.extendedterminal.menu.extendedterminal.MyoRecipeType;
 import me.myogoo.extendedterminal.menu.extendedterminal.UnitedTerminalMenu;
+import me.myogoo.myotus.api.MyotusAPI;
 import me.myogoo.myotus.api.annotation.MyotusSubscriber;
+import me.myogoo.myotus.api.annotation.mods.AE2WTLib;
 import mezz.jei.api.registration.IRecipeTransferRegistration;
 import me.myogoo.extendedterminal.api.annotation.ExtendedCrafting;
 
@@ -33,5 +36,11 @@ public class ECRecipeTransferHandler {
         registration.addRecipeTransferHandler(new ECJeiRecipeTransferHandler<>(UnitedTerminalMenu.class, UnitedTerminalMenu.TYPE, AdvancedTableCategory.RECIPE_TYPE, helper, MyoRecipeType.ADVANCED), AdvancedTableCategory.RECIPE_TYPE);
         registration.addRecipeTransferHandler(new ECJeiRecipeTransferHandler<>(UnitedTerminalMenu.class, UnitedTerminalMenu.TYPE, EliteTableCategory.RECIPE_TYPE, helper, MyoRecipeType.ELITE), EliteTableCategory.RECIPE_TYPE);
         registration.addRecipeTransferHandler(new ECJeiRecipeTransferHandler<>(UnitedTerminalMenu.class, UnitedTerminalMenu.TYPE, UltimateTableCategory.RECIPE_TYPE, helper, MyoRecipeType.ULTIMATE), UltimateTableCategory.RECIPE_TYPE);
+        if (MyotusAPI.integrations().isLoaded(AE2WTLib.class)) {
+            registration.addRecipeTransferHandler(new ECJeiRecipeTransferHandler<>(UnitedWTMenu.class, UnitedWTMenu.TYPE, BasicTableCategory.RECIPE_TYPE, helper, MyoRecipeType.BASIC), BasicTableCategory.RECIPE_TYPE);
+            registration.addRecipeTransferHandler(new ECJeiRecipeTransferHandler<>(UnitedWTMenu.class, UnitedWTMenu.TYPE, AdvancedTableCategory.RECIPE_TYPE, helper, MyoRecipeType.ADVANCED), AdvancedTableCategory.RECIPE_TYPE);
+            registration.addRecipeTransferHandler(new ECJeiRecipeTransferHandler<>(UnitedWTMenu.class, UnitedWTMenu.TYPE, EliteTableCategory.RECIPE_TYPE, helper, MyoRecipeType.ELITE), EliteTableCategory.RECIPE_TYPE);
+            registration.addRecipeTransferHandler(new ECJeiRecipeTransferHandler<>(UnitedWTMenu.class, UnitedWTMenu.TYPE, UltimateTableCategory.RECIPE_TYPE, helper, MyoRecipeType.ULTIMATE), UltimateTableCategory.RECIPE_TYPE);
+        }
     }
 }

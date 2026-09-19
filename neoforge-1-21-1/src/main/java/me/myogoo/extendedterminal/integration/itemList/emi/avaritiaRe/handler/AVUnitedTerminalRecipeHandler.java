@@ -9,16 +9,17 @@ import me.myogoo.extendedterminal.menu.extendedterminal.MyoRecipeType;
 import me.myogoo.extendedterminal.menu.extendedterminal.UnitedTerminalMenu;
 import net.minecraft.world.item.crafting.Recipe;
 
-public class AVUnitedTerminalRecipeHandler extends AVTerminalRecipeHandler<UnitedTerminalMenu> {
+public class AVUnitedTerminalRecipeHandler<T extends UnitedTerminalMenu> extends AVTerminalRecipeHandler<T> {
     private final MyoRecipeType recipeType;
 
-    public AVUnitedTerminalRecipeHandler(EmiRecipeCategory category, MyoRecipeType recipeType) {
-        super(category, UnitedTerminalMenu.class, ETMenuType.UNITED_TERMINAL);
+    public AVUnitedTerminalRecipeHandler(EmiRecipeCategory category, Class<T> menuClass,
+            MyoRecipeType recipeType) {
+        super(category, menuClass, ETMenuType.UNITED_TERMINAL);
         this.recipeType = recipeType;
     }
 
     @Override
-    protected void performTransfer(UnitedTerminalMenu menu, MyoTableRecipe recipe, boolean craftMissing) {
+    protected void performTransfer(T menu, MyoTableRecipe recipe, boolean craftMissing) {
         super.performTransfer(menu, recipe, craftMissing, recipeType);
     }
 

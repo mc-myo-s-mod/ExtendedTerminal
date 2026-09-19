@@ -15,6 +15,7 @@ import mezz.jei.api.registration.IRecipeCatalystRegistration;
 public class ETWTRecipeCatalyst {
     @MyotusSubscriber
     public static void init(IRecipeCatalystRegistration registration) {
+        registration.addRecipeCatalyst(WTItems.WIRELESS_UNITED_TERMINAL, RecipeTypes.CRAFTING);
         registration.addRecipeCatalyst(WTItems.WIRELESS_ET_TERMINAL, RecipeTypes.CRAFTING);
         registration.addRecipeCatalyst(WTItems.WIRELESS_ET_TERMINAL, RecipeTypes.SMITHING);
         registration.addRecipeCatalyst(WTItems.WIRELESS_ET_TERMINAL, RecipeTypes.STONECUTTING);
