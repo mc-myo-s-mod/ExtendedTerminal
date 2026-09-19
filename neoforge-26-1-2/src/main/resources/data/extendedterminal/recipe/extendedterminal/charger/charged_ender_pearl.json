@@ -1,0 +1,7 @@
+{
+  "type": "ae2:charger",
+  "ingredient": "minecraft:ender_pearl",
+  "result": {
+    "id": "myotus:charged_ender_pearl"
+  }
+}

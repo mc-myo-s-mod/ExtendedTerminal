@@ -52,6 +52,10 @@ allprojects {
 }
 
 subprojects {
+    if (name == 'neoforge-26-1-2') {
+        return
+    }
+
     apply plugin: 'java'
     apply plugin: 'idea'
     apply plugin: 'maven-publish'
@@ -118,6 +122,7 @@ configure(project(':common')) {
 configure(modProjects) {
     def commonJavaSourceDir = rootProject.layout.projectDirectory.dir('common/src/main/java').asFile
     def commonResourcesSourceDir = rootProject.layout.projectDirectory.dir('common/src/main/resources').asFile
+    def loaderResourceDirs = [file('src/main/resources'), file('src/generated/resources')]
     def generatedCommonJavaDir = layout.buildDirectory.dir('generated/sources/extendedTerminalCommon/java')
     def generatedCommonResourcesDir = layout.buildDirectory.dir('generated/resources/extendedTerminalCommon')
 
@@ -129,6 +134,11 @@ configure(modProjects) {
     def syncExtendedTerminalCommonResources = tasks.register('syncExtendedTerminalCommonResources', Sync) {
         from commonResourcesSourceDir
         into generatedCommonResourcesDir
+        inputs.files(loaderResourceDirs.collect { fileTree(it) })
+                .withPropertyName('loaderResourceOverrides').withPathSensitivity(PathSensitivity.RELATIVE)
+        exclude { details ->
+            !details.directory && loaderResourceDirs.any { new File(it, details.relativePath.pathString).isFile() }
+        }
     }
 
     def generatedCommonJavaSources = files(generatedCommonJavaDir).builtBy(syncExtendedTerminalCommonJava)
@@ -152,10 +162,7 @@ configure(modProjects) {
 
     tasks.named('processResources').configure {
         dependsOn syncExtendedTerminalCommonResources
-        // Version-module resources must override shared common resources.
-        // Gradle visits the module's default src/main/resources before the generated common
-        // resource directory added below, so EXCLUDE keeps the version-specific file when
-        // both trees contain the same relative path.
+        // Shared files overridden by either loader resource tree are excluded during sync.
         duplicatesStrategy = DuplicatesStrategy.EXCLUDE
     }
 

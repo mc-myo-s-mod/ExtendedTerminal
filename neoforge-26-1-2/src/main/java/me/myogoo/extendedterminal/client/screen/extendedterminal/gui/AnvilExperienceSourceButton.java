@@ -1,0 +1,81 @@
+package me.myogoo.extendedterminal.client.screen.extendedterminal.gui;
+
+import me.myogoo.extendedterminal.api.translation.ETTranslationKey;
+import me.myogoo.myotus.client.gui.widgets.button.MyoCycleButton;
+import me.myogoo.extendedterminal.menu.extendedterminal.ETTerminalMenu;
+import me.myogoo.myotus.api.experience.ExperienceMath;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.component.ResolvableProfile;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.List;
+
+public class AnvilExperienceSourceButton extends MyoCycleButton {
+    private static final Identifier APPLIED_EXPERIENCED_CELL_ID =
+            Identifier.fromNamespaceAndPath("appex", "experience_storage_cell_1k");
+    private final ETTerminalMenu menu;
+
+    public AnvilExperienceSourceButton(ETTerminalMenu menu) {
+        super(
+                menu::cycleAnvilExperienceSourcePriority,
+                menu::cycleAnvilExperienceSourcePriority,
+                () -> getSourceIcon(menu),
+                () -> List.of(createSourceTooltip(menu)));
+        this.menu = menu;
+    }
+
+    private static Component createSourceTooltip(ETTerminalMenu menu) {
+        return Component.translatable(
+                ETTranslationKey.GUI.ANVIL_EXPERIENCE_SOURCE_PRIORITY.key(),
+                createSourcePriorityLabel(menu));
+    }
+
+    private static Component createSourcePriorityLabel(ETTerminalMenu menu) {
+        return Component.translatable(menu.getSelectedAnvilExperienceSourceLabelKey().key());
+    }
+
+    @Override
+    public void extractContents(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partial) {
+        super.extractContents(guiGraphics, mouseX, mouseY, partial);
+        if (isPlayerSourceSelected()) {
+            renderPlayerHead(guiGraphics);
+        }
+    }
+
+    @Nullable
+    private static Item getSourceIcon(ETTerminalMenu menu) {
+        return switch (menu.getSelectedAnvilExperienceSource()) {
+            case FLUID_XP -> Items.EXPERIENCE_BOTTLE;
+            case APPLIED_EXPERIENCED_AMOUNT -> getAppliedExperiencedCellIcon();
+            case PLAYER -> null;
+        };
+    }
+
+    private boolean isPlayerSourceSelected() {
+        return this.menu.getSelectedAnvilExperienceSource() == ExperienceMath.ExperienceSource.PLAYER;
+    }
+
+    private void renderPlayerHead(GuiGraphicsExtractor guiGraphics) {
+        var player = Minecraft.getInstance().player;
+        if (player == null) {
+            return;
+        }
+
+        var stack = new ItemStack(Items.PLAYER_HEAD);
+        stack.set(DataComponents.PROFILE, ResolvableProfile.createResolved(player.getGameProfile()));
+        guiGraphics.item(stack, getX(), getY() + 1 + (isHovered() ? 1 : 0));
+    }
+
+    private static Item getAppliedExperiencedCellIcon() {
+        return BuiltInRegistries.ITEM.getOptional(APPLIED_EXPERIENCED_CELL_ID)
+                .orElse(Items.EXPERIENCE_BOTTLE);
+    }
+}

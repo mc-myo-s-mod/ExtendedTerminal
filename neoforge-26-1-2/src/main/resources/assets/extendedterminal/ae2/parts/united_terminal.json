@@ -1,0 +1,27 @@
+{
+  "model": {
+    "type": "ae2:composite",
+    "models": [
+      {
+        "type": "ae2:model",
+        "model": "ae2:part/display_base"
+      },
+      {
+        "type": "ae2:model",
+        "model": "extendedterminal:part/extendedcrafting/united_terminal_base"
+      },
+      {
+        "type": "ae2:status_indicator",
+        "active": "extendedterminal:part/extendedcrafting/united_terminal_on",
+        "powered": "extendedterminal:part/extendedcrafting/united_terminal_on",
+        "unpowered": "extendedterminal:part/extendedcrafting/united_terminal_off"
+      },
+      {
+        "type": "ae2:status_indicator",
+        "active": "ae2:part/display_status_has_channel",
+        "powered": "ae2:part/display_status_on",
+        "unpowered": "ae2:part/display_status_off"
+      }
+    ]
+  }
+}

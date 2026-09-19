@@ -1,0 +1,7 @@
+{
+  "type": "ae2:charger",
+  "ingredient": "ae2:engineering_processor_press",
+  "result": {
+    "id": "myotus:compat_press"
+  }
+}

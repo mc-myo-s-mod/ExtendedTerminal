@@ -1,0 +1,12 @@
+{
+  "type": "ae2:inscriber",
+  "ingredients": {
+    "bottom": "ae2:printed_silicon",
+    "middle": "minecraft:redstone",
+    "top": "myotus:printed_compat_processor"
+  },
+  "mode": "press",
+  "result": {
+    "id": "myotus:compat_processor"
+  }
+}

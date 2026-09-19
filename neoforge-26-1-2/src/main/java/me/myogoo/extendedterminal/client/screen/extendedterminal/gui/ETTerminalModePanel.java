@@ -1,0 +1,66 @@
+package me.myogoo.extendedterminal.client.screen.extendedterminal.gui;
+
+import appeng.client.Point;
+import appeng.client.gui.ICompositeWidget;
+import appeng.client.gui.WidgetContainer;
+import me.myogoo.extendedterminal.client.screen.extendedterminal.ETTerminalScreen;
+import me.myogoo.extendedterminal.api.translation.ETTranslationKey;
+import me.myogoo.myotus.client.MyoTranslateKey;
+import me.myogoo.extendedterminal.menu.extendedterminal.ETTerminalMenu;
+import net.minecraft.client.renderer.Rect2i;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.ItemStack;
+
+public abstract class ETTerminalModePanel implements ICompositeWidget {
+    protected final ETTerminalScreen<?> screen;
+    protected final ETTerminalMenu menu;
+    protected final WidgetContainer widgets;
+    protected final MyoTranslateKey tabTooltipKey;
+    protected boolean visible = false;
+    protected int x;
+    protected int y;
+
+    public ETTerminalModePanel(ETTerminalScreen<?> screen, WidgetContainer widgets, MyoTranslateKey tabTooltipKey) {
+        this.screen = screen;
+        this.menu = screen.getMenu();
+        this.widgets = widgets;
+        this.tabTooltipKey = tabTooltipKey;
+    }
+
+    public abstract ItemStack getIcon();
+
+    public Component getTabTooltip() {
+        return Component.translatable(this.tabTooltipKey.key());
+    }
+
+    public String getWidgetId() {
+        return "modePanel" + getClass().getSimpleName();
+    }
+
+    public String getModeTabButtonId() {
+        return "modeTabButton" + getClass().getSimpleName();
+    }
+
+    @Override
+    public void setPosition(Point position) {
+        x = position.getX();
+        y = position.getY();
+    }
+
+    @Override
+    public void setSize(int width, int height) {}
+
+    @Override
+    public Rect2i getBounds() {
+        return new Rect2i(x,y, 124,66);
+    }
+
+    @Override
+    public final boolean isVisible() {
+        return visible;
+    }
+
+    public void setVisible(boolean visible) {
+        this.visible = visible;
+    }
+}

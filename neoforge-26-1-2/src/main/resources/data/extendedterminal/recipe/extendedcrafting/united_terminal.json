@@ -1,0 +1,26 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "myotus:mod_condition",
+      "active_mod": "extendedcrafting"
+    },
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "myotus:mod_condition",
+        "active_mod": "re-avaritia"
+      }
+    }
+  ],
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    "myotus:compat_processor",
+    "extendedterminal:basic_terminal",
+    "extendedterminal:advanced_terminal",
+    "extendedterminal:elite_terminal",
+    "extendedterminal:ultimate_terminal"
+  ],
+  "result": {
+    "id": "extendedterminal:united_terminal"
+  }
+}

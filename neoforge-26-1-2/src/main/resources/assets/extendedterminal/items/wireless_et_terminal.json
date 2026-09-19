@@ -1,0 +1,6 @@
+{
+  "model": {
+    "type": "minecraft:model",
+    "model": "extendedterminal:item/wireless_et_terminal"
+  }
+}

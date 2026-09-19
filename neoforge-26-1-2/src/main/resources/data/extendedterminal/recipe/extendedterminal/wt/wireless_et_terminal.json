@@ -1,0 +1,23 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "myotus:mod_condition",
+      "active_mod": "ae2wtlib"
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "A": "ae2:wireless_receiver",
+    "B": "extendedterminal:et_terminal",
+    "C": "ae2:dense_energy_cell"
+  },
+  "pattern": [
+    "A",
+    "B",
+    "C"
+  ],
+  "result": {
+    "id": "extendedterminal:wireless_et_terminal"
+  },
+  "show_notification": false
+}

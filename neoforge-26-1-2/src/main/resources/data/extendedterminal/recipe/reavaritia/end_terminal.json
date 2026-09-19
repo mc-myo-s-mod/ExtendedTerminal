@@ -1,0 +1,22 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "myotus:mod_condition",
+      "active_mod": "re-avaritia"
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "I": "avaritia:end_crafting_table",
+    "P": "myotus:compat_processor",
+    "T": "ae2:crafting_terminal"
+  },
+  "pattern": [
+    "IT",
+    "P "
+  ],
+  "result": {
+    "id": "extendedterminal:end_terminal"
+  },
+  "show_notification": false
+}

@@ -21,3 +21,7 @@ rootProject.name = 'ExtendedTerminal'
 include 'common'
 include 'forge-1-20-1'
 include 'neoforge-1-21-1'
+
+include 'neoforge-26-1-2'
+// ForgeGradle needs Gradle 8; this bridge runs 26.1.2 with its Gradle 9 wrapper.
+project(':neoforge-26-1-2').buildFileName = 'root.gradle'

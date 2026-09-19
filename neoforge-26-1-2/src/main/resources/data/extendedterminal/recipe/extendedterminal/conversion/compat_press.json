@@ -1,0 +1,9 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    "extendedterminal:compat_press"
+  ],
+  "result": {
+    "id": "myotus:compat_press"
+  }
+}

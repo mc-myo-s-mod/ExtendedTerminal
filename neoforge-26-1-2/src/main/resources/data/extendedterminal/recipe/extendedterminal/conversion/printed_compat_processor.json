@@ -1,0 +1,9 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    "extendedterminal:printed_compat_processor"
+  ],
+  "result": {
+    "id": "myotus:printed_compat_processor"
+  }
+}

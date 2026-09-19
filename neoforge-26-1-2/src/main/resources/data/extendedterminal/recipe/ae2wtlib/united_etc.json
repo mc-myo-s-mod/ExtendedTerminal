@@ -1,0 +1,13 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "myotus:mod_condition",
+      "active_mod": "ae2wtlib"
+    }
+  ],
+  "type": "ae2wtlib:combine",
+  "terminalA": "extendedterminal:wireless_united_terminal",
+  "terminalAName": "wireless_united_terminal",
+  "terminalB": "ae2:wireless_crafting_terminal",
+  "terminalBName": "crafting"
+}

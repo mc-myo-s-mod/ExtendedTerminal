@@ -1,0 +1,13 @@
+{
+  "replace": false,
+  "values": [
+    {
+      "id": "extendedterminal:wireless_et_terminal",
+      "required": false
+    },
+    {
+      "id": "extendedterminal:wireless_united_terminal",
+      "required": false
+    }
+  ]
+}

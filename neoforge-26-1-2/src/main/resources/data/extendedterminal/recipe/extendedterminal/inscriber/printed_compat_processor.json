@@ -1,0 +1,11 @@
+{
+  "type": "ae2:inscriber",
+  "ingredients": {
+    "middle": "myotus:charged_ender_pearl",
+    "top": "myotus:compat_press"
+  },
+  "mode": "inscribe",
+  "result": {
+    "id": "myotus:printed_compat_processor"
+  }
+}

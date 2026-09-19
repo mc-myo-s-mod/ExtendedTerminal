@@ -1,0 +1,7 @@
+{
+  "parent": "extendedterminal:item/base/avaritia_terminal_base",
+  "textures": {
+    "front_base": "extendedterminal:part/avaritia/extreme_terminal_front",
+    "sides": "extendedterminal:part/avaritia/extreme_terminal_side"
+  }
+}

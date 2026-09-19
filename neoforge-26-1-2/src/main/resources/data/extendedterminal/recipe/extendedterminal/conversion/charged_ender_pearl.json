@@ -1,0 +1,9 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    "extendedterminal:charged_ender_pearl"
+  ],
+  "result": {
+    "id": "myotus:charged_ender_pearl"
+  }
+}

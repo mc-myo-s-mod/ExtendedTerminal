@@ -1,0 +1,180 @@
+plugins {
+    id 'java-library'
+    id 'net.neoforged.moddev' version '2.0.141'
+}
+
+group = project.mod_group_id
+version = project.mod_version
+
+base {
+    archivesName = "ExtendedTerminal-${minecraft_version}"
+}
+
+java.toolchain.languageVersion = JavaLanguageVersion.of(Integer.parseInt(project.java_version.toString()))
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+    maven {
+        name = 'ModMaven'
+        url = 'https://modmaven.dev'
+        content {
+            includeGroup 'appeng'
+            includeGroup 'de.mari_023'
+        }
+    }
+    maven { url = 'https://maven.blamejared.com/' }
+    maven { url = 'https://maven.blakesmods.com' }
+    maven { url = 'https://api.modrinth.com/maven' }
+    maven {
+        url = 'https://cursemaven.com'
+        content { includeGroup 'curse.maven' }
+    }
+}
+
+def loaderResourceDirs = [file('src/main/resources'), file('src/generated/resources')]
+def generatedCommonResourcesDir = layout.buildDirectory.dir('generated/resources/extendedTerminalCommon')
+def syncExtendedTerminalCommonResources = tasks.register('syncExtendedTerminalCommonResources', Sync) {
+    from '../common/src/main/resources'
+    into generatedCommonResourcesDir
+    exclude 'assets/extendedterminal/ae2guide/terminals/avaritianeo.md'
+    inputs.files(loaderResourceDirs.collect { fileTree(it) })
+            .withPropertyName('loaderResourceOverrides').withPathSensitivity(PathSensitivity.RELATIVE)
+    exclude { details ->
+        !details.directory && loaderResourceDirs.any { new File(it, details.relativePath.pathString).isFile() }
+    }
+}
+
+sourceSets {
+    main {
+        java.srcDir '../common/src/main/java'
+        resources.srcDir files(generatedCommonResourcesDir).builtBy(syncExtendedTerminalCommonResources)
+        resources.srcDir 'src/generated/resources'
+    }
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+}
+tasks.withType(Test).configureEach {
+    useJUnitPlatform()
+}
+tasks.named('processResources').configure {
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+}
+
+neoForge {
+    version = project.neo_version
+
+    accessTransformers {
+        file('src/main/resources/META-INF/accesstransformer.cfg')
+    }
+
+    runs {
+        client {
+            client()
+            gameDirectory = project.file('run-client')
+        }
+        server {
+            server()
+            gameDirectory = project.file('run-server')
+            programArgument '--nogui'
+        }
+        gameTestServer {
+            type = 'gameTestServer'
+            gameDirectory = project.file('run-gametest')
+        }
+        data {
+            serverData()
+            gameDirectory = project.file('run-data')
+            programArguments.addAll '--mod', project.mod_id, '--all', '--output', file('src/generated/resources/').getAbsolutePath(), '--existing', file('src/main/resources/').getAbsolutePath()
+        }
+        configureEach {
+            systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
+            systemProperty 'forge.logging.markers', 'REGISTRIES'
+            logLevel = org.slf4j.event.Level.INFO
+        }
+    }
+
+    mods {
+        "${mod_id}" {
+            sourceSet(sourceSets.main)
+        }
+    }
+}
+
+dependencies {
+    implementation("me.myogoo:myotus:${myotus_version}") {
+        exclude group: 'de.mari_023', module: 'ae2wtlib'
+        exclude group: 'de.mari_023', module: 'ae2wtlib_api'
+    }
+    implementation "org.appliedenergistics:appliedenergistics2:${AE2_version}"
+
+    compileOnly "com.blakebr0.cucumber:Cucumber:${minecraft_version}-${Cucumber_version}"
+    compileOnly "com.blakebr0.extendedcrafting:ExtendedCrafting:${minecraft_version}-${ExtendedCrafting_version}"
+    compileOnly "maven.modrinth:re-avaritia:${ReAvaritia_version}"
+    if (project.enable_excrafting == 'true') {
+        runtimeOnly "com.blakebr0.cucumber:Cucumber:${minecraft_version}-${Cucumber_version}"
+        runtimeOnly "com.blakebr0.extendedcrafting:ExtendedCrafting:${minecraft_version}-${ExtendedCrafting_version}"
+    }
+    if (project.enable_avaritia == 're') {
+        runtimeOnly "maven.modrinth:re-avaritia:${ReAvaritia_version}"
+    }
+
+    compileOnly "org.appliedenergistics:guideme:${guideme_version}:api"
+    runtimeOnly "org.appliedenergistics:guideme:${guideme_version}"
+
+    compileOnly "de.mari_023:ae2wtlib_api:${AE2WTLib_version}"
+    compileOnly "de.mari_023:ae2wtlib:${AE2WTLib_version}"
+    if (project.enable_wtlib == 'true') {
+        modDevRuntimeDependencies "de.mari_023:ae2wtlib_api:${AE2WTLib_version}"
+        modDevRuntimeDependencies "de.mari_023:ae2wtlib:${AE2WTLib_version}"
+    }
+
+    compileOnly "mezz.jei:jei-${minecraft_version}-neoforge-api:${JEI_version}"
+    if (project.itemListMod == 'jei') {
+        runtimeOnly "mezz.jei:jei-${minecraft_version}-neoforge:${JEI_version}"
+    }
+
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.10.3'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+
+def generateModMetadata = tasks.register('generateModMetadata', ProcessResources) {
+    def replaceProperties = [minecraft_version      : minecraft_version,
+                             minecraft_version_range: minecraft_version_range,
+                             neo_version            : neo_version,
+                             neo_version_range      : neo_version_range,
+                             loader_version_range   : loader_version_range,
+                             mod_id                 : mod_id,
+                             mod_name               : mod_name,
+                             mod_license            : mod_license,
+                             mod_version            : mod_version,
+                             myotus_version         : myotus_version,
+                             AE2_version_range      : AE2_version_range,
+                             AE2WTLib_version_range : AE2WTLib_version_range,
+                             JEI_version_range      : JEI_version_range,
+                             mod_authors            : mod_authors,
+                             mod_description        : mod_description]
+    inputs.properties replaceProperties
+    expand replaceProperties
+    from 'src/main/templates'
+    into 'build/generated/sources/modMetadata'
+}
+
+sourceSets.main.resources.srcDir generateModMetadata
+sourceSets.test.compileClasspath += sourceSets.main.compileClasspath
+sourceSets.test.runtimeClasspath += sourceSets.main.runtimeClasspath
+neoForge.ideSyncTask syncExtendedTerminalCommonResources
+neoForge.ideSyncTask generateModMetadata
+
+tasks.named('jar', Jar).configure {
+    manifest {
+        attributes(['Specification-Title'   : mod_id,
+                    'Specification-Vendor'  : mod_authors,
+                    'Specification-Version' : '1',
+                    'Implementation-Title'  : project.name,
+                    'Implementation-Version': project.version.toString(),
+                    'Implementation-Vendor' : mod_authors])
+    }
+}

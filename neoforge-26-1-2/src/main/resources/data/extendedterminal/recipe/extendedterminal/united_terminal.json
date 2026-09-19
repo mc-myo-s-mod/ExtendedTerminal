@@ -1,0 +1,27 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "myotus:mod_condition",
+        "active_mod": "re-avaritia"
+      }
+    },
+    {
+      "type": "neoforge:not",
+      "value": {
+        "type": "myotus:mod_condition",
+        "active_mod": "extendedcrafting"
+      }
+    }
+  ],
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    "minecraft:crafting_table",
+    "myotus:compat_processor",
+    "ae2:dense_energy_cell"
+  ],
+  "result": {
+    "id": "extendedterminal:united_terminal"
+  }
+}
