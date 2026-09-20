@@ -16,6 +16,7 @@ import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.InterModComms;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.event.lifecycle.FMLConstructModEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.slf4j.Logger;
 import me.myogoo.extendedterminal.api.annotation.InvTweaks;
@@ -30,9 +31,15 @@ public class ExtendedTerminal {
         ETConfig.init();
         ETModIntegration.initialize();
         AE2HelpersCompat.logDetectedState(LOGGER);
-        ETNetwork.register();
 
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
+        // Wait for Myotus' constructor, but initialize before Forge registers items and menus.
+        modEventBus.addListener((FMLConstructModEvent event) -> event.enqueueWork(() -> initialize(modEventBus)));
+        MinecraftForge.EVENT_BUS.register(this);
+    }
+
+    private static void initialize(IEventBus modEventBus) {
+        ETNetwork.register();
         ETBlocks.REGISTER.register(modEventBus);
         ETBlockEntities.REGISTER.register(modEventBus);
         ETItems.REGISTER.register(modEventBus);
@@ -51,8 +58,6 @@ public class ExtendedTerminal {
             InterModComms.sendTo("invtweaks", "blacklist-screen",
                     () -> "me.myogoo.extendedterminal.menu.*");
         }
-
-        MinecraftForge.EVENT_BUS.register(this);
     }
 
     public static ResourceLocation makeId(String path) {

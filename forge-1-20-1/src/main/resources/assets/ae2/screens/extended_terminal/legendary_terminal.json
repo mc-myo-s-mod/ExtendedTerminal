@@ -4,26 +4,26 @@
   ],
   "slots": {
     "LEGENDARY_CRAFTING_GRID": {
-      "left": 8,
-      "bottom": 331
+      "left": 6,
+      "bottom": 334
     },
     "LEGENDARY_CRAFTING_RESULT": {
-      "left": 278,
-      "bottom": 224
+      "left": 210,
+      "bottom": 68
     },
     "PLAYER_ARMOR": {
       "left": -16,
-      "bottom": 81,
+      "bottom": 82,
       "grid": "VERTICAL"
     },
     "PLAYER_INVENTORY": {
-      "left": 44,
-      "bottom": 81,
+      "left": 26,
+      "bottom": 82,
       "grid": "BREAK_AFTER_9COLS"
     },
     "PLAYER_HOTBAR": {
-      "left": 44,
-      "bottom": 23,
+      "left": 26,
+      "bottom": 24,
       "grid": "HORIZONTAL"
     }
   },
@@ -43,7 +43,7 @@
       },
       "position": {
         "left": 8,
-        "bottom": 343
+        "bottom": 345
       }
     },
     "player_inventory_title": {
@@ -51,51 +51,51 @@
         "translate": "container.inventory"
       },
       "position": {
-        "left": 44,
-        "bottom": 92
+        "left": 26,
+        "bottom": 93
       }
     }
   },
   "terminalStyle": {
     "header": {
-      "texture": "guis/epic_terminal.png",
+      "texture": "guis/legendary_terminal.png",
       "textureWidth": 512,
       "textureHeight": 512,
       "srcRect": [0, 0, 195, 17]
     },
     "firstRow": {
-      "texture": "guis/epic_terminal.png",
+      "texture": "guis/legendary_terminal.png",
       "textureWidth": 512,
       "textureHeight": 512,
       "srcRect": [0, 17, 195, 18]
     },
     "row": {
-      "texture": "guis/epic_terminal.png",
+      "texture": "guis/legendary_terminal.png",
       "textureWidth": 512,
       "textureHeight": 512,
       "srcRect": [0, 35, 195, 18]
     },
     "lastRow": {
-      "texture": "guis/epic_terminal.png",
+      "texture": "guis/legendary_terminal.png",
       "textureWidth": 512,
       "textureHeight": 512,
       "srcRect": [0, 53, 195, 18]
     },
     "bottom": {
-      "texture": "extendedcrafting:textures/gui/legendary_table.png",
+      "texture": "guis/legendary_terminal.png",
       "textureWidth": 512,
       "textureHeight": 512,
-      "srcRect": [0, 0, 305, 349]
+      "srcRect": [0, 71, 244, 347]
     }
   },
   "widgets": {
     "clearCraftingGrid": {
-      "left": 260,
-      "bottom": 81
+      "left": 177,
+      "bottom": 93
     },
     "clearToPlayerInv": {
-      "left": 250,
-      "bottom": 81
+      "left": 167,
+      "bottom": 93
     }
   }
 }

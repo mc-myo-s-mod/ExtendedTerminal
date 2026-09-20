@@ -1,6 +1,6 @@
 {
   "parent": "extendedterminal:item/base/extendedcrafting_terminal_base",
   "textures": {
-    "front": "extendedcrafting:block/legendary_table_top"
+    "front": "extendedterminal:part/extendedcrafting/legendary_terminal_front"
   }
 }

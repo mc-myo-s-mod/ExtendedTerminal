@@ -1,7 +1,7 @@
 {
   "parent": "ae2:part/display_base",
   "textures": {
-    "front": "extendedcrafting:block/legendary_table_top",
-    "sides": "extendedcrafting:block/table_side"
+    "front": "extendedterminal:part/extendedcrafting/legendary_terminal_front",
+    "sides": "extendedterminal:part/extendedcrafting/legendary_terminal_side"
   }
 }

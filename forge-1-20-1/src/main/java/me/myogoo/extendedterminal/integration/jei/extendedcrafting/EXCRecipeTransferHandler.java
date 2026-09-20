@@ -6,6 +6,9 @@ import me.myogoo.myotus.api.annotation.itemList.RecipeTransfer;
 import me.myogoo.myotus.api.annotation.itemList.jei.JEI;
 import me.myogoo.extendedterminal.integration.jei.extendedcrafting.handler.ECJeiRecipeTransferHandler;
 import me.myogoo.extendedterminal.menu.extendedcrafting.*;
+import me.myogoo.extendedterminal.menu.extendedcrafting.wt.ExtendedCraftingWTMenu;
+import me.myogoo.myotus.api.MyotusAPI;
+import me.myogoo.myotus.api.annotation.mods.AE2WTLib;
 import mezz.jei.api.registration.IRecipeTransferRegistration;
 import me.myogoo.extendedterminal.api.annotation.EpicExCrafting;
 
@@ -17,5 +20,11 @@ public class EXCRecipeTransferHandler {
     public static void init(IRecipeTransferRegistration registration) {
         var helper = registration.getTransferHelper();
         registration.addRecipeTransferHandler(new ECJeiRecipeTransferHandler<>(EpicTerminalMenu.class, EpicTerminalMenu.TYPE, EpicTableCategory.RECIPE_TYPE, helper), EpicTableCategory.RECIPE_TYPE);
+        if (MyotusAPI.integrations().isLoaded(AE2WTLib.class)) {
+            registration.addRecipeTransferHandler(
+                    new ECJeiRecipeTransferHandler<>(ExtendedCraftingWTMenu.class, ExtendedCraftingWTMenu.EPIC_TYPE,
+                            EpicTableCategory.RECIPE_TYPE, helper),
+                    EpicTableCategory.RECIPE_TYPE);
+        }
     }
 }

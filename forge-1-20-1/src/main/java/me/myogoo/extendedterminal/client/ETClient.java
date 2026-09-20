@@ -11,6 +11,7 @@ import me.myogoo.extendedterminal.client.screen.avaritiaRe.SculkTerminalScreen;
 import me.myogoo.extendedterminal.client.screen.extendedcrafting.*;
 import me.myogoo.extendedterminal.client.screen.extendedterminal.ETTerminalScreen;
 import me.myogoo.extendedterminal.client.screen.extendedcrafting.wt.UnitedWTScreen;
+import me.myogoo.extendedterminal.client.screen.extendedcrafting.wt.ExtendedCraftingWTScreen;
 import me.myogoo.extendedterminal.client.screen.extendedterminal.wt.ETWTScreen;
 import me.myogoo.extendedterminal.init.ETConfigTab;
 import me.myogoo.extendedterminal.init.ETParts;
@@ -23,6 +24,7 @@ import me.myogoo.extendedterminal.menu.avaritiaRe.SculkTerminalMenu;
 import me.myogoo.extendedterminal.menu.extendedcrafting.*;
 import me.myogoo.extendedterminal.menu.extendedterminal.ETTerminalMenu;
 import me.myogoo.extendedterminal.menu.extendedcrafting.wt.UnitedWTMenu;
+import me.myogoo.extendedterminal.menu.extendedcrafting.wt.ExtendedCraftingWTMenu;
 import me.myogoo.extendedterminal.menu.extendedterminal.wt.ETWTMenu;
 import me.myogoo.myotus.api.MyotusAPI;
 import me.myogoo.myotus.api.annotation.mods.AE2WTLib;
@@ -86,6 +88,10 @@ public class ETClient {
     public static void initWTScreen() {
         InitScreens.register(ETWTMenu.TYPE, ETWTScreen::new, "/screens/wireless_et_terminal.json");
         InitScreens.register(UnitedWTMenu.TYPE, UnitedWTScreen::new, "/screens/wireless_united_terminal.json");
+        InitScreens.register(ExtendedCraftingWTMenu.EPIC_TYPE, ExtendedCraftingWTScreen::new,
+                "/screens/wireless_epic_terminal.json");
+        InitScreens.register(ExtendedCraftingWTMenu.LEGENDARY_TYPE, ExtendedCraftingWTScreen::new,
+                "/screens/wireless_legendary_terminal.json");
     }
 
 

@@ -1,32 +1,24 @@
 package me.myogoo.extendedterminal.mixin;
 
 import appeng.menu.AEBaseMenu;
-import appeng.menu.SlotSemantic;
-import appeng.menu.SlotSemantics;
-import net.minecraft.world.entity.player.Inventory;
+import me.myogoo.extendedterminal.menu.ETTerminalBaseMenu;
 import net.minecraft.world.inventory.Slot;
-import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import java.util.Map;
-
 @Mixin(value = AEBaseMenu.class, remap = false)
 public class AEBaseMenuMixin {
-    @Shadow @Final private Inventory playerInventory;
+    @Inject(method = "isPlayerSideSlot(Lnet/minecraft/world/inventory/Slot;)Z", at = @At("RETURN"), cancellable = true, remap = false, require = 1)
+    private void extendedterminal$customPlayerSideSlot(Slot slot, CallbackInfoReturnable<Boolean> cir) {
+        if (cir.getReturnValueZ() || !((Object) this instanceof ETTerminalBaseMenu<?> menu)) {
+            return;
+        }
 
-    @Shadow @Final private Map<Slot, SlotSemantic> semanticBySlot;
-
-    @Inject(method = "isPlayerSideSlot", at = @At("HEAD"), cancellable = true, remap = false)
-    public void isPlayerSideSlot(Slot slot, CallbackInfoReturnable<Boolean> cir) {
-        cir.cancel();
-        if(slot.container == playerInventory) {
+        var slotSemantic = menu.getSlotSemantic(slot);
+        if (slotSemantic != null && slotSemantic.playerSide()) {
             cir.setReturnValue(true);
         }
-        SlotSemantic slotSemantic = semanticBySlot.get(slot);
-        cir.setReturnValue((slotSemantic.playerSide() || slotSemantic == SlotSemantics.CRAFTING_GRID));
     }
 }

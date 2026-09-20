@@ -86,6 +86,14 @@ public final class ETRecipeDataProvider extends JsonRecipeProvider {
                 "extendedterminal:wireless_united_terminal",
                 new String[]{"A", "B", "C"},
                 key('A', "ae2:wireless_receiver", 'B', "extendedterminal:united_terminal", 'C', "ae2:dense_energy_cell"));
+        saveShaped(output, "extendedterminal/wt/wireless_epic_terminal", conditions("ae2wtlib", "epic-excrafting"),
+                "extendedterminal:wireless_epic_terminal",
+                new String[]{"A", "B", "C"},
+                key('A', "ae2:wireless_receiver", 'B', "extendedterminal:epic_terminal", 'C', "ae2:dense_energy_cell"));
+        saveShaped(output, "extendedterminal/wt/wireless_legendary_terminal", conditions("ae2wtlib", "legendary-excrafting"),
+                "extendedterminal:wireless_legendary_terminal",
+                new String[]{"A", "B", "C"},
+                key('A', "ae2:wireless_receiver", 'B', "extendedterminal:legendary_terminal", 'C', "ae2:dense_energy_cell"));
     }
 
     private static void buildAE2WTLibRecipes(JsonRecipeOutput output) {
@@ -101,10 +109,26 @@ public final class ETRecipeDataProvider extends JsonRecipeProvider {
         saveCombine(output, "ae2wtlib/united_etp", conditions("ae2wtlib"),
                 "extendedterminal:wireless_united_terminal", "ae2wtlib:wireless_pattern_encoding_terminal",
                 "wireless_united_terminal", "pattern_encoding");
+        saveCombine(output, "ae2wtlib/epic_etc", conditions("ae2wtlib", "epic-excrafting"),
+                "extendedterminal:wireless_epic_terminal", "ae2:wireless_crafting_terminal",
+                "wireless_epic_terminal", "crafting");
+        saveCombine(output, "ae2wtlib/epic_etp", conditions("ae2wtlib", "epic-excrafting"),
+                "extendedterminal:wireless_epic_terminal", "ae2wtlib:wireless_pattern_encoding_terminal",
+                "wireless_epic_terminal", "pattern_encoding");
+        saveCombine(output, "ae2wtlib/legendary_etc", conditions("ae2wtlib", "legendary-excrafting"),
+                "extendedterminal:wireless_legendary_terminal", "ae2:wireless_crafting_terminal",
+                "wireless_legendary_terminal", "crafting");
+        saveCombine(output, "ae2wtlib/legendary_etp", conditions("ae2wtlib", "legendary-excrafting"),
+                "extendedterminal:wireless_legendary_terminal", "ae2wtlib:wireless_pattern_encoding_terminal",
+                "wireless_legendary_terminal", "pattern_encoding");
         saveUpgrade(output, "ae2wtlib/upgrade_wireless_et_terminal", conditions("ae2wtlib"),
                 "extendedterminal:wireless_et_terminal", "wireless_et_terminal");
         saveUpgrade(output, "ae2wtlib/upgrade_wireless_united_terminal", conditions("ae2wtlib"),
                 "extendedterminal:wireless_united_terminal", "wireless_united_terminal");
+        saveUpgrade(output, "ae2wtlib/upgrade_wireless_epic_terminal", conditions("ae2wtlib", "epic-excrafting"),
+                "extendedterminal:wireless_epic_terminal", "wireless_epic_terminal");
+        saveUpgrade(output, "ae2wtlib/upgrade_wireless_legendary_terminal", conditions("ae2wtlib", "legendary-excrafting"),
+                "extendedterminal:wireless_legendary_terminal", "wireless_legendary_terminal");
     }
 
     private static void buildUnitedTerminalCrafting(JsonRecipeOutput output) {

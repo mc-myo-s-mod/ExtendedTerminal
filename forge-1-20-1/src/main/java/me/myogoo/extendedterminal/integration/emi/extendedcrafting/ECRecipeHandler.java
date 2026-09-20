@@ -13,6 +13,7 @@ import me.myogoo.extendedterminal.menu.extendedcrafting.LegendaryTerminalMenu;
 import me.myogoo.extendedterminal.menu.extendedcrafting.UltimateTerminalMenu;
 import me.myogoo.extendedterminal.menu.extendedcrafting.UnitedTerminalMenu;
 import me.myogoo.extendedterminal.menu.extendedcrafting.wt.UnitedWTMenu;
+import me.myogoo.extendedterminal.menu.extendedcrafting.wt.ExtendedCraftingWTMenu;
 import me.myogoo.myotus.api.annotation.MyotusSubscriber;
 import me.myogoo.extendedterminal.menu.extendedcrafting.UnitedTerminalMenu.UnitedRecipeKind;
 import me.myogoo.myotus.api.MyotusAPI;
@@ -58,6 +59,18 @@ public class ECRecipeHandler {
                     category -> registry.addRecipeHandler(UnitedTerminalMenu.TYPE,
                             new ECTerminalRecipeHandler<>(category, UnitedTerminalMenu.class, ETMenuType.UNITED_TERMINAL, UnitedRecipeKind.EXTENDED_CRAFTING_ULTIMATE)));
             if (MyotusAPI.integrations().isLoaded(AE2WTLib.class)) {
+                if (ETMenuType.EPIC_TERMINAL.canLoad()) {
+                    addTerminalHandler(getEmiCategory(EPIC_TABLE_CATEGORY_ID),
+                            category -> registry.addRecipeHandler(ExtendedCraftingWTMenu.EPIC_TYPE,
+                                    new ECTerminalRecipeHandler<>(category, ExtendedCraftingWTMenu.class,
+                                            ETMenuType.EPIC_TERMINAL)));
+                }
+                if (ETMenuType.LEGENDARY_TERMINAL.canLoad()) {
+                    addTerminalHandler(getEmiCategory(LEGENDARY_TABLE_CATEGORY_ID),
+                            category -> registry.addRecipeHandler(ExtendedCraftingWTMenu.LEGENDARY_TYPE,
+                                    new ECTerminalRecipeHandler<>(category, ExtendedCraftingWTMenu.class,
+                                            ETMenuType.LEGENDARY_TERMINAL)));
+                }
                 addTerminalHandler(getEmiCategory(BASIC_TABLE_CATEGORY_ID),
                         category -> registry.addRecipeHandler(UnitedWTMenu.TYPE,
                                 new ECTerminalRecipeHandler<>(category, UnitedWTMenu.class, ETMenuType.UNITED_TERMINAL, UnitedRecipeKind.EXTENDED_CRAFTING_BASIC)));

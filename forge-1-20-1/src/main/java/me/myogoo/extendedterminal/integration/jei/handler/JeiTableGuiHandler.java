@@ -1,6 +1,7 @@
 package me.myogoo.extendedterminal.integration.jei.handler;
 
 import me.myogoo.extendedterminal.client.screen.ETTerminalBaseScreen;
+import me.myogoo.extendedterminal.menu.ETMenuType;
 import me.myogoo.extendedterminal.menu.ETTerminalBaseMenu;
 import mezz.jei.api.gui.handlers.IGuiClickableArea;
 import mezz.jei.api.gui.handlers.IGuiContainerHandler;
@@ -26,9 +27,12 @@ public class JeiTableGuiHandler<R extends Recipe<?>, T extends ETTerminalBaseMen
 
     @Override
     public @NotNull Collection<IGuiClickableArea> getGuiClickableAreas(S screen, double guiMouseX, double guiMouseY) {
-        var outputSlot = screen.getMenu().getSlots(screen.getMenu().getOutputSlotSemantic()).get(0);
-        int x = outputSlot.x - 40;
-        int y = outputSlot.y;
-        return List.of(IGuiClickableArea.createBasic(outputSlot.x - 50, outputSlot.y, 40, 24, recipeType));
+        var menu = screen.getMenu();
+        var outputSlot = menu.getSlots(menu.getOutputSlotSemantic()).get(0);
+        boolean aboveOutput = menu.getETMenuType() == ETMenuType.EPIC_TERMINAL
+                || menu.getETMenuType() == ETMenuType.LEGENDARY_TERMINAL;
+        int x = aboveOutput ? outputSlot.x - 4 : outputSlot.x - 50;
+        int y = aboveOutput ? outputSlot.y - 30 : outputSlot.y;
+        return List.of(IGuiClickableArea.createBasic(x, y, aboveOutput ? 24 : 40, 24, recipeType));
     }
 }

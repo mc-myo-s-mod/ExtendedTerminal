@@ -78,6 +78,8 @@ public enum ETTranslationKey implements MyoTranslateKey {
         ITEM_ULTIMATE_TERMINAL("item.extendedterminal.ultimate_terminal"),
         ITEM_UNITED_TERMINAL("item.extendedterminal.united_terminal"),
         ITEM_WIRELESS_UNITED_TERMINAL("item.extendedterminal.wireless_united_terminal"),
+        ITEM_WIRELESS_EPIC_TERMINAL("item.extendedterminal.wireless_epic_terminal"),
+        ITEM_WIRELESS_LEGENDARY_TERMINAL("item.extendedterminal.wireless_legendary_terminal"),
         ITEM_SCULK_TERMINAL("item.extendedterminal.sculk_terminal"),
         ITEM_NETHER_TERMINAL("item.extendedterminal.nether_terminal"),
         ITEM_END_TERMINAL("item.extendedterminal.end_terminal"),

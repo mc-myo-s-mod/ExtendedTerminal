@@ -115,11 +115,11 @@
   },
   "widgets": {
     "clearCraftingGrid": {
-      "left": 132,
+      "left": 142,
       "bottom": 125
     },
     "clearToPlayerInv": {
-      "left": 142,
+      "left": 132,
       "bottom": 125
     }
   }

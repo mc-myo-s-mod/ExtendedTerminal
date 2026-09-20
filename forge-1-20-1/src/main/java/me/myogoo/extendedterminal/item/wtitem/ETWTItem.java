@@ -9,14 +9,23 @@ import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 
+import java.util.function.Supplier;
+
 public class ETWTItem extends ItemWT {
+    private final Supplier<MenuType<?>> menuType;
+
     public ETWTItem(Properties properties) {
+        this(properties, () -> ETWTMenu.TYPE);
+    }
+
+    public ETWTItem(Properties properties, Supplier<MenuType<?>> menuType) {
         super();
+        this.menuType = menuType;
     }
 
     @Override
     public MenuType<?> getMenuType(ItemStack stack) {
-        return ETWTMenu.TYPE;
+        return menuType.get();
     }
 
     @Override
