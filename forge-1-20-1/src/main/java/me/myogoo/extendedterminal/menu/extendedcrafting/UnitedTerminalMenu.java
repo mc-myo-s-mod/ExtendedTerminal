@@ -28,6 +28,7 @@ import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.item.crafting.ShapedRecipe;
+import net.minecraft.world.item.crafting.ShapelessRecipe;
 import net.minecraft.world.level.Level;
 
 import javax.annotation.Nullable;
@@ -140,8 +141,13 @@ public class UnitedTerminalMenu extends ETTerminalBaseMenu<Recipe<?>> {
 
         normalizeSelectedRecipeKind();
         var testItems = getCraftingSlotItems();
-        if (!forceUpdate && sameItems(this.lastUnitedItems, testItems)) {
+        if (!forceUpdate && sameItems(this.lastUnitedItems, testItems)
+                && (this.currentUnitedRecipe == null || getPlayer().level().getRecipeManager()
+                        .byKey(this.currentUnitedRecipe.recipe().getId()).orElse(null) == this.currentUnitedRecipe.recipe())) {
             return;
+        }
+        if (forceUpdate) {
+            this.currentUnitedRecipe = null;
         }
 
         var recipe = findUnitedRecipe(testItems);
@@ -297,6 +303,15 @@ public class UnitedTerminalMenu extends ETTerminalBaseMenu<Recipe<?>> {
             return null;
         }
         var level = getPlayer().level();
+        var previous = this.currentUnitedRecipe;
+        if (previous != null && previous.kind() == kind && sameItems(this.lastUnitedItems, items)
+                && level.getRecipeManager().byKey(previous.recipe().getId()).orElse(null) == previous.recipe()) {
+            // Reuse the recipe, not its mutable input or assembled NBT/remainders.
+            var input = createInput(items, previous.input().getWidth(), previous.left(), previous.top());
+            if (input != null && previous.matches(input, level)) {
+                return new UnitedRecipe(this, kind, previous.recipe(), input, previous.left(), previous.top());
+            }
+        }
         return switch (kind.family()) {
             case VANILLA -> findVanillaRecipe(level, items, kind);
             case EXTENDED_CRAFTING -> ExtendedCraftingLookup.findRecipe(this, level, items, kind);
@@ -305,90 +320,61 @@ public class UnitedTerminalMenu extends ETTerminalBaseMenu<Recipe<?>> {
         };
     }
 
+    @Nullable
     public CraftingContainer createTableInput(List<ItemStack> items, int side) {
         int offset = Math.floorDiv(this.menuType.getGridSideLength() - side, 2);
+        return createInput(items, side, offset, offset);
+    }
+
+    @Nullable
+    private CraftingContainer createInput(List<ItemStack> items, int side, int left, int top) {
         var positioned = NonNullList.withSize(side * side, ItemStack.EMPTY);
-        for (int y = 0; y < side; y++) {
-            for (int x = 0; x < side; x++) {
-                int source = (y + offset) * this.menuType.getGridSideLength() + (x + offset);
-                int target = y * side + x;
-                if (source >= 0 && source < items.size()) {
-                    positioned.set(target, items.get(source).copy());
-                }
+        for (int i = 0; i < items.size(); i++) {
+            if (items.get(i).isEmpty()) {
+                continue;
             }
+            int x = i % this.menuType.getGridSideLength() - left;
+            int y = i / this.menuType.getGridSideLength() - top;
+            if (x < 0 || y < 0 || x >= side || y >= side) {
+                return null;
+            }
+            positioned.set(y * side + x, items.get(i).copy());
         }
         return new TransientCraftingContainer(this, side, side, positioned);
     }
 
     @Nullable
     private UnitedRecipe findVanillaRecipe(Level level, List<ItemStack> items, UnitedRecipeKind kind) {
-        int centerOffset = Math.floorDiv(this.menuType.getGridSideLength() - 3, 2);
-        var centeredInput = createVanillaInput(items, centerOffset, centerOffset);
-        var sequentialInput = createVanillaSequentialInput(items);
+        int side = menuType.getGridSideLength();
+        int left = side;
+        int top = side;
+        for (int i = 0; i < items.size(); i++) {
+            if (!items.get(i).isEmpty()) {
+                left = Math.min(left, i % side);
+                top = Math.min(top, i / side);
+            }
+        }
+        // Vanilla custom recipes can use fixed 3x3 indices when assembling their NBT-bearing result.
+        var compact = createInput(items, 3, left, top);
+        CraftingContainer input = null;
 
         for (CraftingRecipe recipe : level.getRecipeManager().getAllRecipesFor(RecipeType.CRAFTING)) {
-            var input = recipe instanceof ShapedRecipe
-                    ? centeredInput
-                    : sequentialInput;
-            if (input != null && recipe.matches(input, level)) {
-                return new UnitedRecipe(this, kind, recipe, input);
+            if (compact != null && recipe.matches(compact, level)) {
+                return new UnitedRecipe(this, kind, recipe, compact, left, top);
+            }
+            // A larger empty border cannot change these vanilla matches. Mod subclasses may differ.
+            if (recipe.getClass() == ShapedRecipe.class && recipe.canCraftInDimensions(3, 3)
+                    || compact != null && recipe.getClass() == ShapelessRecipe.class) {
+                continue;
+            }
+            if (input == null) {
+                input = createFullGridInput(items);
+            }
+            if (recipe.matches(input, level)) {
+                return new UnitedRecipe(this, kind, recipe, input, 0, 0);
             }
         }
         return null;
-    }
-
-    @Nullable
-    private CraftingContainer createVanillaInput(List<ItemStack> items, int left, int top) {
-        int side = 3;
-        var positioned = NonNullList.withSize(side * side, ItemStack.EMPTY);
-        for (int y = 0; y < this.menuType.getGridSideLength(); y++) {
-            for (int x = 0; x < this.menuType.getGridSideLength(); x++) {
-                int source = y * this.menuType.getGridSideLength() + x;
-                if (source >= items.size()) {
-                    continue;
-                }
-
-                var item = items.get(source);
-                boolean inside = x >= left && x < left + side && y >= top && y < top + side;
-                if (inside) {
-                    positioned.set((y - top) * side + (x - left), item.copy());
-                } else if (!item.isEmpty()) {
-                    return null;
-                }
-            }
-        }
-        return new TransientCraftingContainer(this, side, side, positioned);
-    }
-
-    @Nullable
-    private CraftingContainer createVanillaSequentialInput(List<ItemStack> items) {
-        int size = 3 * 3;
-        var positioned = NonNullList.withSize(size, ItemStack.EMPTY);
-        for (int i = 0; i < items.size(); i++) {
-            var item = items.get(i);
-            if (i < size) {
-                positioned.set(i, item.copy());
-            } else if (!item.isEmpty()) {
-                return null;
-            }
-        }
-        return new TransientCraftingContainer(this, 3, 3, positioned);
-    }
-
-    private CraftingContainer createTierGridInput(List<ItemStack> items, int tier) {
-        int side = tier * 2 + 1;
-        int offset = Math.floorDiv(this.menuType.getGridSideLength() - side, 2);
-        var positioned = NonNullList.withSize(side * side, ItemStack.EMPTY);
-        for (int y = 0; y < side; y++) {
-            for (int x = 0; x < side; x++) {
-                int source = (y + offset) * this.menuType.getGridSideLength() + (x + offset);
-                int target = y * side + x;
-                if (source >= 0 && source < items.size()) {
-                    positioned.set(target, items.get(source).copy());
-                }
-            }
-        }
-        return new TransientCraftingContainer(this, side, side, positioned);
     }
 
     private CraftingContainer createFullGridInput(List<ItemStack> items) {
@@ -408,13 +394,20 @@ public class UnitedTerminalMenu extends ETTerminalBaseMenu<Recipe<?>> {
         private static UnitedRecipe findRecipe(UnitedTerminalMenu menu, Level level, List<ItemStack> items,
                                                UnitedRecipeKind kind) {
             try {
+                var inputs = new CraftingContainer[kind.tier() + 1];
+                var testedTiers = new boolean[inputs.length];
                 for (var recipe : level.getRecipeManager()
                         .getAllRecipesFor(com.blakebr0.extendedcrafting.init.ModRecipeTypes.TABLE.get())) {
                     if (!canCraftInKind(recipe, kind)) {
                         continue;
                     }
-                    var input = menu.createTableInput(items, recipe.getTier() * 2 + 1);
-                    if (recipe.matches(input, level)) {
+                    int tier = recipe.getTier();
+                    if (!testedTiers[tier]) {
+                        inputs[tier] = menu.createTableInput(items, tier * 2 + 1);
+                        testedTiers[tier] = true;
+                    }
+                    var input = inputs[tier];
+                    if (input != null && recipe.matches(input, level)) {
                         return new UnitedRecipe(menu, kind, recipe, input);
                     }
                 }
@@ -462,7 +455,10 @@ public class UnitedTerminalMenu extends ETTerminalBaseMenu<Recipe<?>> {
         private static UnitedRecipe findRecipe(UnitedTerminalMenu menu, Level level, List<ItemStack> items,
                                                UnitedRecipeKind kind) {
             try {
-                var input = menu.createTierGridInput(items, kind.tier());
+                var input = menu.createTableInput(items, kind.tier() * 2 + 1);
+                if (input == null) {
+                    return null;
+                }
                 for (var recipe : level.getRecipeManager()
                         .getAllRecipesFor(committee.nova.mods.avaritia.init.registry.ModRecipeTypes.CRAFTING_TABLE_RECIPE.get())) {
                     if (recipe.getTier() == kind.tier() && recipe.matches(input, level)) {
@@ -575,7 +571,13 @@ public class UnitedTerminalMenu extends ETTerminalBaseMenu<Recipe<?>> {
     }
 
     public record UnitedRecipe(UnitedTerminalMenu menu, UnitedRecipeKind kind,
-                               Recipe<?> recipe, CraftingContainer input) {
+                               Recipe<?> recipe, CraftingContainer input, int left, int top) {
+        public UnitedRecipe(UnitedTerminalMenu menu, UnitedRecipeKind kind, Recipe<?> recipe, CraftingContainer input) {
+            this(menu, kind, recipe, input,
+                    (menu.getCraftingGridWidth() - input.getWidth()) / 2,
+                    (menu.getCraftingGridHeight() - input.getHeight()) / 2);
+        }
+
         @SuppressWarnings({"rawtypes", "unchecked"})
         public boolean matches(CraftingContainer input, Level level) {
             return ((Recipe) recipe).matches(input, level);
@@ -584,6 +586,21 @@ public class UnitedTerminalMenu extends ETTerminalBaseMenu<Recipe<?>> {
         @SuppressWarnings({"rawtypes", "unchecked"})
         public ItemStack assemble(Level level) {
             return ((Recipe) recipe).assemble(input, level.registryAccess());
+        }
+
+        @SuppressWarnings({"rawtypes", "unchecked"})
+        public NonNullList<ItemStack> remainingItems() {
+            NonNullList<ItemStack> compact = ((Recipe) recipe).getRemainingItems(input);
+            var remaining = NonNullList.withSize(menu.getCraftingGridSize(), ItemStack.EMPTY);
+            for (int y = 0; y < input.getHeight(); y++) {
+                for (int x = 0; x < input.getWidth(); x++) {
+                    if (left + x < menu.getCraftingGridWidth() && top + y < menu.getCraftingGridHeight()) {
+                        remaining.set((top + y) * menu.getCraftingGridWidth() + left + x,
+                                compact.get(y * input.getWidth() + x));
+                    }
+                }
+            }
+            return remaining;
         }
     }
 }

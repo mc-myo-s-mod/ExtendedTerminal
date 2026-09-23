@@ -13,8 +13,8 @@ import net.byAqua3.avaritia.recipe.RecipeExtremeCrafting;
 import net.byAqua3.avaritia.recipe.RecipeExtremeShaped;
 import net.byAqua3.avaritia.recipe.RecipeExtremeShapeless;
 import net.minecraft.world.item.crafting.CraftingRecipe;
-import net.minecraft.world.item.crafting.ShapedRecipe;
 import net.minecraft.world.item.crafting.ShapelessRecipe;
+import net.minecraftforge.common.crafting.IShapedRecipe;
 import me.myogoo.extendedterminal.api.annotation.AvaritiaNeo;
 import me.myogoo.extendedterminal.api.annotation.ExtendedCrafting;
 import me.myogoo.extendedterminal.api.annotation.ReAvaritia;
@@ -24,8 +24,8 @@ public final class TableRecipeAdapters {
     }
 
     public static ITableRecipeAdapter<?> of(CraftingRecipe recipe) {
-        if (recipe instanceof ShapedRecipe shaped) {
-            return new ShapedTableRecipeAdapter(shaped);
+        if (recipe instanceof IShapedRecipe<?> shaped) {
+            return new ShapedTableRecipeAdapter(recipe, 1, shaped.getRecipeWidth(), shaped.getRecipeHeight());
         } else if (recipe instanceof ShapelessRecipe shapeless) {
             return new ShapelessTableRecipeAdapter(shapeless);
         } else {

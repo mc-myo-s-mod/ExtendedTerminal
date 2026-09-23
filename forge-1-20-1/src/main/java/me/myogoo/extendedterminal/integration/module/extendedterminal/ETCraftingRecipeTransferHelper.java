@@ -14,7 +14,7 @@ import net.minecraft.core.NonNullList;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.item.crafting.ShapedRecipe;
+import net.minecraftforge.common.crafting.IShapedRecipe;
 
 import java.util.Comparator;
 import java.util.LinkedHashMap;
@@ -30,7 +30,7 @@ public final class ETCraftingRecipeTransferHelper {
     public static Map<Integer, Ingredient> getGuiSlotToIngredientMap(ETTerminalMenu menu, CraftingRecipe recipe) {
         var ingredients = recipe.getIngredients();
         int gridWidth = menu.getCraftingGridWidth();
-        int recipeWidth = recipe instanceof ShapedRecipe shapedRecipe ? shapedRecipe.getWidth() : gridWidth;
+        int recipeWidth = recipe instanceof IShapedRecipe<?> shapedRecipe ? shapedRecipe.getRecipeWidth() : gridWidth;
 
         var result = new LinkedHashMap<Integer, Ingredient>(ingredients.size());
         for (int i = 0; i < ingredients.size(); i++) {
@@ -75,9 +75,9 @@ public final class ETCraftingRecipeTransferHelper {
         var ingredients = recipe.getIngredients();
 
         int width, height;
-        if (recipe instanceof ShapedRecipe shapedRecipe) {
-            width = shapedRecipe.getWidth();
-            height = shapedRecipe.getHeight();
+        if (recipe instanceof IShapedRecipe<?> shapedRecipe) {
+            width = shapedRecipe.getRecipeWidth();
+            height = shapedRecipe.getRecipeHeight();
         } else {
             if (ingredients.size() > 4) {
                 width = height = 3;

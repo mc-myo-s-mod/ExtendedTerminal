@@ -18,7 +18,6 @@ import net.minecraft.core.NonNullList;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.CraftingContainer;
-import net.minecraft.world.inventory.TransientCraftingContainer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.level.Level;
@@ -35,12 +34,23 @@ public class UnitedCraftingTerminalSlot extends ETCraftingBaseSlot<Recipe<?>, Cr
 
     @Override
     protected Recipe<?> findRecipe(CraftingContainer input, Level level) {
+        var recipe = findUnitedRecipe(input);
+        return recipe == null ? null : recipe.recipe();
+    }
+
+    @Override
+    protected NonNullList<ItemStack> getRemainingItems(CraftingContainer input, Level level) {
+        var recipe = findUnitedRecipe(input);
+        return recipe == null ? super.getRemainingItems(input, level) : recipe.remainingItems();
+    }
+
+    private UnitedTerminalMenu.UnitedRecipe findUnitedRecipe(CraftingContainer input) {
         if (this.menu instanceof UnitedTerminalMenu terminalMenu) {
-            var recipe = terminalMenu.getCurrentUnitedRecipe();
-            var recipeInput = terminalMenu.getCurrentUnitedInput();
-            if (recipe != null && recipeInput != null && terminalMenu.getCurrentUnitedRecipeRecord().matches(recipeInput, level)) {
-                return recipe;
+            var items = NonNullList.withSize(input.getContainerSize(), ItemStack.EMPTY);
+            for (int i = 0; i < items.size(); i++) {
+                items.set(i, input.getItem(i));
             }
+            return terminalMenu.findUnitedRecipe(items);
         }
         return null;
     }

@@ -76,11 +76,11 @@
   },
   "widgets": {
     "clearCraftingGrid": {
-      "left": 159,
+      "left": 149,
       "bottom": 122
     },
     "clearToPlayerInv": {
-      "left": 149,
+      "left": 159,
       "bottom": 122
     },
     "cycleRecipeKind": {

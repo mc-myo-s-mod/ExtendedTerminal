@@ -26,10 +26,14 @@ import me.myogoo.extendedterminal.ExtendedTerminal;
 import me.myogoo.extendedterminal.api.config.IETTerminalConfig;
 import me.myogoo.extendedterminal.init.wt.WTItems;
 import me.myogoo.extendedterminal.me.host.ExtendedCraftingWTHost;
+import me.myogoo.extendedterminal.me.host.ETWTHost;
 import me.myogoo.extendedterminal.menu.ETMenuType;
 import me.myogoo.extendedterminal.menu.extendedcrafting.BasicTerminalMenu;
 import me.myogoo.extendedterminal.menu.extendedcrafting.ExtendedTerminalBaseMenu;
 import me.myogoo.extendedterminal.menu.extendedcrafting.wt.ExtendedCraftingWTMenu;
+import me.myogoo.extendedterminal.menu.extendedterminal.ETTerminalMenu;
+import me.myogoo.extendedterminal.menu.extendedterminal.ETTerminalMode;
+import me.myogoo.extendedterminal.part.extendedterminal.ETTerminalPart;
 import me.myogoo.myotus.api.wt.AddTerminalEvent;
 import net.minecraft.gametest.framework.GameTestGenerator;
 import net.minecraft.gametest.framework.GameTestHelper;
@@ -71,7 +75,43 @@ public final class WirelessCraftingGameTests {
             tests.add(new TestFunction("extendedterminal", "wirelesscraftinggametests.inventoryroundtrip",
                     "extendedterminal:empty", 20, 0, true, WirelessCraftingGameTests::inventoryRoundTrip));
         }
+        if (ModList.get().isLoaded("ae2wtlib") && !ModList.get().isLoaded("apotheosis")
+                && !ModList.get().isLoaded("apothic_enchanting")) {
+            tests.add(new TestFunction("extendedterminal", "wirelesscraftinggametests.anvilexperiencecost",
+                    "extendedterminal:empty", 20, 0, true, WirelessCraftingGameTests::anvilExperienceCost));
+        }
         return tests;
+    }
+
+    private static void anvilExperienceCost(GameTestHelper helper) {
+        var player = new FakePlayer(helper.getLevel(), new GameProfile(UUID.randomUUID(), "et-anvil-test"));
+        player.getAbilities().instabuild = false;
+        var host = new ETWTHost(player, null, new ItemStack(WTItems.WIRELESS_ET_TERMINAL), (p, menu) -> { });
+        host.setMode(ETTerminalMode.ANVIL);
+        var input = new ItemStack(Items.DIAMOND);
+        input.setRepairCost(4);
+        host.getSubInventory(ETTerminalPart.ANVIL_INVENTORY).setItemDirect(0, input);
+        var menu = new ETTerminalMenu(ETTerminalMenu.TYPE, 1, player.getInventory(), host);
+        menu.setAnvilItemName("XP regression");
+        helper.assertTrue(menu.getAnvilCost() == 5, "rename fixture must cost five levels");
+        helper.assertTrue(!menu.canPayAnvilCost(player) && !menu.consumeAnvilExperience(player),
+                "zero-level players without stored XP must not get a free anvil operation");
+
+        player.giveExperiencePoints(7);
+        helper.assertTrue(!menu.canPayAnvilCost(player) && !menu.consumeAnvilExperience(player)
+                        && player.experienceLevel == 1,
+                "insufficient XP must not underpay the displayed anvil cost or debit the player");
+
+        player.giveExperiencePoints(48);
+        helper.assertTrue(player.experienceLevel == 5 && menu.canPayAnvilCost(player)
+                        && menu.consumeAnvilExperience(player) && player.experienceLevel == 0,
+                "exactly five levels must pay the anvil cost");
+
+        player.giveExperiencePoints(173); // Level 10 plus 13 of the next 27 XP.
+        helper.assertTrue(menu.consumeAnvilExperience(player) && player.experienceLevel == 5
+                        && player.totalExperience == 63,
+                "vanilla level removal must account for the progress fraction at the target level");
+        helper.succeed();
     }
 
     private static void gridStoreTake(GameTestHelper helper, ETMenuType type) {
