@@ -14,6 +14,8 @@ import net.minecraft.core.NonNullList;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.*;
+import net.minecraft.world.item.crafting.display.ShapedCraftingRecipeDisplay;
+import net.minecraft.world.item.crafting.display.ShapelessCraftingRecipeDisplay;
 import me.myogoo.extendedterminal.api.annotation.ExtendedCrafting;
 import me.myogoo.extendedterminal.api.annotation.ReAvaritia;
 import me.myogoo.extendedterminal.menu.ETTerminalBaseMenu;
@@ -68,8 +70,29 @@ public interface MyoTableRecipe extends MyoBaseRecipe {
         } else if (recipe instanceof ShapelessRecipe shapeless) {
             return new ShapelessTableRecipeAdapter(shapeless, id);
         } else {
+            if (hasCraftingLayout(recipe) && recipe.display().getFirst() instanceof ShapedCraftingRecipeDisplay shaped) {
+                return new ShapedTableRecipeAdapter(recipe, 1, shaped.width(), shaped.height(), id);
+            }
             return new ShapelessTableRecipeAdapter(recipe, id);
         }
+    }
+
+    static boolean hasCraftingLayout(CraftingRecipe recipe) {
+        if (recipe instanceof ShapedRecipe || recipe instanceof ShapelessRecipe) {
+            return true;
+        }
+        var displays = recipe.display();
+        if (displays.size() != 1) {
+            return false;
+        }
+        int slots = recipe.placementInfo().slotsToIngredientIndex().size();
+        return switch (displays.getFirst()) {
+            case ShapedCraftingRecipeDisplay shaped -> shaped.width() > 0 && shaped.width() <= 9
+                    && shaped.height() > 0 && shaped.height() <= 9
+                    && shaped.width() * shaped.height() == slots;
+            case ShapelessCraftingRecipeDisplay shapeless -> shapeless.ingredients().size() == slots;
+            default -> false;
+        };
     }
 
     @ExtendedCrafting

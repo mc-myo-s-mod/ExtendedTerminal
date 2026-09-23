@@ -18,7 +18,10 @@ import me.myogoo.extendedterminal.api.annotation.ReAvaritia;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntList;
 import me.myogoo.extendedterminal.ExtendedTerminal;
+import me.myogoo.extendedterminal.api.adapter.recipe.table.MyoTableRecipe;
 import me.myogoo.extendedterminal.menu.recipe.ETRecipeTransferPlanner;
+import me.myogoo.extendedterminal.menu.extendedterminal.ETTerminalMenu;
+import me.myogoo.extendedterminal.menu.extendedterminal.ETTerminalMode;
 import me.myogoo.myotus.api.MyotusAPI;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.registries.Registries;
@@ -68,6 +71,11 @@ public class FillTableCraftingGridFromRecipePacket extends FillRecipeBasePacket 
             int recipeWidth,
             int recipeHeight
     ) {
+        int side = (int) Math.sqrt(validateGridSize(ingredientTemplates.size()));
+        if (!(recipeWidth == NOT_SET_RECIPE_SIZE && recipeHeight == NOT_SET_RECIPE_SIZE)
+                && (recipeWidth < 1 || recipeWidth > side || recipeHeight < 1 || recipeHeight > side)) {
+            throw new IllegalArgumentException("Recipe dimensions must both be unset or fit the crafting grid");
+        }
         this.recipeId = recipeId;
         this.ingredientTemplates = NonNullList.copyOf(ingredientTemplates.stream().map(ItemStack::copy).toList());
         this.craftMissing = craftMissing;
@@ -97,7 +105,7 @@ public class FillTableCraftingGridFromRecipePacket extends FillRecipeBasePacket 
         if (stream.readBoolean()) {
             recipeId = stream.readResourceKey(Registries.RECIPE);
         }
-        var ingredientTemplates = NonNullList.withSize(stream.readInt(), ItemStack.EMPTY);
+        var ingredientTemplates = NonNullList.withSize(validateGridSize(stream.readInt()), ItemStack.EMPTY);
         ingredientTemplates.replaceAll(ignored -> ItemStack.OPTIONAL_STREAM_CODEC.decode(stream));
         var craftMissing = stream.readBoolean();
         int recipeWidth = stream.readInt();
@@ -106,8 +114,16 @@ public class FillTableCraftingGridFromRecipePacket extends FillRecipeBasePacket 
         return new FillTableCraftingGridFromRecipePacket(recipeId, ingredientTemplates, craftMissing, recipeWidth, recipeHeight);
     }
 
+    private static int validateGridSize(int count) {
+        int side = (int) Math.sqrt(count);
+        if (count < 1 || count > 81 || side * side != count) {
+            throw new IllegalArgumentException("Recipe transfer requires a square grid of at most 81 slots");
+        }
+        return count;
+    }
 
     @Override
+    @Nullable
     protected NonNullList<Optional<Ingredient>> getDesiredIngredients(Player player) {
         Recipe<?> recipe = null;
         if (recipeId != null) {
@@ -120,6 +136,13 @@ public class FillTableCraftingGridFromRecipePacket extends FillRecipeBasePacket 
             }
             recipe = recipeHolder != null ? recipeHolder.value() : null;
         }
+        if (recipe != null) {
+            int slots = MyoTableRecipe.positionedIngredients(recipe).size();
+            if (slots > ingredientTemplates.size()
+                    || (recipeWidth != NOT_SET_RECIPE_SIZE && slots != recipeWidth * recipeHeight)) {
+                return null;
+            }
+        }
         return ETRecipeTransferPlanner.desiredIngredients(recipe, ingredientTemplates, recipeWidth, recipeHeight);
     }
 
@@ -130,6 +153,17 @@ public class FillTableCraftingGridFromRecipePacket extends FillRecipeBasePacket 
         if (!(menu instanceof ICraftingGridMenu cct)) {
             // Server might have closed the menu before the client-packet is processed. This is not an error.
             return;
+        }
+        var craftMatrix = cct.getCraftingMatrix();
+        if (ingredientTemplates.size() != craftMatrix.size()) {
+            return;
+        }
+        var ingredients = getDesiredIngredients(player);
+        if (ingredients == null) {
+            return;
+        }
+        if (menu instanceof ETTerminalMenu terminalMenu) {
+            terminalMenu.setMode(ETTerminalMode.CRAFTING);
         }
 
         var energy = cct.getEnergySource();
@@ -154,10 +188,8 @@ public class FillTableCraftingGridFromRecipePacket extends FillRecipeBasePacket 
             cachedStorage = new KeyCounter();
         }
 
-        var craftMatrix = cct.getCraftingMatrix();
         // We'll try to use the best possible ingredients based on what's available in the network
         var filter = ViewCellItem.createItemFilter(cct.getViewCells());
-        var ingredients = getDesiredIngredients(player);
 
         // Prepare to autocraft some stuff
         var toAutoCraft = new LinkedHashMap<AEItemKey, IntList>();
@@ -217,6 +249,9 @@ public class FillTableCraftingGridFromRecipePacket extends FillRecipeBasePacket 
             // If still nothing, try taking it from the player inventory
             if (currentItem.isEmpty()) {
                 currentItem = takeIngredientFromPlayer(cct, player, ingredient);
+                if (currentItem.isEmpty()) {
+                    currentItem = takeIngredientFromOtherGrid(cct, ingredient);
+                }
             }
             craftMatrix.setItemDirect(x, currentItem);
 

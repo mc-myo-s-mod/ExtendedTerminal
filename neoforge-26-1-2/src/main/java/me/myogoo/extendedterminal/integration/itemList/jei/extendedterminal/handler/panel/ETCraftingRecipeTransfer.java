@@ -2,6 +2,7 @@ package me.myogoo.extendedterminal.integration.itemList.jei.extendedterminal.han
 
 import appeng.core.localization.ItemModText;
 import me.myogoo.extendedterminal.api.adapter.recipe.table.MyoTableRecipe;
+import me.myogoo.extendedterminal.api.adapter.recipe.table.IShapedTableRecipeAdapter;
 import me.myogoo.extendedterminal.integration.itemList.jei.handler.AbstractTableHolderRecipeHandler;
 import me.myogoo.extendedterminal.integration.itemList.jei.handler.IJeiAbstractRecipeHandler;
 import me.myogoo.extendedterminal.integration.itemList.module.extendedterminal.ETCraftingRecipeTransferHelper;
@@ -42,7 +43,7 @@ public class ETCraftingRecipeTransfer<T extends ETTerminalBaseMenu<?>>
     @Override
     public @Nullable IRecipeTransferError transferRecipe(T menu, RecipeHolder<CraftingRecipe> recipeHolder, IRecipeSlotsView recipeSlots, Player player, boolean maxTransfer, boolean doTransfer) {
         var recipe = recipeHolder.value();
-        if (recipe.placementInfo().isImpossibleToPlace()) {
+        if (recipe.placementInfo().isImpossibleToPlace() || !MyoTableRecipe.hasCraftingLayout(recipe)) {
             return Result.createInCompatibleError(helper);
         }
 
@@ -50,6 +51,10 @@ public class ETCraftingRecipeTransfer<T extends ETTerminalBaseMenu<?>>
         var inputSlots = recipeSlots.getSlotViews(RecipeIngredientRole.INPUT);
 
         var adapterRecipe = MyoTableRecipe.of(recipe, recipeHolder.id());
+        if (adapterRecipe instanceof IShapedTableRecipeAdapter shaped
+                && (shaped.width() > menu.getCraftingGridWidth() || shaped.height() > menu.getCraftingGridHeight())) {
+            return Result.createInCompatibleError(helper);
+        }
         var slotToIngredientMap = getGuiSlotToIngredientMap(menu, adapterRecipe);
         Set<Integer> inputSlotKeys = slotToIngredientMap.keySet();
         var missingSlots = menu.findMissingIngredients(slotToIngredientMap);
@@ -84,6 +89,6 @@ public class ETCraftingRecipeTransfer<T extends ETTerminalBaseMenu<?>>
         if (menu instanceof UnitedTerminalMenu unitedMenu) {
             return ETCraftingRecipeTransferHelper.getGuiSlotToIngredientMap(unitedMenu, recipe);
         }
-        return ETCraftingRecipeTransferHelper.getGuiSlotToIngredientMap((ETTerminalMenu) menu, recipe.get());
+        return ETCraftingRecipeTransferHelper.getGuiSlotToIngredientMap((ETTerminalMenu) menu, recipe);
     }
 }

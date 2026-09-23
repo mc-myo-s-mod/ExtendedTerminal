@@ -543,9 +543,11 @@ public class ETTerminalMenu extends ETTerminalBaseMenu<CraftingRecipe> {
             return MyotusAPI.experience().totalForLevel(cost);
         }
 
-        int targetLevel = Math.max(0, player.experienceLevel - cost);
-        return MyotusAPI.experience().totalForLevel(player.experienceLevel)
-                - MyotusAPI.experience().totalForLevel(targetLevel);
+        if (player.experienceLevel >= cost) {
+            return MyotusAPI.experience().vanillaAnvilCost(player, cost);
+        }
+        // Stored XP must cover the minimum level cost even when the player has no levels.
+        return MyotusAPI.experience().vanillaAnvilCost(cost, cost);
     }
 
     private boolean usesApothicAnvilExperienceCost() {

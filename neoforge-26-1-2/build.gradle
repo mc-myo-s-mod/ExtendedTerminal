@@ -83,6 +83,7 @@ neoForge {
         gameTestServer {
             type = 'gameTestServer'
             gameDirectory = project.file('run-gametest')
+            programArguments.addAll '--tests', "${mod_id}:*"
         }
         data {
             serverData()

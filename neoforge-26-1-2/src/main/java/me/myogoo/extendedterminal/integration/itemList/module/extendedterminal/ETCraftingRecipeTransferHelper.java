@@ -2,12 +2,13 @@ package me.myogoo.extendedterminal.integration.itemList.module.extendedterminal;
 
 import appeng.core.network.ServerboundPacket;
 import appeng.core.network.serverbound.FillCraftingGridFromRecipePacket;
-import appeng.util.CraftingRecipeUtil;
+import me.myogoo.extendedterminal.api.adapter.recipe.table.IShapedTableRecipeAdapter;
 import me.myogoo.extendedterminal.api.adapter.recipe.table.MyoTableRecipe;
 import me.myogoo.extendedterminal.client.ae2helpers.ETAutoCraftingWatcher;
 import me.myogoo.extendedterminal.integration.itemList.module.extendedcrafting.ECRecipeTransferHelper;
 import me.myogoo.extendedterminal.menu.extendedterminal.ETTerminalMenu;
 import me.myogoo.extendedterminal.menu.extendedterminal.UnitedTerminalMenu;
+import me.myogoo.extendedterminal.network.serverbound.FillTableCraftingGridFromRecipePacket;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -21,11 +22,18 @@ import java.util.Map;
 
 public class ETCraftingRecipeTransferHelper {
     public static Map<Integer, Ingredient> getGuiSlotToIngredientMap(ETTerminalMenu menu, CraftingRecipe recipe) {
-        var ingredients = CraftingRecipeUtil.getIngredients(recipe);
+        return getGuiSlotToIngredientMap(menu, MyoTableRecipe.of(recipe, null));
+    }
+
+    public static Map<Integer, Ingredient> getGuiSlotToIngredientMap(ETTerminalMenu menu, MyoTableRecipe recipe) {
+        if (recipe instanceof IShapedTableRecipeAdapter && !(recipe.get() instanceof ShapedRecipe)) {
+            return ECRecipeTransferHelper.getGuiSlotToIngredientMap(menu, recipe);
+        }
+        var ingredients = recipe.ensureFittedCraftingGrid();
 
         int width;
-        if (recipe instanceof ShapedRecipe shapedRecipe) {
-            width = shapedRecipe.getWidth();
+        if (recipe instanceof IShapedTableRecipeAdapter shapedRecipe) {
+            width = shapedRecipe.width();
         } else {
             width = 3;
         }
@@ -53,10 +61,16 @@ public class ETCraftingRecipeTransferHelper {
 
     public static void performTransfer(ETTerminalMenu menu, CraftingRecipe recipe, ResourceKey<Recipe<?>> recipeId,
             boolean craftingMissing) {
-        var templateItems = MyoTableRecipe.of(recipe, recipeId).findGoodTemplateItems(menu);
+        if (!MyoTableRecipe.hasCraftingLayout(recipe)) {
+            return;
+        }
+        var adapter = MyoTableRecipe.of(recipe, recipeId);
+        var templateItems = adapter.findGoodTemplateItems(menu);
 
-        ETAutoCraftingWatcher.INSTANCE.preparePending(menu, getGuiSlotToIngredientMap(menu, recipe), craftingMissing);
-        ServerboundPacket message = new FillCraftingGridFromRecipePacket(recipeId, templateItems, craftingMissing);
+        ETAutoCraftingWatcher.INSTANCE.preparePending(menu, getGuiSlotToIngredientMap(menu, adapter), craftingMissing);
+        ServerboundPacket message = adapter instanceof IShapedTableRecipeAdapter shaped && !(recipe instanceof ShapedRecipe)
+                ? new FillTableCraftingGridFromRecipePacket(recipeId, templateItems, craftingMissing, shaped.width(), shaped.height())
+                : new FillCraftingGridFromRecipePacket(recipeId, templateItems, craftingMissing);
         ClientPacketDistributor.sendToServer(message);
     }
 }

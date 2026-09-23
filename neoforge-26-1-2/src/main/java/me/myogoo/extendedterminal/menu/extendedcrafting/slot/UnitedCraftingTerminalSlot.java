@@ -84,6 +84,7 @@ public class UnitedCraftingTerminalSlot extends ETCraftingBaseSlot<Recipe<Recipe
         }
 
         var input = MyoTableInput.create(this.menuType.getGridSideLength(), this.menuType.getGridSideLength(), items, termMenu.getSelectedRecipeType().tier());
+        var compactInput = input.cast();
 
         CommonHooks.setCraftingPlayer(player);
         var remainingItems = this.getMyoRemainingItems(input, player.level());
@@ -92,11 +93,15 @@ public class UnitedCraftingTerminalSlot extends ETCraftingBaseSlot<Recipe<Recipe
         for (int y = 0; y < menuType.getGridSideLength(); y++) {
             for (int x = 0; x < menuType.getGridSideLength(); x++) {
                 var slotIdx = y * menuType.getGridSideLength() + x;
-                var remainderIdx = (y - input.top()) * input.width() + (x - input.left());
+                int relativeX = x - input.left();
+                int relativeY = y - input.top();
+                var remainderIdx = relativeY * compactInput.width() + relativeX;
 
                 this.craftInv.extractItem(slotIdx, 1, false);
 
-                if (remainderIdx >= 0 && remainderIdx < remainingItems.size()) {
+                if (relativeX >= 0 && relativeX < compactInput.width()
+                        && relativeY >= 0 && relativeY < compactInput.height()
+                        && remainderIdx < remainingItems.size()) {
                     var remainingInSlot = remainingItems.get(remainderIdx);
                     if (!remainingInSlot.isEmpty()) {
                         if (this.craftInv.getStackInSlot(slotIdx).isEmpty()) {
