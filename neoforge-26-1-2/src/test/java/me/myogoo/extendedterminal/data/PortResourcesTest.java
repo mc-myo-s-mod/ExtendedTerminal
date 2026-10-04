@@ -46,7 +46,7 @@ class PortResourcesTest {
     }
 
     @Test
-    void materialConverterResourcesAreNotPackaged() throws Exception {
+    void materialConverterAndLegacyConversionsAreNotPackaged() throws Exception {
         for (var path : List.of(
                 "assets/extendedterminal/blockstates/material_converter.json",
                 "assets/extendedterminal/models/block/material_converter.json",
@@ -55,6 +55,10 @@ class PortResourcesTest {
                 "assets/extendedterminal/textures/block/material_converter.png",
                 "assets/extendedterminal/ae2guide/material_converter.md",
                 "data/extendedterminal/recipe/extendedterminal/material_converter.json",
+                "data/extendedterminal/recipe/extendedterminal/conversion/charged_ender_pearl.json",
+                "data/extendedterminal/recipe/extendedterminal/conversion/compat_press.json",
+                "data/extendedterminal/recipe/extendedterminal/conversion/compat_processor.json",
+                "data/extendedterminal/recipe/extendedterminal/conversion/printed_compat_processor.json",
                 "data/extendedterminal/loot_table/blocks/material_converter.json")) {
             assertNull(getClass().getClassLoader().getResource(path), path);
         }

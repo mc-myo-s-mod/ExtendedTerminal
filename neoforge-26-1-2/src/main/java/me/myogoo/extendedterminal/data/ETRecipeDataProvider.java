@@ -17,7 +17,6 @@ public final class ETRecipeDataProvider extends JsonRecipeProvider {
 
     @Override
     protected void buildRecipes(JsonRecipeOutput output) {
-        buildMyotusConversions(output);
         buildTerminalCrafting(output);
         buildAE2WTLibRecipes(output);
     }
@@ -25,17 +24,6 @@ public final class ETRecipeDataProvider extends JsonRecipeProvider {
     @Override
     public @NotNull String getName() {
         return "Extended Terminal recipes";
-    }
-
-    private static void buildMyotusConversions(JsonRecipeOutput output) {
-        saveShapeless(output, "extendedterminal/conversion/charged_ender_pearl",
-                "extendedterminal:charged_ender_pearl", "myotus:charged_ender_pearl");
-        saveShapeless(output, "extendedterminal/conversion/compat_press",
-                "extendedterminal:compat_press", "myotus:compat_press");
-        saveShapeless(output, "extendedterminal/conversion/compat_processor",
-                "extendedterminal:compat_processor", "myotus:compat_processor");
-        saveShapeless(output, "extendedterminal/conversion/printed_compat_processor",
-                "extendedterminal:printed_compat_processor", "myotus:printed_compat_processor");
     }
 
     private static void buildTerminalCrafting(JsonRecipeOutput output) {
@@ -128,15 +116,6 @@ public final class ETRecipeDataProvider extends JsonRecipeProvider {
         saveShaped(output, path, conditions, result,
                 new String[]{"IT", "P "},
                 key('I', table, 'P', "myotus:compat_processor", 'T', terminal));
-    }
-
-    private static void saveShapeless(JsonRecipeOutput output, String path, String ingredient, String result) {
-        JsonObject recipe = recipe("minecraft:crafting_shapeless");
-        JsonArray ingredients = new JsonArray();
-        ingredients.add(ingredient);
-        recipe.add("ingredients", ingredients);
-        recipe.add("result", result(result, 1));
-        save(output, path, recipe);
     }
 
     private static void saveShapeless(JsonRecipeOutput output, String path, JsonArray conditions, String result,
