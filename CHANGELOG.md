@@ -2,16 +2,6 @@
 
 ## Unreleased
 
-### Minecraft 1.20.1 (Forge, 15.1.1)
-
-- Add wireless Epic and Legendary terminals.
-- Optimize United Terminal recipe lookup and shift-crafting to reduce crafting delays.
-- Fix offset and shapeless recipes, NBT-sensitive outputs, and crafting remainder placement in United Terminal.
-- Improve custom shaped recipe transfers and reject extra ingredients outside the selected crafting tier.
-- Fix JEI/EMI transfers treating ordinary crafting terminals as United Terminal.
-- Correct anvil XP costs at low player levels and preserve fractional XP accounting.
-- Align Store/Take button order with AE2 and update the Epic/Legendary terminal guide pages.
-
 ### Minecraft 1.21.1 (NeoForge)
 
 - Reject malformed or mismatched crafting-grid transfers before changing items or the selected United recipe type.
@@ -29,6 +19,18 @@
 - Recognize Wireless United Terminal in magnet-mode terminal lookup.
 - Support Minecraft 26.1.2 release tags and publishing with Java 25.
 - Use the Jade loot-registry fix in the development runtime without making Jade mandatory.
+
+## 15.1.1 - 2026-10-10
+
+### Minecraft 1.20.1 (Forge)
+
+- Add wireless Epic and Legendary terminals.
+- Optimize United Terminal recipe lookup and shift-crafting to reduce crafting delays.
+- Fix offset and shapeless recipes, NBT-sensitive outputs, and crafting remainder placement in United Terminal.
+- Improve custom shaped recipe transfers and reject extra ingredients outside the selected crafting tier.
+- Fix JEI/EMI transfers treating ordinary crafting terminals as United Terminal.
+- Correct anvil XP costs at low player levels and preserve fractional XP accounting.
+- Align Store/Take button order with AE2 and update the Epic/Legendary terminal guide pages.
 
 ## 19.1.0 / 15.1.0
 
