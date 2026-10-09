@@ -31,8 +31,7 @@ public class FillUnitedGridPacket extends FillTableCraftingGridFromRecipePacket 
 
     public FillUnitedGridPacket(@Nullable ResourceLocation recipeId, List<ItemStack> ingredientTemplates, boolean craftMissing,
                                 int recipeWidth, int recipeHeight, MyoRecipeType recipeType) {
-        super(recipeId, validateIngredientTemplates(ingredientTemplates), craftMissing,
-                validateRecipeDimension(recipeWidth), validateRecipeDimension(recipeHeight));
+        super(recipeId, validateIngredientTemplates(ingredientTemplates), craftMissing, recipeWidth, recipeHeight);
         this.recipeType = recipeType;
     }
 
@@ -77,7 +76,9 @@ public class FillUnitedGridPacket extends FillTableCraftingGridFromRecipePacket 
     @Override
     public void handleOnServer(ServerPlayer player) {
         var menu = player.containerMenu;
-        if (!(menu instanceof UnitedTerminalMenu unitedMenu) || !this.recipeType.isActive()) {
+        if (!(menu instanceof UnitedTerminalMenu unitedMenu) || !this.recipeType.isActive()
+                || ingredientTemplates.size() != unitedMenu.getCraftingMatrix().size()
+                || getDesiredIngredients(player) == null) {
             return;
         }
 
@@ -101,10 +102,4 @@ public class FillUnitedGridPacket extends FillTableCraftingGridFromRecipePacket 
         return count;
     }
 
-    private static int validateRecipeDimension(int dimension) {
-        if (dimension != NOT_SET_RECIPE_SIZE && (dimension < 1 || dimension > 9)) {
-            throw new IllegalArgumentException("United recipe transfer dimensions must be between 1 and 9");
-        }
-        return dimension;
-    }
 }

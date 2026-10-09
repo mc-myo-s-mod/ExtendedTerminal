@@ -12,6 +12,10 @@
 - Correct anvil XP costs at low player levels and preserve fractional XP accounting.
 - Align Store/Take button order with AE2 and update the Epic/Legendary terminal guide pages.
 
+### Minecraft 1.21.1 (NeoForge)
+
+- Reject malformed or mismatched crafting-grid transfers before changing items or the selected United recipe type.
+
 ### Minecraft 26.1.2 (NeoForge)
 
 - Add the initial Minecraft 26.1.2 port.
@@ -24,6 +28,7 @@
 - Reject malformed smithing packets and invalid smithing/stonecutting recipe transfers safely.
 - Recognize Wireless United Terminal in magnet-mode terminal lookup.
 - Support Minecraft 26.1.2 release tags and publishing with Java 25.
+- Use the Jade loot-registry fix in the development runtime without making Jade mandatory.
 
 ## 19.1.0 / 15.1.0
 

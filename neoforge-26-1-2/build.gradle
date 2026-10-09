@@ -105,6 +105,12 @@ neoForge {
 }
 
 dependencies {
+    constraints {
+        runtimeOnly('curse.maven:jade-324717:8857417') {
+            because 'Fix loot-registry access during 26.1.2 tag reloads'
+        }
+    }
+
     implementation("me.myogoo:myotus:${myotus_version}") {
         exclude group: 'de.mari_023', module: 'ae2wtlib'
         exclude group: 'de.mari_023', module: 'ae2wtlib_api'

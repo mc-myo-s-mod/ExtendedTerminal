@@ -60,6 +60,11 @@ public class FillTableCraftingGridFromRecipePacket extends FillRecipeBasePacket 
             int recipeWidth,
             int recipeHeight
     ) {
+        int side = (int) Math.sqrt(validateGridSize(ingredientTemplates.size()));
+        if (!(recipeWidth == NOT_SET_RECIPE_SIZE && recipeHeight == NOT_SET_RECIPE_SIZE)
+                && (recipeWidth < 1 || recipeWidth > side || recipeHeight < 1 || recipeHeight > side)) {
+            throw new IllegalArgumentException("Recipe dimensions must both be unset or fit the crafting grid");
+        }
         this.recipeId = recipeId;
         this.ingredientTemplates = NonNullList.copyOf(ingredientTemplates.stream().map(ItemStack::copy).toList());
         this.craftMissing = craftMissing;
@@ -89,7 +94,7 @@ public class FillTableCraftingGridFromRecipePacket extends FillRecipeBasePacket 
         if (stream.readBoolean()) {
             recipeId = stream.readResourceLocation();
         }
-        var ingredientTemplates = NonNullList.withSize(stream.readInt(), ItemStack.EMPTY);
+        var ingredientTemplates = NonNullList.withSize(validateGridSize(stream.readInt()), ItemStack.EMPTY);
         ingredientTemplates.replaceAll(ignored -> ItemStack.OPTIONAL_STREAM_CODEC.decode(stream));
         var craftMissing = stream.readBoolean();
         int recipeWidth = stream.readInt();
@@ -99,13 +104,29 @@ public class FillTableCraftingGridFromRecipePacket extends FillRecipeBasePacket 
     }
 
 
+    private static int validateGridSize(int count) {
+        int side = (int) Math.sqrt(count);
+        if (count < 1 || count > 81 || side * side != count) {
+            throw new IllegalArgumentException("Recipe transfer requires a square grid of at most 81 slots");
+        }
+        return count;
+    }
+
     @Override
+    @Nullable
     protected NonNullList<Ingredient> getDesiredIngredients(Player player) {
         Recipe<?> recipe = null;
         if (recipeId != null) {
             recipe = player.level().getRecipeManager().byKey(this.recipeId)
                     .map(holder -> (Recipe<?>) holder.value())
                     .orElse(null);
+        }
+        if (recipe != null) {
+            int slots = recipe.getIngredients().size();
+            if (slots > ingredientTemplates.size()
+                    || (recipeWidth != NOT_SET_RECIPE_SIZE && slots != recipeWidth * recipeHeight)) {
+                return null;
+            }
         }
         return ETRecipeTransferPlanner.desiredIngredients(recipe, ingredientTemplates, recipeWidth, recipeHeight);
     }
@@ -116,6 +137,14 @@ public class FillTableCraftingGridFromRecipePacket extends FillRecipeBasePacket 
         var menu = player.containerMenu;
         if (!(menu instanceof ICraftingGridMenu cct)) {
             // Server might have closed the menu before the client-packet is processed. This is not an error.
+            return;
+        }
+        var craftMatrix = cct.getCraftingMatrix();
+        if (ingredientTemplates.size() != craftMatrix.size()) {
+            return;
+        }
+        var ingredients = getDesiredIngredients(player);
+        if (ingredients == null) {
             return;
         }
 
@@ -141,10 +170,8 @@ public class FillTableCraftingGridFromRecipePacket extends FillRecipeBasePacket 
             cachedStorage = new KeyCounter();
         }
 
-        var craftMatrix = cct.getCraftingMatrix();
         // We'll try to use the best possible ingredients based on what's available in the network
         var filter = ViewCellItem.createItemFilter(cct.getViewCells());
-        var ingredients = getDesiredIngredients(player);
 
         // Prepare to autocraft some stuff
         var toAutoCraft = new LinkedHashMap<AEItemKey, IntList>();

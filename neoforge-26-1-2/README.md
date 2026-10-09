@@ -29,4 +29,6 @@ On a Wireless Universal Terminal, the Extended and United panels retain their ex
 
 GitHub releases accept `26.1.2-26.0.0` and `26.1.2-26.0.0-hotfixN` tags (optionally prefixed with `v`). The workflow uses this module's Gradle wrapper and Java 25, and uploads the JAR to GitHub, Modrinth, and CurseForge. The mod version must match `gradle.properties`.
 
-The tested Re:Avaritia/Jade dependencies log their own recipe/loot-table errors during server startup. No workaround for those upstream issues is included.
+The development build upgrades Extended Crafting's transitive Jade dependency to 26.1.11+neoforge (beta), which fixes the loot-table registry error. Jade is not forced into configurations without that dependency. This Gradle constraint does not update Jade in installed modpacks; update the separate Jade JAR there as well.
+
+Re:Avaritia 1.4.2 still logs an error for its `ae2_creative_energy_cell` recipe, and Myotus 26.0.0 warns about an unsupported `avaritia-neo` development recipe. These upstream issues are intentionally left unchanged; no recipe override or integration alias is included.
