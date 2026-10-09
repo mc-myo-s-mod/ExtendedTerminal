@@ -139,6 +139,7 @@ dependencies {
 
     testImplementation 'org.junit.jupiter:junit-jupiter:5.10.3'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    testRuntimeOnly "mezz.jei:jei-${minecraft_version}-neoforge-api:${JEI_version}"
 }
 
 def generateModMetadata = tasks.register('generateModMetadata', ProcessResources) {

@@ -30,7 +30,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeType;
-import net.minecraft.world.item.crafting.SmithingRecipe;
+import net.minecraft.world.item.crafting.SmithingTransformRecipe;
+import net.minecraft.world.item.crafting.SmithingTrimRecipe;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.LinkedHashMap;
@@ -76,7 +77,7 @@ public class FillSmithingGridFromRecipePacket extends FillRecipeBasePacket imple
         if (stream.readBoolean()) {
             recipeId = stream.readResourceKey(Registries.RECIPE);
         }
-        var ingredientTemplates = NonNullList.withSize(stream.readInt(), ItemStack.EMPTY);
+        var ingredientTemplates = NonNullList.withSize(validateTemplateCount(stream.readInt()), ItemStack.EMPTY);
         ingredientTemplates.replaceAll(ignored -> ItemStack.OPTIONAL_STREAM_CODEC.decode(stream));
         var craftMissing = stream.readBoolean();
 
@@ -84,9 +85,17 @@ public class FillSmithingGridFromRecipePacket extends FillRecipeBasePacket imple
     }
 
     public FillSmithingGridFromRecipePacket(ResourceKey<Recipe<?>> recipeId, NonNullList<ItemStack> ingredientTemplates, boolean craftMissing) {
+        validateTemplateCount(ingredientTemplates.size());
         this.recipeId = recipeId;
         this.craftMissing = craftMissing;
-        this.ingredientTemplates = ingredientTemplates;
+        this.ingredientTemplates = NonNullList.copyOf(ingredientTemplates.stream().map(ItemStack::copy).toList());
+    }
+
+    private static int validateTemplateCount(int count) {
+        if (count != 3) {
+            throw new IllegalArgumentException("Smithing recipe transfer requires exactly 3 input slots");
+        }
+        return count;
     }
 
     @Override
@@ -95,6 +104,17 @@ public class FillSmithingGridFromRecipePacket extends FillRecipeBasePacket imple
         var menu = player.containerMenu;
         if (!(menu instanceof ETTerminalMenu cct)) {
             // Server might have closed the menu before the client-packet is processed. This is not an error.
+            return;
+        }
+
+        var craftMatrix = cct.getSmithingInventory();
+        var ingredients = getDesiredIngredients(player);
+        if (!ETTerminalMode.SMITHING.canLoad() || craftMatrix.size() != ingredientTemplates.size()
+                || ingredients.size() != craftMatrix.size()) {
+            return;
+        }
+        cct.setMode(ETTerminalMode.SMITHING);
+        if (cct.getMode() != ETTerminalMode.SMITHING) {
             return;
         }
 
@@ -120,12 +140,9 @@ public class FillSmithingGridFromRecipePacket extends FillRecipeBasePacket imple
             cachedStorage = new KeyCounter();
         }
 
-        var craftMatrix = cct.getSmithingInventory();
-
         // We'll try to use the best possible ingredients based on what's available in the network
 
         var filter = ViewCellItem.createItemFilter(cct.getViewCells());
-        var ingredients = getDesiredIngredients(player);
 
         // Prepare to autocraft some stuff
         var toAutoCraft = new LinkedHashMap<AEItemKey, IntList>();
@@ -217,15 +234,17 @@ public class FillSmithingGridFromRecipePacket extends FillRecipeBasePacket imple
                     .map(e -> new ICraftingGridMenu.AutoCraftEntry(e.getKey(), e.getValue())).toList();
             cct.startAutoCrafting(stacks);
         }
-        cct.setMode(ETTerminalMode.SMITHING);
     }
 
     @Override
     protected NonNullList<Optional<Ingredient>> getDesiredIngredients(Player player) {
         if(recipeId != null) {
             var optionalRecipe = RecipeAccess.byKey(player.level(), RecipeType.SMITHING, this.recipeId);
-            if(optionalRecipe != null && optionalRecipe.value() instanceof SmithingRecipe recipe) {
-                return NonNullList.copyOf(ISmithingRecipeAdapter.of(recipe).getIngredients());
+            if(optionalRecipe != null) {
+                var recipe = optionalRecipe.value();
+                if (recipe instanceof SmithingTransformRecipe || recipe instanceof SmithingTrimRecipe) {
+                    return NonNullList.copyOf(ISmithingRecipeAdapter.of(recipe).getIngredients());
+                }
             }
         }
 

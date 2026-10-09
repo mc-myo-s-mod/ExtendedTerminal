@@ -72,6 +72,13 @@ jobs:
           neoforge_version_type="$(read_property mod_version_type neoforge-1-21-1/gradle.properties)"
           neoforge_java_version="$(read_property java_version neoforge-1-21-1/gradle.properties)"
 
+          neoforge_26_mc_version="$(read_property minecraft_version neoforge-26-1-2/gradle.properties)"
+          neoforge_26_mod_version="$(read_property mod_version neoforge-26-1-2/gradle.properties)"
+          neoforge_26_myotus_version="$(read_property myotus_version neoforge-26-1-2/gradle.properties)"
+          neoforge_26_mod_loader="$(read_property mod_loader neoforge-26-1-2/gradle.properties)"
+          neoforge_26_version_type="$(read_property mod_version_type neoforge-26-1-2/gradle.properties)"
+          neoforge_26_java_version="$(read_property java_version neoforge-26-1-2/gradle.properties)"
+
           release_version="${RELEASE_TAG#v}"
 
           case "$release_version" in
@@ -93,9 +100,18 @@ jobs:
               version_type="$neoforge_version_type"
               java_version="$neoforge_java_version"
               ;;
+            "${neoforge_26_mc_version}-"*)
+              module="neoforge-26-1-2"
+              mc_version="$neoforge_26_mc_version"
+              base_mod_version="$neoforge_26_mod_version"
+              myotus_version="$neoforge_26_myotus_version"
+              mod_loader="$neoforge_26_mod_loader"
+              version_type="$neoforge_26_version_type"
+              java_version="$neoforge_26_java_version"
+              ;;
             *)
               echo "::error::Release tag '${RELEASE_TAG}' does not match a releasable module version."
-              echo "::error::Expected a tag for Minecraft ${forge_mc_version} or ${neoforge_mc_version}, optionally prefixed with 'v'."
+              echo "::error::Expected a tag for Minecraft ${forge_mc_version}, ${neoforge_mc_version}, or ${neoforge_26_mc_version}, optionally prefixed with 'v'."
               exit 1
               ;;
           esac
@@ -154,12 +170,20 @@ jobs:
           fi
 
       - name: Set up Java 17 and 21
+        if: steps.metadata.outputs.module != 'neoforge-26-1-2'
         uses: actions/setup-java@v5
         with:
           distribution: microsoft
           java-version: |
             17
             21
+
+      - name: Set up Java 25
+        if: steps.metadata.outputs.module == 'neoforge-26-1-2'
+        uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: 25
 
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v6
@@ -171,12 +195,24 @@ jobs:
           RELEASE_MOD_VERSION: ${{ steps.metadata.outputs.mod_version }}
           TARGET_MODULE: ${{ steps.metadata.outputs.module }}
         run: |
-          chmod +x ./gradlew
-          ./gradlew ":${TARGET_MODULE}:build" \
-            -Pmod_version="${RELEASE_MOD_VERSION}" \
-            --build-cache \
-            --no-daemon \
-            --console=plain
+          set -euo pipefail
+          if [[ "$TARGET_MODULE" == "neoforge-26-1-2" ]]; then
+            cd "$TARGET_MODULE"
+            chmod +x ./gradlew
+            ./gradlew build \
+              -Pmod_version="${RELEASE_MOD_VERSION}" \
+              --build-cache \
+              --no-configuration-cache \
+              --no-daemon \
+              --console=plain
+          else
+            chmod +x ./gradlew
+            ./gradlew ":${TARGET_MODULE}:build" \
+              -Pmod_version="${RELEASE_MOD_VERSION}" \
+              --build-cache \
+              --no-daemon \
+              --console=plain
+          fi
 
       - name: Collect release artifacts
         env:
@@ -272,5 +308,5 @@ jobs:
             myotus(required){modrinth:32YA23Pp}{curseforge:1496024}
             ae2wtlib(optional){modrinth:pNabrMMw}{curseforge:459929}
             extendedcrafting(optional){modrinth:5JMG1gql}{curseforge:268387}
-            avaritianeo(optional){modrinth:j5gjLUvf}{curseforge:1083158}
+            ${{ needs.build.outputs.module != 'neoforge-26-1-2' && 'avaritianeo(optional){modrinth:j5gjLUvf}{curseforge:1083158}' || '' }}
             re-avaritia(optional){modrinth:QeB3NRC5}{curseforge:623969}

@@ -14,6 +14,7 @@ import appeng.items.storage.ViewCellItem;
 import appeng.util.prioritylist.IPartitionList;
 import me.myogoo.extendedterminal.menu.ETMenuType;
 import me.myogoo.extendedterminal.menu.extendedterminal.ETTerminalMenu;
+import me.myogoo.extendedterminal.menu.extendedterminal.ETTerminalMode;
 import me.myogoo.extendedterminal.menu.slot.ETCraftingBaseSlot;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.registries.Registries;
@@ -35,14 +36,16 @@ public class ETStoneCutterSlot extends ETCraftingBaseSlot<StonecutterRecipe, Sin
 
     @Override
     protected RecipeHolder<StonecutterRecipe> findRecipe(SingleRecipeInput ic, Level level) {
-        if(!(menu instanceof ETTerminalMenu terminalMenu)) {
+        if (!(menu instanceof ETTerminalMenu terminalMenu)
+                || !terminalMenu.canCraftInMode(ETTerminalMode.STONECUTTING) || ic.item().isEmpty()) {
             return null;
         }
         if (terminalMenu.getStoneCutterRecipeId() == null) {
             return null;
         }
         var recipeKey = ResourceKey.create(Registries.RECIPE, terminalMenu.getStoneCutterRecipeId());
-        return RecipeAccess.byKey(level, RecipeType.STONECUTTING, recipeKey);
+        var recipe = RecipeAccess.byKey(level, RecipeType.STONECUTTING, recipeKey);
+        return recipe != null && recipe.value().matches(ic, level) ? recipe : null;
     }
 
 

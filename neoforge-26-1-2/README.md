@@ -6,6 +6,7 @@ From this directory on Windows:
 
 ```powershell
 cmd.exe /c "gradlew.bat compileJava test build --console=plain --no-configuration-cache"
+cmd.exe /c "gradlew.bat runGameTestServer --console=plain --no-configuration-cache"
 cmd.exe /c "gradlew.bat runData --console=plain --no-configuration-cache"
 cmd.exe /c "gradlew.bat runClient --console=plain --no-configuration-cache"
 ```
@@ -20,6 +21,12 @@ Recipe sources are in `src/main/resources/data/extendedterminal/recipe`. After `
 
 Material Converter and legacy material conversion recipes are removed in 26.1.2.
 
-Verification covers compilation, regression tests, recipe generation, dedicated-server startup with and without optional integrations, client startup, and a client connection with JEI registration. Actual terminal crafting, transfer clicks, panel switching, and reconnect behavior still need in-game validation.
+Regression GameTests cover United crafting, Extended panel input/mode/power checks, recipe-transfer validation, and wireless inventory persistence and magnet terminal lookup. Wireless tests run only when AE2WTLib is enabled. Power-transition tests use simulated activation; magnet tests check terminal lookup, not dropped-item attraction.
+
+Verification also covers compilation, unit tests, recipe generation, dedicated-server startup with and without optional integrations, client startup, and a client connection with JEI registration. Actual GUI transfer clicks, panel switching, real ME-network power transitions, dropped-item attraction, and reconnect behavior still need in-game validation.
+
+On a Wireless Universal Terminal, the Extended and United panels retain their existing shared first nine crafting slots. Editing the Extended panel now preserves the remaining 72 United slots; items already lost before this fix cannot be recovered.
+
+GitHub releases accept `26.1.2-26.0.0` and `26.1.2-26.0.0-hotfixN` tags (optionally prefixed with `v`). The workflow uses this module's Gradle wrapper and Java 25, and uploads the JAR to GitHub, Modrinth, and CurseForge. The mod version must match `gradle.properties`.
 
 The tested Re:Avaritia/Jade dependencies log their own recipe/loot-table errors during server startup. No workaround for those upstream issues is included.

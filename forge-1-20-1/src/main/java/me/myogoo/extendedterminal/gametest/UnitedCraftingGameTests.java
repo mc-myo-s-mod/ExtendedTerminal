@@ -12,11 +12,20 @@ import appeng.api.stacks.AEKey;
 import appeng.api.stacks.KeyCounter;
 import appeng.api.storage.MEStorage;
 import appeng.helpers.InventoryAction;
+import appeng.menu.me.common.GridInventoryEntry;
+import appeng.menu.me.common.IClientRepo;
 import appeng.util.ConfigManager;
 import appeng.util.inv.AppEngInternalInventory;
 import com.mojang.authlib.GameProfile;
 import me.myogoo.extendedterminal.ExtendedTerminal;
+import me.myogoo.extendedterminal.adapter.recipe.ShapedTableRecipeAdapter;
+import me.myogoo.extendedterminal.api.adapter.recipe.ITableRecipeAdapter;
 import me.myogoo.extendedterminal.menu.ETMenuType;
+import me.myogoo.extendedterminal.menu.ETTerminalBaseMenu;
+import me.myogoo.extendedterminal.menu.avaritiaRe.EndTerminalMenu;
+import me.myogoo.extendedterminal.menu.avaritiaRe.ExtremeTerminalMenu;
+import me.myogoo.extendedterminal.menu.avaritiaRe.NetherTerminalMenu;
+import me.myogoo.extendedterminal.menu.avaritiaRe.SculkTerminalMenu;
 import me.myogoo.extendedterminal.menu.extendedcrafting.UnitedTerminalMenu;
 import me.myogoo.extendedterminal.menu.extendedcrafting.slot.UnitedCraftingTerminalSlot;
 import net.minecraft.core.NonNullList;
@@ -48,11 +57,14 @@ import net.minecraftforge.gametest.GameTestHolder;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
+import java.util.function.BiConsumer;
 
 @GameTestHolder(ExtendedTerminal.MODID)
 public final class UnitedCraftingGameTests {
@@ -68,6 +80,12 @@ public final class UnitedCraftingGameTests {
                 "extendedterminal:empty", 20, 0, true, UnitedCraftingGameTests::distributedShapeless));
         tests.add(new TestFunction("extendedterminal", "unitedcraftinggametests.tippedarrows",
                 "extendedterminal:empty", 20, 0, true, UnitedCraftingGameTests::tippedArrows));
+        if (ETMenuType.SCULK_TERMINAL.canLoad()) {
+            if (ModList.get().isLoaded("jei")) {
+                tests.add(new TestFunction("extendedterminal", "unitedcraftinggametests.jeitransferpacketconstruction",
+                        "extendedterminal:empty", 20, 0, true, JeiTransferTest::run));
+            }
+        }
         if (ModList.get().isLoaded("extendedcrafting")) {
             tests.add(new TestFunction("extendedterminal", "unitedcraftinggametests.outsidetier",
                     "extendedterminal:empty", 20, 0, true, UnitedCraftingGameTests::outsideTier));
@@ -90,6 +108,74 @@ public final class UnitedCraftingGameTests {
                     "extendedterminal:empty", 40, 0, true, UnitedCraftingGameTests::cacheInvalidation));
         }
         return tests;
+    }
+
+    private static void transferPacketConstruction(GameTestHelper helper,
+            BiConsumer<ETTerminalBaseMenu<?>, ITableRecipeAdapter<?>> transfer) {
+        var recipe = new ShapedTableRecipeAdapter(shapedRecipe(
+                new ResourceLocation("extendedterminal", "gametest_transfer"), Items.DIAMOND), 1, 1, 1);
+        for (var type : new ETMenuType[]{ETMenuType.SCULK_TERMINAL, ETMenuType.NETHER_TERMINAL,
+                ETMenuType.END_TERMINAL, ETMenuType.EXTREME_TERMINAL, ETMenuType.UNITED_TERMINAL}) {
+            var player = testPlayer(helper);
+            var host = new TestHost(player, type);
+            ETTerminalBaseMenu<?> menu = switch (type) {
+                case SCULK_TERMINAL -> new SculkTerminalMenu(SculkTerminalMenu.TYPE, 1, player.getInventory(), host);
+                case NETHER_TERMINAL -> new NetherTerminalMenu(NetherTerminalMenu.TYPE, 1, player.getInventory(), host);
+                case END_TERMINAL -> new EndTerminalMenu(EndTerminalMenu.TYPE, 1, player.getInventory(), host);
+                case EXTREME_TERMINAL -> new ExtremeTerminalMenu(ExtremeTerminalMenu.TYPE, 1, player.getInventory(), host);
+                case UNITED_TERMINAL -> new UnitedTerminalMenu(UnitedTerminalMenu.TYPE, 1, player.getInventory(), host);
+                default -> throw new AssertionError(type);
+            };
+            menu.setClientRepo(new IClientRepo() {
+                @Override
+                public void handleUpdate(boolean fullUpdate, List<GridInventoryEntry> entries) {
+                }
+
+                @Override
+                public Set<GridInventoryEntry> getAllEntries() {
+                    return Set.of();
+                }
+
+                @Override
+                public Collection<GridInventoryEntry> getByIngredient(Ingredient ingredient) {
+                    return List.of();
+                }
+            });
+            try {
+                transfer.accept(menu, recipe);
+                helper.fail("transfer must reach the dedicated-server network guard for " + type);
+            } catch (IllegalStateException expected) {
+                // shortcut: packet construction only; validate delivery through client/server gameplay separately.
+                helper.assertTrue("Cannot send a serverbound Myotus packet from a dedicated server".equals(expected.getMessage()),
+                        "unexpected transfer failure for " + type + ": " + expected);
+            }
+        }
+        helper.succeed();
+    }
+
+    private static final class JeiTransferTest extends
+            me.myogoo.extendedterminal.integration.jei.handler.AbstractTableRecipeHandler<ETTerminalBaseMenu<?>, ShapedRecipe> {
+        private JeiTransferTest() {
+            super(null, null, null);
+        }
+
+        private static void run(GameTestHelper helper) {
+            var handler = new JeiTransferTest();
+            transferPacketConstruction(helper, (menu, recipe) -> handler.performTransfer(menu, recipe, false,
+                    UnitedTerminalMenu.UnitedRecipeKind.RE_AVARITIA_SCULK));
+        }
+
+        @Override
+        protected Map<Integer, Ingredient> getGuiSlotToIngredientMap(ETTerminalBaseMenu<?> menu, ITableRecipeAdapter<?> recipe) {
+            return Map.of(0, recipe.recipe().getIngredients().get(0));
+        }
+
+        @Override
+        public mezz.jei.api.recipe.transfer.IRecipeTransferError transferRecipe(ETTerminalBaseMenu<?> menu,
+                ShapedRecipe recipe, mezz.jei.api.gui.ingredient.IRecipeSlotsView slots, Player player,
+                boolean maxTransfer, boolean doTransfer) {
+            throw new AssertionError("test calls performTransfer directly");
+        }
     }
 
     private static void benchmark(GameTestHelper helper) {
@@ -650,11 +736,18 @@ public final class UnitedCraftingGameTests {
 
     private static final class TestHost extends ItemMenuHost implements IPortableTerminal, ISegmentedInventory {
         private final TestStorage storage = new TestStorage();
-        private final AppEngInternalInventory grid = new AppEngInternalInventory(null, 81);
+        private final AppEngInternalInventory grid;
+        private final ResourceLocation craftingInventory;
         private final ConfigManager config = new ConfigManager(() -> { });
 
         private TestHost(Player player) {
+            this(player, ETMenuType.UNITED_TERMINAL);
+        }
+
+        private TestHost(Player player, ETMenuType type) {
             super(player, null, new ItemStack(Items.CRAFTING_TABLE));
+            grid = new AppEngInternalInventory(null, type.getGridSize());
+            craftingInventory = type.getCraftingInventory();
         }
 
         @Override
@@ -664,7 +757,7 @@ public final class UnitedCraftingGameTests {
 
         @Override
         public InternalInventory getSubInventory(ResourceLocation id) {
-            return ETMenuType.UNITED_TERMINAL.getCraftingInventory().equals(id) ? grid : InternalInventory.empty();
+            return craftingInventory.equals(id) ? grid : InternalInventory.empty();
         }
 
         @Override

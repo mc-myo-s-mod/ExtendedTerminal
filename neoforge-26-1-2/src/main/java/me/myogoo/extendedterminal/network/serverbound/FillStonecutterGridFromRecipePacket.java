@@ -90,6 +90,16 @@ public class FillStonecutterGridFromRecipePacket extends FillRecipeBasePacket im
             return;
         }
 
+        var craftMatrix = cct.getStoneCutterInventory();
+        var ingredients = getDesiredIngredients(player);
+        if (!ETTerminalMode.STONECUTTING.canLoad() || craftMatrix.size() != 1 || ingredients.size() != 1) {
+            return;
+        }
+        cct.setMode(ETTerminalMode.STONECUTTING);
+        if (cct.getMode() != ETTerminalMode.STONECUTTING) {
+            return;
+        }
+
         var energy = cct.getEnergySource();
         @Nullable
         ICraftingService craftingService;
@@ -112,12 +122,9 @@ public class FillStonecutterGridFromRecipePacket extends FillRecipeBasePacket im
             cachedStorage = new KeyCounter();
         }
 
-        var craftMatrix = cct.getStoneCutterInventory();
-
         // We'll try to use the best possible ingredients based on what's available in the network
 
         var filter = ViewCellItem.createItemFilter(cct.getViewCells());
-        var ingredients = getDesiredIngredients(player);
 
         // Prepare to autocraft some stuff
         var toAutoCraft = new LinkedHashMap<AEItemKey, IntList>();
@@ -222,7 +229,6 @@ public class FillStonecutterGridFromRecipePacket extends FillRecipeBasePacket im
                     .map(e -> new ICraftingGridMenu.AutoCraftEntry(e.getKey(), e.getValue())).toList();
             cct.startAutoCrafting(stacks);
         }
-        cct.setMode(ETTerminalMode.STONECUTTING);
     }
 
     @Override

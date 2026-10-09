@@ -103,6 +103,9 @@ public abstract class AbstractTableRecipeHandler<T extends ETTerminalBaseMenu<?>
 
     protected void performTransfer(T menu, @Nullable ITableRecipeAdapter<?> recipe, boolean craftMissing,
                                    UnitedTerminalMenu.UnitedRecipeKind unitedRecipeKind) {
+        if (!(menu instanceof UnitedTerminalMenu)) {
+            unitedRecipeKind = null;
+        }
         var templateItems = findGoodTemplateItems(recipe, menu);
         int recipeWidth = NOT_SET_RECIPE_SIZE;
         int recipeHeight = NOT_SET_RECIPE_SIZE;

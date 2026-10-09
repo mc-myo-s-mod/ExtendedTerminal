@@ -35,7 +35,10 @@ public class ETWTHost extends WCTMenuHost implements IViewCellStorage, IETTermin
 
     public ETWTHost(ItemWT item, Player player, ItemMenuHostLocator locator, BiConsumer<Player, ISubMenu> returnToMainMenu) {
         super(item, player, locator, returnToMainMenu);
-        this.craftingGrid = new SupplierInternalInventory(new StackDependentSupplier(this::getItemStack, (stack) -> createInv(player,(ItemStack) stack, CRAFTING_INV, 9)));
+        // WUT shares this component with United; saving the ET view must retain the remaining 72 slots.
+        this.craftingGrid = new SupplierInternalInventory<>(new StackDependentSupplier<>(this::getItemStack,
+                stack -> createInv(player, stack, CRAFTING_INV, ETMenuType.UNITED_TERMINAL.getGridSize())
+                        .getSubInventory(0, ETMenuType.ET_TERMINAL.getGridSize())));
         this.smithingGrid = new SupplierInternalInventory(new StackDependentSupplier(this::getItemStack, (stack) -> createInv(player,(ItemStack) stack, SMITHING_INV, 3)));
         this.stoneCutterGrid = new SupplierInternalInventory(new StackDependentSupplier(this::getItemStack, (stack) -> createInv(player,(ItemStack) stack, STONECUTTER_INV, 1)));
         this.anvilInv = new SupplierInternalInventory(new StackDependentSupplier(this::getItemStack, (stack) -> createInv(player,(ItemStack) stack, ANVIL_INV, 2)));
