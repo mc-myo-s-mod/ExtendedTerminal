@@ -77,12 +77,16 @@ public class ExCraftingTerminalSlot extends ETCraftingBaseSlot<ITableRecipe, Tab
         for(int y = 0; y < menuType.getGridSideLength(); y++) {
             for(int x = 0; x < menuType.getGridSideLength(); x++) {
                 var slotIdx = y * menuType.getGridSideLength() + x;
-                var remainderIdx = (y - positioned.top()) * 3 + (x - positioned.left());
+                int relativeX = x - positioned.left();
+                int relativeY = y - positioned.top();
+                var remainderIdx = relativeY * positioned.width() + relativeX;
 
                 // Consumes the item from the grid
                 this.craftInv.extractItem(slotIdx, 1, false);
 
-                if (remainderIdx >= 0 && remainderIdx < remainingItems.size()) {
+                if (relativeX >= 0 && relativeX < positioned.width()
+                        && relativeY >= 0 && relativeY < positioned.height()
+                        && remainderIdx < remainingItems.size()) {
                     var remainingInSlot = remainingItems.get(remainderIdx);
                     if (!remainingInSlot.isEmpty()) {
                         if (this.craftInv.getStackInSlot(slotIdx).isEmpty()) {

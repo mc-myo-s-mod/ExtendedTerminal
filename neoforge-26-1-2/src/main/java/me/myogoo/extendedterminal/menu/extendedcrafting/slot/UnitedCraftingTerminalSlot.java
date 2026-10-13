@@ -138,11 +138,11 @@ public class UnitedCraftingTerminalSlot extends ETCraftingBaseSlot<Recipe<Recipe
             var recipeInput = MyoTableInput.create(menuType.getGridSideLength(), menuType.getGridSideLength(), ic, termMenu.getSelectedRecipeType().tier());
 
             final var recipe = this.findRecipe(recipeInput, level);
-            setRecipeUsed(recipe.castHolderRecipe());
             if (recipe == null) {
                 return ItemStack.EMPTY;
             }
 
+            setRecipeUsed(recipe.castHolderRecipe());
             result = recipe.assemble(recipeInput, level, termMenu.getSelectedRecipeType());
 
             if (inv != null) {
@@ -191,7 +191,7 @@ public class UnitedCraftingTerminalSlot extends ETCraftingBaseSlot<Recipe<Recipe
                 if (entry.getKey() instanceof AEItemKey itemKey) {
                     if (providedTemplate.getItem() == itemKey.getItem() && !itemKey.matches(output)) {
                         craftingInputItems.set(slot, itemKey.toStack());
-                        var adjustedCraftingInput = MyoTableInput.create(9, 9, craftingItems, recipeType.tier());
+                        var adjustedCraftingInput = MyoTableInput.create(9, 9, craftingInputItems, recipeType.tier());
                         if (recipe.matches(adjustedCraftingInput, level, recipeType) && ItemStack.matches(recipe.assemble(adjustedCraftingInput, level, recipeType), output)) {
                             if (filter == null || filter.isListed(itemKey)) {
                                 var extracted = src.extract(itemKey, 1, Actionable.MODULATE, mySrc);

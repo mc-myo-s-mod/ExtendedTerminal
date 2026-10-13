@@ -14,6 +14,8 @@ import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.ShapedRecipePattern;
 import net.minecraft.world.level.ItemLike;
 
+/** @deprecated Use the selected integration's recipe builder for new data generation; legacy build methods remain supported. */
+@Deprecated(forRemoval = true)
 public class ShapedTableRecipeBuilder extends ShapedRecipeBuilder {
     private int tier = 0;
     public ShapedTableRecipeBuilder(ItemLike result, int count) {
@@ -45,22 +47,22 @@ public class ShapedTableRecipeBuilder extends ShapedRecipeBuilder {
     @Override
     public void save(RecipeOutput recipeOutput, ResourceLocation id) {
         ShapedRecipePattern shapedrecipepattern = ShapedRecipePattern.of(this.key, this.rows);
-        ShapedTableRecipe shapedTableRecipe = new ShapedTableRecipe(shapedrecipepattern,getResult().getDefaultInstance(),tier);
+        ShapedTableRecipe shapedTableRecipe = new ShapedTableRecipe(shapedrecipepattern,this.resultStack.copy(),tier);
         recipeOutput.accept(id, shapedTableRecipe, null);
     }
 
     public RecipeHolder<ITableRecipe> buildEC(ResourceLocation id) {
         ShapedRecipePattern shapedrecipepattern = ShapedRecipePattern.of(this.key, this.rows);
-        return new RecipeHolder<>(id, new ShapedTableRecipe(shapedrecipepattern,getResult().getDefaultInstance(),tier));
+        return new RecipeHolder<>(id, new ShapedTableRecipe(shapedrecipepattern,this.resultStack.copy(),tier));
     }
 
     public RecipeHolder<ITierCraftingRecipe> buildReAV(ResourceLocation id) {
         ShapedRecipePattern shapedrecipepattern = ShapedRecipePattern.of(this.key, this.rows);
-        return new RecipeHolder<>(id, new ShapedTableCraftingRecipe(shapedrecipepattern,getResult().getDefaultInstance()));
+        return new RecipeHolder<>(id, new ShapedTableCraftingRecipe(shapedrecipepattern,this.resultStack.copy()));
     }
 
     public RecipeHolder<RecipeExtremeCrafting> buildAVNeo(ResourceLocation id) {
         ShapedRecipePattern shapedrecipepattern = ShapedRecipePattern.of(this.key, this.rows);
-        return new RecipeHolder<>(id, new RecipeExtremeShaped("",shapedrecipepattern,getResult().getDefaultInstance()));
+        return new RecipeHolder<>(id, new RecipeExtremeShaped("",shapedrecipepattern,this.resultStack.copy()));
     }
 }

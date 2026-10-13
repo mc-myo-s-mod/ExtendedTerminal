@@ -42,23 +42,24 @@ public abstract class CraftingTerminalHandlerMixin {
         throw new AssertionError();
     }
 
-    @Inject(method = "getMenuHost", at = @At("RETURN"), cancellable = true)
+    @Inject(method = "getMenuHost()Lde/mari_023/ae2wtlib/terminal/WTMenuHost;", at = @At(value = "RETURN", ordinal = 1), cancellable = true, require = 1, expect = 1)
     private void extendedterminal$getETMenuHost(CallbackInfoReturnable<WTMenuHost> cir) {
         if (cir.getReturnValue() != null) {
             return;
         }
 
-        var terminalName = ETMenuType.ET_TERMINAL.getWTIdAsString();
-        if (!WUTHandler.terminalNames.contains(terminalName)) {
-            return;
-        }
-
-        this.locator = WUTHandler.findTerminal(player, terminalName);
-        this.menuHost = this.locator == null ? null : this.locator.locate(player, WTMenuHost.class);
-        this.magnetHost = null;
-
-        if (this.menuHost != null) {
-            cir.setReturnValue(this.menuHost);
+        for (var terminal : new ETMenuType[]{ETMenuType.ET_TERMINAL, ETMenuType.UNITED_TERMINAL}) {
+            var terminalName = terminal.getWTIdAsString();
+            if (!WUTHandler.terminalNames.contains(terminalName)) {
+                continue;
+            }
+            this.locator = WUTHandler.findTerminal(player, terminalName);
+            this.menuHost = this.locator == null ? null : this.locator.locate(player, WTMenuHost.class);
+            this.magnetHost = null;
+            if (this.menuHost != null) {
+                cir.setReturnValue(this.menuHost);
+                return;
+            }
         }
     }
 

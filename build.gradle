@@ -103,11 +103,6 @@ subprojects {
     }
 }
 
-def modProjects = [
-        project(':forge-1-20-1'),
-        project(':neoforge-1-21-1')
-]
-
 configure(project(':common')) {
     java {
         toolchain.languageVersion = JavaLanguageVersion.of(21)
@@ -117,84 +112,27 @@ configure(project(':common')) {
         // Lets the ET common module resolve Myotus common/API classes while editing shared sources.
         compileOnly "me.myogoo:myotus:${project(':neoforge-1-21-1').myotus_version}"
     }
+
+    def checkGridCoordinates = tasks.register('checkGridCoordinates', JavaExec) {
+        dependsOn tasks.named('testClasses')
+        classpath = sourceSets.test.runtimeClasspath
+        mainClass = 'me.myogoo.extendedterminal.util.GridCoordinateCheck'
+        enableAssertions = true
+    }
+    tasks.named('test') { exclude '**/GridCoordinateCheck.class' }
+    tasks.named('check') { dependsOn checkGridCoordinates }
 }
 
-configure(modProjects) {
-    def commonJavaSourceDir = rootProject.layout.projectDirectory.dir('common/src/main/java').asFile
-    def commonResourcesSourceDir = rootProject.layout.projectDirectory.dir('common/src/main/resources').asFile
-    def loaderResourceDirs = [file('src/main/resources'), file('src/generated/resources')]
-    def generatedCommonJavaDir = layout.buildDirectory.dir('generated/sources/extendedTerminalCommon/java')
-    def generatedCommonResourcesDir = layout.buildDirectory.dir('generated/resources/extendedTerminalCommon')
-
-    def syncExtendedTerminalCommonJava = tasks.register('syncExtendedTerminalCommonJava', Sync) {
-        from commonJavaSourceDir
-        into generatedCommonJavaDir
-    }
-
-    def syncExtendedTerminalCommonResources = tasks.register('syncExtendedTerminalCommonResources', Sync) {
-        from commonResourcesSourceDir
-        into generatedCommonResourcesDir
-        inputs.files(loaderResourceDirs.collect { fileTree(it) })
-                .withPropertyName('loaderResourceOverrides').withPathSensitivity(PathSensitivity.RELATIVE)
-        exclude { details ->
-            !details.directory && loaderResourceDirs.any { new File(it, details.relativePath.pathString).isFile() }
-        }
-    }
-
-    def generatedCommonJavaSources = files(generatedCommonJavaDir).builtBy(syncExtendedTerminalCommonJava)
-    def generatedCommonResources = files(generatedCommonResourcesDir).builtBy(syncExtendedTerminalCommonResources)
-
-    base {
-        archivesName = "${project.mod_name}-${project.minecraft_version}"
-    }
-
-    sourceSets {
-        main {
-            java.srcDir generatedCommonJavaSources
-            resources.srcDir generatedCommonResources
-            resources.srcDir 'src/generated/resources'
-        }
-    }
-
-    tasks.named('compileJava').configure {
-        dependsOn syncExtendedTerminalCommonJava
-    }
-
-    tasks.named('processResources').configure {
-        dependsOn syncExtendedTerminalCommonResources
-        // Shared files overridden by either loader resource tree are excluded during sync.
-        duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-    }
-
-    tasks.matching { it.name in ['genIntellijRuns', 'neoForgeIdeSync', 'idea', 'ideaModule'] }.configureEach {
-        dependsOn syncExtendedTerminalCommonJava
-        dependsOn syncExtendedTerminalCommonResources
-    }
-
-    idea {
-        module {
-            sourceDirs += generatedCommonJavaDir.get().asFile
-            generatedSourceDirs += generatedCommonJavaDir.get().asFile
-            resourceDirs += generatedCommonResourcesDir.get().asFile
-        }
-    }
-
-    tasks.named('jar', Jar).configure {
-        manifest {
-            attributes(["Specification-Title"     : mod_id,
-                        "Specification-Vendor"    : mod_authors,
-                        "Specification-Version"   : "1",
-                        "Implementation-Title"    : project.name,
-                        "Implementation-Version"  : project.version.toString(),
-                        "Implementation-Vendor"   : mod_authors,
-                        "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")])
-        }
-    }
-}
 
 tasks.register('syncIntellij') {
     group = 'ide'
     description = 'Prepares IntelliJ metadata and run configurations for all Extended Terminal modules.'
     dependsOn ':forge-1-20-1:genIntellijRuns'
     dependsOn ':neoforge-1-21-1:neoForgeIdeSync'
+}
+
+tasks.register('syncIntellij26') {
+    group = 'ide'
+    description = 'Prepares IntelliJ run configurations with the 26.1.2 Gradle wrapper.'
+    dependsOn ':neoforge-26-1-2:neoForgeIdeSync'
 }

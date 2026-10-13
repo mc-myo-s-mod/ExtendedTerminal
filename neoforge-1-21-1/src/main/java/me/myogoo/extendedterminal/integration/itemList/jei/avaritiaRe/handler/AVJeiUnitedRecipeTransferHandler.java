@@ -13,6 +13,16 @@ public class AVJeiUnitedRecipeTransferHandler<T extends UnitedTerminalMenu>
         extends AVJeiRecipeTransferHandler<T> {
     private final MyoRecipeType recipeType;
 
+    /** @deprecated Use the overload that explicitly supplies the menu class and type. */
+    @Deprecated(forRemoval = true)
+    @SuppressWarnings("unchecked")
+    public AVJeiUnitedRecipeTransferHandler(RecipeType<RecipeHolder<ITierCraftingRecipe>> recipeType,
+                                            IRecipeTransferHandlerHelper helper,
+                                            MyoRecipeType myoRecipeType) {
+        this((Class<T>) UnitedTerminalMenu.class, (MenuType<T>) UnitedTerminalMenu.TYPE,
+                recipeType, helper, myoRecipeType);
+    }
+
     public AVJeiUnitedRecipeTransferHandler(Class<T> menuClass, MenuType<T> menuType,
                                             RecipeType<RecipeHolder<ITierCraftingRecipe>> recipeType,
                                             IRecipeTransferHandlerHelper helper,

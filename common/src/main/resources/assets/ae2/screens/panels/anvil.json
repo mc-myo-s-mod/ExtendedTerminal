@@ -23,8 +23,8 @@
     "ET_ANVIL_XP_PRIORITY_BUTTON": {
       "left": 10,
       "bottom": 163,
-      "width": 20,
-      "height": 20
+      "width": 16,
+      "height": 16
     },
     "modeTabButtonAnvilPanel": {
       "left": 173,

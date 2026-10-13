@@ -7,6 +7,7 @@ import appeng.api.implementations.menuobjects.ItemMenuHost;
 import appeng.api.inventories.ISegmentedInventory;
 import appeng.api.inventories.InternalInventory;
 import appeng.api.networking.security.IActionSource;
+import appeng.api.stacks.AEFluidKey;
 import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.AEKey;
 import appeng.api.stacks.KeyCounter;
@@ -34,6 +35,7 @@ import me.myogoo.extendedterminal.menu.extendedcrafting.wt.ExtendedCraftingWTMen
 import me.myogoo.extendedterminal.menu.extendedterminal.ETTerminalMenu;
 import me.myogoo.extendedterminal.menu.extendedterminal.ETTerminalMode;
 import me.myogoo.extendedterminal.part.extendedterminal.ETTerminalPart;
+import me.myogoo.myotus.api.experience.ExperienceMath.ExperienceSource;
 import me.myogoo.myotus.api.wt.AddTerminalEvent;
 import net.minecraft.gametest.framework.GameTestGenerator;
 import net.minecraft.gametest.framework.GameTestHelper;
@@ -111,6 +113,98 @@ public final class WirelessCraftingGameTests {
         helper.assertTrue(menu.consumeAnvilExperience(player) && player.experienceLevel == 5
                         && player.totalExperience == 63,
                 "vanilla level removal must account for the progress fraction at the target level");
+        helper.succeed();
+    }
+
+    @GameTestGenerator
+    public static List<TestFunction> generateFluidExperienceTests() {
+        if (!ModList.get().isLoaded("ae2wtlib") || ModList.get().isLoaded("apotheosis")
+                || ModList.get().isLoaded("apothic_enchanting")) {
+            return List.of();
+        }
+        var tests = new ArrayList<TestFunction>();
+        for (var id : List.of(new ResourceLocation("mob_grinding_utils", "fluid_xp"),
+                new ResourceLocation("sophisticatedcore", "xp_still"), new ResourceLocation("minecraft", "water"))) {
+            if (ForgeRegistries.FLUIDS.containsKey(id)) {
+                tests.add(new TestFunction("extendedterminal", "wirelesscraftinggametests.anvilfluid_" + id.getNamespace(),
+                        "extendedterminal:empty", 20, 0, true, helper -> anvilFluidExperience(helper, id)));
+            }
+        }
+        return tests;
+    }
+
+    private static void anvilFluidExperience(GameTestHelper helper, ResourceLocation fluidId) {
+        var player = new FakePlayer(helper.getLevel(), new GameProfile(UUID.randomUUID(), "et-fluid-test"));
+        player.getAbilities().instabuild = false;
+        var storage = new TestStorage(10_000);
+        var fluid = AEFluidKey.of(ForgeRegistries.FLUIDS.getValue(fluidId));
+        storage.amounts.put(fluid, 1120L);
+        var host = new ETWTHost(player, null, new ItemStack(WTItems.WIRELESS_ET_TERMINAL), (p, menu) -> { }) {
+            private boolean powered = true;
+
+            @Override
+            public MEStorage getInventory() {
+                return storage;
+            }
+
+            @Override
+            public double extractAEPower(double amount, Actionable mode, PowerMultiplier multiplier) {
+                return powered ? amount : 0;
+            }
+        };
+        host.setMode(ETTerminalMode.ANVIL);
+        var input = new ItemStack(Items.DIAMOND);
+        input.setRepairCost(4);
+        host.getSubInventory(ETTerminalPart.ANVIL_INVENTORY).setItemDirect(0, input);
+        var menu = new ETTerminalMenu(ETTerminalMenu.TYPE, 1, player.getInventory(), host);
+        menu.setAnvilItemName("Fluid XP regression");
+        helper.assertTrue(menu.getAnvilCost() == 5, "fluid rename fixture must cost five levels");
+        menu.cycleAnvilExperienceSourcePriority();
+        if (fluidId.equals(new ResourceLocation("minecraft", "water"))) {
+            helper.assertTrue(menu.getSelectedAnvilExperienceSource() == ExperienceSource.PLAYER
+                            && !menu.getAnvilExperienceSourcePriority().contains(ExperienceSource.FLUID_XP)
+                            && !menu.canPayAnvilCost(player) && !menu.consumeAnvilExperience(player)
+                            && storage.amounts.get(fluid) == 1120L,
+                    "water must not be offered or consumed as XP");
+            helper.succeed();
+            return;
+        }
+        helper.assertTrue(menu.getSelectedAnvilExperienceSource() == ExperienceSource.FLUID_XP
+                        && menu.getAnvilExperienceSourcePriority().contains(ExperienceSource.FLUID_XP),
+                fluidId + " must be offered and selectable as fluid XP");
+        helper.assertTrue(menu.canPayAnvilCost(player) && storage.amounts.get(fluid) == 1120L
+                        && menu.consumeAnvilExperience(player) && storage.amounts.get(fluid) == 20L
+                        && player.totalExperience == 0 && player.experienceLevel == 0,
+                fluidId + " must pay 55 XP with exactly 1100 mB and no player XP");
+
+        storage.amounts.put(fluid, 1099L);
+        helper.assertTrue(!menu.canPayAnvilCost(player) && !menu.consumeAnvilExperience(player)
+                        && storage.amounts.get(fluid) == 1099L,
+                "insufficient fluid XP must not be debited");
+
+        storage.amounts.put(fluid, 1120L);
+        storage.allowExtraction = false;
+        helper.assertTrue(!menu.getAnvilExperienceSourcePriority().contains(ExperienceSource.FLUID_XP)
+                        && !menu.canPayAnvilCost(player) && !menu.consumeAnvilExperience(player)
+                        && storage.amounts.get(fluid) == 1120L,
+                "visible but extraction-denied fluid must not be offered or consumed");
+        storage.allowExtraction = true;
+        host.powered = false;
+        helper.assertTrue(!menu.getAnvilExperienceSourcePriority().contains(ExperienceSource.FLUID_XP)
+                        && !menu.canPayAnvilCost(player) && !menu.consumeAnvilExperience(player)
+                        && storage.amounts.get(fluid) == 1120L,
+                "fluid XP without AE power must not be offered or consumed");
+        host.powered = true;
+
+        var otherId = new ResourceLocation("sophisticatedcore", "xp_still");
+        if (fluidId.getNamespace().equals("mob_grinding_utils") && ForgeRegistries.FLUIDS.containsKey(otherId)) {
+            var otherFluid = AEFluidKey.of(ForgeRegistries.FLUIDS.getValue(otherId));
+            storage.amounts.put(fluid, 550L);
+            storage.amounts.put(otherFluid, 550L);
+            helper.assertTrue(menu.canPayAnvilCost(player) && menu.consumeAnvilExperience(player)
+                            && storage.amounts.get(fluid) == 0L && storage.amounts.get(otherFluid) == 0L,
+                    "supported XP fluids must combine to pay exactly 1100 mB");
+        }
         helper.succeed();
     }
 
@@ -292,6 +386,7 @@ public final class WirelessCraftingGameTests {
     private static final class TestStorage implements MEStorage {
         private final long capacity;
         private final Map<AEKey, Long> amounts = new HashMap<>();
+        private boolean allowExtraction = true;
 
         private TestStorage(long capacity) {
             this.capacity = capacity;
@@ -304,6 +399,15 @@ public final class WirelessCraftingGameTests {
                 amounts.merge(what, accepted, Long::sum);
             }
             return Math.max(accepted, 0);
+        }
+
+        @Override
+        public long extract(AEKey what, long amount, Actionable mode, IActionSource source) {
+            long extracted = allowExtraction ? Math.min(amount, amounts.getOrDefault(what, 0L)) : 0;
+            if (extracted > 0 && mode == Actionable.MODULATE) {
+                amounts.merge(what, -extracted, Long::sum);
+            }
+            return extracted;
         }
 
         @Override

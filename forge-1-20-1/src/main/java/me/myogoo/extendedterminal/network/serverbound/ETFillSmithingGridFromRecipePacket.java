@@ -41,7 +41,7 @@ public class ETFillSmithingGridFromRecipePacket extends FillRecipeBasePacket imp
             decodedRecipeId = stream.readResourceLocation();
         }
         this.recipeId = decodedRecipeId;
-        this.ingredientTemplates = NonNullList.withSize(stream.readInt(), ItemStack.EMPTY);
+        this.ingredientTemplates = NonNullList.withSize(validateTemplateCount(stream.readInt()), ItemStack.EMPTY);
         for (int i = 0; i < this.ingredientTemplates.size(); i++) {
             this.ingredientTemplates.set(i, stream.readItem());
         }
@@ -50,12 +50,20 @@ public class ETFillSmithingGridFromRecipePacket extends FillRecipeBasePacket imp
 
     public ETFillSmithingGridFromRecipePacket(@Nullable ResourceLocation recipeId,
             NonNullList<ItemStack> ingredientTemplates, boolean craftMissing) {
+        validateTemplateCount(ingredientTemplates.size());
         this.recipeId = recipeId;
         this.ingredientTemplates = NonNullList.withSize(ingredientTemplates.size(), ItemStack.EMPTY);
         for (int i = 0; i < ingredientTemplates.size(); i++) {
             this.ingredientTemplates.set(i, ingredientTemplates.get(i));
         }
         this.craftMissing = craftMissing;
+    }
+
+    private static int validateTemplateCount(int count) {
+        if (count != 3) {
+            throw new IllegalArgumentException("Smithing requires exactly three templates");
+        }
+        return count;
     }
 
     @Override
@@ -89,6 +97,12 @@ public class ETFillSmithingGridFromRecipePacket extends FillRecipeBasePacket imp
             return;
         }
 
+        var ingredients = getDesiredIngredients(player);
+        if (!ETTerminalMode.SMITHING.canLoad() || ingredients.size() != 3 || cct.getSmithingInventory().size() != 3) {
+            return;
+        }
+        cct.setMode(ETTerminalMode.SMITHING);
+
         @Nullable
         var node = cct.getNetworkNode();
         if (node == null) {
@@ -106,7 +120,6 @@ public class ETFillSmithingGridFromRecipePacket extends FillRecipeBasePacket imp
         KeyCounter cachedStorage = storageService.getCachedInventory();
         var craftMatrix = cct.getSmithingInventory();
         var filter = ViewCellItem.createItemFilter(cct.getViewCells());
-        var ingredients = getDesiredIngredients(player);
 
         var toAutoCraft = new LinkedHashMap<AEItemKey, IntList>();
         boolean touchedGridStorage = false;
@@ -196,13 +209,6 @@ public class ETFillSmithingGridFromRecipePacket extends FillRecipeBasePacket imp
             }
         }
 
-        var ingredients = NonNullList.withSize(this.ingredientTemplates.size(), Ingredient.EMPTY);
-        for (int i = 0; i < this.ingredientTemplates.size(); i++) {
-            var template = this.ingredientTemplates.get(i);
-            if (!template.isEmpty()) {
-                ingredients.set(i, Ingredient.of(template));
-            }
-        }
-        return ingredients;
+        return NonNullList.create();
     }
 }

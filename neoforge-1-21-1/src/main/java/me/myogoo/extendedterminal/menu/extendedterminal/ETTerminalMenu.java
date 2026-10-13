@@ -55,6 +55,7 @@ public class ETTerminalMenu extends ETTerminalBaseMenu<CraftingRecipe> {
             .buildUnregistered(ETMenuType.ET_TERMINAL.getId());
 
     private static final String ACTION_SET_STONECUTTING_RECIPE_ID = "setStonecuttingRecipeId";
+    private static final String ACTION_CLEAR_STONECUTTING_RECIPE_ID = "clearStonecuttingRecipeId";
     private static final String ACTION_SET_MODE = "setMode";
     private static final String ACTION_UPDATE_STONECUTTER_RECIPES = "updateStoneCutterRecipes";
     private static final String ACTION_SET_ANVIL_ITEM_NAME = "setAnvilItemName";
@@ -107,12 +108,15 @@ public class ETTerminalMenu extends ETTerminalBaseMenu<CraftingRecipe> {
     private boolean anvilAppliedExperiencedAvailable = false;
 
     private final IETTerminalHost host;
+    @GuiSync(6)
+    private boolean craftingBlocked;
 
     public ETTerminalMenu(MenuType<?> menuType, int id, Inventory ip, IETTerminalHost host) {
         super(menuType, id, ip, host, ETMenuType.ET_TERMINAL,
                 ExtendedTerminalConfig.INSTANCE.getExtendedTerminalConfig());
         this.host = host;
         this.currentMode = host.getMode();
+        this.stoneCutterRecipeId = host.getStoneCutterRecipeId();
         this.craftingInventoryHost = (ISegmentedInventory) host;
         this.craftingSlots = new CraftingMatrixSlot[this.menuType.getGridSize()];
 
@@ -158,6 +162,7 @@ public class ETTerminalMenu extends ETTerminalBaseMenu<CraftingRecipe> {
                 ETSlotSemantics.ANVIL_RESULT);
 
         registerClientAction(ACTION_SET_STONECUTTING_RECIPE_ID, ResourceLocation.class, this::setStoneCutterRecipeId);
+        registerClientAction(ACTION_CLEAR_STONECUTTING_RECIPE_ID, () -> setStoneCutterRecipeId(null));
         registerClientAction(ACTION_SET_MODE, ETTerminalMode.class, this::setMode);
         registerClientAction(ACTION_SET_ANVIL_ITEM_NAME, String.class, this::setAnvilItemName);
         registerClientAction(ACTION_CYCLE_ANVIL_EXPERIENCE_SOURCE_PRIORITY, this::cycleAnvilExperienceSourcePriority);
@@ -175,6 +180,9 @@ public class ETTerminalMenu extends ETTerminalBaseMenu<CraftingRecipe> {
     }
 
     public void setMode(ETTerminalMode mode) {
+        if (mode == null || !mode.canLoad()) {
+            return;
+        }
         if (isClientSide()) {
             this.currentMode = mode;
             sendClientAction(ACTION_SET_MODE, mode);
@@ -189,8 +197,32 @@ public class ETTerminalMenu extends ETTerminalBaseMenu<CraftingRecipe> {
         return this.currentMode;
     }
 
+    public boolean canCraftInMode(ETTerminalMode mode) {
+        return currentMode == mode && mode.canLoad()
+                && !(isServerSide() ? checkCraftingOnlyActive() : craftingBlocked);
+    }
+
     @Override
     protected void updateCurrentRecipeAndOutput(boolean forceUpdate) {
+        boolean blocked = isServerSide() ? checkCraftingOnlyActive() : craftingBlocked;
+        forceUpdate |= blocked != craftingBlocked;
+        craftingBlocked = blocked;
+        if (blocked || currentMode != ETTerminalMode.CRAFTING) {
+            outputSlot.set(ItemStack.EMPTY);
+        }
+        if (blocked || currentMode != ETTerminalMode.SMITHING) {
+            smithingOutputSlot.set(ItemStack.EMPTY);
+        }
+        if (blocked || currentMode != ETTerminalMode.STONECUTTING) {
+            stoneCutterOutputSlot.set(ItemStack.EMPTY);
+        }
+        if (blocked || currentMode != ETTerminalMode.ANVIL) {
+            anvilOutputSlot.set(ItemStack.EMPTY);
+            anvilCost = 0;
+        }
+        if (blocked || currentMode == null || !currentMode.canLoad()) {
+            return;
+        }
         switch (currentMode) {
             case CRAFTING -> updateCraftingOutput(forceUpdate);
             case SMITHING -> updateSmithingOutput(forceUpdate);
@@ -237,6 +269,9 @@ public class ETTerminalMenu extends ETTerminalBaseMenu<CraftingRecipe> {
 
     @Override
     public void doAction(ServerPlayer player, InventoryAction action, int slot, long id) {
+        if (slot < 0 || slot >= slots.size()) {
+            return;
+        }
         if (this.getSlot(slot) instanceof ETCraftingBaseSlot<?, ?> craftingSlot) {
             switch (action) {
                 case CRAFT_SHIFT, CRAFT_ALL, CRAFT_ITEM, CRAFT_STACK -> craftingSlot.doClick(action, player);
@@ -311,6 +346,9 @@ public class ETTerminalMenu extends ETTerminalBaseMenu<CraftingRecipe> {
 
         var level = getPlayer().level();
         var smithingRecipes = level.getRecipeManager().getRecipesFor(RecipeType.SMITHING, smithingTestInput, level);
+        this.lastTestedSmithingInput = smithingTestInput;
+        this.smithingRecipe = null;
+        this.smithingOutputSlot.set(ItemStack.EMPTY);
         if (smithingRecipes.isEmpty()) {
             this.smithingOutputSlot.set(ItemStack.EMPTY);
         } else {
@@ -336,12 +374,17 @@ public class ETTerminalMenu extends ETTerminalBaseMenu<CraftingRecipe> {
         stoneCutterRecipes.clear();
 
         if (input.isEmpty()) {
-            stoneCutterRecipeId = null;
+            if (isServerSide()) {
+                setStoneCutterRecipeId(null);
+            }
             stoneCutterOutputSlot.set(ItemStack.EMPTY);
             return;
         }
 
         updateStonecutterRecipes();
+        if (isServerSide()) {
+            setStoneCutterRecipeId(stoneCutterRecipeId);
+        }
     }
 
     public void updateStonecutterRecipes() {
@@ -354,26 +397,36 @@ public class ETTerminalMenu extends ETTerminalBaseMenu<CraftingRecipe> {
         stoneCutterRecipes.addAll(
                 recipeManager.getRecipesFor(RecipeType.STONECUTTING, recipeInput, level));
 
-        if (stoneCutterRecipeId != null
+        if (isServerSide() && stoneCutterRecipeId != null
                 && stoneCutterRecipes.stream().noneMatch(r -> r.id().equals(stoneCutterRecipeId))) {
-            stoneCutterRecipeId = null;
+            setStoneCutterRecipeId(null);
         }
 
     }
 
-    public void setStoneCutterRecipeId(ResourceLocation stoneCutterRecipeId) {
+    public void setStoneCutterRecipeId(@Nullable ResourceLocation stoneCutterRecipeId) {
         if (isClientSide()) {
             this.host.setStoneCutterRecipeId(stoneCutterRecipeId);
-            sendClientAction(ACTION_SET_STONECUTTING_RECIPE_ID, host.getStoneCutterRecipeId());
-        } else {
-            this.stoneCutterRecipeId = stoneCutterRecipeId;
-            var optionalRecipeHolder = getPlayer().level().getRecipeManager().byKey(stoneCutterRecipeId);
-            if (optionalRecipeHolder.isPresent()) {
-                var recipe = optionalRecipeHolder.get().value();
-                stoneCutterOutputSlot.set(recipe.getResultItem(getPlayer().level().registryAccess()));
+            if (stoneCutterRecipeId != null) {
+                sendClientAction(ACTION_SET_STONECUTTING_RECIPE_ID, stoneCutterRecipeId);
             } else {
-                stoneCutterOutputSlot.set(ItemStack.EMPTY);
+                sendClientAction(ACTION_CLEAR_STONECUTTING_RECIPE_ID);
             }
+        } else {
+            if (currentMode != ETTerminalMode.STONECUTTING || !currentMode.canLoad()) {
+                return;
+            }
+            var level = getPlayer().level();
+            var input = new SingleRecipeInput(stonecuttingSlot.getItem());
+            var holder = stoneCutterRecipeId == null ? null : level.getRecipeManager().byKey(stoneCutterRecipeId).orElse(null);
+            if (holder == null || !(holder.value() instanceof StonecutterRecipe recipe)
+                    || input.item().isEmpty() || !recipe.matches(input, level)) {
+                stoneCutterRecipeId = null;
+            }
+            this.stoneCutterRecipeId = stoneCutterRecipeId;
+            this.host.setStoneCutterRecipeId(stoneCutterRecipeId);
+            stoneCutterOutputSlot.set(stoneCutterRecipeId != null && canCraftInMode(ETTerminalMode.STONECUTTING)
+                    ? ((StonecutterRecipe) holder.value()).assemble(input, level.registryAccess()) : ItemStack.EMPTY);
         }
     }
 
@@ -389,6 +442,11 @@ public class ETTerminalMenu extends ETTerminalBaseMenu<CraftingRecipe> {
     // Anvil Section
     // ---------------------------------------------------------------------
     public void updateAnvilOutput(boolean forceUpdate) {
+        if (!canCraftInMode(ETTerminalMode.ANVIL)) {
+            anvilOutputSlot.set(ItemStack.EMPTY);
+            anvilCost = 0;
+            return;
+        }
         this.anvilDelegate.slots.get(0).set(this.anvilLeftSlot.getItem());
         this.anvilDelegate.slots.get(1).set(this.anvilRightSlot.getItem());
         anvilDelegate.createResult();
@@ -524,9 +582,9 @@ public class ETTerminalMenu extends ETTerminalBaseMenu<CraftingRecipe> {
             return MyotusAPI.experience().totalForLevel(cost);
         }
 
-        int targetLevel = Math.max(0, player.experienceLevel - cost);
-        return MyotusAPI.experience().totalForLevel(player.experienceLevel)
-                - MyotusAPI.experience().totalForLevel(targetLevel);
+        return player.experienceLevel >= cost
+                ? MyotusAPI.experience().vanillaAnvilCost(player, cost)
+                : MyotusAPI.experience().vanillaAnvilCost(cost, cost);
     }
 
     private boolean usesApothicAnvilExperienceCost() {
@@ -550,6 +608,9 @@ public class ETTerminalMenu extends ETTerminalBaseMenu<CraftingRecipe> {
     @Override
     public void broadcastChanges() {
         if (isServerSide()) {
+            if (checkCraftingOnlyActive() != craftingBlocked) {
+                updateCurrentRecipeAndOutput(true);
+            }
             updateAnvilExperienceSourceAvailability();
         }
         super.broadcastChanges();

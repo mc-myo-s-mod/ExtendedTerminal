@@ -1,10 +1,12 @@
 package me.myogoo.extendedterminal.api.adapter.recipe.table;
 
+import me.myogoo.myotus.util.MyoLogger;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.*;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
+import java.lang.reflect.InvocationTargetException;
 
 public class MyoTableInput implements RecipeInput {
     private final int width;
@@ -24,6 +26,25 @@ public class MyoTableInput implements RecipeInput {
 
     public CraftingInput cast() {
         return CraftingInput.of(width(), height(), items());
+    }
+
+    /** @deprecated Use {@link #cast()} for vanilla input, or the concrete tiered input's factory. */
+    @Deprecated(forRemoval = true)
+    @SuppressWarnings("unchecked")
+    public <I extends CraftingInput> I cast(Class<I> inputClass) {
+        if (inputClass.equals(CraftingInput.class)) {
+            return (I) cast();
+        }
+        try {
+            var method = inputClass.getDeclaredMethod("of", int.class, int.class, List.class, int.class);
+            return (I) method.invoke(null, width(), height(), items(), tier());
+        } catch (NoSuchMethodException e) {
+            MyoLogger.error("Failed to cast MyoTableInput to " + inputClass.getName(), e);
+            throw new RuntimeException(e);
+        } catch (InvocationTargetException | IllegalAccessException e) {
+            MyoLogger.error("Failed to invoke `of` MyoTableInput to" + inputClass.getName(), e);
+            throw new RuntimeException(e);
+        }
     }
 
     public static MyoTableInput create(int width, int height, List<ItemStack> items, int tier) {

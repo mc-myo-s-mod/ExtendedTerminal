@@ -165,7 +165,6 @@ dependencies {
     runtimeOnly fg.deobf("top.theillusivec4.curios:curios-forge:${curios_version}")
     runtimeOnly fg.deobf("dev.architectury:architectury-forge:${architectury_version}")
     runtimeOnly fg.deobf("me.shedaniel.cloth:cloth-config-forge:${cloth_config_version}")
-    runtimeOnly fg.deobf("top.theillusivec4.curios:curios-forge:${curios_version}")
 
     compileOnly fg.deobf("org.appliedenergistics:guideme:${guideME_version}:api")
     runtimeOnly fg.deobf("org.appliedenergistics:guideme:${guideME_version}")
@@ -282,6 +281,29 @@ tasks.withType(JavaCompile).configureEach {
     options.encoding = 'UTF-8' // Use the UTF-8 charset for Java compilation
 }
 
+// Mixin's aggregate refmap must be regenerated even when only non-Mixin sources change.
+tasks.named('compileJava', JavaCompile) {
+    options.incremental = false
+}
+
+['jar', 'jarJar'].each { taskName ->
+    tasks.named(taskName, Jar) {
+        doLast {
+            new java.util.zip.ZipFile(archiveFile.get().asFile).withCloseable { product ->
+                def parser = new groovy.json.JsonSlurper()
+                def config = parser.parse(product.getInputStream(product.getEntry("${mod_id}.mixins.json")))
+                def entry = product.getEntry(config.refmap)
+                assert entry != null : "Missing declared Mixin refmap in ${archiveFile.get().asFile}"
+                def refmap = parser.parse(product.getInputStream(entry))
+                ['SmithingTransformRecipeAccessor', 'SmithingTrimRecipeAccessor'].each { accessor ->
+                    def fields = refmap.mappings["me/myogoo/extendedterminal/mixin/${accessor}".toString()]
+                    assert fields != null && fields.keySet().containsAll(['template', 'base', 'addition']) : "Incomplete smithing refmap: ${accessor}"
+                }
+            }
+        }
+    }
+}
+
 def mappedVersionSuffixPattern = java.util.regex.Pattern.compile(
         "_mapped_${java.util.regex.Pattern.quote(mapping_channel)}_${java.util.regex.Pattern.quote(mapping_version)}(?:_at_[A-Za-z0-9]+)?\$"
 )
@@ -333,3 +355,5 @@ tasks.register('removeLocalMavenModuleMetadata') {
 tasks.named('publishToMavenLocal').configure {
     finalizedBy tasks.named('removeLocalMavenModuleMetadata')
 }
+
+apply from: '../gradle/common.gradle'

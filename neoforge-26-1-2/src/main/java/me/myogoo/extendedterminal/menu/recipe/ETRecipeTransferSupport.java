@@ -33,7 +33,7 @@ public final class ETRecipeTransferSupport {
             for (int i = 0; i < inventory.size(); i++) {
                 var item = inventory.getStackInSlot(i);
                 if (ingredient.test(item)) {
-                    var result = item.split(1);
+                    var result = inventory.extractItem(i, 1, false);
                     if (!result.isEmpty()) {
                         return result;
                     }

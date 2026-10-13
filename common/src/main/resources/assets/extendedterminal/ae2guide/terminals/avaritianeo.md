@@ -1,7 +1,7 @@
 ---
 navigation:
   title: AvaritiaNeo Crafting Terminal
-  icon: avaritia:extreme_crafting_table
+  icon: neo_extreme_terminal
   parent: index.md
   position: 020
 categories:

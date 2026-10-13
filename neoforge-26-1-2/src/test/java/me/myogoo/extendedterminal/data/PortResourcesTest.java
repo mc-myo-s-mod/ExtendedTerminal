@@ -43,6 +43,7 @@ class PortResourcesTest {
         assertTrue(json(base + "ae2wtlib/united_etc.json").get("terminalA").isJsonPrimitive());
         assertTrue(json(base + "ae2wtlib/upgrade_wireless_united_terminal.json").get("terminal").isJsonPrimitive());
         assertNull(getClass().getClassLoader().getResource(base + "avaritianeo/united_terminal.json"));
+        assertNull(getClass().getClassLoader().getResource("assets/extendedterminal/ae2guide/_zh_cn/terminals/avaritianeo.md"));
     }
 
     @Test

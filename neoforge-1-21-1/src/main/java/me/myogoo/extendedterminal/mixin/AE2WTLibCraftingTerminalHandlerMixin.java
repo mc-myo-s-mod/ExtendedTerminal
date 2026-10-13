@@ -36,42 +36,56 @@ public abstract class AE2WTLibCraftingTerminalHandlerMixin {
     @Nullable
     private MagnetHost magnetHost;
 
-    @Inject(method = "getLocator", at = @At("HEAD"), cancellable = true)
+    @Inject(
+            method = "getLocator()Lappeng/menu/locator/ItemMenuHostLocator;",
+            at = @At("HEAD"),
+            cancellable = true,
+            require = 1,
+            expect = 1)
     private void extendedterminal$useCachedETLocator(CallbackInfoReturnable<ItemMenuHostLocator> cir) {
-        var etDefinition = getETDefinition();
-        if (etDefinition == null || locator == null) {
+        if (locator == null) {
             return;
         }
 
-        if (WUTHandler.hasTerminal(locator.locateItem(player), etDefinition)) {
-            cir.setReturnValue(locator);
+        for (var terminal : new ETMenuType[]{ETMenuType.ET_TERMINAL, ETMenuType.UNITED_TERMINAL}) {
+            var definition = getDefinition(terminal);
+            if (definition != null && WUTHandler.hasTerminal(locator.locateItem(player), definition)) {
+                cir.setReturnValue(locator);
+                return;
+            }
         }
     }
 
-    @Inject(method = "getLocator", at = @At("RETURN"), cancellable = true)
+    @Inject(
+            method = "getLocator()Lappeng/menu/locator/ItemMenuHostLocator;",
+            at = @At(value = "RETURN", ordinal = 2),
+            cancellable = true,
+            require = 1,
+            expect = 1)
     private void extendedterminal$findETLocator(CallbackInfoReturnable<ItemMenuHostLocator> cir) {
         if (cir.getReturnValue() != null) {
             return;
         }
 
-        var etDefinition = getETDefinition();
-        if (etDefinition == null) {
+        for (var terminal : new ETMenuType[]{ETMenuType.ET_TERMINAL, ETMenuType.UNITED_TERMINAL}) {
+            var definition = getDefinition(terminal);
+            if (definition == null) {
+                continue;
+            }
+            var terminalLocator = WUTHandler.findTerminal(player, definition);
+            if (terminalLocator == null) {
+                continue;
+            }
+            locator = terminalLocator;
+            menuHost = null;
+            magnetHost = null;
+            cir.setReturnValue(terminalLocator);
             return;
         }
-
-        var etLocator = WUTHandler.findTerminal(player, etDefinition);
-        if (etLocator == null) {
-            return;
-        }
-
-        locator = etLocator;
-        menuHost = null;
-        magnetHost = null;
-        cir.setReturnValue(etLocator);
     }
 
-    private static @Nullable WTDefinition getETDefinition() {
-        var name = ETMenuType.ET_TERMINAL.getWTIdAsString();
+    private static @Nullable WTDefinition getDefinition(ETMenuType terminal) {
+        var name = terminal.getWTIdAsString();
         if (!WTDefinition.exists(name)) {
             return null;
         }

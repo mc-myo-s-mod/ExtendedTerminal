@@ -23,6 +23,8 @@ import java.util.function.Consumer;
 
 import static net.minecraft.core.registries.BuiltInRegistries.*;
 
+/** @deprecated Use Extended Crafting's recipe builder for new data generation; legacy save calls remain supported. */
+@Deprecated(forRemoval = true)
 public class ShapedTableRecipeBuilder extends ShapedRecipeBuilder {
 
     private int tier = 0;
@@ -135,7 +137,7 @@ public class ShapedTableRecipeBuilder extends ShapedRecipeBuilder {
 
         @Override
         public RecipeSerializer<?> getType() {
-            return new ShapedTableRecipe.Serializer(); // not work :(
+            return new ShapedTableRecipe.Serializer();
         }
 
         @Override

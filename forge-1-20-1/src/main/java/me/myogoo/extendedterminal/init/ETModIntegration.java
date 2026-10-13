@@ -9,6 +9,8 @@ public final class ETModIntegration {
     private ETModIntegration() {
     }
 
+    /** @deprecated Integrations are discovered from @MyoMod markers; no initialization call is required. */
+    @Deprecated(forRemoval = true)
     public static void initialize() {
         // Kept as a stable lifecycle hook for existing call sites.
     }

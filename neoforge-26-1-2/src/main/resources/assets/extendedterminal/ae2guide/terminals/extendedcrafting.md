@@ -1,7 +1,7 @@
 ---
 navigation:
   title: Extended Crafting Terminal
-  icon: extendedcrafting:ultimate_table
+  icon: ultimate_terminal
   parent: index.md
   position: 020
 categories:

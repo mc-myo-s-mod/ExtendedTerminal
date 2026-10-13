@@ -77,6 +77,12 @@ public class ETFillStonecutterGridFromRecipePacket extends FillRecipeBasePacket 
             return;
         }
 
+        var ingredients = getDesiredIngredients(player);
+        if (!ETTerminalMode.STONECUTTING.canLoad() || ingredients.size() != 1 || cct.getStoneCutterInventory().size() != 1) {
+            return;
+        }
+        cct.setMode(ETTerminalMode.STONECUTTING);
+
         @Nullable
         var node = cct.getNetworkNode();
         if (node == null) {
@@ -94,7 +100,6 @@ public class ETFillStonecutterGridFromRecipePacket extends FillRecipeBasePacket 
         KeyCounter cachedStorage = storageService.getCachedInventory();
         var craftMatrix = cct.getStoneCutterInventory();
         var filter = ViewCellItem.createItemFilter(cct.getViewCells());
-        var ingredients = getDesiredIngredients(player);
 
         var toAutoCraft = new LinkedHashMap<AEItemKey, IntList>();
         boolean touchedGridStorage = false;
@@ -191,10 +196,6 @@ public class ETFillStonecutterGridFromRecipePacket extends FillRecipeBasePacket 
             }
         }
 
-        var ingredients = NonNullList.withSize(1, Ingredient.EMPTY);
-        if (!this.ingredientTemplate.isEmpty()) {
-            ingredients.set(0, Ingredient.of(this.ingredientTemplate));
-        }
-        return ingredients;
+        return NonNullList.create();
     }
 }

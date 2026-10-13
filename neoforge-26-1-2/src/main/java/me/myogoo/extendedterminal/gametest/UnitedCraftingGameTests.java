@@ -58,6 +58,9 @@ import java.util.function.Consumer;
 @EventBusSubscriber(modid = ExtendedTerminal.MODID)
 public final class UnitedCraftingGameTests {
     private static final List<TestCase> TESTS = List.of(
+            new TestCase("united_fuzzy_candidates", helper -> {
+                try { fuzzyCandidates(helper); } catch (ReflectiveOperationException e) { throw new AssertionError(e); }
+            }),
             new TestCase("united_honey_remainders", UnitedCraftingGameTests::honeyRemainders),
             new TestCase("united_custom_shaped_transfer", UnitedCraftingGameTests::customShapedTransfer),
             new TestCase("custom_shaped_transfer_across_et_panels", UnitedCraftingGameTests::transferAcrossPanels),
@@ -222,6 +225,54 @@ public final class UnitedCraftingGameTests {
                 .handleOnServer(player);
         helper.assertTrue(menu.getMode() == ETTerminalMode.ANVIL && host.grid.getStackInSlot(0).is(Items.DIAMOND),
                 "Mismatched menu size or recipe slots must leave the mode and inventory unchanged");
+        helper.succeed();
+    }
+
+    private static void fuzzyCandidates(GameTestHelper helper) throws ReflectiveOperationException {
+        var template = new ItemStack(Items.DIAMOND);
+        template.set(net.minecraft.core.component.DataComponents.CUSTOM_NAME, net.minecraft.network.chat.Component.literal("template"));
+        var candidate = new ItemStack(Items.DIAMOND);
+        candidate.set(net.minecraft.core.component.DataComponents.CUSTOM_NAME, net.minecraft.network.chat.Component.literal("candidate"));
+        var key = appeng.api.stacks.AEItemKey.of(candidate);
+        var input = NonNullList.withSize(81, ItemStack.EMPTY);
+        input.set(0, template);
+        var output = new ItemStack(Items.EMERALD);
+        var method = java.util.Arrays.stream(me.myogoo.extendedterminal.menu.extendedcrafting.slot.UnitedCraftingTerminalSlot.class.getDeclaredMethods())
+                .filter(m -> m.getName().equals("extractItemsByRecipe")).findFirst().orElseThrow();
+        method.setAccessible(true);
+        for (int policy = 0; policy < 3; policy++) {
+            int rule = policy;
+            var recipe = new me.myogoo.extendedterminal.adapter.recipe.table.ShapedTableRecipeAdapter(
+                    RecipeAccess.byKey(helper.getLevel(), RecipeType.CRAFTING, ResourceKey.create(Registries.RECIPE, Identifier.withDefaultNamespace("honey_block"))).value(),
+                    1, 1, 1, ResourceKey.create(Registries.RECIPE, Identifier.withDefaultNamespace("honey_block"))) {
+                @Override public boolean matches(me.myogoo.extendedterminal.api.adapter.recipe.table.MyoTableInput actual, net.minecraft.world.level.Level level, MyoRecipeType type) {
+                    return rule != 0 || ItemStack.isSameItemSameComponents(actual.getItem(0), template);
+                }
+                @Override public ItemStack assemble(me.myogoo.extendedterminal.api.adapter.recipe.table.MyoTableInput actual, net.minecraft.world.level.Level level, MyoRecipeType type) {
+                    return rule == 1 && !ItemStack.isSameItemSameComponents(actual.getItem(0), template)
+                            ? new ItemStack(Items.COAL) : output.copy();
+                }
+            };
+            int[] extracted = {0};
+            var storage = new MEStorage() {
+                @Override public long extract(appeng.api.stacks.AEKey requested, long amount,
+                        appeng.api.config.Actionable action, appeng.api.networking.security.IActionSource source) {
+                    if (!key.equals(requested)) return 0;
+                    if (action == appeng.api.config.Actionable.MODULATE) extracted[0]++;
+                    return 1;
+                }
+                @Override public net.minecraft.network.chat.Component getDescription() { return net.minecraft.network.chat.Component.literal("test"); }
+            };
+            var available = new appeng.api.stacks.KeyCounter();
+            available.add(key, 1);
+            appeng.api.networking.energy.IEnergySource energy = (amount, action, multiplier) -> amount;
+            var result = (ItemStack) method.invoke(null, energy, appeng.api.networking.security.IActionSource.ofPlayer(new FakePlayer(helper.getLevel(), new GameProfile(UUID.randomUUID(), "fuzzy-test"))),
+                    storage, helper.getLevel(), recipe, MyoRecipeType.VANILLA, output, input, template, 0, available, null);
+            helper.assertTrue(policy == 2 ? ItemStack.isSameItemSameComponents(result, candidate) && extracted[0] == 1
+                            : result.isEmpty() && extracted[0] == 0,
+                    "Fuzzy substitution validates candidate matches and output before extraction, policy " + policy);
+            helper.assertTrue(ItemStack.isSameItemSameComponents(input.get(0), template), "Validation preserves original template");
+        }
         helper.succeed();
     }
 

@@ -3,7 +3,6 @@ plugins {
     id 'maven-publish'
     id 'idea'
     id 'net.neoforged.moddev' version '2.0.82'
-    id 'org.jetbrains.kotlin.jvm'
 }
 
 version = mod_version
@@ -222,7 +221,7 @@ dependencies {
         default:
             throw new GradleException("Invalid value for enable_avaritia: ${project.enable_avaritia}")
     }
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:2.2.20"
 }
 
 // This block of code expands all declared replace properties in the specified resource targets.
@@ -276,6 +275,5 @@ idea {
         downloadJavadoc = true
     }
 }
-kotlin {
-    jvmToolchain(21)
-}
+
+apply from: '../gradle/common.gradle'

@@ -1,7 +1,7 @@
 ---
 navigation:
   title: 无尽贪婪：重生合成终端
-  icon: avaritia:extreme_crafting_table
+  icon: extreme_terminal
   parent: index.md
   position: 020
 categories:
