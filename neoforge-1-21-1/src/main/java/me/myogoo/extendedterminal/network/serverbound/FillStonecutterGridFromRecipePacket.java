@@ -25,7 +25,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.item.crafting.SingleItemRecipe;
+import net.minecraft.world.item.crafting.StonecutterRecipe;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.LinkedHashMap;
@@ -83,6 +83,16 @@ public class FillStonecutterGridFromRecipePacket extends FillRecipeBasePacket im
             return;
         }
 
+        var ingredients = getDesiredIngredients(player);
+        if (!ETTerminalMode.STONECUTTING.canLoad() || ingredients.size() != 1
+                || cct.getStoneCutterInventory().size() != 1) {
+            return;
+        }
+        cct.setMode(ETTerminalMode.STONECUTTING);
+        if (cct.getMode() != ETTerminalMode.STONECUTTING) {
+            return;
+        }
+
         var energy = cct.getEnergySource();
         @Nullable
         ICraftingService craftingService;
@@ -110,7 +120,6 @@ public class FillStonecutterGridFromRecipePacket extends FillRecipeBasePacket im
         // We'll try to use the best possible ingredients based on what's available in the network
 
         var filter = ViewCellItem.createItemFilter(cct.getViewCells());
-        var ingredients = getDesiredIngredients(player);
 
         // Prepare to autocraft some stuff
         var toAutoCraft = new LinkedHashMap<AEItemKey, IntList>();
@@ -222,7 +231,7 @@ public class FillStonecutterGridFromRecipePacket extends FillRecipeBasePacket im
     protected NonNullList<Ingredient> getDesiredIngredients(Player player) {
         if(recipeId != null) {
             var optionalRecipe = player.level().getRecipeManager().byKey(this.recipeId);
-            if(optionalRecipe.isPresent() && optionalRecipe.get().value() instanceof SingleItemRecipe recipe) {
+            if(optionalRecipe.isPresent() && optionalRecipe.get().value() instanceof StonecutterRecipe recipe) {
                 return recipe.getIngredients();
             }
         }

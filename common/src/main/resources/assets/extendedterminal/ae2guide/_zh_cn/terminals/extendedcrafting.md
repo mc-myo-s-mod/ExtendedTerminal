@@ -1,7 +1,7 @@
 ---
 navigation:
   title: 拓展合成终端
-  icon: extendedcrafting:ultimate_table
+  icon: ultimate_terminal
   parent: index.md
   position: 020
 categories:

@@ -1,6 +1,0 @@
-{
-  "includes": [
-    "extended_terminal/united_terminal.json",
-    "wtlib/universal_terminal.json"
-  ]
-}

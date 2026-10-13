@@ -97,7 +97,7 @@ public abstract class ETCraftingBaseSlot<R extends Recipe<?>, I> extends AppEngC
             // This is a shortcut to ensure that for mods that create recipes with result counts larger than
             // the max stack size, it remains possible to pick up those items at least _once_.
             if (getMenu().getCarried().isEmpty()) {
-                getMenu().setCarried(craftItem(who, storage, storage.getAvailableStacks()));
+                getMenu().setCarried(craftItem(who, storage, storage == null ? null : storage.getAvailableStacks()));
                 return;
             }
 
@@ -124,7 +124,7 @@ public abstract class ETCraftingBaseSlot<R extends Recipe<?>, I> extends AppEngC
                 return;
             }
 
-            var all = storage.getAvailableStacks();
+            var all = storage == null ? null : storage.getAvailableStacks();
             var extra = target.addItems(craftItem(who, storage, all));
 
             // If we couldn't actually add what we crafted, we drop it and stop

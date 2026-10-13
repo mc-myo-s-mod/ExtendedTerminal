@@ -37,7 +37,7 @@ def generatedCommonResourcesDir = layout.buildDirectory.dir('generated/resources
 def syncExtendedTerminalCommonResources = tasks.register('syncExtendedTerminalCommonResources', Sync) {
     from '../common/src/main/resources'
     into generatedCommonResourcesDir
-    exclude 'assets/extendedterminal/ae2guide/terminals/avaritianeo.md'
+    exclude 'assets/extendedterminal/ae2guide/**/terminals/avaritianeo.md'
     inputs.files(loaderResourceDirs.collect { fileTree(it) })
             .withPropertyName('loaderResourceOverrides').withPathSensitivity(PathSensitivity.RELATIVE)
     exclude { details ->
@@ -122,7 +122,10 @@ dependencies {
     compileOnly "maven.modrinth:re-avaritia:${ReAvaritia_version}"
     if (project.enable_excrafting == 'true') {
         runtimeOnly "com.blakebr0.cucumber:Cucumber:${minecraft_version}-${Cucumber_version}"
-        runtimeOnly "com.blakebr0.extendedcrafting:ExtendedCrafting:${minecraft_version}-${ExtendedCrafting_version}"
+        runtimeOnly("com.blakebr0.extendedcrafting:ExtendedCrafting:${minecraft_version}-${ExtendedCrafting_version}") {
+            // The viewer option selects JEI; EC's published runtime variant includes it unconditionally.
+            exclude group: 'mezz.jei'
+        }
     }
     if (project.enable_avaritia == 're') {
         runtimeOnly "maven.modrinth:re-avaritia:${ReAvaritia_version}"
@@ -177,6 +180,7 @@ neoForge.ideSyncTask syncExtendedTerminalCommonResources
 neoForge.ideSyncTask generateModMetadata
 
 tasks.named('jar', Jar).configure {
+    exclude 'me/myogoo/extendedterminal/gametest/**'
     manifest {
         attributes(['Specification-Title'   : mod_id,
                     'Specification-Vendor'  : mod_authors,

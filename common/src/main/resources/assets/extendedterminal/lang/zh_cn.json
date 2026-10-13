@@ -56,5 +56,7 @@
   "gui.extendedterminal.epicTerminal": "史诗拓展终端",
   "item.extendedterminal.legendary_terminal": "传奇合成终端",
   "gui.extendedterminal.legendaryTerminal": "传奇扩展终端",
-  "gui.ae2wtlib.pick_block.text": "启用选取方块"
+  "gui.ae2wtlib.pick_block.text": "启用选取方块",
+  "item.extendedterminal.wireless_epic_terminal": "无线史诗拓展合成终端",
+  "item.extendedterminal.wireless_legendary_terminal": "无线传奇合成终端"
 }

@@ -1,6 +1,8 @@
 .vscode
 .idea
 .codex
+/.codex-audit/
+.codex-refactor-runtime/
 # MacOS DS_Store files
 .DS_Store
 

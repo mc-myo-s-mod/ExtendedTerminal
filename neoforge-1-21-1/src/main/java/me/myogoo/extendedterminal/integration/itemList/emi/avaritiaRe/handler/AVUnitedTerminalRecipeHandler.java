@@ -12,6 +12,13 @@ import net.minecraft.world.item.crafting.Recipe;
 public class AVUnitedTerminalRecipeHandler<T extends UnitedTerminalMenu> extends AVTerminalRecipeHandler<T> {
     private final MyoRecipeType recipeType;
 
+    /** @deprecated Use the overload that explicitly supplies the menu class. */
+    @Deprecated(forRemoval = true)
+    @SuppressWarnings("unchecked")
+    public AVUnitedTerminalRecipeHandler(EmiRecipeCategory category, MyoRecipeType recipeType) {
+        this(category, (Class<T>) UnitedTerminalMenu.class, recipeType);
+    }
+
     public AVUnitedTerminalRecipeHandler(EmiRecipeCategory category, Class<T> menuClass,
             MyoRecipeType recipeType) {
         super(category, menuClass, ETMenuType.UNITED_TERMINAL);

@@ -3,6 +3,7 @@ package me.myogoo.extendedterminal.menu.extendedterminal.slot;
 import appeng.api.inventories.InternalInventory;
 import appeng.menu.slot.AppEngCraftingSlot;
 import me.myogoo.extendedterminal.menu.extendedterminal.ETTerminalMenu;
+import me.myogoo.extendedterminal.menu.extendedterminal.ETTerminalMode;
 import me.myogoo.extendedterminal.menu.extendedterminal.FakeAnvilMenu;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -19,7 +20,7 @@ public class ETAnvilSlot extends AppEngCraftingSlot {
     @Override
     public void onTake(Player player, ItemStack stack) {
         ETTerminalMenu terminalMenu = this.getMenu() instanceof ETTerminalMenu menu ? menu : null;
-        if (terminalMenu != null && !terminalMenu.consumeAnvilExperience(player)) {
+        if (terminalMenu != null && (!terminalMenu.canCraftInMode(ETTerminalMode.ANVIL) || !terminalMenu.consumeAnvilExperience(player))) {
             return;
         }
         anvilDelegate.et$onTakeWithoutExperience(player, stack);
@@ -35,7 +36,7 @@ public class ETAnvilSlot extends AppEngCraftingSlot {
     @Override
     public boolean mayPickup(Player player) {
         if (this.getMenu() instanceof ETTerminalMenu terminalMenu) {
-            return super.mayPickup(player) && terminalMenu.canPayAnvilCost(player);
+            return terminalMenu.canCraftInMode(ETTerminalMode.ANVIL) && super.mayPickup(player) && terminalMenu.canPayAnvilCost(player);
         }
         return anvilDelegate.et$mayPickup(player, super.mayPickup(player));
     }

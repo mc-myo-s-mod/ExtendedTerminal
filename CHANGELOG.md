@@ -2,6 +2,14 @@
 
 ## Unreleased
 
+### Minecraft 1.20.1 (Forge)
+
+- Recognize Mob Grinding Utils Fluid XP as an anvil experience source.
+
+### All versions
+
+- Match the anvil experience-source button's focus and click area to its 16x16 icon.
+
 ### Minecraft 1.21.1 (NeoForge)
 
 - Reject malformed or mismatched crafting-grid transfers before changing items or the selected United recipe type.

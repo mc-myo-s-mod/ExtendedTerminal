@@ -7,6 +7,7 @@ import appeng.api.storage.MEStorage;
 import appeng.helpers.IMenuCraftingPacket;
 import appeng.menu.slot.CraftingTermSlot;
 import me.myogoo.extendedterminal.menu.extendedterminal.ETTerminalMenu;
+import me.myogoo.extendedterminal.menu.extendedterminal.ETTerminalMode;
 import me.myogoo.myotus.api.MyotusAPI;
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.entity.player.Player;
@@ -24,6 +25,9 @@ public class ETCraftingSlot extends CraftingTermSlot {
 
     @Override
     protected Recipe<CraftingContainer> findRecipe(CraftingContainer ic, Level level) {
+        if (getMenu() instanceof ETTerminalMenu et && !et.canCraftInMode(ETTerminalMode.CRAFTING)) {
+            return null;
+        }
         if (MyotusAPI.integrations().isLoaded(Polymorph.class)
                 && getMenu() instanceof ETTerminalMenu menu) {
             var recipe = menu.getCurrentRecipe();

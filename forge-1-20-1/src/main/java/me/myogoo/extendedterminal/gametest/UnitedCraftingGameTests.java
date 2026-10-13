@@ -498,6 +498,30 @@ public final class UnitedCraftingGameTests {
         var mirrored = menu.findUnitedRecipe(mirroredAxe);
         helper.assertTrue(mirrored != null && mirrored.assemble(helper.getLevel()).is(Items.IRON_AXE),
                 "mirrored shaped recipe must match away from the center");
+        for (int top = 0; top <= 7; top++) {
+            for (int left = 0; left <= 7; left++) {
+                var honey = emptyGrid();
+                for (int y = 0; y < 2; y++) {
+                    for (int x = 0; x < 2; x++) {
+                        honey.set((top + y) * 9 + left + x, new ItemStack(Items.HONEY_BOTTLE));
+                    }
+                }
+                var fixture = createMenu(testPlayer(helper), honey);
+                craftOnce(fixture);
+                helper.assertTrue(fixture.menu.getCarried().is(Items.HONEY_BLOCK)
+                                && fixture.menu.getCarried().getCount() == 1,
+                        "Offset honey recipe produces exactly one block");
+                for (int i = 0; i < 81; i++) {
+                    var remainder = fixture.host.grid.getStackInSlot(i);
+                    int x = i % 9 - left, y = i / 9 - top;
+                    helper.assertTrue(x >= 0 && x < 2 && y >= 0 && y < 2
+                                    ? remainder.is(Items.GLASS_BOTTLE) && remainder.getCount() == 1
+                                    : remainder.isEmpty(),
+                            "Four bottle remainders stay at original coordinates: " + left + "," + top + " slot " + i);
+                }
+                helper.assertTrue(fixture.player.getInventory().isEmpty(), "No remainder spill or duplication");
+            }
+        }
         helper.succeed();
     }
 

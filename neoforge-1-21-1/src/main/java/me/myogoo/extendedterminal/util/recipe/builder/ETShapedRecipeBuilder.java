@@ -12,6 +12,8 @@ import net.minecraft.world.level.ItemLike;
 
 import java.util.Objects;
 
+/** @deprecated Use {@link ShapedRecipeBuilder} for new data generation; legacy fluent calls remain supported. */
+@Deprecated(forRemoval = true)
 public class ETShapedRecipeBuilder extends ShapedRecipeBuilder {
     private ETShapedRecipeBuilder(ItemLike result, int count) {
         super(RecipeCategory.MISC, result, count);
@@ -61,6 +63,8 @@ public class ETShapedRecipeBuilder extends ShapedRecipeBuilder {
         return this;
     }
 
+    /** @deprecated This historical hook does not filter recipes; use {@link RecipeOutput#withConditions} with NeoForge conditions. */
+    @Deprecated(forRemoval = true)
     public ETShapedRecipeBuilder condition(Class<?> ...modClasses) {
 
         return this;
@@ -75,6 +79,6 @@ public class ETShapedRecipeBuilder extends ShapedRecipeBuilder {
 
     public CraftingRecipe build() {
         ShapedRecipePattern shapedrecipepattern = ShapedRecipePattern.of(this.key, this.rows);
-        return new ShapedRecipe("", CraftingBookCategory.MISC, shapedrecipepattern, getResult().getDefaultInstance(), false);
+        return new ShapedRecipe("", CraftingBookCategory.MISC, shapedrecipepattern, this.resultStack.copy(), false);
     }
 }

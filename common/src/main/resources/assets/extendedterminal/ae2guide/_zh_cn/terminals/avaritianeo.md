@@ -1,7 +1,7 @@
 ---
 navigation:
   title: 无尽贪婪Neo合成终端
-  icon: avaritia:extreme_crafting_table
+  icon: neo_extreme_terminal
   parent: index.md
   position: 020
 categories:

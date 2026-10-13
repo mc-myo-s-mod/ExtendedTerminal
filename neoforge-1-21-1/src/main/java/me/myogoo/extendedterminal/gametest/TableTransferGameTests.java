@@ -1,5 +1,7 @@
 package me.myogoo.extendedterminal.gametest;
 
+import me.myogoo.extendedterminal.api.adapter.recipe.table.MyoTableInput;
+
 import appeng.api.implementations.menuobjects.ItemMenuHost;
 import appeng.api.inventories.ISegmentedInventory;
 import appeng.api.inventories.InternalInventory;
@@ -59,6 +61,34 @@ public final class TableTransferGameTests {
                     "extendedterminal:empty", 100, 0, true, TableTransferGameTests::unitedValidationBeforeSelection));
         }
         return tests;
+    }
+
+    @GameTest(template = "empty")
+    public static void smithingInvalidCounts(GameTestHelper helper) {
+        for (int count : new int[]{-1, 0, 2, 4, Integer.MAX_VALUE}) {
+            var buffer = new RegistryFriendlyByteBuf(Unpooled.buffer(), helper.getLevel().registryAccess());
+            try {
+                buffer.writeBoolean(false);
+                buffer.writeInt(count);
+                expectRejected(helper, () -> me.myogoo.extendedterminal.network.serverbound.FillSmithingGridFromRecipePacket.decode(buffer));
+                helper.assertTrue(buffer.readerIndex() == 5, "Reject smithing size before reading or allocating templates");
+            } finally {
+                buffer.release();
+            }
+        }
+        helper.succeed();
+    }
+
+    @GameTest(template = "empty")
+    public static void gridIndexBounds(GameTestHelper helper) {
+        for (int side : new int[]{3, 5, 7, 9}) {
+            var grid = me.myogoo.extendedterminal.util.TableCraftingHelper.indexToCoordinate(side * side, 2, 2);
+            helper.assertTrue(!grid.test(-1) && !grid.test(side * side), "Negative and end-exclusive grid indexes reject");
+            int selected = 0;
+            for (int i = 0; i < side * side; i++) if (grid.test(i)) selected++;
+            helper.assertTrue(selected == 4, "Exactly four centered grid positions selected");
+        }
+        helper.succeed();
     }
 
     @GameTest(template = "empty")
@@ -203,6 +233,90 @@ public final class TableTransferGameTests {
         helper.succeed();
     }
 
+    @GameTest(template = "empty")
+    public static void honeyRemaindersAndStaleResult(GameTestHelper helper) {
+        for (int top = 0; top <= 7; top++) {
+            for (int left = 0; left <= 7; left++) {
+                var player = player(helper);
+                var host = new TestHost(player, 81);
+                for (int y = top; y < top + 2; y++) {
+                    for (int x = left; x < left + 2; x++) {
+                        host.grid.setItemDirect(y * 9 + x, new ItemStack(Items.HONEY_BOTTLE));
+                    }
+                }
+                var menu = new UnitedTerminalMenu(UnitedTerminalMenu.TYPE, 0, player.getInventory(), host);
+                player.containerMenu = menu;
+                var output = menu.slots.stream()
+                        .filter(me.myogoo.extendedterminal.menu.extendedcrafting.slot.UnitedCraftingTerminalSlot.class::isInstance)
+                        .map(me.myogoo.extendedterminal.menu.extendedcrafting.slot.UnitedCraftingTerminalSlot.class::cast)
+                        .findFirst().orElseThrow();
+                var preview = output.getItem().copy();
+                output.doClick(appeng.helpers.InventoryAction.CRAFT_ITEM, player);
+                helper.assertTrue(menu.getCarried().is(Items.HONEY_BLOCK), "Off-center 2x2 recipe crafts");
+                for (int i = 0; i < 81; i++) {
+                    boolean used = i % 9 >= left && i % 9 < left + 2 && i / 9 >= top && i / 9 < top + 2;
+                    var stack = host.grid.getStackInSlot(i);
+                    helper.assertTrue(used ? stack.is(Items.GLASS_BOTTLE) && stack.getCount() == 1 : stack.isEmpty(),
+                            "Exactly four remainders at original input coordinates, slot " + i);
+                }
+                helper.assertTrue(player.getInventory().isEmpty(), "No duplicate remainders in player inventory");
+                menu.setCarried(ItemStack.EMPTY);
+                output.set(preview);
+                output.doClick(appeng.helpers.InventoryAction.CRAFT_ITEM, player);
+                helper.assertTrue(menu.getCarried().isEmpty(), "Stale recipe mismatch rejects without null dereference");
+            }
+        }
+        helper.succeed();
+    }
+
+    @GameTest(template = "empty")
+    public static void fuzzyCandidates(GameTestHelper helper) throws Exception {
+        var template = new ItemStack(Items.DIAMOND);
+        template.set(net.minecraft.core.component.DataComponents.CUSTOM_NAME, net.minecraft.network.chat.Component.literal("template"));
+        var candidate = new ItemStack(Items.DIAMOND);
+        candidate.set(net.minecraft.core.component.DataComponents.CUSTOM_NAME, net.minecraft.network.chat.Component.literal("candidate"));
+        var key = appeng.api.stacks.AEItemKey.of(candidate);
+        var input = NonNullList.withSize(81, ItemStack.EMPTY);
+        input.set(0, template);
+        var output = new ItemStack(Items.EMERALD);
+        var method = java.util.Arrays.stream(me.myogoo.extendedterminal.menu.extendedcrafting.slot.UnitedCraftingTerminalSlot.class.getDeclaredMethods())
+                .filter(m -> m.getName().equals("extractItemsByRecipe")).findFirst().orElseThrow();
+        method.setAccessible(true);
+        for (int policy = 0; policy < 3; policy++) {
+            int rule = policy;
+            var recipe = new me.myogoo.extendedterminal.adapter.recipe.table.ShapedTableRecipeAdapter(
+                    helper.getLevel().getRecipeManager().byKey(ResourceLocation.withDefaultNamespace("honey_block")).orElseThrow().value(),
+                    1, 1, 1, ResourceLocation.withDefaultNamespace("honey_block")) {
+                @Override public boolean matches(MyoTableInput actual, net.minecraft.world.level.Level level, MyoRecipeType type) {
+                    return rule != 0 || ItemStack.isSameItemSameComponents(actual.getItem(0), template);
+                }
+                @Override public ItemStack assemble(MyoTableInput actual, net.minecraft.world.level.Level level, MyoRecipeType type) {
+                    return rule == 1 && !ItemStack.isSameItemSameComponents(actual.getItem(0), template)
+                            ? new ItemStack(Items.COAL) : output.copy();
+                }
+            };
+            int[] extracted = {0};
+            var storage = new MEStorage() {
+                @Override public long extract(appeng.api.stacks.AEKey requested, long amount,
+                        appeng.api.config.Actionable action, appeng.api.networking.security.IActionSource source) {
+                    if (!key.equals(requested)) return 0;
+                    if (action == appeng.api.config.Actionable.MODULATE) extracted[0]++;
+                    return 1;
+                }
+                @Override public net.minecraft.network.chat.Component getDescription() { return net.minecraft.network.chat.Component.literal("test"); }
+            };
+            var available = new appeng.api.stacks.KeyCounter();
+            available.add(key, 1);
+            appeng.api.networking.energy.IEnergySource energy = (amount, action, multiplier) -> amount;
+            var result = (ItemStack) method.invoke(null, energy, appeng.api.networking.security.IActionSource.ofPlayer(player(helper)),
+                    storage, helper.getLevel(), recipe, MyoRecipeType.VANILLA, output, input, template, 0, available, null);
+            helper.assertTrue(policy == 2 ? ItemStack.isSameItemSameComponents(result, candidate) && extracted[0] == 1
+                            : result.isEmpty() && extracted[0] == 0,
+                    "Fuzzy substitution validates candidate matches and output before extraction, policy " + policy);
+            helper.assertTrue(ItemStack.isSameItemSameComponents(input.get(0), template), "Validation preserves original template");
+        }
+        helper.succeed();
+    }
     private static void expectRejected(GameTestHelper helper, Runnable action) {
         boolean rejected = false;
         try {

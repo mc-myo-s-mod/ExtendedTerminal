@@ -13,6 +13,7 @@ import appeng.items.storage.ViewCellItem;
 import appeng.util.prioritylist.IPartitionList;
 import me.myogoo.extendedterminal.menu.ETMenuType;
 import me.myogoo.extendedterminal.menu.extendedterminal.ETTerminalMenu;
+import me.myogoo.extendedterminal.menu.extendedterminal.ETTerminalMode;
 import me.myogoo.extendedterminal.menu.slot.ETCraftingBaseSlot;
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.SimpleContainer;
@@ -37,6 +38,9 @@ public class ETSmithingSlot extends ETCraftingBaseSlot<SmithingRecipe, SimpleCon
 
     @Override
     protected SmithingRecipe findRecipe(SimpleContainer ic, Level level) {
+        if (getMenu() instanceof ETTerminalMenu et && !et.canCraftInMode(ETTerminalMode.SMITHING)) {
+            return null;
+        }
         if (this.menu instanceof ETTerminalMenu terminalMenu) {
             var recipe = terminalMenu.getSmithingRecipe();
             if (recipe != null && recipe.matches(ic, level)) {

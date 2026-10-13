@@ -16,6 +16,10 @@ import me.myogoo.extendedterminal.init.wt.WTItems;
 import me.myogoo.extendedterminal.me.host.ETWTHost;
 import me.myogoo.extendedterminal.me.host.UnitedWTHost;
 import me.myogoo.extendedterminal.menu.ETMenuType;
+import me.myogoo.extendedterminal.menu.extendedterminal.ETTerminalMenu;
+import me.myogoo.extendedterminal.menu.extendedterminal.ETTerminalMode;
+import me.myogoo.extendedterminal.menu.recipe.ETRecipeTransferSupport;
+import net.minecraft.world.item.crafting.Ingredient;
 import me.myogoo.myotus.api.MyotusAPI;
 import me.myogoo.myotus.api.annotation.mods.AE2WTLib;
 import net.minecraft.core.NonNullList;
@@ -60,6 +64,8 @@ public final class WirelessTerminalGameTests {
     private static final class Tests {
         private static final List<TestCase> TESTS = List.of(
                 new TestCase("wireless_shared_grid_preserves_tail", Tests::sharedGridPreservesTail),
+                new TestCase("wireless_cross_panel_roundtrip", Tests::crossPanelRoundtrip),
+                new TestCase("wireless_packet_panel_roundtrip", Tests::packetPanelRoundtrip),
                 new TestCase("wireless_legacy_sparse_grid_roundtrip", Tests::legacySparseGridRoundtrip),
                 new TestCase("wireless_magnet_terminal_lookup", Tests::magnetTerminalLookup),
                 new TestCase("wireless_magnet_priority_and_cache", Tests::magnetPriorityAndCache));
@@ -87,6 +93,8 @@ public final class WirelessTerminalGameTests {
                 contents.set(0, new ItemStack(Items.DIAMOND, 2));
                 contents.set(8, new ItemStack(Items.EMERALD, 3));
                 contents.set(80, new ItemStack(Items.GOLD_INGOT, 4));
+                contents.get(0).set(net.minecraft.core.component.DataComponents.CUSTOM_NAME, net.minecraft.network.chat.Component.literal("front"));
+                contents.get(80).set(net.minecraft.core.component.DataComponents.CUSTOM_NAME, net.minecraft.network.chat.Component.literal("tail"));
                 stack.set(ETDataComponent.CRAFTING_INV, ItemContainerContents.fromItems(contents));
                 helper.assertTrue(grid(player, stack, true).size() == 81, "United exposes 81 slots");
 
@@ -100,15 +108,16 @@ public final class WirelessTerminalGameTests {
                 stack = reload(helper, stack);
                 var unitedGrid = grid(player, stack, true);
                 helper.assertTrue(unitedGrid.getStackInSlot(0).getCount() == 1
-                                && unitedGrid.getStackInSlot(8).getCount() == 2,
+                                && unitedGrid.getStackInSlot(8).getCount() == 2
+                                && ItemStack.isSameItemSameComponents(unitedGrid.getStackInSlot(0), contents.get(0)),
                         "ET edits remain shared after serialized reload, without duplicating inputs");
                 helper.assertTrue(unitedGrid.getStackInSlot(80).is(Items.GOLD_INGOT)
-                                && unitedGrid.getStackInSlot(80).getCount() == 4,
+                                && ItemStack.matches(unitedGrid.getStackInSlot(80), contents.get(80)),
                         "ET saves preserve United's final slot regardless of selected terminal");
                 grid(player, stack, false).clear();
                 unitedGrid = grid(player, reload(helper, stack), true);
                 helper.assertTrue(unitedGrid.getStackInSlot(0).isEmpty() && unitedGrid.getStackInSlot(8).isEmpty()
-                                && unitedGrid.getStackInSlot(80).getCount() == 4,
+                                && ItemStack.matches(unitedGrid.getStackInSlot(80), contents.get(80)),
                         "Clearing the ET view clears only the first nine slots");
             }
             helper.succeed();
@@ -187,6 +196,79 @@ public final class WirelessTerminalGameTests {
             player.getInventory().setItem(3, united);
             helper.assertTrue(handler.getCraftingTerminal() == united && handler.getMagnetHost() != unitedMagnet,
                     "Moving United to another slot invalidates and rebuilds its cached magnet host");
+            helper.succeed();
+        }
+
+        private static void packetPanelRoundtrip(GameTestHelper helper) {
+            for (boolean universal : new boolean[]{false, true}) {
+                for (int occupied : new int[]{0, 63, 64}) {
+                    var player = player(helper);
+                    var stack = universal ? universal(definition(false), definition(false), definition(true))
+                            : new ItemStack(definition(false).item());
+                    var host = host(player, stack);
+                    host.setMode(ETTerminalMode.ANVIL);
+                    var source = new ItemStack(Items.STONE, 3);
+                    source.set(net.minecraft.core.component.DataComponents.CUSTOM_NAME, net.minecraft.network.chat.Component.literal("source"));
+                    host.getSubInventory(ETTerminalMode.ANVIL.getInventoryId()).setItemDirect(0, source);
+                    if (occupied > 0) {
+                        host.getSubInventory(ETTerminalMode.STONECUTTING.getInventoryId()).setItemDirect(0, new ItemStack(Items.DIAMOND, occupied));
+                    }
+                    for (int i = 0; i < player.getInventory().getContainerSize(); i++) {
+                        player.getInventory().setItem(i, new ItemStack(Items.DIRT, 64));
+                    }
+                    // Leave space for only one of the blocking diamonds.
+                    player.getInventory().setItem(0, new ItemStack(Items.DIAMOND, 63));
+                    var recipe = appeng.crafting.RecipeAccess.getRecipesFor(helper.getLevel(), net.minecraft.world.item.crafting.RecipeType.STONECUTTING,
+                            new net.minecraft.world.item.crafting.SingleRecipeInput(new ItemStack(Items.STONE))).findFirst().orElseThrow().id();
+                    var menu = new ETTerminalMenu(ETTerminalMenu.TYPE, 0, player.getInventory(), host);
+                    player.containerMenu = menu;
+                    new me.myogoo.extendedterminal.network.serverbound.FillStonecutterGridFromRecipePacket(recipe,
+                            new ItemStack(Items.STONE), false).handleOnServer(player);
+                    menu.removed(player);
+                    var reopened = host(player, reload(helper, stack));
+                    var savedSource = reopened.getSubInventory(ETTerminalMode.ANVIL.getInventoryId()).getStackInSlot(0);
+                    var savedTarget = reopened.getSubInventory(ETTerminalMode.STONECUTTING.getInventoryId()).getStackInSlot(0);
+                    helper.assertTrue(occupied == 0
+                                    ? savedSource.getCount() == 2 && savedTarget.getCount() == 1
+                                        && ItemStack.isSameItemSameComponents(savedSource, source)
+                                        && ItemStack.isSameItemSameComponents(savedTarget, source)
+                                    : ItemStack.matches(savedSource, source) && savedTarget.is(Items.DIAMOND)
+                                        && savedTarget.getCount() == occupied - 1 && player.getInventory().getItem(0).getCount() == 64,
+                            "Packet close/codec/reopen conserves input and partial destination evacuation: " + occupied);
+                }
+            }
+            helper.succeed();
+        }
+        private static ETWTHost host(FakePlayer player, ItemStack stack) {
+            return new ETWTHost((ItemWT) stack.getItem(), player, MenuLocators.forStack(stack), (p, menu) -> {});
+        }
+
+        private static void crossPanelRoundtrip(GameTestHelper helper) {
+            for (boolean universal : new boolean[]{false, true}) {
+                for (var source : ETTerminalMode.values()) {
+                    for (var target : ETTerminalMode.values()) {
+                        if (source == target) continue;
+                        var player = player(helper);
+                        var stack = universal ? universal(definition(false), definition(false), definition(true))
+                                : new ItemStack(definition(false).item());
+                        var host = host(player, stack);
+                        host.setMode(target);
+                        var original = new ItemStack(Items.DIAMOND, 3);
+                        original.set(net.minecraft.core.component.DataComponents.CUSTOM_NAME, net.minecraft.network.chat.Component.literal("panel input"));
+                        host.getSubInventory(source.getInventoryId()).setItemDirect(0, original);
+                        var menu = new ETTerminalMenu(ETTerminalMenu.TYPE, 0, player.getInventory(), host);
+                        var moved = ETRecipeTransferSupport.takeIngredientFromOtherGrid(menu, Ingredient.of(Items.DIAMOND));
+                        helper.assertTrue(moved.is(Items.DIAMOND) && moved.getCount() == 1, "Extract exactly one input");
+                        host.getSubInventory(target.getInventoryId()).setItemDirect(0, moved);
+                        var reopened = host(player, reload(helper, stack));
+                        helper.assertTrue(reopened.getSubInventory(source.getInventoryId()).getStackInSlot(0).getCount() == 2
+                                        && reopened.getSubInventory(target.getInventoryId()).getStackInSlot(0).getCount() == 1
+                                        && ItemStack.isSameItemSameComponents(reopened.getSubInventory(source.getInventoryId()).getStackInSlot(0), original)
+                                        && ItemStack.isSameItemSameComponents(reopened.getSubInventory(target.getInventoryId()).getStackInSlot(0), original),
+                                "Serialized source and target conserve three items: " + source + " -> " + target);
+                    }
+                }
+            }
             helper.succeed();
         }
 

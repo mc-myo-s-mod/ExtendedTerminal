@@ -25,7 +25,7 @@ public final class TableCraftingHelper {
     public static int getCraftingGridSideLength(int gridSize) {
         int width = (int) Math.sqrt(gridSize);
         if (width * width < gridSize) {
-            // may not invalid?
+            // Partially filled grids still need a complete final row.
             width++;
         }
         return width;
@@ -35,25 +35,16 @@ public final class TableCraftingHelper {
         return new GridCoordinate(getCraftingGridSideLength(gridSize), width, height);
     }
 
-    public static class GridCoordinate {
-        private final int sideLength;
-        private final int[][] matrix;
+    /** @deprecated Use {@link me.myogoo.extendedterminal.util.TableCraftingHelper.GridCoordinate}. */
+    @Deprecated(forRemoval = true)
+    public static class GridCoordinate extends me.myogoo.extendedterminal.util.TableCraftingHelper.GridCoordinate {
         public GridCoordinate(int sideLength, int width, int height) {
-            this.sideLength = sideLength;
-
-            matrix = new int[sideLength][sideLength];
-            int offsetX = Math.floorDiv(sideLength - width,2);
-            int offsetY = Math.floorDiv(sideLength - height,2);
-            for(int y = offsetY; y < offsetY + height; y++) {
-                for(int x = offsetX; x < offsetX + width; x++) {
-                    matrix[x][y] = 1;
-                }
-            }
+            super(sideLength, width, height);
         }
 
+        @Override
         public boolean test(int index) {
-            if(index < 0 || index > sideLength * sideLength) { return false; }
-            return matrix[index % sideLength][index / sideLength] == 1;
+            return super.test(index);
         }
     }
 }

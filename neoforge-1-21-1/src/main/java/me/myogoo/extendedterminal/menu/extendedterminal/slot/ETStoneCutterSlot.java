@@ -13,6 +13,7 @@ import appeng.items.storage.ViewCellItem;
 import appeng.util.prioritylist.IPartitionList;
 import me.myogoo.extendedterminal.menu.ETMenuType;
 import me.myogoo.extendedterminal.menu.extendedterminal.ETTerminalMenu;
+import me.myogoo.extendedterminal.menu.extendedterminal.ETTerminalMode;
 import me.myogoo.extendedterminal.menu.slot.ETCraftingBaseSlot;
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.entity.player.Player;
@@ -32,11 +33,13 @@ public class ETStoneCutterSlot extends ETCraftingBaseSlot<StonecutterRecipe, Sin
 
     @Override
     protected RecipeHolder<StonecutterRecipe> findRecipe(SingleRecipeInput ic, Level level) {
-        if(!(menu instanceof ETTerminalMenu terminalMenu)) {
+        if (!(menu instanceof ETTerminalMenu terminalMenu)
+                || !terminalMenu.canCraftInMode(ETTerminalMode.STONECUTTING)
+                || terminalMenu.getStoneCutterRecipeId() == null || ic.item().isEmpty()) {
             return null;
         }
         var recipe = level.getRecipeManager().byKey(terminalMenu.getStoneCutterRecipeId());
-        if(recipe.isPresent() && recipe.get().value() instanceof StonecutterRecipe stonecutterRecipe) {
+        if(recipe.isPresent() && recipe.get().value() instanceof StonecutterRecipe stonecutterRecipe && stonecutterRecipe.matches(ic, level)) {
             return (RecipeHolder<StonecutterRecipe>) recipe.get();
         }
         return null;
@@ -55,7 +58,7 @@ public class ETStoneCutterSlot extends ETCraftingBaseSlot<StonecutterRecipe, Sin
                 }
             }
         }
-        return NonNullList.of(ItemStack.EMPTY);
+        return NonNullList.withSize(1, ItemStack.EMPTY);
     }
 
     @Override
@@ -71,7 +74,7 @@ public class ETStoneCutterSlot extends ETCraftingBaseSlot<StonecutterRecipe, Sin
 
         this.craftInv.extractItem(0, 1, false);
 
-        var remainingInSlot = remainingItems.get(0);
+        var remainingInSlot = remainingItems.isEmpty() ? ItemStack.EMPTY : remainingItems.get(0);
         if(!remainingInSlot.isEmpty()) {
             if (this.craftInv.getStackInSlot(0).isEmpty()) {
                 this.craftInv.setItemDirect(0, remainingInSlot);

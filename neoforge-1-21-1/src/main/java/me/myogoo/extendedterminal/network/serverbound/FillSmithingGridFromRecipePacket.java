@@ -71,7 +71,7 @@ public class FillSmithingGridFromRecipePacket extends FillRecipeBasePacket imple
         if (stream.readBoolean()) {
             recipeId = stream.readResourceLocation();
         }
-        var ingredientTemplates = NonNullList.withSize(stream.readInt(), ItemStack.EMPTY);
+        var ingredientTemplates = NonNullList.withSize(validateTemplateCount(stream.readInt()), ItemStack.EMPTY);
         ingredientTemplates.replaceAll(ignored -> ItemStack.OPTIONAL_STREAM_CODEC.decode(stream));
         var craftMissing = stream.readBoolean();
 
@@ -79,9 +79,17 @@ public class FillSmithingGridFromRecipePacket extends FillRecipeBasePacket imple
     }
 
     public FillSmithingGridFromRecipePacket(ResourceLocation recipeId, NonNullList<ItemStack> ingredientTemplates, boolean craftMissing) {
+        validateTemplateCount(ingredientTemplates.size());
         this.recipeId = recipeId;
         this.craftMissing = craftMissing;
         this.ingredientTemplates = ingredientTemplates;
+    }
+
+    private static int validateTemplateCount(int count) {
+        if (count != 3) {
+            throw new IllegalArgumentException("Smithing requires exactly three templates");
+        }
+        return count;
     }
 
     @Override
@@ -90,6 +98,16 @@ public class FillSmithingGridFromRecipePacket extends FillRecipeBasePacket imple
         var menu = player.containerMenu;
         if (!(menu instanceof ETTerminalMenu cct)) {
             // Server might have closed the menu before the client-packet is processed. This is not an error.
+            return;
+        }
+
+        var ingredients = getDesiredIngredients(player);
+        if (!ETTerminalMode.SMITHING.canLoad() || ingredients.size() != 3
+                || cct.getSmithingInventory().size() != 3) {
+            return;
+        }
+        cct.setMode(ETTerminalMode.SMITHING);
+        if (cct.getMode() != ETTerminalMode.SMITHING) {
             return;
         }
 
@@ -120,7 +138,6 @@ public class FillSmithingGridFromRecipePacket extends FillRecipeBasePacket imple
         // We'll try to use the best possible ingredients based on what's available in the network
 
         var filter = ViewCellItem.createItemFilter(cct.getViewCells());
-        var ingredients = getDesiredIngredients(player);
 
         // Prepare to autocraft some stuff
         var toAutoCraft = new LinkedHashMap<AEItemKey, IntList>();
