@@ -5,7 +5,6 @@ import appeng.core.definitions.ItemDefinition;
 import de.mari_023.ae2wtlib.api.terminal.ItemWT;
 import me.myogoo.extendedterminal.ExtendedTerminal;
 import me.myogoo.extendedterminal.item.ChargedEnderPearlItem;
-import me.myogoo.extendedterminal.item.TooltipBlockItem;
 import me.myogoo.extendedterminal.item.TooltipItem;
 import me.myogoo.extendedterminal.item.wtitem.ETWTItem;
 import me.myogoo.myotus.api.annotation.mods.AE2WTLib;
@@ -39,12 +38,6 @@ public class ETItems {
     public static final ItemDefinition<ChargedEnderPearlItem> CHARGED_ENDER_PEARL = createItem("charged ender pearl",
             ExtendedTerminal.makeId("charged_ender_pearl"),
             ChargedEnderPearlItem::new);
-
-    public static final ItemDefinition<TooltipBlockItem> MATERIAL_CONVERTER = createItem("material_converter",
-            ExtendedTerminal.makeId("material_converter"),
-            properties -> new TooltipBlockItem(ETBlocks.MATERIAL_CONVERTER.get(), properties,
-                    ETTranslationKey.ITEM.ITEM_MATERIAL_CONVERTER_TOOLTIP.key(),
-                    ETTranslationKey.ITEM.ITEM_MATERIAL_CONVERTER_REMOVAL_WARNING.key()));
 
     public static <T extends Item> ItemDefinition<T> createItem(String name, ResourceLocation id,
             Function<Item.Properties, T> itemFactory) {

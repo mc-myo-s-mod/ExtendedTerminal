@@ -43,10 +43,6 @@ public final class ETRecipeDataProvider extends JsonRecipeProvider {
         saveShaped(output, "extendedterminal/et_terminal", null, "extendedterminal:et_terminal",
                 new String[]{" E ", "ABC", " D "},
                 key('A', "minecraft:smithing_table", 'B', "ae2:crafting_terminal", 'C', "minecraft:stonecutter", 'D', "myotus:compat_processor", 'E', "minecraft:anvil"));
-        saveShaped(output, "extendedterminal/material_converter", null, "extendedterminal:material_converter",
-                new String[]{"ICI", "CMC", "ICI"},
-                key('C', "ae2:fluix_glass_cable", 'I', "minecraft:iron_ingot", 'M', "myotus:compat_processor"));
-
         JsonArray extendedCrafting = conditions("extendedcrafting");
         saveTerminalUpgrade(output, "extendedcrafting/basic_terminal", extendedCrafting,
                 "extendedcrafting:basic_table", "ae2:crafting_terminal", "extendedterminal:basic_terminal");

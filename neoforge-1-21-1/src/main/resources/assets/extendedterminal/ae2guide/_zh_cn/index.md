@@ -6,9 +6,6 @@ navigation:
 
 # 拓展终端
 
-## 杂项与原材料
-- [材料转化器](material_converter.md)
-
 ## 终端
 - [拓展终端](terminals/extendedterminal.md)
 - [合成拓展合成终端](terminals/extendedcrafting.md)

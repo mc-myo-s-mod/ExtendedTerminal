@@ -40,8 +40,6 @@ public class ExtendedTerminal {
 
     private static void initialize(IEventBus modEventBus) {
         ETNetwork.register();
-        ETBlocks.REGISTER.register(modEventBus);
-        ETBlockEntities.REGISTER.register(modEventBus);
         ETItems.REGISTER.register(modEventBus);
         ETParts.REGISTER.register(modEventBus);
         ETMenus.REGISTER.register(modEventBus);

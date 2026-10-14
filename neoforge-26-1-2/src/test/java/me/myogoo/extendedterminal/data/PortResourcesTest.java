@@ -68,6 +68,10 @@ class PortResourcesTest {
             assertNotNull(input);
             assertFalse(new String(input.readAllBytes(), StandardCharsets.UTF_8).contains("material_converter"));
         }
+        for (var language : List.of("en_us", "ko_kr", "ja_jp", "zh_cn", "zh_tw")) {
+            assertTrue(json("assets/extendedterminal/lang/" + language + ".json").keySet().stream()
+                    .noneMatch(key -> key.contains("material_converter")), language);
+        }
     }
 
     private JsonObject json(String path) throws Exception {

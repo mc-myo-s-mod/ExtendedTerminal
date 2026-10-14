@@ -6,9 +6,6 @@ navigation:
 
 # Extended Terminal
 
-## Misc, Ingredient Items
-- [Material Converter](material_converter.md)
-
 ## Terminals
 - [Extended Terminal](terminals/extendedterminal.md)
 - [Extended Crafting Terminal](terminals/extendedcrafting.md)

@@ -4,7 +4,6 @@ import me.myogoo.extendedterminal.api.translation.ETTranslationKey;
 import appeng.core.definitions.ItemDefinition;
 import me.myogoo.extendedterminal.ExtendedTerminal;
 import me.myogoo.extendedterminal.item.ChargedEnderPearlItem;
-import me.myogoo.extendedterminal.item.TooltipBlockItem;
 import me.myogoo.extendedterminal.item.TooltipItem;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
@@ -35,11 +34,6 @@ public class ETItems {
     public static final ItemDefinition<ChargedEnderPearlItem> CHARGED_ENDER_PEARL = createItem("charged_ender_pearl",
             ExtendedTerminal.makeId("charged_ender_pearl"),
             ChargedEnderPearlItem::new);
-
-    public static final ItemDefinition<TooltipBlockItem> MATERIAL_CONVERTER = createItem("material_converter",
-            ExtendedTerminal.makeId("material_converter"),
-            properties -> new TooltipBlockItem(ETBlocks.MATERIAL_CONVERTER_BLOCK, properties,
-                    ETTranslationKey.ITEM.ITEM_MATERIAL_CONVERTER_TOOLTIP.key()));
 
     public static <T extends Item> ItemDefinition<T> createItem(String name, ResourceLocation id, Function<Item.Properties, T> factory) {
         var item = factory.apply(new Item.Properties());
