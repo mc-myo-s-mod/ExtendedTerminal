@@ -53,7 +53,7 @@ public class ETClient {
         if(MyotusAPI.integrations().isLoaded(AE2WTLib.class)) {
             eventBus.addListener(ETClient::InitWTScreen);
         }
-        if(MyotusAPI.integrations().isLoaded(Polymorph.class)) {
+        if(MyotusAPI.integrations().isLoaded(Polymorph.class) && net.neoforged.fml.ModList.get().isLoaded("polyeng")) {
             ETPolymorph.init();
         }
     }

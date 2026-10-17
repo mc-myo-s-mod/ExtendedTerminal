@@ -3,12 +3,18 @@ package me.myogoo.extendedterminal.gametest;
 import appeng.api.implementations.menuobjects.ItemMenuHost;
 import appeng.api.inventories.ISegmentedInventory;
 import appeng.api.inventories.InternalInventory;
+import appeng.api.config.Actionable;
+import appeng.api.config.PowerMultiplier;
+import appeng.api.networking.energy.IEnergySource;
+import appeng.api.networking.security.IActionSource;
+import appeng.api.stacks.AEFluidKey;
+import appeng.api.stacks.AEKey;
+import appeng.api.stacks.KeyCounter;
 import appeng.api.storage.ILinkStatus;
 import appeng.api.storage.MEStorage;
 import appeng.api.util.IConfigManager;
 import appeng.crafting.RecipeAccess;
 import appeng.helpers.InventoryAction;
-import appeng.me.storage.NullInventory;
 import appeng.menu.ISubMenu;
 import appeng.menu.locator.MenuLocators;
 import appeng.util.inv.AppEngInternalInventory;
@@ -19,12 +25,15 @@ import me.myogoo.extendedterminal.config.ExtendedTerminalConfig;
 import me.myogoo.extendedterminal.menu.extendedterminal.ETTerminalMenu;
 import me.myogoo.extendedterminal.menu.extendedterminal.ETTerminalMode;
 import me.myogoo.myotus.api.experience.ExperienceMath;
+import me.myogoo.myotus.config.MyotusConfig;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.gametest.framework.FunctionGameTestInstance;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.gametest.framework.TestData;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.Item;
@@ -32,6 +41,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.item.crafting.SingleRecipeInput;
+import net.minecraft.world.level.material.Fluids;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.common.ModConfigSpec;
@@ -51,7 +61,9 @@ public final class ETPanelGameTests {
             new TestCase("et_stonecutting_validates_input_and_restores_selection", ETPanelGameTests::stonecuttingSelection),
             new TestCase("et_client_refresh_keeps_server_selection", ETPanelGameTests::clientRefreshKeepsSelection),
             new TestCase("et_hidden_panels_cannot_craft", ETPanelGameTests::hiddenPanels),
-            new TestCase("et_craft_only_active_and_power_transitions", ETPanelGameTests::powerTransitions));
+            new TestCase("et_craft_only_active_and_power_transitions", ETPanelGameTests::powerTransitions),
+            new TestCase("et_anvil_xp_refresh_uses_game_time", ETPanelGameTests::anvilExperienceRefresh),
+            new TestCase("et_anvil_xp_snapshot_keeps_payment_live", ETPanelGameTests::anvilExperiencePayment));
 
     @SubscribeEvent
     public static void registerFunctions(RegisterEvent event) {
@@ -70,6 +82,107 @@ public final class ETPanelGameTests {
             event.registerTest(id, new FunctionGameTestInstance(ResourceKey.create(Registries.TEST_FUNCTION, id),
                     new TestData<>(environment, Identifier.withDefaultNamespace("empty"), 100, 0, true)));
         }
+    }
+
+    private static void anvilExperienceRefresh(GameTestHelper helper) {
+        var player = player(helper);
+        var host = new TestHost(player, ETTerminalMode.CRAFTING);
+        var menu = open(player, host);
+        helper.assertTrue(host.storage.queries == 2, "Opening must query each XP source exactly once");
+        menu.getSelectedAnvilExperienceSource();
+        menu.getSelectedAnvilExperienceSourceLabelKey();
+        helper.assertTrue(host.storage.queries == 2, "Selection and labels must reuse the initial snapshot");
+        for (int i = 0; i < 3; i++) {
+            menu.broadcastChanges();
+        }
+        helper.assertTrue(host.storage.queries == 5, "Same-tick broadcasts must only query AE2's parent storage");
+        long openedAt = helper.getLevel().getGameTime();
+        helper.runAfterDelay(9, () -> {
+            helper.assertTrue(helper.getLevel().getGameTime() == openedAt + 9, "Fixture must advance nine game ticks");
+            menu.broadcastChanges();
+            helper.assertTrue(host.storage.queries == 6, "Nine ticks must not refresh XP availability");
+        });
+        helper.runAfterDelay(10, () -> {
+            menu.broadcastChanges();
+            helper.assertTrue(host.storage.queries == 9, "Tick ten must query two XP sources and AE2 parent storage");
+            menu.broadcastChanges();
+            helper.assertTrue(host.storage.queries == 10, "A second tick-ten broadcast must not refresh again");
+            menu.cycleAnvilExperienceSourcePriority();
+            helper.assertTrue(host.storage.queries == 12, "Cycling must immediately query each XP source only once");
+            menu.setMode(ETTerminalMode.ANVIL);
+            helper.assertTrue(host.storage.queries == 14, "Entering the anvil must immediately refresh both sources");
+            menu.broadcastChanges();
+            helper.assertTrue(host.storage.queries == 15, "Forced refresh must reset the periodic deadline");
+            helper.succeed();
+        });
+    }
+
+    private static void anvilExperiencePayment(GameTestHelper helper) {
+        var option = MyotusConfig.SERVER.fluidMbPerExperienceOverrides;
+        var original = option.get();
+        try {
+            option.set(List.of("minecraft:water=20", "minecraft:lava=1"));
+            // Restart-required config values keep their old cache until explicitly cleared in this fixture.
+            option.clearCache();
+            helper.assertTrue(MyotusConfig.getExperienceFluidRates().overrides().containsKey("minecraft:water"),
+                    "Test rates must be active: " + MyotusConfig.getExperienceFluidRates());
+            var player = player(helper);
+            player.getAbilities().instabuild = false;
+            var host = new TestHost(player, ETTerminalMode.ANVIL);
+            var water = AEFluidKey.of(Fluids.WATER);
+            host.storage.amounts.put(water, 1120L);
+            host.rememberedSource = ExperienceMath.ExperienceSource.FLUID_XP;
+            var input = host.getSubInventory(ETTerminalMode.ANVIL.getInventoryId());
+            var diamond = new ItemStack(Items.DIAMOND);
+            diamond.set(DataComponents.REPAIR_COST, 4);
+            input.setItemDirect(0, diamond);
+            var menu = open(player, host);
+            helper.assertTrue(host.storage.queries == 2,
+                    "Initial source snapshot query count: " + host.storage.queries);
+            helper.assertTrue(menu.getSelectedAnvilExperienceSource() == ExperienceMath.ExperienceSource.FLUID_XP,
+                    "Initial source must restore fluid XP, got " + menu.getSelectedAnvilExperienceSource());
+            menu.setAnvilItemName("Live XP payment");
+            helper.assertTrue(menu.getAnvilCost() == 5, "Rename must cost five levels, got " + menu.getAnvilCost());
+            var output = output(menu, ETTerminalMode.ANVIL);
+            var preview = output.getItem().copy();
+            for (int failure = 0; failure < 3; failure++) {
+                host.storage.amounts.put(water, failure == 0 ? 1099L : 1120L);
+                host.storage.allowExtraction = failure != 1;
+                host.powered = failure != 2;
+                long before = host.storage.amounts.get(water);
+                helper.assertTrue(menu.getSelectedAnvilExperienceSource() == ExperienceMath.ExperienceSource.FLUID_XP,
+                        "UI should remain stale until its next refresh");
+                helper.assertTrue(!output.mayPickup(player) && !menu.canPayAnvilCost(player)
+                                && !menu.consumeAnvilExperience(player),
+                        "Stale UI must not bypass insufficient XP, extraction permission, or AE power");
+                menu.quickMoveStack(player, output.index);
+                helper.assertTrue(host.storage.amounts.get(water) == before && player.totalExperience == 0
+                                && player.getInventory().isEmpty() && menu.getCarried().isEmpty()
+                                && ItemStack.matches(diamond, input.getStackInSlot(0))
+                                && ItemStack.matches(preview, output.getItem()),
+                        "Rejected payment must preserve XP, input, output, and player inventory");
+            }
+            host.powered = true;
+            host.storage.allowExtraction = true;
+            host.storage.amounts.put(water, 19L);
+            menu.setMode(ETTerminalMode.ANVIL);
+            helper.assertTrue(menu.getSelectedAnvilExperienceSource() == ExperienceMath.ExperienceSource.PLAYER,
+                    "Forced tab refresh must remove a source holding less than one whole XP");
+            host.storage.amounts.put(water, 20L);
+            menu.cycleAnvilExperienceSourcePriority();
+            helper.assertTrue(menu.getSelectedAnvilExperienceSource() == ExperienceMath.ExperienceSource.FLUID_XP,
+                    "Forced cycling must discover newly available XP before selecting");
+            host.storage.amounts.put(water, 20L);
+            var lava = AEFluidKey.of(Fluids.LAVA);
+            host.storage.amounts.put(lava, 54L);
+            helper.assertTrue(menu.canPayAnvilCost(player) && menu.consumeAnvilExperience(player)
+                            && host.storage.amounts.get(water) == 0 && host.storage.amounts.get(lava) == 0,
+                    "Different configured fluid rates must still combine to pay exactly 55 XP");
+        } finally {
+            option.set(original);
+            option.clearCache();
+        }
+        helper.succeed();
     }
 
     private static void stonecuttingSelection(GameTestHelper helper) {
@@ -283,11 +396,14 @@ public final class ETPanelGameTests {
         @Override protected boolean checkCraftingOnlyActive() { return !active && super.checkCraftingOnlyActive(); }
     }
 
-    private static final class TestHost extends ItemMenuHost<Item> implements IETTerminalHost, ISegmentedInventory {
+    private static final class TestHost extends ItemMenuHost<Item> implements IETTerminalHost, ISegmentedInventory, IEnergySource {
         private final Map<Identifier, InternalInventory> inventories = new HashMap<>();
         private final IConfigManager config = IConfigManager.builder(() -> {}).build();
         private ETTerminalMode mode;
         private Identifier stoneRecipeId;
+        private final TestStorage storage = new TestStorage();
+        private boolean powered = true;
+        private ExperienceMath.ExperienceSource rememberedSource;
 
         private TestHost(Player player, ETTerminalMode mode) {
             super(Items.STICK, player, MenuLocators.forStack(new ItemStack(Items.STICK)));
@@ -299,7 +415,10 @@ public final class ETPanelGameTests {
         }
 
         @Override public InternalInventory getSubInventory(Identifier id) { return inventories.get(id); }
-        @Override public MEStorage getInventory() { return NullInventory.of(); }
+        @Override public MEStorage getInventory() { return storage; }
+        @Override public double extractAEPower(double amount, Actionable mode, PowerMultiplier multiplier) {
+            return powered ? amount : 0;
+        }
         @Override public ILinkStatus getLinkStatus() { return ILinkStatus.ofDisconnected(); }
         @Override public IConfigManager getConfigManager() { return config; }
         @Override public void returnToMainMenu(Player player, ISubMenu subMenu) { }
@@ -308,7 +427,28 @@ public final class ETPanelGameTests {
         @Override public void setMode(ETTerminalMode mode) { this.mode = mode; }
         @Override public Identifier getStoneCutterRecipeId() { return stoneRecipeId; }
         @Override public void setStoneCutterRecipeId(Identifier id) { stoneRecipeId = id; }
-        @Override public ExperienceMath.ExperienceSource getRememberedAnvilExperienceSource() { return null; }
-        @Override public void setRememberedAnvilExperienceSource(ExperienceMath.ExperienceSource source) { }
+        @Override public ExperienceMath.ExperienceSource getRememberedAnvilExperienceSource() { return rememberedSource; }
+        @Override public void setRememberedAnvilExperienceSource(ExperienceMath.ExperienceSource source) { rememberedSource = source; }
+    }
+
+    private static final class TestStorage implements MEStorage {
+        private final Map<AEKey, Long> amounts = new HashMap<>();
+        private int queries;
+        private boolean allowExtraction = true;
+
+        @Override public void getAvailableStacks(KeyCounter out) {
+            queries++;
+            amounts.forEach(out::add);
+        }
+
+        @Override public long extract(AEKey key, long amount, Actionable mode, IActionSource source) {
+            long extracted = allowExtraction ? Math.min(amount, amounts.getOrDefault(key, 0L)) : 0;
+            if (mode == Actionable.MODULATE) {
+                amounts.merge(key, -extracted, Long::sum);
+            }
+            return extracted;
+        }
+
+        @Override public Component getDescription() { return Component.literal("XP test storage"); }
     }
 }

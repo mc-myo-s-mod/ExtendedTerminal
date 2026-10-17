@@ -13,6 +13,9 @@ import appeng.menu.ISubMenu;
 import appeng.menu.locator.MenuLocators;
 import appeng.util.inv.AppEngInternalInventory;
 import com.mojang.authlib.GameProfile;
+import com.google.gson.JsonParser;
+import com.illusivesoulworks.polymorph.api.PolymorphApi;
+import com.illusivesoulworks.polymorph.common.network.client.CPacketPlayerRecipeSelection;
 import io.netty.buffer.Unpooled;
 import me.myogoo.extendedterminal.ExtendedTerminal;
 import me.myogoo.extendedterminal.api.adapter.recipe.table.IShapedTableRecipeAdapter;
@@ -27,6 +30,8 @@ import me.myogoo.extendedterminal.menu.extendedterminal.ETTerminalMenu;
 import me.myogoo.extendedterminal.menu.extendedterminal.ETTerminalMode;
 import me.myogoo.extendedterminal.menu.recipe.ETRecipeTransferPlanner;
 import me.myogoo.extendedterminal.network.serverbound.FillTableCraftingGridFromRecipePacket;
+import me.myogoo.extendedterminal.network.serverbound.FillUnitedGridPacket;
+import me.myogoo.extendedterminal.integration.itemList.module.extendedcrafting.ECRecipeTransferHelper;
 import me.myogoo.myotus.api.experience.ExperienceMath;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.registries.Registries;
@@ -45,6 +50,8 @@ import net.minecraft.world.item.crafting.display.RecipeDisplay;
 import net.minecraft.world.level.Level;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.fml.ModList;
+import net.neoforged.neoforge.event.ModifyRecipeJsonsEvent;
 import net.neoforged.neoforge.event.RegisterGameTestsEvent;
 import net.neoforged.neoforge.common.util.FakePlayer;
 import net.neoforged.neoforge.registries.RegisterEvent;
@@ -65,7 +72,156 @@ public final class UnitedCraftingGameTests {
             new TestCase("united_custom_shaped_transfer", UnitedCraftingGameTests::customShapedTransfer),
             new TestCase("custom_shaped_transfer_across_et_panels", UnitedCraftingGameTests::transferAcrossPanels),
             new TestCase("table_transfer_rejects_invalid_packet", UnitedCraftingGameTests::rejectInvalidPacket),
+            new TestCase("united_polymorph_selection", UnitedCraftingGameTests::polymorphSelection),
+            new TestCase("united_vanilla_shapeless_transfer", helper -> shapelessTransfer(helper, "minecraft")),
+            new TestCase("united_ec_shapeless_transfer", helper -> shapelessTransfer(helper, "extendedcrafting")),
+            new TestCase("united_reavaritia_shapeless_transfer", helper -> shapelessTransfer(helper, "avaritia")),
             new TestCase("united_compact_and_distributed_inputs", UnitedCraftingGameTests::compactAndDistributedInputs));
+
+    @SubscribeEvent
+    public static void addShapelessTestRecipes(ModifyRecipeJsonsEvent event) {
+        if (!Boolean.getBoolean("extendedterminal.shapelessGameTests")) return;
+        for (var type : MyoRecipeType.values()) {
+            if (type == MyoRecipeType.VANILLA || !ModList.get().isLoaded(type.modid())) continue;
+            var ingredients = new com.google.gson.JsonArray();
+            for (int i = 0; i < shapelessIngredientCount(type); i++) ingredients.add("minecraft:honey_bottle");
+            var recipe = JsonParser.parseString("""
+                    {"type":"%s","tier":%d,"result":{"id":"minecraft:diamond"}}
+                    """.formatted(type.modid().equals("extendedcrafting")
+                    ? "extendedcrafting:shapeless_table" : "avaritia:shapeless_table", type.tier())).getAsJsonObject();
+            recipe.add("ingredients", ingredients);
+            event.getRecipeJsons().put(ExtendedTerminal.makeId("shapeless_test_" + type.name().toLowerCase(java.util.Locale.ROOT)), recipe);
+        }
+    }
+
+    private static int shapelessIngredientCount(MyoRecipeType type) {
+        return switch (type.tier()) { case 2 -> 10; case 3 -> 26; case 4 -> 50; default -> 4; };
+    }
+
+    private static void shapelessTransfer(GameTestHelper helper, String modid) {
+        for (var type : UnitedTerminalMenu.getActiveRecipeTypes()) {
+            if (!type.modid().equals(modid)) continue;
+            boolean vanilla = type == MyoRecipeType.VANILLA;
+            int count = shapelessIngredientCount(type);
+            var id = vanilla ? Identifier.withDefaultNamespace("book")
+                    : ExtendedTerminal.makeId("shapeless_test_" + type.name().toLowerCase(java.util.Locale.ROOT));
+            var key = ResourceKey.create(Registries.RECIPE, id);
+            MyoTableRecipe adapter;
+            if (vanilla) {
+                var holder = RecipeAccess.byKey(helper.getLevel(), RecipeType.CRAFTING, key);
+                helper.assertTrue(holder != null, "Vanilla book recipe must exist");
+                adapter = MyoTableRecipe.of(holder.value(), key);
+            } else if (modid.equals("extendedcrafting")) {
+                var holder = RecipeAccess.byKey(helper.getLevel(), com.blakebr0.extendedcrafting.init.ModRecipeTypes.TABLE.get(), key);
+                helper.assertTrue(holder != null, "EC shapeless fixture must load: " + type);
+                adapter = MyoTableRecipe.of(holder.value(), key);
+            } else {
+                var holder = RecipeAccess.byKey(helper.getLevel(), committee.nova.mods.avaritia.init.registry.ModRecipeTypes.CRAFTING_TABLE_RECIPE.get(), key);
+                helper.assertTrue(holder != null, "Re-Avaritia shapeless fixture must load: " + type);
+                adapter = MyoTableRecipe.of(holder.value(), key);
+            }
+            for (boolean distributed : new boolean[]{false, true}) {
+                var player = new FakePlayer(helper.getLevel(), new GameProfile(UUID.randomUUID(), "shapeless-test"));
+                var host = new TestHost(player);
+                var menu = new UnitedTerminalMenu(UnitedTerminalMenu.TYPE, 0, player.getInventory(), host);
+                player.containerMenu = menu;
+                var mapping = ECRecipeTransferHelper.getGuiSlotToIngredientMap(menu, adapter);
+                helper.assertTrue(mapping.size() == count, "JEI transfer must retain every ingredient: " + type);
+                for (int i = 0; i < count; i++) helper.assertTrue(mapping.containsKey(i), "JEI shapeless layout must start top-left");
+                player.getInventory().add(new ItemStack(vanilla ? Items.PAPER : Items.HONEY_BOTTLE, vanilla ? 3 : count));
+                if (vanilla) player.getInventory().add(new ItemStack(Items.LEATHER));
+                var templates = NonNullList.withSize(81, ItemStack.EMPTY);
+                mapping.forEach((slot, ingredient) -> templates.set(slot,
+                        ingredient.getValues().stream().findFirst().orElseThrow().value().getDefaultInstance()));
+                new FillUnitedGridPacket(key, templates, false, -1, -1, type).handleOnServer(player);
+                helper.assertTrue(menu.getSelectedRecipeType() == type, "Transfer selects matching tier");
+                for (int i = 0; i < 81; i++) {
+                    var item = host.grid.getStackInSlot(i);
+                    helper.assertTrue(i < count ? mapping.get(i).test(item) && item.getCount() == 1 : item.isEmpty(),
+                            "Packet must preserve JEI layout at slot " + i + ": " + type);
+                }
+                if (distributed) {
+                    host.grid.setItemDirect(80, host.grid.getStackInSlot(count - 1));
+                    host.grid.setItemDirect(count - 1, ItemStack.EMPTY);
+                    menu.slotsChanged(host.grid.toContainer());
+                }
+                var output = menu.slots.stream().filter(UnitedCraftingTerminalSlot.class::isInstance)
+                        .map(UnitedCraftingTerminalSlot.class::cast).findFirst().orElseThrow();
+                helper.assertTrue(output.getItem().is(vanilla ? Items.BOOK : Items.DIAMOND), "Transferred shapeless recipe matches: " + type);
+                host.grid.setItemDirect(79, new ItemStack(Items.STONE));
+                menu.slotsChanged(host.grid.toContainer());
+                helper.assertTrue(output.getItem().isEmpty(), "Extra occupied slot must reject shapeless recipe");
+                host.grid.setItemDirect(79, ItemStack.EMPTY);
+                menu.slotsChanged(host.grid.toContainer());
+                output.doClick(InventoryAction.CRAFT_ITEM, player);
+                helper.assertTrue(menu.getCarried().is(vanilla ? Items.BOOK : Items.DIAMOND) && menu.getCarried().getCount() == 1,
+                        "Taking output must craft exactly once: " + type);
+                for (int i = 0; i < 81; i++) {
+                    boolean used = i < count && (!distributed || i != count - 1) || distributed && i == 80;
+                    var item = host.grid.getStackInSlot(i);
+                    helper.assertTrue(!vanilla && used ? item.is(Items.GLASS_BOTTLE) && item.getCount() == 1 : item.isEmpty(),
+                            "Consume ingredients and return each bottle at its original slot: " + type + ", " + i);
+                }
+                helper.assertTrue(player.getInventory().countItem(Items.GLASS_BOTTLE) == 0
+                                && player.getInventory().countItem(Items.HONEY_BOTTLE) == 0,
+                        "Transfer and crafting must not duplicate ingredients or remainders");
+            }
+        }
+        helper.succeed();
+    }
+
+    @SubscribeEvent
+    public static void addPolymorphTestRecipes(ModifyRecipeJsonsEvent event) {
+        if (!Boolean.getBoolean("extendedterminal.polymorphGameTests") || !ModList.get().isLoaded("polymorph_plus")) {
+            return;
+        }
+        for (var result : List.of("emerald", "gold_ingot")) {
+            event.getRecipeJsons().put(ExtendedTerminal.makeId("polymorph_test_" + result), JsonParser.parseString("""
+                    {"type":"minecraft:crafting_shapeless","category":"misc",
+                     "ingredients":["minecraft:diamond"],"result":{"id":"minecraft:%s","count":1}}
+                    """.formatted(result)));
+        }
+    }
+
+    private static void polymorphSelection(GameTestHelper helper) {
+        var player = new FakePlayer(helper.getLevel(), new GameProfile(UUID.randomUUID(), "polymorph-test"));
+        var host = new TestHost(player);
+        host.grid.setItemDirect(80, new ItemStack(Items.DIAMOND, 3));
+        var menu = new UnitedTerminalMenu(UnitedTerminalMenu.TYPE, 0, player.getInventory(), host);
+        player.containerMenu = menu;
+        menu.broadcastChanges();
+        var data = PolymorphApi.getInstance().getPlayerRecipeData(player);
+        helper.assertTrue(data.getRecipesList().size() == 2, "Opening a populated United grid must publish both conflicts");
+        var output = menu.slots.stream().filter(UnitedCraftingTerminalSlot.class::isInstance)
+                .map(UnitedCraftingTerminalSlot.class::cast).findFirst().orElseThrow();
+        for (var result : List.of("gold_ingot", "emerald")) {
+            CPacketPlayerRecipeSelection.handle(new CPacketPlayerRecipeSelection(
+                    ExtendedTerminal.makeId("polymorph_test_" + result)), player);
+            helper.assertTrue(output.getItem().is(result.equals("gold_ingot") ? Items.GOLD_INGOT : Items.EMERALD),
+                    "Selection packet must refresh unchanged input: " + result);
+        }
+        output.doClick(InventoryAction.CRAFT_ITEM, player);
+        helper.assertTrue(menu.getCarried().is(Items.EMERALD) && host.grid.getStackInSlot(80).getCount() == 2,
+                "Crafting must consume exactly one ingredient and deliver the selected result");
+        CPacketPlayerRecipeSelection.handle(new CPacketPlayerRecipeSelection(
+                Identifier.withDefaultNamespace("honey_block")), player);
+        helper.assertTrue(output.getItem().is(Items.EMERALD) || output.getItem().is(Items.GOLD_INGOT),
+                "A nonmatching recipe selection must never produce an unrelated output");
+        for (var type : UnitedTerminalMenu.getActiveRecipeTypes()) {
+            if (type == MyoRecipeType.VANILLA) continue;
+            menu.setSelectedRecipeType(type);
+            CPacketPlayerRecipeSelection.handle(new CPacketPlayerRecipeSelection(
+                    ExtendedTerminal.makeId("polymorph_test_gold_ingot")), player);
+            helper.assertTrue(menu.getSelectedRecipeType() == type && !output.getItem().is(Items.GOLD_INGOT),
+                    "Polymorph must not override non-vanilla recipe modes");
+        }
+        menu.setSelectedRecipeType(MyoRecipeType.VANILLA);
+        host.grid.clear();
+        menu.slotsChanged(host.grid.toContainer());
+        helper.assertTrue(output.getItem().isEmpty() && data.getRecipesList().isEmpty(),
+                "Clearing ingredients must clear output and conflicts");
+        helper.succeed();
+    }
 
     @SubscribeEvent
     public static void registerFunctions(RegisterEvent event) {
@@ -80,6 +236,14 @@ public final class UnitedCraftingGameTests {
     public static void registerTests(RegisterGameTestsEvent event) {
         var environment = event.registerEnvironment(ExtendedTerminal.makeId("united_crafting"));
         for (var test : TESTS) {
+            if (test.name().contains("shapeless_transfer")
+                    && (!Boolean.getBoolean("extendedterminal.shapelessGameTests")
+                    || test.name().equals("united_ec_shapeless_transfer") && !ModList.get().isLoaded("extendedcrafting")
+                    || test.name().equals("united_reavaritia_shapeless_transfer") && !ModList.get().isLoaded("avaritia"))) continue;
+            if (test.name().equals("united_polymorph_selection")
+                    && (!Boolean.getBoolean("extendedterminal.polymorphGameTests") || !ModList.get().isLoaded("polymorph_plus"))) {
+                continue;
+            }
             var id = ExtendedTerminal.makeId(test.name());
             event.registerTest(id, new FunctionGameTestInstance(ResourceKey.create(Registries.TEST_FUNCTION, id),
                     new TestData<>(environment, Identifier.withDefaultNamespace("empty"), 100, 0, true)));

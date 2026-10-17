@@ -80,6 +80,10 @@ public final class UnitedCraftingGameTests {
                 "extendedterminal:empty", 20, 0, true, UnitedCraftingGameTests::distributedShapeless));
         tests.add(new TestFunction("extendedterminal", "unitedcraftinggametests.tippedarrows",
                 "extendedterminal:empty", 20, 0, true, UnitedCraftingGameTests::tippedArrows));
+        if (ModList.get().isLoaded("polymorph")) {
+            tests.add(new TestFunction("extendedterminal", "unitedcraftinggametests.polymorphselection",
+                    "extendedterminal:empty", 40, 0, true, UnitedCraftingGameTests::polymorphSelection));
+        }
         if (ETMenuType.SCULK_TERMINAL.canLoad()) {
             if (ModList.get().isLoaded("jei")) {
                 tests.add(new TestFunction("extendedterminal", "unitedcraftinggametests.jeitransferpacketconstruction",
@@ -89,6 +93,12 @@ public final class UnitedCraftingGameTests {
         if (ModList.get().isLoaded("extendedcrafting")) {
             tests.add(new TestFunction("extendedterminal", "unitedcraftinggametests.outsidetier",
                     "extendedterminal:empty", 20, 0, true, UnitedCraftingGameTests::outsideTier));
+            tests.add(new TestFunction("extendedterminal", "unitedcraftinggametests.extendedcraftingshapeless",
+                    "extendedterminal:empty", 40, 0, true, UnitedCraftingGameTests::extendedCraftingShapeless));
+        }
+        if (ModList.get().isLoaded("re-avaritia")) {
+            tests.add(new TestFunction("extendedterminal", "unitedcraftinggametests.reavaritiashapeless",
+                    "extendedterminal:empty", 40, 0, true, UnitedCraftingGameTests::reAvaritiaShapeless));
         }
         if (ModList.get().isLoaded("immersiveengineering")) {
             tests.add(new TestFunction("extendedterminal", "unitedcraftinggametests.immersiveengineeringremainder",
@@ -387,6 +397,111 @@ public final class UnitedCraftingGameTests {
         helper.succeed();
     }
 
+    private static void polymorphSelection(GameTestHelper helper) {
+        var level = helper.getLevel();
+        var manager = level.getRecipeManager();
+        var original = new ArrayList<>(manager.getRecipes());
+        var vanilla = new ShapelessRecipe(new ResourceLocation("extendedterminal", "gametest_honey_block"),
+                "", CraftingBookCategory.MISC, new ItemStack(Items.HONEY_BLOCK),
+                NonNullList.withSize(4, Ingredient.of(Items.HONEY_BOTTLE)));
+        var conflict = new ShapelessRecipe(new ResourceLocation("extendedterminal", "gametest_honey_conflict"),
+                "", CraftingBookCategory.MISC, new ItemStack(Items.EMERALD),
+                NonNullList.withSize(4, Ingredient.of(Items.HONEY_BOTTLE)));
+        var recipes = new ArrayList<>(original);
+        recipes.add(vanilla);
+        recipes.add(conflict);
+        manager.replaceRecipes(recipes);
+        try {
+            for (var positions : new int[][]{{60, 61, 69, 70}, {0, 8, 72, 80}}) {
+                var items = emptyGrid();
+                for (int slot : positions) {
+                    items.set(slot, new ItemStack(Items.HONEY_BOTTLE));
+                }
+                var fixture = createMenu(testPlayer(helper), items);
+                fixture.player.containerMenu = fixture.menu;
+                var output = fixture.menu.getSlot(outputSlotIndex(fixture.menu));
+                var selected = output.getItem().is(Items.EMERALD) ? vanilla : conflict;
+                var data = com.illusivesoulworks.polymorph.api.PolymorphApi.common()
+                        .getRecipeData(fixture.player).orElseThrow();
+                data.selectRecipe(selected);
+                fixture.menu.updatePolymorphRecipeSelection();
+                helper.assertTrue(ItemStack.matches(output.getItem(), selected.getResultItem(level.registryAccess())),
+                        "Polymorph must refresh unchanged United input: expected " + selected.getId()
+                                + ", got " + fixture.menu.getCurrentUnitedRecipe().getId()
+                                + ", selection " + data.getSelectedRecipe().map(Recipe::getId)
+                                + ", first slot " + positions[0]);
+                helper.assertTrue(data.getRecipesList().size() >= 2,
+                        "United must publish conflicting vanilla recipes");
+
+                var other = createMenu(testPlayer(helper), items);
+                var otherSelection = selected == conflict ? vanilla : conflict;
+                com.illusivesoulworks.polymorph.api.PolymorphApi.common().getRecipeData(other.player)
+                        .orElseThrow().selectRecipe(otherSelection);
+                other.menu.updatePolymorphRecipeSelection();
+                helper.assertTrue(ItemStack.matches(other.menu.getSlot(outputSlotIndex(other.menu)).getItem(),
+                                otherSelection.getResultItem(level.registryAccess()))
+                                && ItemStack.matches(output.getItem(), selected.getResultItem(level.registryAccess())),
+                        "Polymorph choices must remain per player");
+
+                data.selectRecipe(manager.byKey(new ResourceLocation("minecraft", "stick")).orElseThrow());
+                fixture.menu.updatePolymorphRecipeSelection();
+                helper.assertTrue(!output.getItem().is(Items.STICK),
+                        "A selected recipe that does not match cannot produce an item");
+                data.selectRecipe(selected);
+                fixture.menu.updatePolymorphRecipeSelection();
+                craftOnce(fixture);
+                helper.assertTrue(ItemStack.matches(fixture.menu.getCarried(), selected.getResultItem(level.registryAccess())),
+                        "United must actually craft the selected result");
+                for (int slot : positions) {
+                    var remainder = fixture.host.grid.getStackInSlot(slot);
+                    helper.assertTrue(remainder.is(Items.GLASS_BOTTLE) && remainder.getCount() == 1,
+                            "Selected recipe must return its bottle at original slot " + slot);
+                }
+                helper.assertTrue(fixture.player.getInventory().isEmpty(), "Remainders must not be duplicated");
+                helper.assertTrue(output.getItem().isEmpty(), "Changed inputs must invalidate the selected output");
+            }
+            var compact = shapedRecipe(new ResourceLocation("extendedterminal", "gametest_compact_conflict"), Items.DIAMOND);
+            var full = new ShapedRecipe(new ResourceLocation("extendedterminal", "gametest_full_conflict"), "",
+                    CraftingBookCategory.MISC, 1, 1, NonNullList.of(Ingredient.EMPTY, Ingredient.of(Items.OAK_PLANKS)),
+                    new ItemStack(Items.GOLD_INGOT)) {
+                @Override
+                public boolean matches(CraftingContainer input, net.minecraft.world.level.Level world) {
+                    return input.getWidth() == 9 && super.matches(input, world);
+                }
+            };
+            manager.replaceRecipes(List.of(compact, full));
+            var fixture = createMenu(testPlayer(helper), singleItemItems(new ItemStack(Items.OAK_PLANKS)));
+            var data = com.illusivesoulworks.polymorph.api.PolymorphApi.common().getRecipeData(fixture.player).orElseThrow();
+            data.selectRecipe(full);
+            fixture.menu.updatePolymorphRecipeSelection();
+            helper.assertTrue(fixture.menu.getCurrentUnitedRecipe() == full
+                            && fixture.menu.getCurrentUnitedInput().getWidth() == 9 && data.getRecipesList().size() == 2,
+                    "Full-grid-only recipes must remain selectable alongside compact conflicts");
+            var returningPlayer = testPlayer(helper);
+            var saved = new net.minecraft.nbt.CompoundTag();
+            saved.putString("SelectedRecipe", full.getId().toString());
+            var restoredData = com.illusivesoulworks.polymorph.api.PolymorphApi.common()
+                    .getRecipeData(returningPlayer).orElseThrow();
+            restoredData.readNBT(saved);
+            var restored = createMenu(returningPlayer, singleItemItems(new ItemStack(Items.OAK_PLANKS)));
+            helper.assertTrue(restored.menu.getCurrentUnitedRecipe() == full
+                            && ((com.illusivesoulworks.polymorph.common.capability.AbstractRecipeData<?>) restoredData)
+                            .getLoadedRecipe().isEmpty(),
+                    "Persisted Polymorph choice must be restored and consumed");
+            UnitedTerminalMenu.getActiveRecipeKinds().stream()
+                    .filter(kind -> kind != UnitedTerminalMenu.UnitedRecipeKind.VANILLA).findFirst().ifPresent(kind -> {
+                        restored.menu.setSelectedRecipeKind(kind);
+                        restored.menu.updatePolymorphRecipeSelection();
+                        helper.assertTrue(restored.menu.getSelectedRecipeKind() == kind
+                                        && restored.menu.getCurrentUnitedRecipe() != full,
+                                "Polymorph refresh must not override non-vanilla crafting mode");
+                    });
+        } finally {
+            manager.replaceRecipes(original);
+        }
+        helper.succeed();
+    }
+
     private static ShapedRecipe shapedRecipe(ResourceLocation id, net.minecraft.world.item.Item result) {
         return new ShapedRecipe(id, "", CraftingBookCategory.MISC, 1, 1,
                 NonNullList.of(Ingredient.EMPTY, Ingredient.of(Items.OAK_PLANKS)), new ItemStack(result));
@@ -658,6 +773,134 @@ public final class UnitedCraftingGameTests {
         for (int i = 0; i < items.size(); i++) {
             helper.assertTrue(ItemStack.matches(items.get(i), blocked.host.grid.getStackInSlot(i)),
                     "rejected tier craft must preserve slot " + i);
+        }
+        helper.succeed();
+    }
+
+    private static void extendedCraftingShapeless(GameTestHelper helper) {
+        var recipes = new ArrayList<Recipe<?>>();
+        for (int tier = 1; tier <= 4; tier++) {
+            int ingredientCount = tier == 1 ? 4 : (tier * 2 - 1) * (tier * 2 - 1) + 1;
+            var ingredients = NonNullList.withSize(ingredientCount, Ingredient.of(Items.HONEY_BOTTLE));
+            recipes.add(new com.blakebr0.extendedcrafting.crafting.recipe.ShapelessTableRecipe(
+                    new ResourceLocation("extendedterminal", "gametest_ec_shapeless_" + tier), ingredients,
+                    new ItemStack(Items.HONEY_BLOCK), tier));
+        }
+        testTieredShapeless(helper, recipes, new UnitedTerminalMenu.UnitedRecipeKind[]{
+                UnitedTerminalMenu.UnitedRecipeKind.EXTENDED_CRAFTING_BASIC,
+                UnitedTerminalMenu.UnitedRecipeKind.EXTENDED_CRAFTING_ADVANCED,
+                UnitedTerminalMenu.UnitedRecipeKind.EXTENDED_CRAFTING_ELITE,
+                UnitedTerminalMenu.UnitedRecipeKind.EXTENDED_CRAFTING_ULTIMATE
+        });
+    }
+
+    private static void reAvaritiaShapeless(GameTestHelper helper) {
+        var recipes = new ArrayList<Recipe<?>>();
+        for (int tier = 1; tier <= 4; tier++) {
+            int ingredientCount = tier == 1 ? 4 : (tier * 2 - 1) * (tier * 2 - 1) + 1;
+            var ingredients = NonNullList.withSize(ingredientCount, Ingredient.of(Items.HONEY_BOTTLE));
+            recipes.add(new committee.nova.mods.avaritia.common.crafting.recipe.ShapelessTableCraftingRecipe(
+                    new ResourceLocation("extendedterminal", "gametest_re_shapeless_" + tier), ingredients,
+                    new ItemStack(Items.HONEY_BLOCK), tier));
+        }
+        testTieredShapeless(helper, recipes, new UnitedTerminalMenu.UnitedRecipeKind[]{
+                UnitedTerminalMenu.UnitedRecipeKind.RE_AVARITIA_SCULK,
+                UnitedTerminalMenu.UnitedRecipeKind.RE_AVARITIA_NETHER,
+                UnitedTerminalMenu.UnitedRecipeKind.RE_AVARITIA_END,
+                UnitedTerminalMenu.UnitedRecipeKind.RE_AVARITIA_EXTREME
+        });
+    }
+
+    private static void testTieredShapeless(GameTestHelper helper, List<Recipe<?>> recipes,
+            UnitedTerminalMenu.UnitedRecipeKind[] kinds) {
+        var manager = helper.getLevel().getRecipeManager();
+        var original = new ArrayList<>(manager.getRecipes());
+        try {
+            for (int i = 0; i < recipes.size(); i++) {
+                var recipe = recipes.get(i);
+                var kind = kinds[i];
+                var activeRecipes = new ArrayList<>(original);
+                activeRecipes.add(recipe);
+                manager.replaceRecipes(activeRecipes);
+
+                int ingredientCount = recipe.getIngredients().size();
+                int[] topLeftSlots = java.util.stream.IntStream.range(0, ingredientCount).toArray();
+                var transferred = me.myogoo.extendedterminal.menu.recipe.ETRecipeTransferPlanner
+                        .desiredIngredients(recipe, emptyGrid(), -1, -1);
+                var topLeftItems = emptyGrid();
+                for (int slot = 0; slot < transferred.size(); slot++) {
+                    helper.assertTrue(transferred.get(slot).isEmpty() == (slot >= ingredientCount),
+                            "shapeless transfer must retain row-major placement for " + kind);
+                    if (!transferred.get(slot).isEmpty()) {
+                        topLeftItems.set(slot, transferred.get(slot).getItems()[0].copy());
+                    }
+                }
+                var match = createMenu(testPlayer(helper), topLeftItems).menu
+                        .findUnitedRecipe(topLeftItems, kind);
+                helper.assertTrue(match != null && match.recipe() == recipe
+                                && java.util.Arrays.equals(match.sourceSlots(), topLeftSlots),
+                        "top-left shapeless transfer must match " + kind + " with " + ingredientCount + " inputs");
+
+                var scatteredItems = emptyGrid();
+                int[] scatteredSlots = ingredientCount == 4
+                        ? new int[]{0, 8, 72, 80}
+                        : java.util.stream.IntStream.range(0, ingredientCount)
+                                .map(slot -> slot == ingredientCount - 1 ? 80 : slot).toArray();
+                for (int slot : scatteredSlots) {
+                    scatteredItems.set(slot, new ItemStack(Items.HONEY_BOTTLE));
+                }
+                var scatteredMatch = createMenu(testPlayer(helper), scatteredItems).menu
+                        .findUnitedRecipe(scatteredItems, kind);
+                helper.assertTrue(scatteredMatch != null && scatteredMatch.recipe() == recipe
+                                && java.util.Arrays.equals(scatteredMatch.sourceSlots(), scatteredSlots),
+                        "shapeless inputs must match when scattered across the full grid for " + kind);
+
+                var extraItems = copyItems(topLeftItems);
+                extraItems.set(80, new ItemStack(Items.NETHER_STAR));
+                helper.assertTrue(createMenu(testPlayer(helper), extraItems).menu
+                                .findUnitedRecipe(extraItems, kind) == null,
+                        "an extra item must reject " + kind);
+
+                int capacity = (kind.tier() * 2 + 1) * (kind.tier() * 2 + 1);
+                if (capacity < 81) {
+                    var overfilled = emptyGrid();
+                    for (int slot = 0; slot <= capacity; slot++) {
+                        overfilled.set(slot, new ItemStack(Items.HONEY_BOTTLE));
+                    }
+                    helper.assertTrue(createMenu(testPlayer(helper), overfilled).menu
+                                    .findUnitedRecipe(overfilled, kind) == null,
+                            "shapeless packing must reject more inputs than the tier capacity for " + kind);
+                }
+
+                var wrongKind = kinds[i == 0 ? 1 : 0];
+                helper.assertTrue(createMenu(testPlayer(helper), topLeftItems).menu
+                                .findUnitedRecipe(topLeftItems, wrongKind) == null,
+                        "a recipe must not match a different selected tier than " + kind);
+
+                for (var sourceItems : List.of(topLeftItems, scatteredItems)) {
+                    var fixture = createMenu(testPlayer(helper), sourceItems);
+                    fixture.menu.setSelectedRecipeKind(kind);
+                    var cached = fixture.menu.findUnitedRecipe(sourceItems, kind);
+                    helper.assertTrue(cached != null && cached.recipe() == recipe
+                                    && cached.input() != fixture.menu.getCurrentUnitedInput(),
+                            "cached shapeless matches must rebuild the packed input for " + kind);
+                    craftOnce(fixture);
+                    helper.assertTrue(fixture.menu.getCarried().is(Items.HONEY_BLOCK)
+                                    && fixture.menu.getCarried().getCount() == 1,
+                            "crafting " + kind + " must produce one honey block");
+                    for (int slot = 0; slot < 81; slot++) {
+                        var remainder = fixture.host.grid.getStackInSlot(slot);
+                        helper.assertTrue(!sourceItems.get(slot).isEmpty()
+                                        ? remainder.is(Items.GLASS_BOTTLE) && remainder.getCount() == 1
+                                        : remainder.isEmpty(),
+                                "honey bottle remainder must return to source slot " + slot + " for " + kind);
+                    }
+                    helper.assertTrue(fixture.player.getInventory().isEmpty(),
+                            "shapeless remainders must not spill or duplicate for " + kind);
+                }
+            }
+        } finally {
+            manager.replaceRecipes(original);
         }
         helper.succeed();
     }

@@ -1,6 +1,7 @@
 package me.myogoo.extendedterminal.integration.polymorph;
 
 import com.illusivesoulworks.polymorph.api.client.PolymorphWidgets;
+import me.myogoo.extendedterminal.client.screen.extendedcrafting.UnitedTerminalScreen;
 import me.myogoo.extendedterminal.client.screen.extendedterminal.ETTerminalScreen;
 import me.myogoo.extendedterminal.integration.polymorph.widget.ETTerminalPolymorphWidget;
 import me.myogoo.extendedterminal.menu.extendedterminal.ETTerminalMenu;
@@ -11,6 +12,9 @@ public class ETPolymorph {
         PolymorphWidgets.getInstance().registerWidget(screen -> {
             if (screen instanceof ETTerminalScreen<?> etTerminalScreen) {
                 return new ETTerminalPolymorphWidget<>((ETTerminalScreen<ETTerminalMenu>) etTerminalScreen);
+            }
+            if (screen instanceof UnitedTerminalScreen<?> unitedTerminalScreen) {
+                return new ETTerminalPolymorphWidget<>(unitedTerminalScreen);
             }
             return null;
         });

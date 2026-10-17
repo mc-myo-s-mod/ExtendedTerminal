@@ -8,11 +8,13 @@ import appeng.menu.guisync.GuiSync;
 import appeng.menu.implementations.MenuTypeBuilder;
 import me.myogoo.extendedterminal.api.annotation.AvaritiaNeo;
 import me.myogoo.extendedterminal.api.annotation.ExtendedCrafting;
+import me.myogoo.extendedterminal.api.annotation.Polymorph;
 import me.myogoo.extendedterminal.api.annotation.ReAvaritia;
 import me.myogoo.extendedterminal.api.host.IUnitedTerminalHost;
 import me.myogoo.extendedterminal.api.translation.ETTranslationKey;
 import me.myogoo.myotus.client.MyoTranslateKey;
 import me.myogoo.extendedterminal.config.extendedcrafting.ExtendedCraftingConfig;
+import me.myogoo.extendedterminal.integration.polymorph.ETPolymorphRecipeSelection;
 import me.myogoo.extendedterminal.menu.ETMenuType;
 import me.myogoo.extendedterminal.menu.extendedcrafting.slot.UnitedCraftingTerminalSlot;
 import me.myogoo.extendedterminal.menu.slot.ETCraftingBaseSlot;
@@ -59,6 +61,7 @@ public class UnitedTerminalMenu extends ETTerminalBaseMenu<Recipe<?>> {
     private UnitedRecipe currentUnitedRecipe;
     @Nullable
     private List<ItemStack> lastUnitedItems;
+    private boolean initialRecipesSynced;
     @GuiSync(0)
     private UnitedRecipeKind selectedRecipeKind = UnitedRecipeKind.VANILLA;
 
@@ -86,6 +89,17 @@ public class UnitedTerminalMenu extends ETTerminalBaseMenu<Recipe<?>> {
     protected ETCraftingBaseSlot<?, ?> createOutputSlot(MEStorage storage, InternalInventory craftingGridInv) {
         return new UnitedCraftingTerminalSlot(this.getPlayerInventory().player, this.getActionSource(),
                 this.powerSource, storage, craftingGridInv, craftingGridInv, this, this.menuType);
+    }
+
+    @Override
+    public void broadcastChanges() {
+        if (!initialRecipesSynced && !isClientSide() && getPlayer().containerMenu == this) {
+            initialRecipesSynced = true;
+            if (selectedRecipeKind == UnitedRecipeKind.VANILLA && MyotusAPI.integrations().isLoaded(Polymorph.class)) {
+                updateCurrentRecipeAndOutput(true);
+            }
+        }
+        super.broadcastChanges();
     }
 
 
@@ -307,9 +321,12 @@ public class UnitedTerminalMenu extends ETTerminalBaseMenu<Recipe<?>> {
         if (previous != null && previous.kind() == kind && sameItems(this.lastUnitedItems, items)
                 && level.getRecipeManager().byKey(previous.recipe().getId()).orElse(null) == previous.recipe()) {
             // Reuse the recipe, not its mutable input or assembled NBT/remainders.
-            var input = createInput(items, previous.input().getWidth(), previous.left(), previous.top());
+            var input = previous.sourceSlots() == null
+                    ? createInput(items, previous.input().getWidth(), previous.left(), previous.top())
+                    : createShapelessInput(items, previous.input().getWidth());
             if (input != null && previous.matches(input, level)) {
-                return new UnitedRecipe(this, kind, previous.recipe(), input, previous.left(), previous.top());
+                return new UnitedRecipe(this, kind, previous.recipe(), input, previous.left(), previous.top(),
+                        previous.sourceSlots());
             }
         }
         return switch (kind.family()) {
@@ -357,10 +374,15 @@ public class UnitedTerminalMenu extends ETTerminalBaseMenu<Recipe<?>> {
         // Vanilla custom recipes can use fixed 3x3 indices when assembling their NBT-bearing result.
         var compact = createInput(items, 3, left, top);
         CraftingContainer input = null;
+        var polymorph = MyotusAPI.integrations().isLoaded(Polymorph.class);
+        var matches = polymorph ? new ArrayList<UnitedRecipe>() : null;
 
         for (CraftingRecipe recipe : level.getRecipeManager().getAllRecipesFor(RecipeType.CRAFTING)) {
             if (compact != null && recipe.matches(compact, level)) {
-                return new UnitedRecipe(this, kind, recipe, compact, left, top);
+                var match = new UnitedRecipe(this, kind, recipe, compact, left, top);
+                if (!polymorph) return match;
+                matches.add(match);
+                continue;
             }
             // A larger empty border cannot change these vanilla matches. Mod subclasses may differ.
             if (recipe.getClass() == ShapedRecipe.class && recipe.canCraftInDimensions(3, 3)
@@ -371,10 +393,12 @@ public class UnitedTerminalMenu extends ETTerminalBaseMenu<Recipe<?>> {
                 input = createFullGridInput(items);
             }
             if (recipe.matches(input, level)) {
-                return new UnitedRecipe(this, kind, recipe, input, 0, 0);
+                var match = new UnitedRecipe(this, kind, recipe, input, 0, 0);
+                if (!polymorph) return match;
+                matches.add(match);
             }
         }
-        return null;
+        return polymorph ? ETPolymorphRecipeSelection.getUnitedCraftingRecipe(this, matches) : null;
     }
 
     private CraftingContainer createFullGridInput(List<ItemStack> items) {
@@ -383,6 +407,25 @@ public class UnitedTerminalMenu extends ETTerminalBaseMenu<Recipe<?>> {
             positioned.set(i, items.get(i).copy());
         }
         return new TransientCraftingContainer(this, menuType.getGridSideLength(), menuType.getGridSideLength(), positioned);
+    }
+
+    @Nullable
+    private CraftingContainer createShapelessInput(List<ItemStack> items, int side) {
+        // These recipe matchers infer the required tier from the input slot count.
+        var packed = NonNullList.withSize(side * side, ItemStack.EMPTY);
+        int index = 0;
+        for (var item : items) {
+            if (!item.isEmpty()) {
+                if (index == packed.size()) return null;
+                packed.set(index++, item.copy());
+            }
+        }
+        return new TransientCraftingContainer(this, side, side, packed);
+    }
+
+    private static int[] occupiedSlots(List<ItemStack> items) {
+        return java.util.stream.IntStream.range(0, items.size())
+                .filter(i -> !items.get(i).isEmpty()).toArray();
     }
 
     @ExtendedCrafting
@@ -394,21 +437,27 @@ public class UnitedTerminalMenu extends ETTerminalBaseMenu<Recipe<?>> {
         private static UnitedRecipe findRecipe(UnitedTerminalMenu menu, Level level, List<ItemStack> items,
                                                UnitedRecipeKind kind) {
             try {
-                var inputs = new CraftingContainer[kind.tier() + 1];
-                var testedTiers = new boolean[inputs.length];
+                var inputs = new CraftingContainer[2][kind.tier() + 1];
+                var testedTiers = new boolean[2][kind.tier() + 1];
                 for (var recipe : level.getRecipeManager()
                         .getAllRecipesFor(com.blakebr0.extendedcrafting.init.ModRecipeTypes.TABLE.get())) {
                     if (!canCraftInKind(recipe, kind)) {
                         continue;
                     }
                     int tier = recipe.getTier();
-                    if (!testedTiers[tier]) {
-                        inputs[tier] = menu.createTableInput(items, tier * 2 + 1);
-                        testedTiers[tier] = true;
+                    boolean shapeless = recipe instanceof com.blakebr0.extendedcrafting.crafting.recipe.ShapelessTableRecipe;
+                    int layout = shapeless ? 1 : 0;
+                    if (!testedTiers[layout][tier]) {
+                        inputs[layout][tier] = shapeless
+                                ? menu.createShapelessInput(items, tier * 2 + 1)
+                                : menu.createTableInput(items, tier * 2 + 1);
+                        testedTiers[layout][tier] = true;
                     }
-                    var input = inputs[tier];
+                    var input = inputs[layout][tier];
                     if (input != null && recipe.matches(input, level)) {
-                        return new UnitedRecipe(menu, kind, recipe, input);
+                        return shapeless
+                                ? new UnitedRecipe(menu, kind, recipe, input, 0, 0, occupiedSlots(items))
+                                : new UnitedRecipe(menu, kind, recipe, input);
                     }
                 }
                 return null;
@@ -455,14 +504,16 @@ public class UnitedTerminalMenu extends ETTerminalBaseMenu<Recipe<?>> {
         private static UnitedRecipe findRecipe(UnitedTerminalMenu menu, Level level, List<ItemStack> items,
                                                UnitedRecipeKind kind) {
             try {
-                var input = menu.createTableInput(items, kind.tier() * 2 + 1);
-                if (input == null) {
-                    return null;
-                }
+                var shapedInput = menu.createTableInput(items, kind.tier() * 2 + 1);
+                var shapelessInput = menu.createShapelessInput(items, kind.tier() * 2 + 1);
                 for (var recipe : level.getRecipeManager()
                         .getAllRecipesFor(committee.nova.mods.avaritia.init.registry.ModRecipeTypes.CRAFTING_TABLE_RECIPE.get())) {
-                    if (recipe.getTier() == kind.tier() && recipe.matches(input, level)) {
-                        return new UnitedRecipe(menu, kind, recipe, input);
+                    boolean shapeless = recipe instanceof committee.nova.mods.avaritia.common.crafting.recipe.ShapelessTableCraftingRecipe;
+                    var input = shapeless ? shapelessInput : shapedInput;
+                    if (recipe.getTier() == kind.tier() && input != null && recipe.matches(input, level)) {
+                        return shapeless
+                                ? new UnitedRecipe(menu, kind, recipe, input, 0, 0, occupiedSlots(items))
+                                : new UnitedRecipe(menu, kind, recipe, input);
                     }
                 }
                 return null;
@@ -571,7 +622,13 @@ public class UnitedTerminalMenu extends ETTerminalBaseMenu<Recipe<?>> {
     }
 
     public record UnitedRecipe(UnitedTerminalMenu menu, UnitedRecipeKind kind,
-                               Recipe<?> recipe, CraftingContainer input, int left, int top) {
+                               Recipe<?> recipe, CraftingContainer input, int left, int top,
+                               @Nullable int[] sourceSlots) {
+        public UnitedRecipe(UnitedTerminalMenu menu, UnitedRecipeKind kind, Recipe<?> recipe,
+                            CraftingContainer input, int left, int top) {
+            this(menu, kind, recipe, input, left, top, null);
+        }
+
         public UnitedRecipe(UnitedTerminalMenu menu, UnitedRecipeKind kind, Recipe<?> recipe, CraftingContainer input) {
             this(menu, kind, recipe, input,
                     (menu.getCraftingGridWidth() - input.getWidth()) / 2,
@@ -592,6 +649,12 @@ public class UnitedTerminalMenu extends ETTerminalBaseMenu<Recipe<?>> {
         public NonNullList<ItemStack> remainingItems() {
             NonNullList<ItemStack> compact = ((Recipe) recipe).getRemainingItems(input);
             var remaining = NonNullList.withSize(menu.getCraftingGridSize(), ItemStack.EMPTY);
+            if (sourceSlots != null) {
+                for (int i = 0; i < sourceSlots.length; i++) {
+                    remaining.set(sourceSlots[i], compact.get(i));
+                }
+                return remaining;
+            }
             for (int y = 0; y < input.getHeight(); y++) {
                 for (int x = 0; x < input.getWidth(); x++) {
                     if (left + x < menu.getCraftingGridWidth() && top + y < menu.getCraftingGridHeight()) {

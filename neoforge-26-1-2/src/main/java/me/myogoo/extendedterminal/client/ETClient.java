@@ -15,6 +15,7 @@ import me.myogoo.extendedterminal.client.screen.extendedcrafting.wt.UnitedWTScre
 import me.myogoo.extendedterminal.client.screen.extendedterminal.ETTerminalScreen;
 import me.myogoo.extendedterminal.client.screen.extendedterminal.wt.ETWTScreen;
 import me.myogoo.extendedterminal.init.ETConfigTab;
+import me.myogoo.extendedterminal.integration.polymorph.UnitedPolymorphWidget;
 import me.myogoo.extendedterminal.menu.avaritiaRe.EndTerminalMenu;
 import me.myogoo.extendedterminal.menu.avaritiaRe.ExtremeTerminalMenu;
 import me.myogoo.extendedterminal.menu.avaritiaRe.NetherTerminalMenu;
@@ -32,6 +33,7 @@ import me.myogoo.myotus.api.annotation.mods.AE2WTLib;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.common.Mod;
+import net.neoforged.fml.ModList;
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.DefaultDataComponentsBoundEvent;
@@ -39,6 +41,9 @@ import net.neoforged.neoforge.event.DefaultDataComponentsBoundEvent;
 @Mod(value = ExtendedTerminal.MODID, dist = Dist.CLIENT)
 public class ETClient {
     public ETClient(IEventBus eventBus) {
+        if (ModList.get().isLoaded("polymorph_plus")) {
+            UnitedPolymorphWidget.init();
+        }
         NeoForge.EVENT_BUS.addListener(ETClient::onComponentsBound);
         eventBus.addListener(ETClient::initScreens);
         if(MyotusAPI.integrations().isLoaded(AE2WTLib.class)) {

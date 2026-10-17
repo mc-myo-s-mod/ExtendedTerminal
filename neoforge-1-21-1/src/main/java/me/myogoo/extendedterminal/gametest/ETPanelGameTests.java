@@ -56,9 +56,14 @@ public final class ETPanelGameTests {
         var table = me.myogoo.extendedterminal.util.recipe.builder.ShapedTableRecipeBuilder
                 .shaped(Items.DIAMOND, 3).pattern("AA").pattern(" A").define('A', Items.STONE);
         var id = ResourceLocation.fromNamespaceAndPath(ExtendedTerminal.MODID, "legacy_builder_test");
-        helper.assertTrue(table.buildEC(id).value().getResultItem(helper.getLevel().registryAccess()).getCount() == 3
-                        && table.buildReAV(id).value().getResultItem(helper.getLevel().registryAccess()).getCount() == 3,
-                "Legacy EC and Re Avaritia builders must preserve output count");
+        if (me.myogoo.extendedterminal.menu.extendedterminal.MyoRecipeType.BASIC.isActive()) {
+            helper.assertTrue(table.buildEC(id).value().getResultItem(helper.getLevel().registryAccess()).getCount() == 3,
+                    "Legacy EC builder must preserve output count");
+        }
+        if (me.myogoo.extendedterminal.menu.extendedterminal.MyoRecipeType.SCULK.isActive()) {
+            helper.assertTrue(table.buildReAV(id).value().getResultItem(helper.getLevel().registryAccess()).getCount() == 3,
+                    "Legacy Re Avaritia builder must preserve output count");
+        }
         var input = me.myogoo.extendedterminal.api.adapter.recipe.table.MyoTableInput
                 .create(2, 2, List.of(new ItemStack(Items.STONE), ItemStack.EMPTY,
                         ItemStack.EMPTY, new ItemStack(Items.STONE)), 3);

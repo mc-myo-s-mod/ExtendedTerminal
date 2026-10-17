@@ -6,17 +6,20 @@ import appeng.menu.implementations.MenuTypeBuilder;
 import appeng.menu.me.items.CraftingTermMenu;
 import com.blakebr0.extendedcrafting.api.TableCraftingInput;
 import com.blakebr0.extendedcrafting.init.ModRecipeTypes;
+import com.illusivesoulworks.polymorph.api.PolymorphApi;
 import committee.nova.mods.avaritia.api.common.crafting.TierInput;
 import me.myogoo.extendedterminal.api.adapter.recipe.table.MyoTableInput;
 import me.myogoo.extendedterminal.api.adapter.recipe.table.MyoTableRecipe;
 import me.myogoo.extendedterminal.api.annotation.AvaritiaNeo;
 import me.myogoo.extendedterminal.api.annotation.ExtendedCrafting;
+import me.myogoo.extendedterminal.api.annotation.Polymorph;
 import me.myogoo.extendedterminal.api.annotation.ReAvaritia;
 import me.myogoo.extendedterminal.api.host.IUnitedTerminalHost;
 import me.myogoo.extendedterminal.config.extendedcrafting.ExtendedCraftingConfig;
 import me.myogoo.extendedterminal.menu.ETMenuType;
 import me.myogoo.extendedterminal.menu.TableTerminalBaseMenu;
 import me.myogoo.extendedterminal.menu.extendedcrafting.slot.UnitedCraftingTerminalSlot;
+import me.myogoo.myotus.api.MyotusAPI;
 import net.byAqua3.avaritia.loader.AvaritiaRecipes;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.MenuType;
@@ -44,6 +47,7 @@ public class UnitedTerminalMenu extends TableTerminalBaseMenu<Recipe<RecipeInput
     private MyoRecipeType selectedRecipeType = MyoRecipeType.VANILLA;
     @Nullable
     protected MyoTableInput lastTestedInput;
+    private boolean initialRecipesSynced;
 
     public UnitedTerminalMenu(MenuType<?> menuType, int id, Inventory ip, IUnitedTerminalHost host) {
         super(menuType, id, ip, host, ETMenuType.UNITED_TERMINAL, ExtendedCraftingConfig.INSTANCE.getUltimateConfig()); // 이거 나중에 고쳐야함
@@ -62,6 +66,17 @@ public class UnitedTerminalMenu extends TableTerminalBaseMenu<Recipe<RecipeInput
         registerClientAction(ACTION_SELECT_PREVIOUS_RECIPE_TYPE, this::selectPreviousRecipeType);
         loadSavedRecipeType();
         updateCurrentRecipeAndOutput(true);
+    }
+
+    @Override
+    public void broadcastChanges() {
+        if (!initialRecipesSynced && !isClientSide() && getPlayer().containerMenu == this) {
+            initialRecipesSynced = true;
+            if (selectedRecipeType == MyoRecipeType.VANILLA && MyotusAPI.integrations().isLoaded(Polymorph.class)) {
+                updateCurrentRecipeAndOutput(true);
+            }
+        }
+        super.broadcastChanges();
     }
 
     @Override
@@ -224,8 +239,11 @@ public class UnitedTerminalMenu extends TableTerminalBaseMenu<Recipe<RecipeInput
     }
 
     @Nullable
-    private static MyoTableRecipe findVanillaRecipe(Level level, MyoTableInput input) {
-        return level.getRecipeManager().getRecipeFor(RecipeType.CRAFTING, input.cast(), level)
+    private MyoTableRecipe findVanillaRecipe(Level level, MyoTableInput input) {
+        var selected = !level.isClientSide() && MyotusAPI.integrations().isLoaded(Polymorph.class)
+                ? PolymorphApi.getInstance().getRecipeManager().getPlayerRecipe(this, RecipeType.CRAFTING, input.cast(), level, getPlayer())
+                : level.getRecipeManager().getRecipeFor(RecipeType.CRAFTING, input.cast(), level);
+        return selected
                 .map(recipe -> MyoTableRecipe.of(recipe.value(), recipe.id()))
                 .orElse(null);
     }

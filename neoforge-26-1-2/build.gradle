@@ -82,6 +82,7 @@ neoForge {
         }
         gameTestServer {
             type = 'gameTestServer'
+            systemProperty 'extendedterminal.polymorphGameTests', 'true'
             gameDirectory = project.file('run-gametest')
             programArguments.addAll '--tests', "${mod_id}:*"
         }
@@ -120,6 +121,10 @@ dependencies {
     compileOnly "com.blakebr0.cucumber:Cucumber:${minecraft_version}-${Cucumber_version}"
     compileOnly "com.blakebr0.extendedcrafting:ExtendedCrafting:${minecraft_version}-${ExtendedCrafting_version}"
     compileOnly "maven.modrinth:re-avaritia:${ReAvaritia_version}"
+    compileOnly "maven.modrinth:polymorph_plus:${PolymorphPlus_version}"
+    if (project.enable_polymorph == 'true') {
+        runtimeOnly "maven.modrinth:polymorph_plus:${PolymorphPlus_version}"
+    }
     if (project.enable_excrafting == 'true') {
         runtimeOnly "com.blakebr0.cucumber:Cucumber:${minecraft_version}-${Cucumber_version}"
         runtimeOnly("com.blakebr0.extendedcrafting:ExtendedCrafting:${minecraft_version}-${ExtendedCrafting_version}") {

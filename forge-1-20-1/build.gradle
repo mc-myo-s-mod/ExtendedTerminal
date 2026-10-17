@@ -87,9 +87,11 @@ sourceSets.main.resources { srcDir 'src/generated/resources' }
 
 repositories {
     mavenLocal()
-    exclusiveContent {
-        forRepository { mavenCentral() }
-        filter { includeVersion('me.myogoo', 'myotus', Myotus_version) }
+    if (!Myotus_version.endsWith('-SNAPSHOT')) {
+        exclusiveContent {
+            forRepository { mavenCentral() }
+            filter { includeVersion('me.myogoo', 'myotus', Myotus_version) }
+        }
     }
     //jei
     maven {

@@ -140,10 +140,15 @@ public final class OptionalExperienceGameTests {
             storage.allowExtraction = powerDenied;
             fixture.powered = !powerDenied;
             before = stack.copy();
+            var deniedOutput = menu.getSlots(ETTerminalMode.ANVIL.getOutputSlotSemantics()).getFirst();
+            var beforeOutput = deniedOutput.getItem().copy();
             helper.assertTrue(!menu.canPayAnvilCost(player) && !menu.consumeAnvilExperience(player)
+                            && !deniedOutput.mayPickup(player)
+                            && menu.getSelectedAnvilExperienceSource() == ExperienceSource.APPLIED_EXPERIENCED_AMOUNT
+                            && ItemStack.matches(beforeOutput, deniedOutput.getItem())
                             && ItemStack.matches(before, stack) && player.totalExperience == 0
                             && ItemStack.matches(input(), fixture.getSubInventory(ETTerminalMode.ANVIL.getInventoryId()).getStackInSlot(0)),
-                    "Denied extraction/power refuses without mutating actual cell, input or player");
+                    "Stale cell availability cannot bypass denied extraction/power or mutate cell, input, output or player");
         }
         fixture.powered = true;
         storage.allowExtraction = true;
@@ -154,7 +159,66 @@ public final class OptionalExperienceGameTests {
                         && menu.consumeAnvilExperience(player) && player.totalExperience == 0
                         && cell.extract(key, 100, Actionable.SIMULATE, source) == 0,
                 "Mixed player/cell payment consumes exactly 20 + 35 raw XP");
-        helper.succeed();
+
+        cell.insert(key, 56, Actionable.MODULATE, source);
+        fixture.setRememberedAnvilExperienceSource(ExperienceSource.APPLIED_EXPERIENCED_AMOUNT);
+        storage.availableStackReads = 0;
+        storage.largestSimulatedExtraction = 0;
+        var availabilityMenu = fixture.menu(player);
+        helper.assertTrue(storage.availableStackReads == 2 && storage.largestSimulatedExtraction == 1
+                        && availabilityMenu.getSelectedAnvilExperienceSource() == ExperienceSource.APPLIED_EXPERIENCED_AMOUNT,
+                "Opening a menu immediately probes each source once for one XP and restores the remembered source");
+        availabilityMenu.getSelectedAnvilExperienceSourceLabelKey();
+        helper.assertTrue(storage.availableStackReads == 2, "Displayed source getters reuse the availability snapshot");
+        availabilityMenu.broadcastChanges();
+        availabilityMenu.broadcastChanges();
+        helper.assertTrue(storage.availableStackReads == 4,
+                "Same-tick broadcasts retain only AE2's one storage read per broadcast");
+
+        cell.extract(key, Long.MAX_VALUE, Actionable.MODULATE, source);
+        var staleOutput = availabilityMenu.getSlots(ETTerminalMode.ANVIL.getOutputSlotSemantics()).getFirst();
+        var beforeOutput = staleOutput.getItem().copy();
+        helper.assertTrue(availabilityMenu.getSelectedAnvilExperienceSource() == ExperienceSource.APPLIED_EXPERIENCED_AMOUNT
+                        && !staleOutput.mayPickup(player) && !availabilityMenu.consumeAnvilExperience(player)
+                        && ItemStack.matches(beforeOutput, staleOutput.getItem()) && player.totalExperience == 0
+                        && ItemStack.matches(input(), fixture.getSubInventory(ETTerminalMode.ANVIL.getInventoryId()).getStackInSlot(0)),
+                "A stale available display cannot pay after XP disappears or mutate input, output or player");
+        storage.availableStackReads = 0;
+        long openedAt = helper.getLevel().getGameTime();
+        helper.runAfterDelay(9, () -> {
+            helper.assertTrue(helper.getLevel().getGameTime() == openedAt + 9, "Advance nine actual game ticks");
+            availabilityMenu.broadcastChanges();
+            helper.assertTrue(storage.availableStackReads == 1
+                            && availabilityMenu.getSelectedAnvilExperienceSource() == ExperienceSource.APPLIED_EXPERIENCED_AMOUNT,
+                    "Nine ticks retain the snapshot, while AE2 still broadcasts");
+        });
+        helper.runAfterDelay(10, () -> {
+            helper.assertTrue(helper.getLevel().getGameTime() == openedAt + 10, "Advance ten actual game ticks");
+            availabilityMenu.broadcastChanges();
+            helper.assertTrue(storage.availableStackReads == 4
+                            && availabilityMenu.getSelectedAnvilExperienceSource() == ExperienceSource.PLAYER,
+                    "The tenth tick refreshes both XP sources plus AE2 and removes the unavailable cell");
+            availabilityMenu.broadcastChanges();
+            helper.assertTrue(storage.availableStackReads == 5, "The refreshed tick does not repeat XP probes");
+
+            cell.insert(key, 56, Actionable.MODULATE, source);
+            storage.availableStackReads = 0;
+            availabilityMenu.cycleAnvilExperienceSourcePriority();
+            helper.assertTrue(storage.availableStackReads == 2
+                            && availabilityMenu.getSelectedAnvilExperienceSource() == ExperienceSource.APPLIED_EXPERIENCED_AMOUNT
+                            && fixture.getRememberedAnvilExperienceSource() == ExperienceSource.APPLIED_EXPERIENCED_AMOUNT,
+                    "Cycling immediately refreshes new XP and selects/remembers it without repeated probes");
+            cell.extract(key, Long.MAX_VALUE, Actionable.MODULATE, source);
+            availabilityMenu.setMode(ETTerminalMode.CRAFTING);
+            storage.availableStackReads = 0;
+            availabilityMenu.setMode(ETTerminalMode.ANVIL);
+            helper.assertTrue(storage.availableStackReads == 2
+                            && availabilityMenu.getSelectedAnvilExperienceSource() == ExperienceSource.PLAYER,
+                    "Entering anvil mode immediately refreshes disappearing XP");
+            availabilityMenu.broadcastChanges();
+            helper.assertTrue(storage.availableStackReads == 3, "Forced refresh postpones duplicate periodic probes");
+            helper.succeed();
+        });
     }
 
     private static final class Fixture extends ETWTHost {
@@ -187,14 +251,20 @@ public final class OptionalExperienceGameTests {
     private static final class CellStorage implements MEStorage {
         private final MEStorage cell;
         private boolean allowExtraction = true;
+        private int availableStackReads;
+        private long largestSimulatedExtraction;
         private CellStorage(MEStorage cell) { this.cell = cell; }
         @Override public long insert(AEKey key, long amount, Actionable mode, IActionSource source) {
             return cell.insert(key, amount, mode, source);
         }
         @Override public long extract(AEKey key, long amount, Actionable mode, IActionSource source) {
+            if (mode == Actionable.SIMULATE) largestSimulatedExtraction = Math.max(largestSimulatedExtraction, amount);
             return allowExtraction ? cell.extract(key, amount, mode, source) : 0;
         }
-        @Override public void getAvailableStacks(KeyCounter out) { cell.getAvailableStacks(out); }
+        @Override public void getAvailableStacks(KeyCounter out) {
+            availableStackReads++;
+            cell.getAvailableStacks(out);
+        }
         @Override public net.minecraft.network.chat.Component getDescription() { return cell.getDescription(); }
     }
 }

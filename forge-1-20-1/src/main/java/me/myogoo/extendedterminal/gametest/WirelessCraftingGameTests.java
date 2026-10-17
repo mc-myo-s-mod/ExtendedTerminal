@@ -12,6 +12,7 @@ import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.AEKey;
 import appeng.api.stacks.KeyCounter;
 import appeng.api.storage.MEStorage;
+import appeng.api.upgrades.IUpgradeableItem;
 import appeng.core.definitions.AEItems;
 import appeng.helpers.InventoryAction;
 import appeng.menu.ISubMenu;
@@ -22,19 +23,23 @@ import de.mari_023.ae2wtlib.AE2wtlib;
 import de.mari_023.ae2wtlib.terminal.ItemWT;
 import de.mari_023.ae2wtlib.terminal.WTMenuHost;
 import de.mari_023.ae2wtlib.wct.CraftingTerminalHandler;
+import de.mari_023.ae2wtlib.wct.magnet_card.MagnetMode;
 import de.mari_023.ae2wtlib.wut.WUTHandler;
 import me.myogoo.extendedterminal.ExtendedTerminal;
 import me.myogoo.extendedterminal.api.config.IETTerminalConfig;
 import me.myogoo.extendedterminal.init.wt.WTItems;
 import me.myogoo.extendedterminal.me.host.ExtendedCraftingWTHost;
 import me.myogoo.extendedterminal.me.host.ETWTHost;
+import me.myogoo.extendedterminal.me.host.UnitedWTHost;
 import me.myogoo.extendedterminal.menu.ETMenuType;
 import me.myogoo.extendedterminal.menu.extendedcrafting.BasicTerminalMenu;
 import me.myogoo.extendedterminal.menu.extendedcrafting.ExtendedTerminalBaseMenu;
 import me.myogoo.extendedterminal.menu.extendedcrafting.wt.ExtendedCraftingWTMenu;
+import me.myogoo.extendedterminal.menu.extendedcrafting.wt.UnitedWTMenu;
 import me.myogoo.extendedterminal.menu.extendedterminal.ETTerminalMenu;
 import me.myogoo.extendedterminal.menu.extendedterminal.ETTerminalMode;
 import me.myogoo.extendedterminal.part.extendedterminal.ETTerminalPart;
+import me.myogoo.myotus.api.MyotusAPI;
 import me.myogoo.myotus.api.experience.ExperienceMath.ExperienceSource;
 import me.myogoo.myotus.api.wt.AddTerminalEvent;
 import net.minecraft.gametest.framework.GameTestGenerator;
@@ -64,10 +69,14 @@ public final class WirelessCraftingGameTests {
 
     @GameTestGenerator
     public static List<TestFunction> generateTests() {
-        if (!ModList.get().isLoaded("extendedcrafting")) {
-            return List.of();
-        }
         var tests = new ArrayList<TestFunction>();
+        if (ModList.get().isLoaded("ae2wtlib")) {
+            tests.add(new TestFunction("extendedterminal", "wirelesscraftinggametests.unitedsettingsroundtrip",
+                    "extendedterminal:empty", 20, 0, true, WirelessCraftingGameTests::unitedSettingsRoundTrip));
+        }
+        if (!ModList.get().isLoaded("extendedcrafting")) {
+            return tests;
+        }
         for (var type : ETMenuType.values()) {
             tests.add(new TestFunction("extendedterminal", "wirelesscraftinggametests.gridstoretake_" + type.getIdAsString(),
                     "extendedterminal:empty", 20, 0, true, helper -> gridStoreTake(helper, type)));
@@ -83,6 +92,57 @@ public final class WirelessCraftingGameTests {
                     "extendedterminal:empty", 20, 0, true, WirelessCraftingGameTests::anvilExperienceCost));
         }
         return tests;
+    }
+
+    private static void unitedSettingsRoundTrip(GameTestHelper helper) {
+        var player = new FakePlayer(helper.getLevel(), new GameProfile(UUID.randomUUID(), "et-united-config"));
+        var item = WTItems.WIRELESS_UNITED_TERMINAL.asItem();
+        var stack = new ItemStack(item);
+        var definition = WUTHandler.wirelessTerminals.get(ETMenuType.UNITED_TERMINAL.getWTIdAsString());
+        helper.assertTrue(definition != null && definition.item() == item
+                        && definition.menuType() == UnitedWTMenu.TYPE && item.getMenuType(stack) == UnitedWTMenu.TYPE,
+                "United wireless registration must retain its own item and menu");
+        var host = (UnitedWTHost) definition.wTMenuHostFactory().create(player, null, stack, (p, menu) -> { });
+        var menu = new UnitedWTMenu(1, player.getInventory(), host);
+        helper.assertTrue(menu.getMagnetMode() == MagnetMode.NO_CARD,
+                "United terminal without a Magnet card must report no card");
+        var upgrades = ((IUpgradeableItem) item).getUpgrades(stack);
+        helper.assertTrue(upgrades.addItems(new ItemStack(AE2wtlib.MAGNET_CARD)).isEmpty()
+                        && upgrades.isInstalled(AE2wtlib.MAGNET_CARD),
+                "United terminal must accept the real AE2WTLib Magnet card through its upgrade inventory");
+        var grid = menu.getCraftingMatrix();
+        grid.setItemDirect(0, new ItemStack(Items.DIAMOND, 2));
+        grid.setItemDirect(grid.size() - 1, new ItemStack(Items.EMERALD, 3));
+
+        var modes = List.of(MagnetMode.OFF, MagnetMode.PICKUP_INVENTORY, MagnetMode.PICKUP_ME, MagnetMode.OFF);
+        for (int i = 0; i < modes.size(); i++) {
+            boolean enabled = i % 2 == 1;
+            menu.setRememberRecipeType(enabled);
+            menu.setPickBlock(enabled);
+            menu.setCraftIfMissing(enabled);
+            menu.setRestock(enabled);
+            menu.setMagnetMode(modes.get(i));
+
+            stack = ItemStack.of(stack.save(new CompoundTag()));
+            host = (UnitedWTHost) definition.wTMenuHostFactory().create(player, null, stack, (p, subMenu) -> { });
+            menu = new UnitedWTMenu(i + 2, player.getInventory(), host);
+            helper.assertTrue(host.getMainMenuIcon().is(item),
+                    "United settings back button must retain the United terminal icon");
+            helper.assertTrue(menu.rememberRecipeType() == enabled && menu.isPickBlock() == enabled
+                            && menu.isCraftIfMissing() == enabled && menu.isRestock() == enabled
+                            && menu.getMagnetMode() == modes.get(i),
+                    "United settings and Magnet mode must survive reopening: " + modes.get(i));
+            helper.assertTrue(((IUpgradeableItem) item).getUpgrades(stack).isInstalled(AE2wtlib.MAGNET_CARD),
+                    "Magnet card must survive the settings roundtrip");
+            var restoredGrid = menu.getCraftingMatrix();
+            helper.assertTrue(menu.getType() == UnitedWTMenu.TYPE && menu.getWTHost() == host
+                            && restoredGrid == host.getSubInventory(ETMenuType.UNITED_TERMINAL.getCraftingInventory())
+                            && ItemStack.matches(restoredGrid.getStackInSlot(0), grid.getStackInSlot(0))
+                            && ItemStack.matches(restoredGrid.getStackInSlot(grid.size() - 1),
+                                    grid.getStackInSlot(grid.size() - 1)),
+                    "reopening United settings must preserve the United menu, host and crafting inventory");
+        }
+        helper.succeed();
     }
 
     private static void anvilExperienceCost(GameTestHelper helper) {
@@ -123,22 +183,90 @@ public final class WirelessCraftingGameTests {
             return List.of();
         }
         var tests = new ArrayList<TestFunction>();
-        for (var id : List.of(new ResourceLocation("mob_grinding_utils", "fluid_xp"),
-                new ResourceLocation("sophisticatedcore", "xp_still"), new ResourceLocation("minecraft", "water"))) {
+        var fluidIds = new ArrayList<>(List.of(new ResourceLocation("mob_grinding_utils", "fluid_xp"),
+                new ResourceLocation("sophisticatedcore", "xp_still"), new ResourceLocation("minecraft", "water")));
+        if (ModList.get().isLoaded("create_enchantment_industry")) {
+            fluidIds.add(new ResourceLocation("create_enchantment_industry", "experience"));
+        }
+        for (var id : fluidIds) {
             if (ForgeRegistries.FLUIDS.containsKey(id)) {
                 tests.add(new TestFunction("extendedterminal", "wirelesscraftinggametests.anvilfluid_" + id.getNamespace(),
                         "extendedterminal:empty", 20, 0, true, helper -> anvilFluidExperience(helper, id)));
             }
         }
+        tests.add(new TestFunction("extendedterminal", "wirelesscraftinggametests.anvilavailabilitycadence",
+                "extendedterminal:empty", 40, 0, true, WirelessCraftingGameTests::anvilAvailabilityCadence));
         return tests;
+    }
+
+    private static void anvilAvailabilityCadence(GameTestHelper helper) {
+        var player = new FakePlayer(helper.getLevel(), new GameProfile(UUID.randomUUID(), "et-xp-refresh"));
+        var storage = new TestStorage(10_000);
+        var host = new ETWTHost(player, null, new ItemStack(WTItems.WIRELESS_ET_TERMINAL), (p, menu) -> { }) {
+            @Override
+            public MEStorage getInventory() {
+                return storage;
+            }
+
+            @Override
+            public double extractAEPower(double amount, Actionable mode, PowerMultiplier multiplier) {
+                return amount;
+            }
+        };
+        var menu = new ETTerminalMenu(ETTerminalMenu.TYPE, 1, player.getInventory(), host);
+        helper.assertTrue(storage.reports == 2, "constructor queries each XP source once");
+        storage.reports = 0;
+        menu.getSelectedAnvilExperienceSource();
+        menu.getSelectedAnvilExperienceSourceLabelKey();
+        helper.assertTrue(storage.reports == 0, "display getters reuse the availability snapshot");
+        menu.broadcastChanges();
+        menu.broadcastChanges();
+        helper.assertTrue(storage.reports == 2, "same-tick broadcasts only perform AE2's normal storage reports");
+        long started = helper.getLevel().getGameTime();
+        helper.runAfterDelay(9, () -> {
+            helper.assertTrue(helper.getLevel().getGameTime() == started + 9, "advance nine game ticks");
+            storage.reports = 0;
+            menu.broadcastChanges();
+            helper.assertTrue(storage.reports == 1, "no XP refresh before ten ticks");
+        });
+        helper.runAfterDelay(10, () -> {
+            storage.reports = 0;
+            menu.broadcastChanges();
+            helper.assertTrue(storage.reports == 3, "ten ticks refresh both XP sources plus AE2's normal report");
+            menu.broadcastChanges();
+            helper.assertTrue(storage.reports == 4, "a second broadcast does not repeat the XP refresh");
+        });
+        helper.runAfterDelay(19, () -> {
+            storage.reports = 0;
+            menu.setMode(ETTerminalMode.ANVIL);
+            helper.assertTrue(storage.reports == 2, "entering the anvil refreshes immediately");
+            storage.reports = 0;
+            menu.cycleAnvilExperienceSourcePriority();
+            helper.assertTrue(storage.reports == 2, "cycling refreshes once without querying again to select or remember");
+        });
+        helper.runAfterDelay(20, () -> {
+            storage.reports = 0;
+            menu.broadcastChanges();
+            helper.assertTrue(storage.reports == 1, "forced refresh postpones the periodic deadline");
+        });
+        helper.runAfterDelay(29, () -> {
+            storage.reports = 0;
+            menu.broadcastChanges();
+            helper.assertTrue(storage.reports == 3, "periodic refresh resumes ten ticks after the forced refresh");
+            helper.succeed();
+        });
     }
 
     private static void anvilFluidExperience(GameTestHelper helper, ResourceLocation fluidId) {
         var player = new FakePlayer(helper.getLevel(), new GameProfile(UUID.randomUUID(), "et-fluid-test"));
         player.getAbilities().instabuild = false;
         var storage = new TestStorage(10_000);
+        long unitsPerExperience = fluidId.equals(new ResourceLocation("create_enchantment_industry", "experience"))
+                ? 1L : 20L;
+        long requiredFluidUnits = 55L * unitsPerExperience;
+        long enoughFluidUnits = requiredFluidUnits + unitsPerExperience;
         var fluid = AEFluidKey.of(ForgeRegistries.FLUIDS.getValue(fluidId));
-        storage.amounts.put(fluid, 1120L);
+        storage.amounts.put(fluid, enoughFluidUnits);
         var host = new ETWTHost(player, null, new ItemStack(WTItems.WIRELESS_ET_TERMINAL), (p, menu) -> { }) {
             private boolean powered = true;
 
@@ -172,28 +300,48 @@ public final class WirelessCraftingGameTests {
         helper.assertTrue(menu.getSelectedAnvilExperienceSource() == ExperienceSource.FLUID_XP
                         && menu.getAnvilExperienceSourcePriority().contains(ExperienceSource.FLUID_XP),
                 fluidId + " must be offered and selectable as fluid XP");
-        helper.assertTrue(menu.canPayAnvilCost(player) && storage.amounts.get(fluid) == 1120L
-                        && menu.consumeAnvilExperience(player) && storage.amounts.get(fluid) == 20L
+        storage.reports = 0;
+        storage.largestSimulatedExtraction = 0;
+        menu.cycleAnvilExperienceSourcePriority();
+        helper.assertTrue(storage.reports == 2 && storage.largestSimulatedExtraction == unitsPerExperience,
+                "cycling checks only one XP per source, without repeated storage snapshots");
+        menu.cycleAnvilExperienceSourcePriority();
+        var actionSource = IActionSource.ofPlayer(player, host);
+        for (long units : new long[] {0, unitsPerExperience - 1, unitsPerExperience, enoughFluidUnits}) {
+            storage.amounts.put(fluid, units);
+            helper.assertTrue((MyotusAPI.experience().extractable(host, storage, actionSource, ExperienceSource.FLUID_XP) > 0)
+                            == MyotusAPI.experience().canExtract(host, storage, actionSource, 1, ExperienceSource.FLUID_XP)
+                            && storage.amounts.get(fluid) == units,
+                    "one-XP availability matches the old estimate without consuming fluid at XP boundaries");
+        }
+        helper.assertTrue(menu.canPayAnvilCost(player) && storage.amounts.get(fluid) == enoughFluidUnits
+                        && menu.consumeAnvilExperience(player) && storage.amounts.get(fluid) == unitsPerExperience
                         && player.totalExperience == 0 && player.experienceLevel == 0,
-                fluidId + " must pay 55 XP with exactly 1100 mB and no player XP");
+                fluidId + " must pay 55 XP with exactly " + requiredFluidUnits + " mB and no player XP");
 
-        storage.amounts.put(fluid, 1099L);
+        storage.amounts.put(fluid, requiredFluidUnits - 1);
         helper.assertTrue(!menu.canPayAnvilCost(player) && !menu.consumeAnvilExperience(player)
-                        && storage.amounts.get(fluid) == 1099L,
+                        && storage.amounts.get(fluid) == requiredFluidUnits - 1,
                 "insufficient fluid XP must not be debited");
 
-        storage.amounts.put(fluid, 1120L);
+        storage.amounts.put(fluid, enoughFluidUnits);
         storage.allowExtraction = false;
-        helper.assertTrue(!menu.getAnvilExperienceSourcePriority().contains(ExperienceSource.FLUID_XP)
+        helper.assertTrue(menu.getSelectedAnvilExperienceSource() == ExperienceSource.FLUID_XP
+                        && !menu.getAnvilExperienceSourcePriority().contains(ExperienceSource.FLUID_XP)
                         && !menu.canPayAnvilCost(player) && !menu.consumeAnvilExperience(player)
-                        && storage.amounts.get(fluid) == 1120L,
-                "visible but extraction-denied fluid must not be offered or consumed");
+                        && storage.amounts.get(fluid) == enoughFluidUnits,
+                "a stale displayed source must not bypass live extraction permissions");
+        menu.cycleAnvilExperienceSourcePriority();
+        helper.assertTrue(menu.getSelectedAnvilExperienceSource() == ExperienceSource.PLAYER,
+                "cycling refreshes denied-source availability immediately");
         storage.allowExtraction = true;
+        menu.cycleAnvilExperienceSourcePriority();
         host.powered = false;
-        helper.assertTrue(!menu.getAnvilExperienceSourcePriority().contains(ExperienceSource.FLUID_XP)
+        helper.assertTrue(menu.getSelectedAnvilExperienceSource() == ExperienceSource.FLUID_XP
+                        && !menu.getAnvilExperienceSourcePriority().contains(ExperienceSource.FLUID_XP)
                         && !menu.canPayAnvilCost(player) && !menu.consumeAnvilExperience(player)
-                        && storage.amounts.get(fluid) == 1120L,
-                "fluid XP without AE power must not be offered or consumed");
+                        && storage.amounts.get(fluid) == enoughFluidUnits,
+                "a stale displayed source must not bypass live AE power checks");
         host.powered = true;
 
         var otherId = new ResourceLocation("sophisticatedcore", "xp_still");
@@ -387,6 +535,8 @@ public final class WirelessCraftingGameTests {
         private final long capacity;
         private final Map<AEKey, Long> amounts = new HashMap<>();
         private boolean allowExtraction = true;
+        private int reports;
+        private long largestSimulatedExtraction;
 
         private TestStorage(long capacity) {
             this.capacity = capacity;
@@ -403,6 +553,9 @@ public final class WirelessCraftingGameTests {
 
         @Override
         public long extract(AEKey what, long amount, Actionable mode, IActionSource source) {
+            if (mode == Actionable.SIMULATE) {
+                largestSimulatedExtraction = Math.max(largestSimulatedExtraction, amount);
+            }
             long extracted = allowExtraction ? Math.min(amount, amounts.getOrDefault(what, 0L)) : 0;
             if (extracted > 0 && mode == Actionable.MODULATE) {
                 amounts.merge(what, -extracted, Long::sum);
@@ -412,6 +565,7 @@ public final class WirelessCraftingGameTests {
 
         @Override
         public void getAvailableStacks(KeyCounter out) {
+            reports++;
             amounts.forEach(out::add);
         }
 

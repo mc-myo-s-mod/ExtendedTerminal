@@ -164,7 +164,7 @@ abstract class AbstractTableRecipeAdapter implements MyoTableRecipe {
         }
 
         if (annotation == AvaritiaNeo.class) {
-            if (this.recipe instanceof CraftingRecipe tableRecipe) {
+            if (this.recipe instanceof RecipeExtremeCrafting tableRecipe) {
                 return MagicRecipe.assemble(tableRecipe, input, registryAccess);
             }
         }

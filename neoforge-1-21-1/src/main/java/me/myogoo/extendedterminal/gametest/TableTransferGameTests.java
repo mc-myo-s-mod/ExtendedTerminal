@@ -14,8 +14,10 @@ import appeng.menu.locator.MenuLocators;
 import appeng.util.ConfigManager;
 import appeng.util.inv.AppEngInternalInventory;
 import com.mojang.authlib.GameProfile;
+import com.illusivesoulworks.polymorph.api.PolymorphApi;
 import io.netty.buffer.Unpooled;
 import me.myogoo.extendedterminal.ExtendedTerminal;
+import me.myogoo.extendedterminal.api.annotation.Polymorph;
 import me.myogoo.extendedterminal.api.host.IUnitedTerminalHost;
 import me.myogoo.extendedterminal.menu.ETMenuType;
 import me.myogoo.extendedterminal.menu.TableTerminalBaseMenu;
@@ -27,6 +29,7 @@ import me.myogoo.extendedterminal.menu.extendedterminal.MyoRecipeType;
 import me.myogoo.extendedterminal.menu.extendedterminal.UnitedTerminalMenu;
 import me.myogoo.extendedterminal.network.serverbound.FillTableCraftingGridFromRecipePacket;
 import me.myogoo.extendedterminal.network.serverbound.FillUnitedGridPacket;
+import me.myogoo.myotus.api.MyotusAPI;
 import net.minecraft.core.NonNullList;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestGenerator;
@@ -38,6 +41,10 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.CraftingBookCategory;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.RecipeHolder;
+import net.minecraft.world.item.crafting.ShapelessRecipe;
 import net.neoforged.neoforge.common.util.FakePlayer;
 import net.neoforged.neoforge.gametest.GameTestHolder;
 import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
@@ -52,6 +59,14 @@ public final class TableTransferGameTests {
     @GameTestGenerator
     public static List<TestFunction> optionalIntegrationTests() {
         var tests = new ArrayList<TestFunction>();
+        for (var type : UnitedTerminalMenu.getActiveRecipeTypes()) {
+            tests.add(new TestFunction("extendedterminal", "tabletransfergametests.unitedshapeless_" + type.name().toLowerCase(java.util.Locale.ROOT),
+                    "extendedterminal:empty", 100, 0, true, helper -> unitedRecipeTransfer(helper, type, false)));
+        }
+        if (MyoRecipeType.EXTREME_MEO.isActive()) {
+            tests.add(new TestFunction("extendedterminal", "tabletransfergametests.unitedshaped_extreme_meo",
+                    "extendedterminal:empty", 100, 0, true, helper -> unitedRecipeTransfer(helper, MyoRecipeType.EXTREME_MEO, true)));
+        }
         if (ETMenuType.SCULK_TERMINAL.canLoad()) {
             tests.add(new TestFunction("extendedterminal", "tabletransfergametests.tiermenutransfers",
                     "extendedterminal:empty", 100, 0, true, TableTransferGameTests::tierMenuTransfers));
@@ -60,7 +75,174 @@ public final class TableTransferGameTests {
             tests.add(new TestFunction("extendedterminal", "tabletransfergametests.unitedvalidationbeforeselection",
                     "extendedterminal:empty", 100, 0, true, TableTransferGameTests::unitedValidationBeforeSelection));
         }
+        if (MyotusAPI.integrations().isLoaded(Polymorph.class)) {
+            tests.add(new TestFunction("extendedterminal", "tabletransfergametests.unitedpolymorphselection",
+                    "extendedterminal:empty", 100, 0, true, TableTransferGameTests::unitedPolymorphSelection));
+        }
         return tests;
+    }
+
+    private static void unitedRecipeTransfer(GameTestHelper helper, MyoRecipeType type, boolean shaped) {
+        var manager = helper.getLevel().getRecipeManager();
+        var original = new ArrayList<>(manager.getRecipes());
+        var id = ExtendedTerminal.makeId("test_united_recipe");
+        var result = new ItemStack(Items.EMERALD);
+        var serializer = switch (type) {
+            case VANILLA -> "minecraft:crafting_shapeless";
+            case BASIC, ADVANCED, ELITE, ULTIMATE -> "extendedcrafting:shapeless_table";
+            case SCULK, Nether, END, EXTREME -> "avaritia:shapeless_table";
+            case EXTREME_MEO -> "avaritia:extreme_shapeless";
+        };
+        // Decode through the registry so absent optional mods are never class-loaded by test discovery.
+        var json = com.google.gson.JsonParser.parseString(shaped ? """
+                {"type":"avaritia:extreme_shaped","result":{"id":"minecraft:emerald"},
+                "pattern":["AA","AA"],"key":{"A":{"item":"minecraft:honey_bottle"}}}
+                """ : """
+                {"type":"%s","tier":%d,"result":{"id":"minecraft:emerald"},"ingredients":[
+                {"item":"minecraft:honey_bottle"},{"item":"minecraft:honey_bottle"},
+                {"item":"minecraft:honey_bottle"},{"item":"minecraft:honey_bottle"}]}
+                """.formatted(serializer, type.tier()));
+        var recipe = net.minecraft.world.item.crafting.Recipe.CODEC.parse(
+                helper.getLevel().registryAccess().createSerializationContext(com.mojang.serialization.JsonOps.INSTANCE), json).getOrThrow();
+        var recipes = new ArrayList<>(original);
+        recipes.add(new RecipeHolder<>(id, recipe));
+        manager.replaceRecipes(recipes);
+        try {
+            for (boolean scattered : shaped ? new boolean[]{false} : new boolean[]{false, true}) {
+                var player = player(helper);
+                var host = new TestHost(player, 81);
+                var menu = new UnitedTerminalMenu(UnitedTerminalMenu.TYPE, 0, player.getInventory(), host);
+                player.containerMenu = menu;
+                player.getInventory().setItem(9, new ItemStack(Items.HONEY_BOTTLE, 4));
+                var templates = NonNullList.withSize(81, ItemStack.EMPTY);
+                for (int i = 0; i < 4; i++) templates.set(i, new ItemStack(Items.HONEY_BOTTLE));
+                new FillUnitedGridPacket(id, templates, false, shaped ? 2 : -1, shaped ? 2 : -1, type).handleOnServer(player);
+                var adapter = menu.getCurrentMyoRecipe();
+                helper.assertTrue(adapter != null && adapter.id().equals(id), "Transferred input matches: " + type);
+                var mapping = switch (type) {
+                    case SCULK, Nether, END, EXTREME -> me.myogoo.extendedterminal.integration.itemList.module.avaritia.AVRecipeTransferHelper.GuiSlotToIngredientMap.jei(menu, adapter);
+                    case EXTREME_MEO -> me.myogoo.extendedterminal.integration.itemList.module.avaritia.AVNeoRecipeTransferHelper.GuiSlotToIngredientMap.jei(menu, adapter);
+                    default -> me.myogoo.extendedterminal.integration.itemList.module.extendedcrafting.ECRecipeTransferHelper.getGuiSlotToIngredientMap(menu, adapter);
+                };
+                var expectedSlots = shaped ? java.util.Set.of(30, 31, 39, 40) : java.util.Set.of(0, 1, 2, 3);
+                helper.assertTrue(mapping.keySet().equals(expectedSlots), "Shaped transfer centers; shapeless stays top-left: " + type);
+                for (int i = 0; i < 81; i++) {
+                    helper.assertTrue(expectedSlots.contains(i) ? host.grid.getStackInSlot(i).is(Items.HONEY_BOTTLE)
+                            && host.grid.getStackInSlot(i).getCount() == 1 : host.grid.getStackInSlot(i).isEmpty(),
+                            "Packet transfers each ingredient once: " + type + " slot " + i);
+                }
+                var usedSlots = scattered ? java.util.Set.of(2, 16, 60, 80) : mapping.keySet();
+                if (scattered) {
+                    host.grid.clear();
+                    usedSlots.forEach(slot -> host.grid.setItemDirect(slot, new ItemStack(Items.HONEY_BOTTLE)));
+                    menu.slotsChanged(host.grid.toContainer());
+                }
+                helper.assertTrue(menu.getSelectedRecipeType() == type && menu.getCurrentMyoRecipe() != null
+                        && menu.getCurrentMyoRecipe().id().equals(id), "United matches input: " + type);
+                var output = (me.myogoo.extendedterminal.menu.extendedcrafting.slot.UnitedCraftingTerminalSlot)
+                        menu.getSlots(menu.getOutputSlotSemantic()).getFirst();
+                helper.assertTrue(ItemStack.matches(output.getItem(), result), "Recipe result preview: " + type);
+                output.doClick(appeng.helpers.InventoryAction.CRAFT_ITEM, player);
+                helper.assertTrue(ItemStack.matches(menu.getCarried(), result), "Recipe result can be taken: " + type);
+                for (int i = 0; i < 81; i++) {
+                    var stack = host.grid.getStackInSlot(i);
+                    helper.assertTrue(usedSlots.contains(i) ? stack.is(Items.GLASS_BOTTLE) && stack.getCount() == 1 : stack.isEmpty(),
+                            "Container remainder keeps original coordinate: " + type + " slot " + i);
+                }
+                helper.assertTrue(player.getInventory().isEmpty(), "No duplicate ingredients or remainders: " + type);
+            }
+            helper.succeed();
+        } finally {
+            manager.replaceRecipes(original);
+        }
+    }
+
+    public static void unitedPolymorphSelection(GameTestHelper helper) {
+        var manager = helper.getLevel().getRecipeManager();
+        var original = new ArrayList<>(manager.getRecipes());
+        var conflict = new RecipeHolder<>(ResourceLocation.fromNamespaceAndPath(ExtendedTerminal.MODID, "test_honey_conflict"),
+                new ShapelessRecipe("", CraftingBookCategory.MISC, new ItemStack(Items.EMERALD),
+                        NonNullList.withSize(4, Ingredient.of(Items.HONEY_BOTTLE))));
+        var recipes = new ArrayList<>(original);
+        recipes.add(conflict);
+        manager.replaceRecipes(recipes);
+        try {
+            var player = player(helper);
+            var host = new TestHost(player, 81);
+            for (int slot : new int[]{60, 61, 69, 70}) {
+                host.grid.setItemDirect(slot, new ItemStack(Items.HONEY_BOTTLE));
+            }
+            var firstMenu = new UnitedTerminalMenu(UnitedTerminalMenu.TYPE, 0, player.getInventory(), host);
+            player.containerMenu = firstMenu;
+            var data = PolymorphApi.getInstance().getPlayerRecipeData(player);
+            data.getRecipesList().clear();
+            firstMenu.broadcastChanges();
+            helper.assertTrue(data.getRecipesList().size() >= 2,
+                    "First active broadcast refreshes conflicts for a populated United grid");
+            data.getRecipesList().clear();
+            firstMenu.broadcastChanges();
+            helper.assertTrue(data.getRecipesList().isEmpty(), "Initial conflict refresh runs only once per menu");
+
+            var menu = new UnitedTerminalMenu(UnitedTerminalMenu.TYPE, 0, player.getInventory(), host);
+            player.containerMenu = menu;
+            data.getRecipesList().clear();
+            menu.broadcastChanges();
+            helper.assertTrue(data.getRecipesList().size() >= 2,
+                    "Reopening a populated United grid refreshes conflicts without changing ingredients");
+            var output = menu.getSlots(menu.getOutputSlotSemantic()).getFirst();
+            var vanilla = manager.byKey(ResourceLocation.withDefaultNamespace("honey_block")).orElseThrow();
+            var selected = menu.getCurrentMyoRecipe().id().equals(conflict.id()) ? vanilla : conflict;
+            data.selectRecipe(selected);
+            menu.receiveClientAction("polyeng$selectRecipe", null);
+            helper.assertTrue(menu.getCurrentMyoRecipe().id().equals(selected.id())
+                            && ItemStack.matches(output.getItem(), selected.value().getResultItem(helper.getLevel().registryAccess())),
+                    "Explicit Polymorph selection refreshes unchanged off-center United input");
+            helper.assertTrue(data.getRecipesList().size() >= 2, "United publishes conflicting vanilla recipes");
+
+            var otherPlayer = player(helper);
+            var otherHost = new TestHost(otherPlayer, 81);
+            for (int slot : new int[]{60, 61, 69, 70}) {
+                otherHost.grid.setItemDirect(slot, new ItemStack(Items.HONEY_BOTTLE));
+            }
+            var otherMenu = new UnitedTerminalMenu(UnitedTerminalMenu.TYPE, 0, otherPlayer.getInventory(), otherHost);
+            otherPlayer.containerMenu = otherMenu;
+            var otherSelection = selected.id().equals(conflict.id()) ? vanilla : conflict;
+            PolymorphApi.getInstance().getPlayerRecipeData(otherPlayer).selectRecipe(otherSelection);
+            otherMenu.receiveClientAction("polyeng$selectRecipe", null);
+            helper.assertTrue(otherMenu.getCurrentMyoRecipe().id().equals(otherSelection.id())
+                            && menu.getCurrentMyoRecipe().id().equals(selected.id()),
+                    "United Polymorph selections are per player");
+
+            data.selectRecipe(manager.byKey(ResourceLocation.withDefaultNamespace("stick")).orElseThrow());
+            menu.receiveClientAction("polyeng$selectRecipe", null);
+            helper.assertTrue(!output.getItem().is(Items.STICK), "Non-matching selected recipe cannot supply United output");
+            data.selectRecipe(selected);
+            menu.receiveClientAction("polyeng$selectRecipe", null);
+            ((me.myogoo.extendedterminal.menu.extendedcrafting.slot.UnitedCraftingTerminalSlot) output)
+                    .doClick(appeng.helpers.InventoryAction.CRAFT_ITEM, player);
+            helper.assertTrue(ItemStack.matches(menu.getCarried(), selected.value().getResultItem(helper.getLevel().registryAccess())),
+                    "United crafts the selected conflict result");
+            for (int slot : new int[]{60, 61, 69, 70}) {
+                helper.assertTrue(host.grid.getStackInSlot(slot).is(Items.GLASS_BOTTLE)
+                                && host.grid.getStackInSlot(slot).getCount() == 1,
+                        "Selected conflict recipe retains bottle remainder at slot " + slot);
+            }
+            helper.assertTrue(player.getInventory().isEmpty(), "Selected conflict has no duplicated remainders");
+            helper.assertTrue(output.getItem().isEmpty(), "Changing the grid invalidates the selected result");
+
+            UnitedTerminalMenu.getActiveRecipeTypes().stream().filter(type -> type != MyoRecipeType.VANILLA)
+                    .findFirst().ifPresent(type -> {
+                        otherMenu.setSelectedRecipeType(type);
+                        otherMenu.receiveClientAction("polyeng$selectRecipe", null);
+                        helper.assertTrue(otherMenu.getSelectedRecipeType() == type
+                                        && (otherMenu.getCurrentMyoRecipe() == null
+                                        || !otherMenu.getCurrentMyoRecipe().id().equals(conflict.id())),
+                                "Polymorph action does not switch non-vanilla United recipes");
+                    });
+            helper.succeed();
+        } finally {
+            manager.replaceRecipes(original);
+        }
     }
 
     @GameTest(template = "empty")

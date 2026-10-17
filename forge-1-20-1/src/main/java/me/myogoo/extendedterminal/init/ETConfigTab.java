@@ -29,7 +29,17 @@ public final class ETConfigTab {
                             WTItems.WIRELESS_ET_TERMINAL.stack(),
                             "et_config.json",
                             new ETTerminalConfigScreen()
-                    ).visibleWhen(context -> context.host() instanceof ETWTHost));
+                    ).visibleWhen(context -> context.host() instanceof ETWTHost
+                            && !(context.host() instanceof UnitedWTHost)));
+
+            MyotusAPI.configTabs()
+                    .terminalConfigTab(new MyoConfigTab(
+                            new ResourceLocation(ExtendedTerminal.MODID, "wireless_united_terminal"),
+                            Component.translatable(ETTranslationKey.GUI.GUI_CONFIG_UNITED_TITLE.key()),
+                            WTItems.WIRELESS_UNITED_TERMINAL.stack(),
+                            "wireless_united_config.json",
+                            new UnitedTerminalConfigScreen()
+                    ).visibleWhen(context -> context.host() instanceof UnitedWTHost));
         }
 
         MyotusAPI.configTabs()
@@ -39,7 +49,6 @@ public final class ETConfigTab {
                         ETParts.UNITED_TERMINAL_PART.stack(),
                         "united_config.json",
                         new UnitedTerminalConfigScreen()
-                ).visibleWhen(context -> context.host() instanceof UnitedTerminalPart
-                        || (ae2wtlibLoaded && context.host() instanceof UnitedWTHost)));
+                ).visibleWhen(context -> context.host() instanceof UnitedTerminalPart));
     }
 }

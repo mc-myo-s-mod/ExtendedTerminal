@@ -13,7 +13,11 @@ cmd.exe /c "gradlew.bat runClient --console=plain --no-configuration-cache"
 
 Supported integrations: Extended Crafting 8.0.1, Re:Avaritia 1.4.2, JEI 29.33.0.87, and AE2WTLib 26.1.1-beta. AE2 26.1.10-beta and Myotus 26.0.0 are required. Existing 1.21.1 assets are reused with the new item and AE2 part model definitions.
 
-AvaritiaNeo, EMI, Polymorph, and Inventory Tweaks are not included in this port. Older modules are unchanged by these exclusions.
+AvaritiaNeo, EMI, upstream Polymorph, and Inventory Tweaks are not included in this port. Older modules are unchanged by these exclusions.
+
+The unofficial [Polymorph+](https://github.com/Aminoquiz/polymorph_plus) fork (1.3.6+26.1.2, mod id `polymorph_plus`) is optionally supported for vanilla crafting recipes in the wired and wireless United Terminal. Its selector appears on the right and is hidden in Extended Crafting/Re:Avaritia modes. Upstream Polymorph and Polymorphic Energistics are not required. Enable the development runtime with `-Penable_polymorph=true`; the default is disabled. Polymorph+ is a beta fork; back up worlds before adding it.
+
+`runGameTestServer -Penable_polymorph=true` also checks conflicting output selection through Polymorph+'s server packet, unchanged-grid refresh, ingredient consumption, invalid selection, recipe-mode isolation, and clearing the grid. Its two conflict fixtures exist only in that test run, not in ordinary development runs or the release JAR. GUI clicks and wireless selector interaction still need in-game validation.
 
 Optional runtime integrations can be disabled with `-Penable_excrafting=false -Penable_avaritia=none -Penable_wtlib=false -PitemListMod=none`.
 

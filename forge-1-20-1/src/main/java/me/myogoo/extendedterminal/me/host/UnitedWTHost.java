@@ -4,6 +4,7 @@ import appeng.api.inventories.InternalInventory;
 import appeng.menu.ISubMenu;
 import appeng.util.inv.AppEngInternalInventory;
 import me.myogoo.extendedterminal.api.host.IUnitedTerminalHost;
+import me.myogoo.extendedterminal.init.wt.WTItems;
 import me.myogoo.extendedterminal.menu.ETMenuType;
 import me.myogoo.extendedterminal.menu.extendedcrafting.UnitedTerminalMenu;
 import net.minecraft.nbt.CompoundTag;
@@ -27,6 +28,11 @@ public class UnitedWTHost extends ETWTHost implements IUnitedTerminalHost {
         super(player, inventorySlot, itemStack, returnToMainMenu);
         ensureUnitedInventory();
         readFromNbt();
+    }
+
+    @Override
+    public ItemStack getMainMenuIcon() {
+        return WTItems.WIRELESS_UNITED_TERMINAL.stack();
     }
 
     private void ensureUnitedInventory() {
